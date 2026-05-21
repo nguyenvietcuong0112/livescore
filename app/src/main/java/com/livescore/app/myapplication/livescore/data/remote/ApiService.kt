@@ -2,21 +2,21 @@ package com.livescore.app.myapplication.livescore.data.remote
 
 import com.livescore.app.myapplication.livescore.data.remote.model.*
 import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
-    @GET("api/live")
-    suspend fun getLiveMatches(): FixtureResponse<MatchItemDto>
+    @GET("fixtures")
+    suspend fun getLiveMatches(@Query("live") live: String = "all"): FixtureResponse<MatchItemDto>
 
-    @GET("api/match/{id}")
-    suspend fun getMatchDetail(@Path("id") matchId: Int): FixtureResponse<MatchDetailDto>
+    @GET("fixtures")
+    suspend fun getMatchDetail(@Query("id") matchId: Int): FixtureResponse<MatchDetailDto>
 
-    @GET("api/match/{id}/stats")
-    suspend fun getMatchStatistics(@Path("id") matchId: Int): FixtureResponse<StatisticItemDto>
+    @GET("fixtures/statistics")
+    suspend fun getMatchStatistics(@Query("fixture") matchId: Int): FixtureResponse<StatisticItemDto>
 
-    @GET("api/match/{id}/events")
-    suspend fun getMatchEvents(@Path("id") matchId: Int): FixtureResponse<EventItemDto>
+    @GET("fixtures/events")
+    suspend fun getMatchEvents(@Query("fixture") matchId: Int): FixtureResponse<EventItemDto>
 
-    @GET("api/match/{id}/lineups")
-    suspend fun getMatchLineups(@Path("id") matchId: Int): FixtureResponse<LineupItemDto>
+    @GET("fixtures/lineups")
+    suspend fun getMatchLineups(@Query("fixture") matchId: Int): FixtureResponse<LineupItemDto>
 }

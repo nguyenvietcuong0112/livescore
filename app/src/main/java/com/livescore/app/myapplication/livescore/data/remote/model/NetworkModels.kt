@@ -5,7 +5,7 @@ package com.livescore.app.myapplication.livescore.data.remote.model
 data class FixtureResponse<T>(
     val get: String,
     val parameters: Map<String, String>?,
-    val errors: List<String>?,
+    val errors: Any?,
     val results: Int,
     val paging: PagingDto?,
     val response: List<T>

@@ -25,7 +25,14 @@ class MatchRepository @Inject constructor(
     suspend fun refreshLiveMatches() {
         try {
             val response = apiService.getLiveMatches()
-            if (response.errors.isNullOrEmpty()) {
+            val errors = response.errors
+            val hasErrors = when {
+                errors == null -> false
+                errors is List<*> -> errors.isNotEmpty()
+                errors is Map<*, *> -> errors.isNotEmpty()
+                else -> true
+            }
+            if (!hasErrors) {
                 val entities = response.response.map { dto ->
                     CachedMatchEntity(
                         id = dto.fixture.id,
