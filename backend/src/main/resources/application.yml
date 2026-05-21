@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000
+
+api:
+  sports:
+    base-url: https://v3.football.api-sports.io
+    key: f83878006d48a9bebd1d9efd33457418
