@@ -54,7 +54,7 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
         }
 
         private fun getEventIcon(type: String): Int {
-            return when (type.toUpperCase()) {
+            return when (type.uppercase()) {
                 "GOAL" -> R.drawable.ic_live
                 "CARD" -> R.drawable.ic_profile
                 "SUBST" -> R.drawable.ic_home

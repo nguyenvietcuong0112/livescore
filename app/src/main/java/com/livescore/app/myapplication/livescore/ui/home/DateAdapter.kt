@@ -36,7 +36,7 @@ class DateAdapter(
             dates.add(
                 DateItem(
                     date = date,
-                    dayName = if (i == 2) "TODAY" else sdfDay.format(date).toUpperCase(Locale.US),
+                    dayName = if (i == 2) "TODAY" else sdfDay.format(date).uppercase(Locale.US),
                     dayNumber = sdfDate.format(date),
                     isSelected = isSelected
                 )

@@ -83,7 +83,7 @@ class MatchDetailActivity : AppCompatActivity() {
                 launch {
                     viewModel.uiState.collect { state ->
                         state.detail?.let { detail ->
-                            binding.matchHeader.tvDetailLeague.text = detail.league.name.toUpperCase()
+                            binding.matchHeader.tvDetailLeague.text = detail.league.name.uppercase()
                             binding.matchHeader.tvDetailHomeName.text = detail.teams.home.name
                             binding.matchHeader.tvDetailAwayName.text = detail.teams.away.name
 
@@ -162,7 +162,7 @@ class MatchDetailActivity : AppCompatActivity() {
                             val canvasEvents = events.map {
                                 TimelineEvent(
                                     minute = it.time.elapsed,
-                                    type = when (it.type.toUpperCase()) {
+                                    type = when (it.type.uppercase()) {
                                         "GOAL" -> "GOAL"
                                         "CARD" -> if (it.detail.contains("Red", true)) "CARD_RED" else "CARD_YELLOW"
                                         "SUBST" -> "SUBST"
