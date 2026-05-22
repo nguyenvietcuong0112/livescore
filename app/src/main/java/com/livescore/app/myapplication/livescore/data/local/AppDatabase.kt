@@ -14,7 +14,7 @@ import com.livescore.app.myapplication.livescore.data.local.entity.FavoriteTeamE
         FavoriteLeagueEntity::class,
         CachedMatchEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

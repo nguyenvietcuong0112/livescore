@@ -16,8 +16,8 @@ interface FavoriteDao {
     @Delete
     suspend fun deleteFavoriteTeam(team: FavoriteTeamEntity)
 
-    @Query("SELECT EXISTS(SELECT 1 FROM favorite_teams WHERE id = :teamId LIMIT 1)")
-    suspend fun isTeamFavorite(teamId: Int): Boolean
+    @Query("SELECT COUNT(*) FROM favorite_teams WHERE id = :teamId")
+    suspend fun isTeamFavorite(teamId: Int): Int
 
     @Query("SELECT * FROM favorite_leagues")
     fun getAllFavoriteLeagues(): Flow<List<FavoriteLeagueEntity>>
@@ -28,6 +28,6 @@ interface FavoriteDao {
     @Delete
     suspend fun deleteFavoriteLeague(league: FavoriteLeagueEntity)
 
-    @Query("SELECT EXISTS(SELECT 1 FROM favorite_leagues WHERE id = :leagueId LIMIT 1)")
-    suspend fun isLeagueFavorite(leagueId: Int): Boolean
+    @Query("SELECT COUNT(*) FROM favorite_leagues WHERE id = :leagueId")
+    suspend fun isLeagueFavorite(leagueId: Int): Int
 }

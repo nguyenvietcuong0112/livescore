@@ -17,7 +17,7 @@ import javax.inject.Singleton
 object NetworkModule {
 
     private const val BASE_URL = "https://v3.football.api-sports.io/"
-    private const val API_KEY = "f83878006d48a9bebd1d9efd33457418"
+    private const val API_KEY = "eeb82da4384bf7352f346c9371fe3dad"
 
     @Provides
     @Singleton

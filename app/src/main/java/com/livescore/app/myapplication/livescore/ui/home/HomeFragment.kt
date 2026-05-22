@@ -67,7 +67,7 @@ class HomeFragment : Fragment() {
 
         // Date Adapter setup
         dateAdapter = DateAdapter { dateItem, position ->
-            // Date filter mock action
+            viewModel.setSelectedDate(dateItem.date)
         }
         binding.rvDates.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvDates.adapter = dateAdapter
@@ -90,10 +90,9 @@ class HomeFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 // Collect Matches
                 launch {
-                    viewModel.matches.collect { matches ->
-                        binding.emptyState.isVisible = matches.isEmpty()
-                        val listItems = mapMatchesToListItems(matches)
-                        matchAdapter.submitList(listItems)
+                    viewModel.matches.collect { items ->
+                        binding.emptyState.isVisible = items.isEmpty()
+                        matchAdapter.submitList(items)
                     }
                 }
 
@@ -112,29 +111,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun mapMatchesToListItems(matches: List<CachedMatchEntity>): List<MatchListItem> {
-        val items = mutableListOf<MatchListItem>()
-        val grouped = matches.groupBy { it.leagueId }
-        var matchCount = 0
-
-        for ((leagueId, matchGroup) in grouped) {
-            val firstMatch = matchGroup.first()
-            items.add(MatchListItem.LeagueHeader(leagueId, firstMatch.leagueName, firstMatch.leagueLogo))
-            for (match in matchGroup) {
-                items.add(MatchListItem.MatchItem(match))
-                matchCount++
-                if (matchCount % 5 == 0) {
-                    items.add(MatchListItem.NativeAd(
-                        id = "ad_$matchCount",
-                        title = "Unlock SofaScore Premium",
-                        body = "Ad-free experience with real-time pressure pitch maps!"
-                    ))
-                }
-            }
-        }
-        return items
     }
 
     private fun updateFilterButtonUI(selectedFilter: MatchFilter) {

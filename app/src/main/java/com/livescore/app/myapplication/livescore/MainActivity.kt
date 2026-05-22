@@ -1,10 +1,15 @@
 package com.livescore.app.myapplication.livescore
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.livescore.app.myapplication.livescore.databinding.ActivityMainBinding
+import com.livescore.app.myapplication.livescore.ui.favorite.FavoriteFragment
 import com.livescore.app.myapplication.livescore.ui.home.HomeFragment
+import com.livescore.app.myapplication.livescore.ui.leagues.LeaguesFragment
+import com.livescore.app.myapplication.livescore.ui.search.SearchActivity
+import com.livescore.app.myapplication.livescore.ui.setting.SettingFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         // Setup toolbar action
         binding.searchIcon.setOnClickListener {
-            Toast.makeText(this, "Search coming soon!", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, SearchActivity::class.java))
         }
 
         // Set default fragment
@@ -39,16 +44,22 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_leagues -> {
-                    Toast.makeText(this, "Leagues coming soon!", Toast.LENGTH_SHORT).show()
-                    false
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, LeaguesFragment())
+                        .commit()
+                    true
                 }
-                R.id.nav_news -> {
-                    Toast.makeText(this, "News coming soon!", Toast.LENGTH_SHORT).show()
-                    false
+                R.id.nav_favorite -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, FavoriteFragment())
+                        .commit()
+                    true
                 }
-                R.id.nav_profile -> {
-                    Toast.makeText(this, "Profile coming soon!", Toast.LENGTH_SHORT).show()
-                    false
+                R.id.nav_settings -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, SettingFragment())
+                        .commit()
+                    true
                 }
                 else -> false
             }

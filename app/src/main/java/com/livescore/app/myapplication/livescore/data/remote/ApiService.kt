@@ -9,6 +9,9 @@ interface ApiService {
     suspend fun getLiveMatches(@Query("live") live: String = "all"): FixtureResponse<MatchItemDto>
 
     @GET("fixtures")
+    suspend fun getMatchesByDate(@Query("date") date: String): FixtureResponse<MatchItemDto>
+
+    @GET("fixtures")
     suspend fun getMatchDetail(@Query("id") matchId: Int): FixtureResponse<MatchDetailDto>
 
     @GET("fixtures/statistics")
@@ -19,4 +22,22 @@ interface ApiService {
 
     @GET("fixtures/lineups")
     suspend fun getMatchLineups(@Query("fixture") matchId: Int): FixtureResponse<LineupItemDto>
+
+    @GET("standings")
+    suspend fun getStandings(
+        @Query("league") leagueId: Int,
+        @Query("season") season: Int
+    ): StandingsResponse
+
+    @GET("players/topscorers")
+    suspend fun getTopScorers(
+        @Query("league") leagueId: Int,
+        @Query("season") season: Int
+    ): TopPlayersResponse
+
+    @GET("players/topassists")
+    suspend fun getTopAssists(
+        @Query("league") leagueId: Int,
+        @Query("season") season: Int
+    ): TopPlayersResponse
 }

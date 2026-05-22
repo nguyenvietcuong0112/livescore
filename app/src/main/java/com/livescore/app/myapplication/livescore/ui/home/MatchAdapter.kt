@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import androidx.core.content.ContextCompat
+import com.livescore.app.myapplication.livescore.R
 import com.livescore.app.myapplication.livescore.data.local.entity.CachedMatchEntity
 import com.livescore.app.myapplication.livescore.databinding.ItemLeagueHeaderBinding
 import com.livescore.app.myapplication.livescore.databinding.ItemMatchBinding
@@ -15,7 +17,7 @@ import com.livescore.app.myapplication.livescore.databinding.ItemNativeAdBinding
 
 sealed class MatchListItem {
     data class LeagueHeader(val id: Int, val name: String, val logo: String) : MatchListItem()
-    data class MatchItem(val match: CachedMatchEntity) : MatchListItem()
+    data class MatchItem(val match: CachedMatchEntity, val isFavorite: Boolean = false) : MatchListItem()
     data class NativeAd(val id: String, val title: String, val body: String) : MatchListItem()
 }
 
@@ -98,6 +100,18 @@ class MatchAdapter(
                 binding.tvMatchStatus.text = match.statusShort
                 binding.livePulse.isVisible = false
             }
+
+            // Bind favorite icon state
+            val isFav = item.isFavorite
+            binding.ivFavorite.setImageResource(
+                if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border
+            )
+            binding.ivFavorite.setColorFilter(
+                ContextCompat.getColor(
+                    binding.ivFavorite.context,
+                    if (isFav) R.color.accent_green else R.color.text_muted
+                )
+            )
 
             binding.cardMatch.setOnClickListener { onMatchClick(match) }
             binding.ivFavorite.setOnClickListener { onFavoriteClick(match) }
