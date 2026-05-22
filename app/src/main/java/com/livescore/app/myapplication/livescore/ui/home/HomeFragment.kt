@@ -42,9 +42,30 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val isLiveOnly = arguments?.getBoolean(ARG_LIVE_ONLY, false) ?: false
+        if (isLiveOnly) {
+            binding.rvDates.visibility = View.GONE
+            binding.dateDivider.visibility = View.GONE
+            binding.filterLayout.visibility = View.GONE
+            binding.emptyState.text = "No live matches currently in progress"
+            viewModel.setFilter(MatchFilter.LIVE)
+        }
+
         setupRecyclerViews()
         setupFilters()
         observeViewModel()
+    }
+
+    companion object {
+        private const val ARG_LIVE_ONLY = "arg_live_only"
+
+        fun newInstance(isLiveOnly: Boolean): HomeFragment {
+            return HomeFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(ARG_LIVE_ONLY, isLiveOnly)
+                }
+            }
+        }
     }
 
     private fun setupRecyclerViews() {

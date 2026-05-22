@@ -29,8 +29,12 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
+    fun provideOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor,
+        requestLimitInterceptor: RequestLimitInterceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
+            .addInterceptor(requestLimitInterceptor)
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
                     .addHeader("x-apisports-key", API_KEY)

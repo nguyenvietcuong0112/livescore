@@ -95,6 +95,26 @@ class MatchDetailActivity : AppCompatActivity() {
                             Glide.with(this@MatchDetailActivity).load(detail.teams.home.logo).into(binding.matchHeader.ivDetailHomeLogo)
                             Glide.with(this@MatchDetailActivity).load(detail.teams.away.logo).into(binding.matchHeader.ivDetailAwayLogo)
 
+                            // Setup dynamic values in Football Pitch View
+                            binding.pitchTracker.pitchView.setTeamNames(detail.teams.home.name, detail.teams.away.name)
+                            
+                            val elapsed = detail.fixture.status.elapsed ?: 0
+                            val period = when (detail.fixture.status.long.uppercase()) {
+                                "FIRST HALF", "1H" -> "1st Half"
+                                "SECOND HALF", "2H" -> "2nd Half"
+                                "HALFTIME", "HT" -> "Halftime"
+                                "MATCH FINISHED", "FT" -> "Full Time"
+                                else -> "LIVE"
+                            }
+                            val matchStatusStr = if (elapsed > 45 && detail.fixture.status.long.uppercase().contains("FIRST")) {
+                                "$period | 45:00 +00:${String.format("%02d", elapsed - 45)}"
+                            } else if (elapsed > 90 && detail.fixture.status.long.uppercase().contains("SECOND")) {
+                                "$period | 90:00 +00:${String.format("%02d", elapsed - 90)}"
+                            } else {
+                                "$period | ${String.format("%02d", elapsed)}:00"
+                            }
+                            binding.pitchTracker.pitchView.setMatchStatus(matchStatusStr, "${elapsed}'")
+
                             // Setup visual timeline events list
                             binding.layoutTimeline.timelineVisualView.setMatchMinute(detail.fixture.status.elapsed ?: 90)
                         }

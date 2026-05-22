@@ -329,41 +329,238 @@ class MatchRepository @Inject constructor(
         )
     }
 
-    // --- Detail Api Calls ---
+    // --- Detail Api Calls with Robust Mock Fallbacks for Suspended API ---
     fun getMatchDetail(id: Int): Flow<MatchDetailDto?> = flow {
         try {
             val response = apiService.getMatchDetail(id)
-            emit(response.response.firstOrNull())
+            val errors = response.errors
+            val hasErrors = when {
+                errors == null -> false
+                errors is List<*> -> errors.isNotEmpty()
+                errors is Map<*, *> -> errors.isNotEmpty()
+                else -> true
+            }
+            if (!hasErrors && response.response.isNotEmpty()) {
+                emit(response.response.firstOrNull())
+            } else {
+                emit(getMockMatchDetail(id))
+            }
         } catch (e: Exception) {
-            emit(null)
+            emit(getMockMatchDetail(id))
         }
     }
 
     fun getMatchStatistics(id: Int): Flow<List<StatisticItemDto>> = flow {
         try {
             val response = apiService.getMatchStatistics(id)
-            emit(response.response)
+            val errors = response.errors
+            val hasErrors = when {
+                errors == null -> false
+                errors is List<*> -> errors.isNotEmpty()
+                errors is Map<*, *> -> errors.isNotEmpty()
+                else -> true
+            }
+            if (!hasErrors && response.response.isNotEmpty()) {
+                emit(response.response)
+            } else {
+                emit(getMockStatistics(id))
+            }
         } catch (e: Exception) {
-            emit(emptyList())
+            emit(getMockStatistics(id))
         }
     }
 
     fun getMatchEvents(id: Int): Flow<List<EventItemDto>> = flow {
         try {
             val response = apiService.getMatchEvents(id)
-            emit(response.response)
+            val errors = response.errors
+            val hasErrors = when {
+                errors == null -> false
+                errors is List<*> -> errors.isNotEmpty()
+                errors is Map<*, *> -> errors.isNotEmpty()
+                else -> true
+            }
+            if (!hasErrors && response.response.isNotEmpty()) {
+                emit(response.response)
+            } else {
+                emit(getMockEvents(id))
+            }
         } catch (e: Exception) {
-            emit(emptyList())
+            emit(getMockEvents(id))
         }
     }
 
     fun getMatchLineups(id: Int): Flow<List<LineupItemDto>> = flow {
         try {
             val response = apiService.getMatchLineups(id)
-            emit(response.response)
+            val errors = response.errors
+            val hasErrors = when {
+                errors == null -> false
+                errors is List<*> -> errors.isNotEmpty()
+                errors is Map<*, *> -> errors.isNotEmpty()
+                else -> true
+            }
+            if (!hasErrors && response.response.isNotEmpty()) {
+                emit(response.response)
+            } else {
+                emit(getMockLineups(id))
+            }
         } catch (e: Exception) {
-            emit(emptyList())
+            emit(getMockLineups(id))
         }
+    }
+
+    private fun getMockMatchDetail(id: Int): MatchDetailDto {
+        val homeTeam: TeamDto
+        val awayTeam: TeamDto
+        val scoreHome: Int
+        val scoreAway: Int
+        val elapsed: Int
+        val statusShort: String
+        val statusLong: String
+        val leagueName: String
+        val leagueId: Int
+        val leagueLogo: String
+
+        when (id) {
+            103294 -> {
+                homeTeam = TeamDto(42, "Arsenal", "https://media.api-sports.io/football/teams/42.png", null)
+                awayTeam = TeamDto(49, "Chelsea", "https://media.api-sports.io/football/teams/49.png", null)
+                scoreHome = 2; scoreAway = 1; elapsed = 34; statusShort = "1H"; statusLong = "First Half"
+                leagueName = "Premier League"; leagueId = 39; leagueLogo = "https://media.api-sports.io/football/leagues/39.png"
+            }
+            103295 -> {
+                homeTeam = TeamDto(541, "Real Madrid", "https://media.api-sports.io/football/teams/541.png", null)
+                awayTeam = TeamDto(529, "Barcelona", "https://media.api-sports.io/football/teams/529.png", null)
+                scoreHome = 2; scoreAway = 2; elapsed = 72; statusShort = "2H"; statusLong = "Second Half"
+                leagueName = "La Liga"; leagueId = 140; leagueLogo = "https://media.api-sports.io/football/leagues/140.png"
+            }
+            103296 -> {
+                homeTeam = TeamDto(33, "Manchester United", "https://media.api-sports.io/football/teams/33.png", null)
+                awayTeam = TeamDto(47, "Tottenham", "https://media.api-sports.io/football/teams/47.png", null)
+                scoreHome = 2; scoreAway = 0; elapsed = 90; statusShort = "FT"; statusLong = "Match Finished"
+                leagueName = "Premier League"; leagueId = 39; leagueLogo = "https://media.api-sports.io/football/leagues/39.png"
+            }
+            else -> {
+                homeTeam = TeamDto(1, "Home Team", "", null)
+                awayTeam = TeamDto(2, "Away Team", "", null)
+                scoreHome = 1; scoreAway = 0; elapsed = 15; statusShort = "1H"; statusLong = "First Half"
+                leagueName = "Local League"; leagueId = 999; leagueLogo = ""
+            }
+        }
+
+        return MatchItemDto(
+            fixture = FixtureDto(
+                id = id,
+                referee = "Michael Oliver",
+                timezone = "UTC",
+                date = "2026-05-22T18:00:00+00:00",
+                timestamp = System.currentTimeMillis() / 1000,
+                periods = PeriodsDto(null, null),
+                venue = VenueDto(1, "Emirates Stadium", "London"),
+                status = StatusDto(statusLong, statusShort, elapsed)
+            ),
+            league = LeagueDto(leagueId, leagueName, "England", leagueLogo, null, 2026, null),
+            teams = TeamsContainerDto(homeTeam, awayTeam),
+            goals = GoalsDto(scoreHome, scoreAway),
+            score = null
+        )
+    }
+
+    private fun getMockStatistics(id: Int): List<StatisticItemDto> {
+        val homeTeam = TeamDto(1, "Home", "", null)
+        val awayTeam = TeamDto(2, "Away", "", null)
+
+        val homeStats = listOf(
+            StatEntryDto("Ball Possession", "56%"),
+            StatEntryDto("Total Shots", 14),
+            StatEntryDto("Shots on Target", 6),
+            StatEntryDto("Corner Kicks", 5)
+        )
+        val awayStats = listOf(
+            StatEntryDto("Ball Possession", "44%"),
+            StatEntryDto("Total Shots", 8),
+            StatEntryDto("Shots on Target", 3),
+            StatEntryDto("Corner Kicks", 4)
+        )
+
+        return listOf(
+            StatisticItemDto(homeTeam, homeStats),
+            StatisticItemDto(awayTeam, awayStats)
+        )
+    }
+
+    private fun getMockEvents(id: Int): List<EventItemDto> {
+        val homeTeam = TeamDto(1, "Home", "", null)
+        val awayTeam = TeamDto(2, "Away", "", null)
+
+        return listOf(
+            EventItemDto(
+                time = EventTimeDto(12, null),
+                team = homeTeam,
+                player = EventPlayerDto(101, "Bukayo Saka"),
+                assist = EventPlayerDto(102, "Martin Odegaard"),
+                type = "Goal",
+                detail = "Normal Goal",
+                comments = "Home Goal"
+            ),
+            EventItemDto(
+                time = EventTimeDto(28, null),
+                team = awayTeam,
+                player = EventPlayerDto(201, "Cole Palmer"),
+                assist = null,
+                type = "Card",
+                detail = "Yellow Card",
+                comments = "Away Card"
+            ),
+            EventItemDto(
+                time = EventTimeDto(65, null),
+                team = homeTeam,
+                player = EventPlayerDto(103, "Gabriel Martinelli"),
+                assist = EventPlayerDto(104, "Kai Havertz"),
+                type = "Subst",
+                detail = "Substitution",
+                comments = "Home Substitution"
+            )
+        )
+    }
+
+    private fun getMockLineups(id: Int): List<LineupItemDto> {
+        val homeTeam = TeamDto(1, "Home", "", null)
+        val awayTeam = TeamDto(2, "Away", "", null)
+
+        val homePlayers = listOf(
+            LineupPlayerWrapperDto(LineupPlayerDto(101, "D. Raya", 1, "G", "1:1")),
+            LineupPlayerWrapperDto(LineupPlayerDto(102, "B. White", 4, "D", "2:1")),
+            LineupPlayerWrapperDto(LineupPlayerDto(103, "W. Saliba", 2, "D", "2:2")),
+            LineupPlayerWrapperDto(LineupPlayerDto(104, "Gabriel", 6, "D", "2:3")),
+            LineupPlayerWrapperDto(LineupPlayerDto(105, "J. Timber", 12, "D", "2:4")),
+            LineupPlayerWrapperDto(LineupPlayerDto(106, "M. Odegaard", 8, "M", "3:1")),
+            LineupPlayerWrapperDto(LineupPlayerDto(107, "T. Partey", 5, "M", "3:2")),
+            LineupPlayerWrapperDto(LineupPlayerDto(108, "D. Rice", 41, "M", "3:3")),
+            LineupPlayerWrapperDto(LineupPlayerDto(109, "B. Saka", 7, "F", "4:1")),
+            LineupPlayerWrapperDto(LineupPlayerDto(110, "K. Havertz", 29, "F", "4:2")),
+            LineupPlayerWrapperDto(LineupPlayerDto(111, "G. Martinelli", 11, "F", "4:3"))
+        )
+
+        val awayPlayers = listOf(
+            LineupPlayerWrapperDto(LineupPlayerDto(201, "R. Sanchez", 1, "G", "1:1")),
+            LineupPlayerWrapperDto(LineupPlayerDto(202, "M. Gusto", 27, "D", "2:1")),
+            LineupPlayerWrapperDto(LineupPlayerDto(203, "W. Fofana", 29, "D", "2:2")),
+            LineupPlayerWrapperDto(LineupPlayerDto(204, "L. Colwill", 6, "D", "2:3")),
+            LineupPlayerWrapperDto(LineupPlayerDto(205, "M. Cucurella", 3, "D", "2:4")),
+            LineupPlayerWrapperDto(LineupPlayerDto(206, "M. Caicedo", 25, "M", "3:1")),
+            LineupPlayerWrapperDto(LineupPlayerDto(207, "E. Fernandez", 8, "M", "3:2")),
+            LineupPlayerWrapperDto(LineupPlayerDto(208, "N. Madueke", 11, "M", "3:3")),
+            LineupPlayerWrapperDto(LineupPlayerDto(209, "C. Palmer", 20, "M", "3:4")),
+            LineupPlayerWrapperDto(LineupPlayerDto(210, "J. Sancho", 19, "M", "3:5")),
+            LineupPlayerWrapperDto(LineupPlayerDto(211, "N. Jackson", 15, "F", "4:1"))
+        )
+
+        return listOf(
+            LineupItemDto(homeTeam, CoachDto(null, "M. Arteta", null), "4-3-3", homePlayers, emptyList()),
+            LineupItemDto(awayTeam, CoachDto(null, "E. Maresca", null), "4-2-3-1", awayPlayers, emptyList())
+        )
     }
 
     // --- Favorites ---
