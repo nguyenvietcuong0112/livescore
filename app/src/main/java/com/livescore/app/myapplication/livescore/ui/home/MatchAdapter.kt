@@ -113,7 +113,7 @@ class MatchAdapter(
                 )
             )
 
-            binding.cardMatch.setOnClickListener { onMatchClick(match) }
+            binding.layoutMatchDetailsClick.setOnClickListener { onMatchClick(match) }
             binding.ivFavorite.setOnClickListener { onFavoriteClick(match) }
         }
     }

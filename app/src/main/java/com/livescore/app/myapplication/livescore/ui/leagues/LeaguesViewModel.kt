@@ -7,6 +7,7 @@ import com.livescore.app.myapplication.livescore.data.remote.model.TopPlayerItem
 import com.livescore.app.myapplication.livescore.data.repository.LeaguesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -99,47 +100,43 @@ class LeaguesViewModel @Inject constructor(
     }
 
     private fun fetchAllLeagueData(leagueId: Int, season: Int) {
-        fetchStandings(leagueId, season)
-        fetchTopScorers(leagueId, season)
-        fetchTopAssists(leagueId, season)
-    }
-
-    private fun fetchStandings(leagueId: Int, season: Int) {
         viewModelScope.launch {
             _standingsState.value = StandingsUiState.Loading
-            repository.getStandings(leagueId, season)
-                .catch { e ->
-                    _standingsState.value = StandingsUiState.Error(e.message ?: "Failed to load standings")
-                }
-                .collect { list ->
-                    _standingsState.value = StandingsUiState.Success(list)
-                }
-        }
-    }
-
-    private fun fetchTopScorers(leagueId: Int, season: Int) {
-        viewModelScope.launch {
             _topScorersState.value = TopPlayersUiState.Loading
-            repository.getTopScorers(leagueId, season)
-                .catch { e ->
-                    _topScorersState.value = TopPlayersUiState.Error(e.message ?: "Failed to load top scorers")
-                }
-                .collect { list ->
-                    _topScorersState.value = TopPlayersUiState.Success(list)
-                }
-        }
-    }
-
-    private fun fetchTopAssists(leagueId: Int, season: Int) {
-        viewModelScope.launch {
             _topAssistsState.value = TopPlayersUiState.Loading
-            repository.getTopAssists(leagueId, season)
-                .catch { e ->
-                    _topAssistsState.value = TopPlayersUiState.Error(e.message ?: "Failed to load top assists")
-                }
-                .collect { list ->
-                    _topAssistsState.value = TopPlayersUiState.Success(list)
-                }
+
+            try {
+                // Sequential, spaced-out fetching to protect free tier rate limit bounds
+                repository.getStandings(leagueId, season)
+                    .catch { e ->
+                        _standingsState.value = StandingsUiState.Error(e.message ?: "Failed to load standings")
+                    }
+                    .collect { list ->
+                        _standingsState.value = StandingsUiState.Success(list)
+                    }
+
+                delay(2000)
+
+                repository.getTopScorers(leagueId, season)
+                    .catch { e ->
+                        _topScorersState.value = TopPlayersUiState.Error(e.message ?: "Failed to load top scorers")
+                    }
+                    .collect { list ->
+                        _topScorersState.value = TopPlayersUiState.Success(list)
+                    }
+
+                delay(2000)
+
+                repository.getTopAssists(leagueId, season)
+                    .catch { e ->
+                        _topAssistsState.value = TopPlayersUiState.Error(e.message ?: "Failed to load top assists")
+                    }
+                    .collect { list ->
+                        _topAssistsState.value = TopPlayersUiState.Success(list)
+                    }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

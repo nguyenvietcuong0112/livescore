@@ -584,4 +584,50 @@ class MatchRepository @Inject constructor(
             favoriteDao.insertFavoriteLeague(FavoriteLeagueEntity(id, name, logo, country))
         }
     }
+
+    suspend fun getCachedMatchById(id: Int): CachedMatchEntity? {
+        return matchDao.getCachedMatchById(id)
+    }
+
+    suspend fun getCachedMatchDetail(id: Int): MatchDetailDto? {
+        return getCachedMatchById(id)?.toMapDetailDto()
+    }
 }
+
+fun CachedMatchEntity.toMapDetailDto(): MatchItemDto {
+    return MatchItemDto(
+        fixture = FixtureDto(
+            id = id,
+            referee = null,
+            timezone = "UTC",
+            date = "",
+            timestamp = dateTimestamp,
+            periods = null,
+            venue = null,
+            status = StatusDto(
+                long = statusLong,
+                short = statusShort,
+                elapsed = elapsed
+            )
+        ),
+        league = LeagueDto(
+            id = leagueId,
+            name = leagueName,
+            country = "",
+            logo = leagueLogo,
+            flag = null,
+            season = 2026,
+            round = null
+        ),
+        teams = TeamsContainerDto(
+            home = TeamDto(id = homeTeamId, name = homeTeamName, logo = homeTeamLogo, winner = null),
+            away = TeamDto(id = awayTeamId, name = awayTeamName, logo = awayTeamLogo, winner = null)
+        ),
+        goals = GoalsDto(
+            home = goalsHome,
+            away = goalsAway
+        ),
+        score = null
+    )
+}
+

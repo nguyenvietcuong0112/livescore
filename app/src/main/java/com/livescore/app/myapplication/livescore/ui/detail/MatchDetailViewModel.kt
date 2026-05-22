@@ -30,6 +30,7 @@ class MatchDetailViewModel @Inject constructor(
     val uiState: StateFlow<MatchDetailUiState> = _uiState.asStateFlow()
 
     private var pollingJob: Job? = null
+    private var simulationJob: Job? = null
 
     // Simulation flows for canvas views
     private val _ballPosition = MutableStateFlow(Pair(0.5f, 0.5f))
@@ -43,30 +44,79 @@ class MatchDetailViewModel @Inject constructor(
 
     fun startDetailPolling(matchId: Int) {
         if (pollingJob?.isActive == true) return
+        
+        // Start local fluid radar animations and updates every 3 seconds
+        startLocalVisualSimulation()
+
         pollingJob = viewModelScope.launch {
-            while (true) {
-                _uiState.value = _uiState.value.copy(isLoading = true)
-
-                // Concurrent fetching using combine / zip
-                val detailFlow = repository.getMatchDetail(matchId)
-                val statsFlow = repository.getMatchStatistics(matchId)
-                val eventsFlow = repository.getMatchEvents(matchId)
-                val lineupsFlow = repository.getMatchLineups(matchId)
-
-                combine(detailFlow, statsFlow, eventsFlow, lineupsFlow) { detail, stats, events, lineups ->
-                    MatchDetailUiState(
-                        detail = detail,
-                        stats = stats,
-                        events = events,
-                        lineups = lineups,
-                        isLoading = false
+            // Load from database instantly to populate the UI (teams, logos, score, status, league)
+            try {
+                repository.getCachedMatchDetail(matchId)?.let { cachedDetail ->
+                    _uiState.value = _uiState.value.copy(
+                        detail = cachedDetail
                     )
-                }.collect { state ->
-                    _uiState.value = state
-                    simulateCanvasEvents()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            var isFirstLoad = true
+
+            while (true) {
+                // Only show loading spinner on the very first load if we don't even have cached detail
+                if (_uiState.value.detail == null) {
+                    _uiState.value = _uiState.value.copy(isLoading = true)
                 }
 
-                delay(8000) // Poll every 8 seconds as per requirement
+                try {
+                    // 1. Get Match Detail FIRST and update UI instantly to show teams, logos, and scores
+                    repository.getMatchDetail(matchId).collect { detail ->
+                        _uiState.value = _uiState.value.copy(
+                            detail = detail,
+                            isLoading = false // Disable loading spinner immediately
+                        )
+                    }
+
+                    // 2. Statistics
+                    if (!isFirstLoad) delay(2000)
+                    repository.getMatchStatistics(matchId).collect { stats ->
+                        _uiState.value = _uiState.value.copy(
+                            stats = stats
+                        )
+                    }
+
+                    // 3. Events
+                    if (!isFirstLoad) delay(2000)
+                    repository.getMatchEvents(matchId).collect { events ->
+                        _uiState.value = _uiState.value.copy(
+                            events = events
+                        )
+                    }
+
+                    // 4. Lineups
+                    if (!isFirstLoad) delay(2000)
+                    repository.getMatchLineups(matchId).collect { lineups ->
+                        _uiState.value = _uiState.value.copy(
+                            lineups = lineups
+                        )
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                }
+
+                isFirstLoad = false
+                delay(60000) // Poll actual network API every 60 seconds to protect Free API quota
+            }
+        }
+    }
+
+    private fun startLocalVisualSimulation() {
+        simulationJob?.cancel()
+        simulationJob = viewModelScope.launch {
+            while (true) {
+                simulateCanvasEvents()
+                delay(3000) // Simulate pitch ball movement every 3 seconds locally for top-tier visual flow
             }
         }
     }
@@ -74,6 +124,8 @@ class MatchDetailViewModel @Inject constructor(
     fun stopDetailPolling() {
         pollingJob?.cancel()
         pollingJob = null
+        simulationJob?.cancel()
+        simulationJob = null
     }
 
     private fun simulateCanvasEvents() {

@@ -33,10 +33,18 @@ class MatchMomentumView @JvmOverloads constructor(
         style = Paint.Style.STROKE
     }
 
+    private val dashedPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.parseColor("#2A3342")
+        strokeWidth = 2f
+        style = Paint.Style.STROKE
+        pathEffect = DashPathEffect(floatArrayOf(10f, 10f), 0f)
+    }
+
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#9AA4B2")
-        textSize = 28f
+        textSize = 24f
         textAlign = Paint.Align.CENTER
+        typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
     }
 
     private var animationProgress = 1f
@@ -76,9 +84,9 @@ class MatchMomentumView @JvmOverloads constructor(
         // Draw Center Axis
         canvas.drawLine(0f, centerY, w, centerY, linePaint)
 
-        // Draw half-time indicator at center of data
-        canvas.drawLine(w / 2f, 0f, w / 2f, h, linePaint)
-        canvas.drawText("HT", w / 2f, 35f, textPaint)
+        // Draw half-time indicator at center of data using dashed paint
+        canvas.drawLine(w / 2f, 0f, w / 2f, h, dashedPaint)
+        canvas.drawText("HT", w / 2f, 32f, textPaint)
 
         val barSpacing = w / (momentumData.size + 1)
         val maxBarHeight = centerY * 0.8f // Leave 20% margin top/bottom
@@ -100,10 +108,5 @@ class MatchMomentumView @JvmOverloads constructor(
                 canvas.drawRoundRect(rect, 4f, 4f, awayPaint)
             }
         }
-
-        // Draw Labels at extremities
-        textPaint.textAlign = Paint.Align.LEFT
-        canvas.drawText("HOME DOMINANCE", 20f, centerY - 20f, textPaint)
-        canvas.drawText("AWAY DOMINANCE", 20f, centerY + 40f, textPaint)
     }
 }

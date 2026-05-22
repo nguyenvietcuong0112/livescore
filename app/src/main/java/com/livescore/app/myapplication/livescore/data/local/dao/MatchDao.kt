@@ -19,6 +19,9 @@ interface MatchDao {
     @Query("SELECT * FROM cached_matches WHERE queryDate = :dateStr ORDER BY dateTimestamp ASC")
     fun getCachedMatchesByQueryDate(dateStr: String): Flow<List<CachedMatchEntity>>
 
+    @Query("SELECT * FROM cached_matches WHERE id = :matchId")
+    suspend fun getCachedMatchById(matchId: Int): CachedMatchEntity?
+
     @Query("DELETE FROM cached_matches WHERE statusShort IN ('1H', '2H', 'HT', 'ET', 'BT', 'P', 'INT', 'LIVE')")
     suspend fun clearLiveMatches()
 

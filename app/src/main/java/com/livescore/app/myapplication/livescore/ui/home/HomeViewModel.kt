@@ -90,7 +90,6 @@ class HomeViewModel @Inject constructor(
         if (isToday(date)) {
             _currentFilter.value = MatchFilter.LIVE
             startLivePolling()
-            refreshMatchesForDate(date)
         } else if (isBeforeToday(date)) {
             _currentFilter.value = MatchFilter.FINISHED
             stopLivePolling()
@@ -121,7 +120,7 @@ class HomeViewModel @Inject constructor(
                 val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Calendar.getInstance().time)
                 repository.refreshMatchesByDate(todayStr)
                 _isLoading.value = false
-                delay(15000) // Poll every 15 seconds
+                delay(60000) // Poll every 60 seconds to protect Free API key from rate limits
             }
         }
     }

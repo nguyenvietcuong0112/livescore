@@ -147,7 +147,7 @@ class SearchResultsAdapter(
                 )
             )
 
-            binding.cardMatch.setOnClickListener {
+            binding.layoutMatchDetailsClick.setOnClickListener {
                 onMatchClick(match)
             }
 
