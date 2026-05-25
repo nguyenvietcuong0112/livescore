@@ -1,13 +1,11 @@
 package com.livescore.football.livescores.footballscores.ui.custom
 
+import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.Transformation
+import android.view.animation.LinearInterpolator
 
 class LivePulseView @JvmOverloads constructor(
     context: Context,
@@ -16,47 +14,107 @@ class LivePulseView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     private val dotPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#00C853")
         style = Paint.Style.FILL
     }
 
     private val pulsePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#00C853")
         style = Paint.Style.STROKE
-        strokeWidth = 4f
+        strokeWidth = 3f
     }
 
-    private var pulseRadiusRatio = 0f
-    private var pulseAlpha = 255
+    private val glowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+    }
+
+    private var animator: ValueAnimator? = null
+    private var pulseProgress = 0f
+
+    // Premium color palette values
+    private val colorCenter = Color.parseColor("#66FFB2") // Bright mint neon green core
+    private val colorPrimary = Color.parseColor("#00C853") // Pitch green
+    private val colorTransparent = Color.parseColor("#0000C853") // Translucent green for gradients
 
     init {
-        startPulseAnimation()
+        // Support shadow layers for soft glows
+        setLayerType(LAYER_TYPE_SOFTWARE, null)
+        startPulseAnimator()
     }
 
-    private fun startPulseAnimation() {
-        val anim = object : Animation() {
-            override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-                pulseRadiusRatio = interpolatedTime
-                pulseAlpha = (255 * (1 - interpolatedTime)).toInt()
+    private fun startPulseAnimator() {
+        animator?.cancel()
+        animator = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = 2000
+            interpolator = LinearInterpolator()
+            repeatCount = ValueAnimator.INFINITE
+            addUpdateListener { animation ->
+                pulseProgress = animation.animatedValue as Float
                 invalidate()
             }
+            start()
         }
-        anim.duration = 1500
-        anim.repeatCount = Animation.INFINITE
-        anim.repeatMode = Animation.RESTART
-        startAnimation(anim)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (animator == null || !animator!!.isRunning) {
+            startPulseAnimator()
+        }
+    }
+
+    override fun onDetachedFromWindow() {
+        animator?.cancel()
+        super.onDetachedFromWindow()
     }
 
     override fun onDraw(canvas: Canvas) {
         val cx = width / 2f
         val cy = height / 2f
-        val baseRadius = Math.min(width, height) / 4f
+        val baseRadius = Math.min(width, height) / 5f
+        val maxRadius = Math.min(width, height) / 2f
 
-        // Draw outer pulsing ring
-        pulsePaint.alpha = pulseAlpha
-        canvas.drawCircle(cx, cy, baseRadius + (baseRadius * pulseRadiusRatio), pulsePaint)
+        // Draw 3 layers of concentric breathing pulse rings, each 120 degrees out-of-phase (0.33f)
+        val phases = floatArrayOf(
+            pulseProgress,
+            (pulseProgress + 0.33f) % 1.0f,
+            (pulseProgress + 0.67f) % 1.0f
+        )
 
-        // Draw solid inner dot
+        for (phase in phases) {
+            val radius = baseRadius + (maxRadius - baseRadius) * phase
+            
+            // Premium exponential fade out so it dissipates naturally towards the edge
+            val alphaRatio = Math.pow((1.0 - phase), 2.0).toFloat()
+            val ringAlpha = (180 * alphaRatio).toInt()
+
+            pulsePaint.color = colorPrimary
+            pulsePaint.alpha = ringAlpha
+            // Thinner outer lines for an elegant, tech-radar style
+            pulsePaint.strokeWidth = 2.5f + (3f * (1f - phase))
+
+            canvas.drawCircle(cx, cy, radius, pulsePaint)
+        }
+
+        // Draw an organic radial light glow behind the center dot to create a light emission effect
+        val glowRadius = baseRadius * 1.8f
+        val glowShader = RadialGradient(
+            cx, cy, glowRadius,
+            intArrayOf(Color.argb(90, 0, 200, 83), Color.argb(30, 0, 200, 83), colorTransparent),
+            null, Shader.TileMode.CLAMP
+        )
+        glowPaint.shader = glowShader
+        canvas.drawCircle(cx, cy, glowRadius, glowPaint)
+
+        // Draw the premium solid inner dot with radial gradient core
+        val dotShader = RadialGradient(
+            cx, cy, baseRadius,
+            intArrayOf(colorCenter, colorPrimary, Color.parseColor("#008000")),
+            floatArrayOf(0f, 0.7f, 1f),
+            Shader.TileMode.CLAMP
+        )
+        dotPaint.shader = dotShader
+
+        // Add software glow shadow to the inner core
+        dotPaint.setShadowLayer(8f, 0f, 0f, colorPrimary)
         canvas.drawCircle(cx, cy, baseRadius, dotPaint)
     }
 }

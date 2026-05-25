@@ -76,6 +76,7 @@ dependencies {
     // Glide
     implementation(libs.glide)
     kapt(libs.glide.compiler)
+    implementation(libs.lottie)
 
     // AdMob
     implementation(libs.play.services.ads)

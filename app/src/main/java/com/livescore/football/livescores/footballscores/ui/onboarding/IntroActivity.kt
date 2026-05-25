@@ -117,7 +117,7 @@ class IntroActivity : AppCompatActivity() {
                 launch {
                     viewModel.onboardingCompleted.collectLatest { completed ->
                         if (completed) {
-                            val intent = Intent(this@IntroActivity, MainActivity::class.java)
+                            val intent = Intent(this@IntroActivity, PermissionActivity::class.java)
                             startActivity(intent)
                             finish()
                         }

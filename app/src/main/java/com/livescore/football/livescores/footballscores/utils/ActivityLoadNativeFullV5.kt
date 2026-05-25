@@ -52,9 +52,7 @@ class ActivityLoadNativeFullV5 : AbsBaseActivity() {
                         override fun onAdFailedToLoad() {
                             super.onAdFailedToLoad()
                             binding?.frAdsFull?.visibility = View.GONE
-                            if (callback != null) {
-                                callback.onResultFromActivityFull()
-                            }
+                            callback?.onResultFromActivityFull()
                             finish()
                         }
 
@@ -71,9 +69,7 @@ class ActivityLoadNativeFullV5 : AbsBaseActivity() {
 
                                 override fun onFinish() {
                                     closeButton.setOnClickListener(View.OnClickListener { v: View? ->
-                                        if (callback != null) {
-                                            callback.onResultFromActivityFull()
-                                        }
+                                        callback?.onResultFromActivityFull()
                                         finish()
                                     })
                                 }
@@ -98,9 +94,7 @@ class ActivityLoadNativeFullV5 : AbsBaseActivity() {
 
                     override fun onFinish() {
                         closeButton.setOnClickListener(View.OnClickListener { v: View? ->
-                            if (callback != null) {
-                                callback.onResultFromActivityFull()
-                            }
+                            callback?.onResultFromActivityFull()
                             finish()
                         })
                     }
@@ -118,9 +112,7 @@ class ActivityLoadNativeFullV5 : AbsBaseActivity() {
         super.onResume()
         count++
         if (count >= 2) {
-            if (callback != null) {
-                callback.onResultFromActivityFull()
-            }
+            callback?.onResultFromActivityFull()
             finish()
         }
     }

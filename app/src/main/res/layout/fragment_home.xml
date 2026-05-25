@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/bg_dark">
 
-    <!-- Time Filter (Left Arrow | Clickable Date Text | Right Arrow) -->
+    <!-- Time Filter (Left Arrow | Clickable Date Pill | Right Arrow) -->
     <LinearLayout
         android:id="@+id/timeFilterLayout"
         android:layout_width="match_parent"
@@ -14,24 +14,29 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingVertical="8dp"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="12dp"
         android:background="@color/card_dark"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/btnPrevDay"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:padding="8dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_arrow_left"
+            android:contentDescription="Previous Day"
             app:tint="@color/accent_green" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tvSelectedDateText"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="center"
             android:text="Hôm nay"
             android:textColor="@color/text_white"
@@ -39,16 +44,26 @@
             android:textStyle="bold"
             android:clickable="true"
             android:focusable="true"
-            android:background="?attr/selectableItemBackground"
-            android:paddingVertical="8dp" />
+            android:background="@drawable/bg_date_pill"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="10dp"
+            android:drawableStart="@drawable/ic_calendar"
+            android:drawablePadding="8dp"
+            app:drawableTint="@color/accent_green" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/btnNextDay"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:padding="8dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_arrow_right"
+            android:contentDescription="Next Day"
             app:tint="@color/accent_green" />
     </LinearLayout>
 

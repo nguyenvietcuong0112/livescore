@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.local.MatchReminderManager
 import com.livescore.football.livescores.footballscores.databinding.FragmentHomeBinding
@@ -176,24 +177,33 @@ class HomeFragment : Fragment() {
     }
 
     private fun showDatePickerDialog() {
-        val cal = Calendar.getInstance().apply {
-            time = viewModel.selectedDate.value
+        val selectedDateMs = viewModel.selectedDate.value.time
+        val datePicker = MaterialDatePicker.Builder.datePicker().apply {
+            setTheme(R.style.CustomDatePickerTheme)
+            setTitleText("Chọn ngày thi đấu")
+            setSelection(selectedDateMs)
+        }.build()
+
+        datePicker.addOnPositiveButtonClickListener { selectionTime ->
+            // MaterialDatePicker uses UTC milliseconds. Map safely to local timezone to prevent shift bugs.
+            val selectedCalendar = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC")).apply {
+                timeInMillis = selectionTime
+            }
+            val localCalendar = Calendar.getInstance().apply {
+                set(Calendar.YEAR, selectedCalendar.get(Calendar.YEAR))
+                set(Calendar.MONTH, selectedCalendar.get(Calendar.MONTH))
+                set(Calendar.DAY_OF_MONTH, selectedCalendar.get(Calendar.DAY_OF_MONTH))
+            }
+            viewModel.setSelectedDate(localCalendar.time)
         }
-        val datePickerDialog = android.app.DatePickerDialog(
-            requireContext(),
-            { _, year, month, dayOfMonth ->
-                val newCal = Calendar.getInstance().apply {
-                    set(Calendar.YEAR, year)
-                    set(Calendar.MONTH, month)
-                    set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                }
-                viewModel.setSelectedDate(newCal.time)
-            },
-            cal.get(Calendar.YEAR),
-            cal.get(Calendar.MONTH),
-            cal.get(Calendar.DAY_OF_MONTH)
-        )
-        datePickerDialog.show()
+        datePicker.show(childFragmentManager, "MATERIAL_DATE_PICKER")
+    }
+
+    private fun isToday(date: Date): Boolean {
+        val today = Calendar.getInstance()
+        val target = Calendar.getInstance().apply { time = date }
+        return today.get(Calendar.YEAR) == target.get(Calendar.YEAR) &&
+               today.get(Calendar.DAY_OF_YEAR) == target.get(Calendar.DAY_OF_YEAR)
     }
 
     private fun observeViewModel() {
@@ -225,6 +235,9 @@ class HomeFragment : Fragment() {
                 launch {
                     viewModel.selectedDate.collect { date ->
                         updateDateText(date)
+                        // Synchronize state: hide sub-filters layout when selected date is NOT today
+                        val isLiveOnly = arguments?.getBoolean(ARG_LIVE_ONLY, false) ?: false
+                        binding.filterLayout.isVisible = isToday(date) && !isLiveOnly
                     }
                 }
             }

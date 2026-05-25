@@ -33,4 +33,22 @@
     <style name="HintTextAppearance" parent="TextAppearance.MaterialComponents.Body1">
         <item name="android:textColor">@color/black</item>
     </style>
+
+    <style name="CustomDatePickerTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorPrimary">@color/accent_green</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/black</item>
+        <!-- For the buttons "Cancel" and "OK" text color -->
+        <item name="colorSecondary">@color/accent_green</item>
+        
+        <!-- Shape -->
+        <item name="shapeAppearanceMediumComponent">@style/CustomDatePickerShape</item>
+        <item name="shapeAppearanceSmallComponent">@style/CustomDatePickerShape</item>
+    </style>
+
+    <style name="CustomDatePickerShape" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerSize">16dp</item>
+    </style>
+
 </resources>
