@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LiveScore Premium</string>
+    <string name="app_name">Football Live Score: MatchLive</string>
     <string name="nav_live">Trực tiếp</string>
     <string name="nav_leagues">Giải đấu</string>
     <string name="nav_news">Tin tức</string>

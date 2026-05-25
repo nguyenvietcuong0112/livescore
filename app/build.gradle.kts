@@ -72,7 +72,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp.logging)
-
+    implementation(libs.shimmer)
     // Glide
     implementation(libs.glide)
     kapt(libs.glide.compiler)

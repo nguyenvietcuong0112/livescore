@@ -7,6 +7,8 @@
 
         <string name="native_language" translatable="false"></string>
         <string name="native_language_select" translatable="false"></string>
+        <string name="native_full_splash_high" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+        <string name="native_full_splash" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
 
 
         <string name="open_splash_uninstall" translatable="false"></string>
