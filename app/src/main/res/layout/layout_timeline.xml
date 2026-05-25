@@ -26,7 +26,7 @@
             android:textStyle="bold" />
 
         <!-- Custom Horizontal Canvas Timeline View -->
-        <com.livescore.app.myapplication.livescore.ui.custom.TimelineView
+        <com.livescore.football.livescores.footballscores.ui.custom.TimelineView
             android:id="@+id/timelineVisualView"
             android:layout_width="match_parent"
             android:layout_height="120dp"

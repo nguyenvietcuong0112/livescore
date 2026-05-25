@@ -3,18 +3,20 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
-    namespace = "com.livescore.app.myapplication.livescore"
+    namespace = "com.livescore.football.livescores.footballscores"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.livescore.app.myapplication.livescore"
+        applicationId = "com.livescore.football.livescores.footballscores"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 100
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -43,8 +45,9 @@ android {
 dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.firebase.config)
     implementation(libs.material)
-
+    implementation(libs.ads.mallegan.lib.nvc)
     // Navigation
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
@@ -76,6 +79,22 @@ dependencies {
 
     // AdMob
     implementation(libs.play.services.ads)
+
+    //noinspection UseTomlInstead
+    implementation("com.google.android.ump:user-messaging-platform:4.0.0")
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.gms.play.services.ads)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.database)
+    implementation(libs.bubbletabbar)
+
+    //fb sdk
+    implementation(libs.facebook.android.sdk)
+    implementation(libs.facebook)
+    implementation(libs.af.android.sdk)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)

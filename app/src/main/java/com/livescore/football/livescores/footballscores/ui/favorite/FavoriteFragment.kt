@@ -1,0 +1,138 @@
+package com.livescore.football.livescores.footballscores.ui.favorite
+
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.livescore.football.livescores.footballscores.R
+import com.livescore.football.livescores.footballscores.databinding.FragmentFavoriteBinding
+import com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity
+import com.livescore.football.livescores.footballscores.ui.home.MatchAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+
+import com.livescore.football.livescores.footballscores.data.local.MatchReminderManager
+import javax.inject.Inject
+import androidx.core.content.ContextCompat
+
+@AndroidEntryPoint
+class FavoriteFragment : Fragment() {
+
+    private var _binding: FragmentFavoriteBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel: FavoriteViewModel by viewModels()
+    private lateinit var matchAdapter: MatchAdapter
+
+    @Inject
+    lateinit var reminderManager: MatchReminderManager
+
+    private var pendingReminderAction: (() -> Unit)? = null
+    private val notificationPermissionLauncher = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            pendingReminderAction?.invoke()
+        }
+        pendingReminderAction = null
+    }
+
+    private fun checkAndRequestNotificationPermission(onGranted: () -> Unit) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            val permission = android.Manifest.permission.POST_NOTIFICATIONS
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    permission
+                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            ) {
+                onGranted()
+            } else {
+                pendingReminderAction = onGranted
+                notificationPermissionLauncher.launch(permission)
+            }
+        } else {
+            onGranted()
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerViews()
+        observeViewModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresh favorite matches when fragment is shown
+        viewModel.loadFavoriteMatches()
+    }
+
+    private fun setupRecyclerViews() {
+        // Matches Adapter
+        matchAdapter = MatchAdapter(
+            onMatchClick = { match ->
+                val intent = Intent(requireContext(), MatchDetailActivity::class.java).apply {
+                    putExtra("MATCH_ID", match.id)
+                    putExtra("HOME_TEAM", match.homeTeamName)
+                    putExtra("AWAY_TEAM", match.awayTeamName)
+                }
+                startActivity(intent)
+            },
+            onFavoriteClick = { match ->
+                viewModel.toggleFixtureFavorite(match)
+            },
+            onReminderClick = { match ->
+                checkAndRequestNotificationPermission {
+                    val isSet = reminderManager.toggleReminder(match)
+                    val alertMsg = if (isSet) {
+                        getString(R.string.reminder_set_toast)
+                    } else {
+                        getString(R.string.reminder_cancelled_toast)
+                    }
+                    android.widget.Toast.makeText(requireContext(), alertMsg, android.widget.Toast.LENGTH_SHORT).show()
+                    viewModel.loadFavoriteMatches() // Refresh visual state
+                }
+            }
+        )
+        binding.rvMatches.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvMatches.adapter = matchAdapter
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // Observe favorite matches
+                launch {
+                    viewModel.favoriteMatches.collect { items ->
+                        binding.emptyStateLayout.isVisible = items.isEmpty()
+                        binding.tvEmptyMessage.text = "Chưa có trận đấu yêu thích nào"
+                        matchAdapter.submitList(items)
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}

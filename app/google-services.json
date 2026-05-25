@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "36020991040",
+    "project_id": "d57---live-score",
+    "storage_bucket": "d57---live-score.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36020991040:android:2071e257469320e1b81ba5",
+        "android_client_info": {
+          "package_name": "com.livescore.football.livescores.footballscores"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnLvgx-KCuocsZPTtC59xRvNOofoQlZ6E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

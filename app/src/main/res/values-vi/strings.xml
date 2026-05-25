@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LiveScore Premium</string>
+    <string name="nav_live">Trực tiếp</string>
+    <string name="nav_leagues">Giải đấu</string>
+    <string name="nav_news">Tin tức</string>
+    <string name="nav_favorite">Yêu thích</string>
+    <string name="nav_profile">Hồ sơ</string>
+    <string name="wc26">WC26</string>
+    
+    <string name="favorite_title">MỤC YÊU THÍCH</string>
+    <string name="my_follow">THEO DÕI CỦA BẠN</string>
+    <string name="my_matches">TRẬN ĐẤU CỦA BẠN</string>
+    
+    <string name="live">LIVE</string>
+    <string name="upcoming">SẮP ĐẤU</string>
+    <string name="finished">ĐÃ KẾT THÚC</string>
+    
+    <string name="empty_matches">Chưa có trận đấu yêu thích nào</string>
+    <string name="empty_leagues">Chưa có giải đấu yêu thích nào</string>
+    <string name="empty_teams">Chưa có đội bóng yêu thích nào</string>
+    <string name="empty_players">Chưa có cầu thủ yêu thích nào</string>
+    
+    <string name="profile_title">HỒ SƠ CỦA TÔI</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="premium_badge">👑 THÀNH VIÊN PREMIUM</string>
+    <string name="free_plan">GÓI MIỄN PHÍ</string>
+    <string name="daily_limit">Lượt xem API hôm nay</string>
+    <string name="upgrade_button">NÂNG CẤP NGAY</string>
+    <string name="intro_next">Tiếp theo</string>
+    <string name="intro_start">Bắt đầu</string>
+    <string name="intro_step_1_progress">Màn 1: 1/3</string>
+    <string name="intro_step_2_progress">Màn 2: 2/3</string>
+    <string name="intro_step_3_progress">Màn 3: 3/3</string>
+    <string name="intro_step_1_title">CHỌN GIẢI ĐẤU YÊU THÍCH</string>
+    <string name="intro_step_1_subtitle">Lọc tin tức &amp; kết quả các giải đấu bạn quan tâm</string>
+    <string name="intro_step_1_hint">Tìm kiếm giải đấu...</string>
+    <string name="intro_step_2_title">CHỌN ĐỘI BÓNG BẠN THEO DÕI</string>
+    <string name="intro_step_2_subtitle">Chúng tôi sẽ ưu tiên hiển thị câu lạc bộ bạn chọn lên đầu</string>
+    <string name="intro_step_2_hint">Tìm kiếm đội bóng, CLB...</string>
+    <string name="intro_step_3_title">CHỌN CẦU THỦ BẠN YÊU THÍCH</string>
+    <string name="intro_step_3_subtitle">Theo dõi các siêu sao bóng đá hàng đầu thế giới</string>
+    <string name="intro_step_3_hint">Tìm kiếm cầu thủ...</string>
+    <string name="intro_finish">HOÀN TẤT</string>
+    <string name="item_hot"> • Phổ biến 🔥</string>
+    <string name="item_belongs">Thuộc: %1$s</string>
+    <string name="item_nationality">Quốc tịch: %1$s</string>
+    <string name="intro_skip">BỎ QUA</string>
+    <string name="intro_no_results">Không tìm thấy kết quả</string>
+    <string name="welcome_title">WELCOME TO LIVESCORE</string>
+    <string name="choose_language">CHỌN NGÔN NGỮ</string>
+    <string name="choose_language_desc">Lựa chọn ngôn ngữ hiển thị chính thức của ứng dụng để tiếp tục luồng thiết lập cá nhân hóa.</string>
+    <string name="profile_settings">CÀI ĐẶT</string>
+    <string name="profile_display_preferences">GIAO DIỆN &amp; CÁ NHÂN HÓA</string>
+    <string name="profile_system">BỘ NHỚ &amp; HỆ THỐNG</string>
+    <string name="profile_about">THÔNG TIN PHẦN MỀM</string>
+    <string name="profile_version">Phiên bản</string>
+    <string name="language_dialog_title">Chọn ngôn ngữ</string>
+    <string name="language_changed_toast">Đã cập nhật ngôn ngữ thành %1$s</string>
+    
+    <!-- Splash Screen -->
+    <string name="splash_app_title">LIVESCORE</string>
+    <string name="splash_subtitle">TRUNG TÂM THỂ THAO CAO CẤP</string>
+    
+    <!-- Home Screen -->
+    <string name="tab_matches">TRẬN ĐẤU</string>
+    <string name="tab_leagues">GIẢI ĐẤU</string>
+    <string name="empty_fixtures">Không tìm thấy trận đấu nào</string>
+    
+    <!-- League Details -->
+    <string name="tab_standings">BẢNG XẾP HẠNG</string>
+    <string name="tab_fixtures">LỊCH THI ĐẤU</string>
+    <string name="table_header_team">ĐỘI BÓNG</string>
+    <string name="table_header_p">ST</string>
+    <string name="table_header_w">T</string>
+    <string name="table_header_d">H</string>
+    <string name="table_header_l">B</string>
+    <string name="table_header_gd">HS</string>
+    <string name="table_header_pts">PTS</string>
+    
+    <!-- Match Details -->
+    <string name="tab_stats">THỐNG KÊ</string>
+    <string name="tab_timeline">DIỄN BIẾN</string>
+    <string name="tab_lineups">ĐỘI HÌNH</string>
+    
+    <!-- Search Screen -->
+    <string name="search_input_hint">Tìm kiếm trận, đội, giải đấu...</string>
+    <string name="search_empty_title">Khám phá bóng đá</string>
+    <string name="search_empty_desc">Tìm kiếm các đội bóng, giải đấu hàng đầu như Ngoại hạng Anh, Real Madrid, ĐT Việt Nam hay World Cup 2026...</string>
+    
+    <!-- News Screen -->
+    <string name="news_center_title">TIN NÓNG 24H</string>
+    <string name="news_featured_today">⭐ TIÊU ĐIỂM HÔM NAY</string>
+    <string name="news_1_title">FIFA chính thức công bố lịch thi đấu World Cup 2026 tại Mỹ, Mexico và Canada!</string>
+    <string name="news_1_desc">Trận khai mạc lịch sử sẽ diễn ra tại Sân vận động Azteca danh tiếng của Mexico. New York/New Jersey vinh dự giành quyền đăng cai trận chung kết World Cup lớn nhất lịch sử.</string>
+    <string name="news_1_author">Bởi Ban Biên Tập • 5 phút đọc</string>
+    <string name="news_detail_link">Chi tiết ➔</string>
+    <string name="news_2_title">Arsenal áp đảo Chelsea 5-0 tại Emirates, bứt phá ngoạn mục trên BXH</string>
+    <string name="news_2_desc">Cú đúp của Ben White và Kai Havertz giúp Pháo thủ nhấn chìm đối thủ cùng thành phố và gửi lời tuyên chiến đanh thép tới Man City...</string>
+    <string name="news_2_time">1 giờ trước • 3 phút đọc</string>
+    <string name="news_3_title">Kylian Mbappé đồng ý các thỏa thuận sơ bộ gia nhập Real Madrid</string>
+    <string name="news_3_desc">Mọi thủ tục cá nhân đã hoàn tất. Siêu sao người Pháp sẽ chính thức cập bến Bernabeu theo dạng chuyển nhượng tự do kèm mức lót tay kỷ lục...</string>
+    <string name="news_3_time">3 giờ trước • 4 phút đọc</string>
+    <string name="news_4_title">Kịch bản điên rồ tại Bán kết: Real Madrid ngược dòng thần kỳ hạ Bayern Munich</string>
+    <string name="news_4_desc">Hai bàn thắng chớp nhoáng ở phút bù giờ của Joselu đã làm nổ tung cầu trường Santiago Bernabéu, đưa Kền kền trắng vào chung kết...</string>
+    <string name="news_4_time">Hôm qua • 6 phút đọc</string>
+    
+    <!-- WC26 Screen -->
+    <string name="wc26_days_until">Còn %1$d ngày đến Lễ Khai Mạc</string>
+    <string name="wc26_starts_today">⚽ KHAI MẠC HÔM NAY!</string>
+    <string name="wc26_ongoing">⚽ World Cup 2026 đang diễn ra!</string>
+    <string name="wc26_groups">BẢNG ĐẤU</string>
+    <string name="wc26_teams">ĐỘI TUYỂN</string>
+    <string name="wc26_news">TIN TỨC</string>
+    <string name="wc26_opening_match">Trận Khai Mạc • Lượt 1</string>
+    <string name="wc26_azteca_stadium">Sân Azteca, Mexico City</string>
+    <string name="wc26_metlife_stadium">Sân MetLife, New York</string>
+    <string name="wc26_vs">vs</string>
+    <string name="wc26_round_1_group_a">Lượt 1 • Bảng A</string>
+    <string name="wc26_group_a">BẢNG A</string>
+    <string name="wc26_group_b">BẢNG B</string>
+    <string name="wc26_qualified_teams">ĐỘI TUYỂN ĐÃ VƯỢT QUA VÒNG LOẠI</string>
+    <string name="wc26_exclusive_news">TIN ĐỘC QUYỀN</string>
+    <string name="wc26_exclusive_news_title">Trận chung kết World Cup 2026 sẽ được tổ chức hoành tráng tại New York/New Jersey!</string>
+    <string name="wc26_exclusive_news_desc">FIFA đã chính thức trao quyền đăng cai trận chung kết cho sân vận động MetLife với sức chứa hơn 82,500 chỗ ngồi vào ngày 19/07/2026.</string>
+    <string name="wc26_preparation">CÔNG TÁC CHUẨN BỊ</string>
+    <string name="wc26_prep_title">Mỹ tăng tốc hạ tầng giao thông và an ninh chuẩn bị cho lượng CĐV kỷ lục</string>
+    <string name="wc26_prep_desc">Chính quyền liên bang đã phê duyệt gói ngân sách đặc biệt để nâng cấp các luồng xe điện ngầm và hàng không kết nối trực tiếp các thành phố chủ nhà...</string>
+    <string name="wc26_view_now">XEM NGAY ➔</string>
+    <string name="wc26_general_news">📰 TIN TỨC CHUNG</string>
+    <string name="wc26_general_news_desc">Xem toàn bộ diễn biến thể thao, chuyển nhượng &amp; tin tức giải đấu 24h qua</string>
+    <string name="league_center_title">TRUNG TÂM GIẢI ĐẤU</string>
+    <string name="league_center_subtitle">Bảng xếp hạng &amp; Thống kê toàn cầu</string>
+    <string name="tab_scorers">VUA PHÁ LƯỚI</string>
+    <string name="tab_assists">KIẾN TẠO</string>
+    <string name="share_title">CHIA SẺ TRẬN ĐẤU</string>
+    <string name="share_score_title">Tỉ số &amp; Trạng thái</string>
+    <string name="share_score_desc">Chia sẻ tỉ số thời gian thực và trạng thái trận đấu.</string>
+    <string name="share_stats_title">Thống kê chi tiết</string>
+    <string name="share_stats_desc">Chia sẻ tỷ lệ kiểm soát bóng, số cú sút, phạt góc.</string>
+    <string name="share_full_title">Báo cáo Tổng hợp</string>
+    <string name="share_full_desc">Chia sẻ toàn diện bao gồm cả tỉ số và thống kê.</string>
+    <string name="share_via">Chia sẻ qua</string>
+    <string name="share_copied_toast">Đã sao chép vào bộ nhớ tạm!</string>
+    <string name="reminder_set_toast">Đã bật nhắc nhở trận đấu!</string>
+    <string name="reminder_cancelled_toast">Đã tắt nhắc nhở trận đấu!</string>
+    <string name="share_caption_template">Xem chi tiết thống kê trận %1$s vs %2$s tại livescore://match/%3$d (Tải app tại: https://play.google.com/store/apps/details?id=livescore)</string>
+</resources>

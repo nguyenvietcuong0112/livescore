@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+        <string name="app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+        <string name="inter_splash" translatable="false"></string>
+
+        <string name="native_language" translatable="false"></string>
+        <string name="native_language_select" translatable="false"></string>
+
+
+        <string name="open_splash_uninstall" translatable="false"></string>
+
+
+        <string name="native_onboarding1" translatable="false"></string>
+        <string name="native_onboarding2" translatable="false"></string>
+        <string name="native_full_intro2ads" translatable="false"></string>
+        <string name="native_onboarding3" translatable="false"></string>
+        <string name="native_full_intro3ads" translatable="false"></string>
+        <string name="native_onboarding4" translatable="false"></string>
+
+        <string name="inter_intro" translatable="false"></string>
+        <string name="native_full_intro" translatable="false"></string>
+        <string name="native_full_intro2" translatable="false"></string>
+
+
+        <string name="open_resume" translatable="false"></string>
+
+        //10/6
+
+        <string name="inter_splash_uninstall" translatable="false"></string>
+        <string name="native_keep_user" translatable="false"></string>
+
+        <string name="AF_DEV_KEY" translatable="false">LikYKU2zUYTct7BoQ7MuJY</string>
+        <string name="facebook_app_id" translatable="false">1234</string>
+        <string name="facebook_client_token" translatable="false">5678</string>
+
+</resources>

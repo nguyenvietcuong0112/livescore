@@ -31,7 +31,7 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <com.livescore.app.myapplication.livescore.ui.custom.FootballPitchView
+            <com.livescore.football.livescores.footballscores.ui.custom.FootballPitchView
                 android:id="@+id/pitchView"
                 android:layout_width="match_parent"
                 android:layout_height="220dp" />
@@ -105,7 +105,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <com.livescore.app.myapplication.livescore.ui.custom.MatchMomentumView
+            <com.livescore.football.livescores.footballscores.ui.custom.MatchMomentumView
                 android:id="@+id/momentumView"
                 android:layout_width="match_parent"
                 android:layout_height="140dp" />

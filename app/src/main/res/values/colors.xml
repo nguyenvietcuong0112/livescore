@@ -21,4 +21,8 @@
     <!-- Event Badge Colors -->
     <color name="card_yellow">#FFD600</color>
     <color name="card_red">#DD2C00</color>
+
+    <!-- Intro Slideshow Indicator Colors -->
+    <color name="neon_lime_green">#C5FF29</color>
+    <color name="inactive_indicator_grey">#2E303D</color>
 </resources>

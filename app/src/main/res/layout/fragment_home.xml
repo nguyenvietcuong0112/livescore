@@ -6,34 +6,61 @@
     android:layout_height="match_parent"
     android:background="@color/bg_dark">
 
-    <!-- Date selector RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvDates"
+    <!-- Time Filter (Left Arrow | Clickable Date Text | Right Arrow) -->
+    <LinearLayout
+        android:id="@+id/timeFilterLayout"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_date" />
+        android:gravity="center_vertical"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="16dp"
+        android:background="@color/card_dark"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <!-- Divider -->
-    <View
-        android:id="@+id/dateDivider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider_dark"
-        app:layout_constraintTop_toBottomOf="@id/rvDates" />
+        <ImageView
+            android:id="@+id/btnPrevDay"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:padding="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_left"
+            app:tint="@color/accent_green" />
 
-    <!-- Filter Layout (Live / Scheduled / Finished) -->
+        <TextView
+            android:id="@+id/tvSelectedDateText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Hôm nay"
+            android:textColor="@color/text_white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:paddingVertical="8dp" />
+
+        <ImageView
+            android:id="@+id/btnNextDay"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:padding="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_right"
+            app:tint="@color/accent_green" />
+    </LinearLayout>
+
+    <!-- Filter Status Layout (LIVE | UPCOMING | FINISHED) -->
     <LinearLayout
         android:id="@+id/filterLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp"
-        app:layout_constraintTop_toBottomOf="@id/dateDivider">
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp"
+        app:layout_constraintTop_toBottomOf="@id/timeFilterLayout">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLive"
@@ -72,10 +99,9 @@
             android:text="FINISHED"
             android:textColor="@color/text_muted"
             app:cornerRadius="8dp" />
-
     </LinearLayout>
 
-    <!-- Main Matches List RecyclerView -->
+    <!-- Matches RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMatches"
         android:layout_width="match_parent"
@@ -83,8 +109,8 @@
         android:clipToPadding="false"
         android:paddingBottom="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/filterLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/item_match" />
 
     <!-- Shimmer loading state placeholder -->

@@ -19,6 +19,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/text_white" />
 
+    <!-- Share Button -->
+    <ImageView
+        android:id="@+id/btnShare"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="Share"
+        android:src="@drawable/ic_share"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/text_white" />
+
     <!-- League Details -->
     <TextView
         android:id="@+id/tvDetailLeague"
