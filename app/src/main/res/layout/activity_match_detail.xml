@@ -29,12 +29,27 @@
             android:paddingBottom="24dp">
 
             <!-- Pitch Tracker & Momentum visualizer cards -->
-            <include
-                android:id="@+id/pitchTracker"
-                layout="@layout/layout_pitch_tracker"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp" />
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/pitchTracker"
+                    layout="@layout/layout_pitch_tracker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp" />
+
+                <!-- Premium Lock Overlay for Pitch Tracker -->
+                <include
+                    android:id="@+id/layoutPitchLockOverlay"
+                    layout="@layout/layout_premium_lock_overlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="12dp"
+                    android:visibility="gone" />
+
+            </FrameLayout>
 
             <!-- Sub Tab Selector -->
             <LinearLayout
@@ -87,12 +102,27 @@
                 android:layout_marginHorizontal="12dp">
 
                 <!-- 1. Stats Layout -->
-                <include
-                    android:id="@+id/layoutStats"
-                    layout="@layout/layout_statistics"
+                <FrameLayout
+                    android:id="@+id/containerStats"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible" />
+                    android:visibility="visible">
+
+                    <include
+                        android:id="@+id/layoutStats"
+                        layout="@layout/layout_statistics"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <!-- Premium Lock Overlay for Stats -->
+                    <include
+                        android:id="@+id/layoutStatsLockOverlay"
+                        layout="@layout/layout_premium_lock_overlay"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
+
+                </FrameLayout>
 
                 <!-- 2. Timeline Layout -->
                 <include

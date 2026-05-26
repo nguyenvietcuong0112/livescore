@@ -61,6 +61,7 @@
     <!-- Splash Screen -->
     <string name="splash_app_title">LIVESCORE</string>
     <string name="splash_subtitle">PREMIUM SPORTS HUB</string>
+    <string name="splash_ads_warning">This action can contain ads</string>
     
     <!-- Home Screen -->
     <string name="tab_matches">MATCHES</string>
@@ -145,4 +146,54 @@
     <string name="reminder_set_toast">Reminder set for the match!</string>
     <string name="reminder_cancelled_toast">Reminder cancelled for the match!</string>
     <string name="share_caption_template">Check out the match stats for %1$s vs %2$s at livescore://match/%3$d (Download app: https://livescore.premium/download)</string>
+
+    <!-- WC26 New Multilingual Strings -->
+    <string name="wc_tab_fixtures">MATCHES</string>
+    <string name="wc_tab_groups">STANDINGS</string>
+    <string name="wc_tab_bracket">BRACKET</string>
+    <string name="wc_no_data">No data</string>
+    <string name="wc_tbd">TBD</string>
+    <string name="wc_group_stage_name">Group Stage</string>
+    <string name="wc_default_stadium">Stadium</string>
+    <string name="wc_result_format">%1$s  [ Result: %2$d - %3$d ]</string>
+
+    <!-- Reminder Notification -->
+    <string name="reminder_notification_title">⚽ Match is about to start!</string>
+    <string name="reminder_notification_text">%1$s (%2$s) will kickoff in 5 minutes. Don\'t miss it!</string>
+    <string name="reminder_default_match_title">Upcoming Match</string>
+    <string name="reminder_default_league_name">League</string>
+
+    <!-- Intro Slideshow -->
+    <string name="intro_slide_1_title">LIVE SCORES &amp; STATISTICS</string>
+    <string name="intro_slide_1_desc">Stay updated on the fastest football actions on earth with second-by-second data, live scores &amp; visual match stats.</string>
+    <string name="intro_slide_2_title">FIXTURES &amp; STANDINGS</string>
+    <string name="intro_slide_2_desc">Follow club positions, real-time standings and complete match schedules for the 2024-2026 seasons.</string>
+    <string name="intro_slide_3_title">MATCH ALERTS &amp; REMINDERS</string>
+    <string name="intro_slide_3_desc">Receive smart notification alerts 5 minutes before kickoff so you never miss a goal-scoring moment.</string>
+    <string name="intro_slide_4_title">WORLD CUP 2026</string>
+    <string name="intro_slide_4_desc">Get ahead of the ultimate football festival with groups, news &amp; countdowns in the USA, Canada &amp; Mexico.</string>
+
+    <!-- Permissions -->
+    <string name="permission_title">Enable Notifications</string>
+    <string name="permission_desc">To make sure you never miss exciting matches, please grant notification permissions to the application.</string>
+    <string name="permission_allow">Grant Permission</string>
+    <string name="permission_skip">Skip</string>
+
+    <!-- Date Picker / Calendar -->
+    <string name="select_match_date">Select Match Date</string>
+    <string name="today">Today</string>
+    <string name="no_live_matches">No live matches currently in progress</string>
+
+    <!-- Favorites / List Headers -->
+    <string name="club">Club</string>
+    <string name="league_with_country">League • %1$s</string>
+    <string name="no_favorite_matches">No favorite matches yet</string>
+    <string name="no_favorites_found">No favorites found yet</string>
+
+    <!-- Timeline Legend -->
+    <string name="legend_goal">Goal</string>
+    <string name="legend_yellow_card">Yellow Card</string>
+    <string name="legend_red_card">Red Card</string>
+    <string name="legend_subst">Sub</string>
+    <string name="btn_discover">DISCOVER</string>
 </resources>

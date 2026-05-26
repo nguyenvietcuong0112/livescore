@@ -3,8 +3,6 @@ package com.livescore.football.livescores.footballscores.ui.onboarding
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.LoadAdError
@@ -113,11 +111,11 @@ class SplashActivity : AppCompatActivity() {
         val onboardingPrefs = getSharedPreferences("livescore_onboarding_prefs", Context.MODE_PRIVATE)
         val isCompleted = onboardingPrefs.getBoolean("onboarding_completed", false)
 
-//        val intent = if (isCompleted) {
-//            Intent(this, MainActivity::class.java)
-//        } else {
+        val intent = if (isCompleted) {
+            Intent(this, MainActivity::class.java)
+        } else {
             Intent(this, LanguageActivity::class.java)
-//        }
+        }
         startActivity(intent)
         finish()
     }

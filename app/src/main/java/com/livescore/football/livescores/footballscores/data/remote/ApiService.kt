@@ -40,4 +40,10 @@ interface ApiService {
         @Query("league") leagueId: Int,
         @Query("season") season: Int
     ): TopPlayersResponse
+
+    @GET("fixtures")
+    suspend fun getFixturesByLeague(
+        @Query("league") leagueId: Int,
+        @Query("season") season: Int
+    ): FixtureResponse<MatchItemDto>
 }

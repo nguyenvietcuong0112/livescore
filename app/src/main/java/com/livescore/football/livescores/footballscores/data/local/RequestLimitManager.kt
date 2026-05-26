@@ -31,7 +31,7 @@ class RequestLimitManager @Inject constructor(
         private const val KEY_LAST_DATE = "last_request_date"
         private const val KEY_REQ_COUNT = "request_count"
         private const val KEY_IS_PREMIUM = "is_premium_user"
-        private const val DAILY_LIMIT = 30
+        private const val DAILY_LIMIT = 20
     }
 
     private fun getTodayDateString(): String {
@@ -89,11 +89,18 @@ class RequestLimitManager @Inject constructor(
         return (DAILY_LIMIT - count).coerceAtLeast(0)
     }
 
+    fun isNearQuotaLimit(): Boolean {
+        if (isPremium()) return false
+        return getRemainingRequests() <= 5
+    }
+
     fun isPremium(): Boolean {
         return prefs.getBoolean(KEY_IS_PREMIUM, false)
     }
 
     fun setPremium(isPremium: Boolean) {
         prefs.edit().putBoolean(KEY_IS_PREMIUM, isPremium).apply()
+        // Instantly notify observers of quota changes when premium is acquired
+        triggerLimitExceeded() 
     }
 }

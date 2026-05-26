@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="8dp"
+    android:paddingHorizontal="4dp">
+
+    <!-- Rank -->
+    <TextView
+        android:id="@+id/tvRowRank"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/text_white"
+        android:textSize="13sp"
+        android:text="1" />
+
+    <!-- Flag -->
+    <ImageView
+        android:id="@+id/ivRowFlag"
+        android:layout_width="20dp"
+        android:layout_height="14dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Team Flag" />
+
+    <!-- Team Name -->
+    <TextView
+        android:id="@+id/tvRowName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/text_white"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:text="Team Name" />
+
+    <!-- PL -->
+    <TextView
+        android:id="@+id/tvRowPlayed"
+        android:layout_width="26dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/text_white"
+        android:textSize="13sp"
+        android:text="0" />
+
+    <!-- W -->
+    <TextView
+        android:id="@+id/tvRowWon"
+        android:layout_width="26dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/text_white"
+        android:textSize="13sp"
+        android:text="0" />
+
+    <!-- D -->
+    <TextView
+        android:id="@+id/tvRowDrawn"
+        android:layout_width="26dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/text_white"
+        android:textSize="13sp"
+        android:text="0" />
+
+    <!-- L -->
+    <TextView
+        android:id="@+id/tvRowLost"
+        android:layout_width="26dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/text_white"
+        android:textSize="13sp"
+        android:text="0" />
+
+    <!-- GF -->
+    <TextView
+        android:id="@+id/tvRowGF"
+        android:layout_width="26dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/text_white"
+        android:textSize="13sp"
+        android:text="0" />
+
+    <!-- GA -->
+    <TextView
+        android:id="@+id/tvRowGA"
+        android:layout_width="26dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/text_white"
+        android:textSize="13sp"
+        android:text="0" />
+
+    <!-- GD -->
+    <TextView
+        android:id="@+id/tvRowGD"
+        android:layout_width="26dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/text_white"
+        android:textSize="13sp"
+        android:text="0" />
+
+    <!-- PTS -->
+    <TextView
+        android:id="@+id/tvRowPTS"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/text_white"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:text="0" />
+
+</LinearLayout>

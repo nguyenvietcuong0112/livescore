@@ -13,7 +13,8 @@ import javax.inject.Singleton
 @Singleton
 class FavoriteManager @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val favoriteDao: FavoriteDao
+    private val favoriteDao: FavoriteDao,
+    private val limitManager: RequestLimitManager
 ) {
     private val sharedPrefs: SharedPreferences =
         context.getSharedPreferences("livescore_favorites_prefs", Context.MODE_PRIVATE)
@@ -46,6 +47,15 @@ class FavoriteManager @Inject constructor(
     fun isFixtureFavorite(fixtureId: Int): Boolean {
         val favorites = getFavoriteFixtureIds()
         return favorites.contains(fixtureId.toString())
+    }
+
+    fun canAddFavoriteFixture(fixtureId: Int): Boolean {
+        if (limitManager.isPremium()) return true
+        val favorites = getFavoriteFixtureIds()
+        // If already in favorites, toggling it will remove it, so it's always allowed
+        if (favorites.contains(fixtureId.toString())) return true
+        // Free user can only follow up to 3 fixtures
+        return favorites.size < 3
     }
 
     fun toggleFixtureFavorite(fixtureId: Int): Boolean {

@@ -40,6 +40,10 @@ class LanguageActivity : AppCompatActivity() {
         binding = ActivityLanguageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Load saved selection on recreate/create
+        val onboardingPrefs = getSharedPreferences("livescore_onboarding_prefs", Context.MODE_PRIVATE)
+        selectedLanguage = onboardingPrefs.getString("selected_language", "English") ?: "English"
+
         setupRecyclerView()
         setupListeners()
     }
@@ -48,7 +52,15 @@ class LanguageActivity : AppCompatActivity() {
         adapter = LanguageSelectionListAdapter(
             onItemClick = { lang ->
                 selectedLanguage = lang
-                adapter.notifyDataSetChanged() // Quick refresh for choice highlights
+                
+                // 1. Save selected language to SharedPreferences immediately
+                val onboardingPrefs = getSharedPreferences("livescore_onboarding_prefs", Context.MODE_PRIVATE)
+                onboardingPrefs.edit().putString("selected_language", lang).apply()
+
+                // 2. Set application locales dynamically instantly
+                val localeCode = getLocaleCode(lang)
+                val appLocale = LocaleListCompat.forLanguageTags(localeCode)
+                AppCompatDelegate.setApplicationLocales(appLocale)
             },
             isSelectedPredicate = { lang ->
                 lang == selectedLanguage
@@ -62,16 +74,7 @@ class LanguageActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.btnNext.setOnClickListener {
-            // 1. Save selected language to SharedPreferences
-            val onboardingPrefs = getSharedPreferences("livescore_onboarding_prefs", Context.MODE_PRIVATE)
-            onboardingPrefs.edit().putString("selected_language", selectedLanguage).apply()
-
-            // 2. Set application locales dynamically using Jetpack AppCompatDelegate
-            val localeCode = getLocaleCode(selectedLanguage)
-            val appLocale = LocaleListCompat.forLanguageTags(localeCode)
-            AppCompatDelegate.setApplicationLocales(appLocale)
-
-            // 3. Transition to IntroSlideshowActivity
+            // Transition directly to IntroSlideshowActivity
             val intent = Intent(this, IntroSlideshowActivity::class.java)
             startActivity(intent)
             finish()

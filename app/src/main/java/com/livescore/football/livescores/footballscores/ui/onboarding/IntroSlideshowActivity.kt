@@ -42,23 +42,23 @@ class IntroSlideshowActivity : AppCompatActivity() {
     private fun setupSlidesData() {
         slides = listOf(
             IntroSlide(
-                title = "TỈ SỐ & THỐNG KÊ TRỰC TIẾP",
-                description = "Cập nhật diễn biến bóng đá nhanh nhất hành tinh với dữ liệu chi tiết từng giây, tỉ số trực tiếp & sơ đồ trực quan.",
+                title = getString(R.string.intro_slide_1_title),
+                description = getString(R.string.intro_slide_1_desc),
                 imageResId = R.drawable.intro_slide_1
             ),
             IntroSlide(
-                title = "LỊCH THI ĐẤU & BẢNG XẾP HẠNG",
-                description = "Theo dõi vị trí của các câu lạc bộ, bảng xếp hạng cập nhật tức thời và lịch thi đấu trọn vẹn mùa giải 2024-2026.",
+                title = getString(R.string.intro_slide_2_title),
+                description = getString(R.string.intro_slide_2_desc),
                 imageResId = R.drawable.intro_slide_2
             ),
             IntroSlide(
-                title = "NHẮC NHỞ & BÁO THỨC TRẬN ĐẤU",
-                description = "Nhận cảnh báo thông báo thông minh trước giờ bóng lăn 5 phút để bạn không bỏ lỡ bất kỳ khoảnh khắc ghi bàn nào.",
+                title = getString(R.string.intro_slide_3_title),
+                description = getString(R.string.intro_slide_3_desc),
                 imageResId = R.drawable.intro_slide_3
             ),
             IntroSlide(
-                title = "CÚP THẾ GIỚI WORLD CUP 2026",
-                description = "Đón đầu lễ hội bóng đá đỉnh cao với bảng đấu, tin tức & đếm ngược sự kiện tại Mỹ, Canada & Mexico.",
+                title = getString(R.string.intro_slide_4_title),
+                description = getString(R.string.intro_slide_4_desc),
                 imageResId = R.drawable.intro_slide_4
             )
         )

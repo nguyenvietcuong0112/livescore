@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.livescore.football.livescores.footballscores.R
+import com.livescore.football.livescores.footballscores.MainActivity
 import com.livescore.football.livescores.footballscores.databinding.FragmentFavoriteBinding
 import com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity
 import com.livescore.football.livescores.footballscores.ui.home.MatchAdapter
@@ -77,6 +78,10 @@ class FavoriteFragment : Fragment() {
 
         setupRecyclerViews()
         observeViewModel()
+
+        binding.btnDiscover.setOnClickListener {
+            (activity as? MainActivity)?.switchToTab(R.id.nav_live)
+        }
     }
 
     override fun onResume() {
@@ -123,7 +128,7 @@ class FavoriteFragment : Fragment() {
                 launch {
                     viewModel.favoriteMatches.collect { items ->
                         binding.emptyStateLayout.isVisible = items.isEmpty()
-                        binding.tvEmptyMessage.text = "Chưa có trận đấu yêu thích nào"
+                        binding.tvEmptyMessage.text = getString(R.string.no_favorite_matches)
                         matchAdapter.submitList(items)
                     }
                 }

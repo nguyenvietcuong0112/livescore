@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.databinding.ItemFavoriteTeamLeagueBinding
 
 sealed class FavoriteItem {
@@ -52,10 +53,10 @@ class FavoriteTeamsLeaguesAdapter(
 
             when (item) {
                 is FavoriteItem.Team -> {
-                    binding.tvSubtitle.text = "Câu lạc bộ"
+                    binding.tvSubtitle.text = itemView.context.getString(R.string.club)
                 }
                 is FavoriteItem.League -> {
-                    binding.tvSubtitle.text = "Giải đấu • ${item.country}"
+                    binding.tvSubtitle.text = itemView.context.getString(R.string.league_with_country, item.country)
                 }
             }
 

@@ -18,16 +18,17 @@ class TimelineView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     private var events = listOf<TimelineEvent>()
+    private val density = context.resources.displayMetrics.density
 
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#171D26") // Deep charcoal grid line
-        strokeWidth = 6f
+        strokeWidth = 3f * density
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
     }
 
     private val progressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        strokeWidth = 6f
+        strokeWidth = 3f * density
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
     }
@@ -44,21 +45,21 @@ class TimelineView @JvmOverloads constructor(
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#4B5565") // Elegant muted grey labels
-        textSize = 21f
+        textSize = 10f * density
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
     }
 
     private val minuteLabelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#9AA4B2") // High-contrast grey
-        textSize = 19f
+        textSize = 9.5f * density
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
     }
 
     private val connectorPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#2D394C")
-        strokeWidth = 2.5f
+        strokeWidth = 1.2f * density
         style = Paint.Style.STROKE
     }
 
@@ -66,14 +67,7 @@ class TimelineView @JvmOverloads constructor(
 
     init {
         setLayerType(LAYER_TYPE_SOFTWARE, null)
-        // Mock events
-        setEvents(listOf(
-            TimelineEvent(12, "GOAL", true),
-            TimelineEvent(34, "CARD_YELLOW", false),
-            TimelineEvent(45, "SUBST", true),
-            TimelineEvent(62, "GOAL", false),
-            TimelineEvent(71, "CARD_RED", false)
-        ))
+        setEvents(emptyList())
     }
 
     fun setEvents(eventList: List<TimelineEvent>) {
@@ -89,7 +83,8 @@ class TimelineView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         val w = width.toFloat()
         val h = height.toFloat()
-        val padding = 45f
+        // Moderate padding (32dp) to make the horizontal timeline stretch beautifully wide across the card!
+        val padding = 32f * density
         val centerY = h / 2f
         val timelineWidth = w - (2 * padding)
 
@@ -98,12 +93,12 @@ class TimelineView @JvmOverloads constructor(
         
         val tickPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#2D394C")
-            strokeWidth = 2f
+            strokeWidth = 1f * density
             style = Paint.Style.STROKE
         }
         for (i in 1..5) {
             val tickX = padding + (i * 15f / 90f) * timelineWidth
-            canvas.drawLine(tickX, centerY - 8f, tickX, centerY + 8f, tickPaint)
+            canvas.drawLine(tickX, centerY - 4f * density, tickX, centerY + 4f * density, tickPaint)
         }
 
         // 2. Draw active progress line with gradient flow
@@ -119,23 +114,23 @@ class TimelineView @JvmOverloads constructor(
 
         // Glowing active playhead marker
         if (currentMatchMinute in 1..89) {
-            val auraRadius = 14f
+            val auraRadius = 6.5f * density
             val pulseAura = (System.currentTimeMillis() % 1000) / 1000f
             playheadGlowPaint.alpha = (90 * (1f - pulseAura)).toInt()
-            canvas.drawCircle(progressX, centerY, auraRadius + (8f * pulseAura), playheadGlowPaint)
-            canvas.drawCircle(progressX, centerY, 5f, playheadCorePaint)
+            canvas.drawCircle(progressX, centerY, auraRadius + (3.5f * density * pulseAura), playheadGlowPaint)
+            canvas.drawCircle(progressX, centerY, 2.5f * density, playheadCorePaint)
         }
 
-        // 3. Main structural labels (0', HT, 90')
-        canvas.drawText("00'", padding, centerY + 38f, textPaint)
-        canvas.drawText("90'", w - padding, centerY + 38f, textPaint)
-        canvas.drawText("HT 45'", padding + (0.5f * timelineWidth), centerY + 38f, textPaint)
+        // 3. Main structural labels (00', HT 45', 90')
+        canvas.drawText("00'", padding, centerY + 18f * density, textPaint)
+        canvas.drawText("90'", w - padding, centerY + 18f * density, textPaint)
+        canvas.drawText("HT 45'", padding + (0.5f * timelineWidth), centerY + 18f * density, textPaint)
 
         // 4. Draw detailed visual events
         for (event in events) {
             val eventRatio = (event.minute.toFloat() / 90f).coerceIn(0f, 1f)
             val x = padding + (eventRatio * timelineWidth)
-            val yOffset = if (event.isHome) -36f else 36f
+            val yOffset = if (event.isHome) -18f * density else 18f * density
 
             // Connector link line
             canvas.drawLine(x, centerY, x, centerY + yOffset, connectorPaint)
@@ -143,7 +138,7 @@ class TimelineView @JvmOverloads constructor(
             val eventY = centerY + yOffset
             when (event.type) {
                 "GOAL" -> {
-                    drawSoccerBall(canvas, x, eventY, 11f)
+                    drawSoccerBall(canvas, x, eventY, 5.5f * density)
                 }
                 "CARD_YELLOW" -> {
                     drawCardNode(canvas, x, eventY, isRed = false)
@@ -152,12 +147,12 @@ class TimelineView @JvmOverloads constructor(
                     drawCardNode(canvas, x, eventY, isRed = true)
                 }
                 "SUBST" -> {
-                    drawSubstitutionNode(canvas, x, eventY, 11f)
+                    drawSubstitutionNode(canvas, x, eventY, 5.5f * density)
                 }
             }
 
-            // Draw clean timestamp label
-            val textY = if (event.isHome) eventY - 22f else eventY + 36f
+            // Draw clean timestamp label with clear offsets to absolutely avoid overlaps with icons
+            val textY = if (event.isHome) eventY - 11f * density else eventY + 19f * density
             canvas.drawText("${event.minute}'", x, textY, minuteLabelPaint)
         }
     }
@@ -173,7 +168,7 @@ class TimelineView @JvmOverloads constructor(
         val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#121620")
             style = Paint.Style.STROKE
-            strokeWidth = 1.2f
+            strokeWidth = 0.8f * density
         }
         val darkPanelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#1E2530")
@@ -213,29 +208,29 @@ class TimelineView @JvmOverloads constructor(
     }
 
     /**
-     * Programmatically draws a 3D tilted warning card.
+     * Programmatically draws a tilted warning card.
      */
     private fun drawCardNode(canvas: Canvas, cx: Float, cy: Float, isRed: Boolean) {
         val cardPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = if (isRed) Color.parseColor("#DD2C00") else Color.parseColor("#FFD600")
             style = Paint.Style.FILL
-            setShadowLayer(4f, 0f, 2f, Color.parseColor("#40000000"))
+            setShadowLayer(3f * density, 0f, 1f * density, Color.parseColor("#40000000"))
         }
         val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#121620")
             style = Paint.Style.STROKE
-            strokeWidth = 1f
+            strokeWidth = 0.8f * density
         }
 
         canvas.save()
         canvas.translate(cx, cy)
-        canvas.rotate(15f) // Subtle tilting rotation for organic 3D posture
+        canvas.rotate(15f) // Subtle tilting rotation for organic posture
 
-        val cardW = 12f
-        val cardH = 18f
+        val cardW = 7f * density
+        val cardH = 11f * density
         val cardRect = RectF(-cardW / 2f, -cardH / 2f, cardW / 2f, cardH / 2f)
-        canvas.drawRoundRect(cardRect, 3f, 3f, cardPaint)
-        canvas.drawRoundRect(cardRect, 3f, 3f, borderPaint)
+        canvas.drawRoundRect(cardRect, 1.5f * density, 1.5f * density, cardPaint)
+        canvas.drawRoundRect(cardRect, 1.5f * density, 1.5f * density, borderPaint)
 
         canvas.restore()
     }
@@ -255,7 +250,7 @@ class TimelineView @JvmOverloads constructor(
         val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#121620")
             style = Paint.Style.STROKE
-            strokeWidth = 1.2f
+            strokeWidth = 0.8f * density
         }
 
         // Render overlapping indicator node structures

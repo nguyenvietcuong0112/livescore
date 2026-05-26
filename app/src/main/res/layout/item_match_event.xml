@@ -38,8 +38,10 @@
 
         <TextView
             android:id="@+id/tvHomeEventPlayer"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
             android:textColor="@color/text_white"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -78,8 +80,10 @@
 
         <TextView
             android:id="@+id/tvAwayEventPlayer"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
             android:textColor="@color/text_white"
             android:textSize="14sp"
             android:textStyle="bold"

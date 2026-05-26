@@ -2,6 +2,7 @@
 adsMalleganLibNvc = "1.0.4"
 afAndroidSdk = "6.18.0"
 agp = "9.0.0"
+billingKtx = "9.0.0"
 bubbletabbar = "1.0.8"
 consentLibrary = "1.0.8"
 coreKtx = "1.13.1"
@@ -32,6 +33,7 @@ shimmer = "0.5.0"
 ads-mallegan-lib-nvc = { module = "com.github.nguyenvietcuong0112:ads-mallegan-lib-nvc", version.ref = "adsMalleganLibNvc" }
 af-android-sdk = { module = "com.appsflyer:af-android-sdk", version.ref = "afAndroidSdk" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+billing-ktx = { module = "com.android.billingclient:billing-ktx", version.ref = "billingKtx" }
 bubbletabbar = { module = "io.ak1:bubbletabbar", version.ref = "bubbletabbar" }
 consent-library = { module = "com.google.android.ads.consent:consent-library", version.ref = "consentLibrary" }
 facebook = { module = "com.google.ads.mediation:facebook", version.ref = "facebook" }

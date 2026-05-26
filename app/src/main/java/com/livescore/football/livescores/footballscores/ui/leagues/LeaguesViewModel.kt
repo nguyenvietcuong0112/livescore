@@ -72,23 +72,15 @@ class LeaguesViewModel @Inject constructor(
     }
 
     init {
-        // Automatically fetch data whenever selectedLeagueId or selectedSeason changes
-        viewModelScope.launch {
-            combine(_selectedLeagueId, _selectedSeason) { leagueId, season ->
-                Pair(leagueId, season)
-            }.collect { (leagueId, season) ->
-                fetchAllLeagueData(leagueId, season)
-            }
-        }
+        // Fetch initial league data on startup
+        fetchAllLeagueData(_selectedLeagueId.value, _selectedSeason.value)
     }
 
     fun selectLeague(leagueId: Int) {
         _selectedLeagueId.value = leagueId
-        if (leagueId == 1) {
-            _selectedSeason.value = 2026
-        } else {
-            _selectedSeason.value = calculateCurrentSeason()
-        }
+        val season = if (leagueId == 1) 2026 else calculateCurrentSeason()
+        _selectedSeason.value = season
+        fetchAllLeagueData(leagueId, season)
     }
 
     fun selectTab(tabIndex: Int) {
@@ -106,36 +98,45 @@ class LeaguesViewModel @Inject constructor(
             _topAssistsState.value = TopPlayersUiState.Loading
 
             try {
-                // Sequential, spaced-out fetching to protect free tier rate limit bounds
+                var standings = emptyList<StandingRowDto>()
                 repository.getStandings(leagueId, season)
                     .catch { e ->
-                        _standingsState.value = StandingsUiState.Error(e.message ?: "Failed to load standings")
+                        e.printStackTrace()
                     }
                     .collect { list ->
-                        _standingsState.value = StandingsUiState.Success(list)
+                        standings = list
                     }
+                _standingsState.value = StandingsUiState.Success(standings)
 
                 delay(2000)
 
+                var topScorers = emptyList<TopPlayerItemDto>()
                 repository.getTopScorers(leagueId, season)
                     .catch { e ->
-                        _topScorersState.value = TopPlayersUiState.Error(e.message ?: "Failed to load top scorers")
+                        e.printStackTrace()
                     }
                     .collect { list ->
-                        _topScorersState.value = TopPlayersUiState.Success(list)
+                        topScorers = list
                     }
+                _topScorersState.value = TopPlayersUiState.Success(topScorers)
 
                 delay(2000)
 
+                var topAssists = emptyList<TopPlayerItemDto>()
                 repository.getTopAssists(leagueId, season)
                     .catch { e ->
-                        _topAssistsState.value = TopPlayersUiState.Error(e.message ?: "Failed to load top assists")
+                        e.printStackTrace()
                     }
                     .collect { list ->
-                        _topAssistsState.value = TopPlayersUiState.Success(list)
+                        topAssists = list
                     }
+                _topAssistsState.value = TopPlayersUiState.Success(topAssists)
+
             } catch (e: Exception) {
                 e.printStackTrace()
+                _standingsState.value = StandingsUiState.Error(e.message ?: "Failed to load standings")
+                _topScorersState.value = TopPlayersUiState.Error(e.message ?: "Failed to load top players")
+                _topAssistsState.value = TopPlayersUiState.Error(e.message ?: "Failed to load top players")
             }
         }
     }

@@ -1,3 +1,7 @@
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,6 +11,8 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
 }
 
+val formattedDate = SimpleDateFormat("ddMMyyyy", Locale.US).format(Date())
+
 android {
     namespace = "com.livescore.football.livescores.footballscores"
     compileSdk = 35
@@ -15,10 +21,9 @@ android {
         applicationId = "com.livescore.football.livescores.footballscores"
         minSdk = 24
         targetSdk = 35
-        versionCode = 100
-        versionName = "1.0.0"
+        versionCode = 1
+        versionName = "0.0.1"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -39,6 +44,15 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+
+    applicationVariants.all {
+        val variant = this
+        variant.outputs.all {
+            val output = this as? com.android.build.gradle.api.ApkVariantOutput
+            val type = variant.buildType.name
+            output?.outputFileName = "D57_LiveScore_v${variant.versionName}_c${variant.versionCode}_${formattedDate}-${type}.apk"
+        }
     }
 }
 
@@ -83,6 +97,7 @@ dependencies {
 
     //noinspection UseTomlInstead
     implementation("com.google.android.ump:user-messaging-platform:4.0.0")
+    implementation(libs.billing.ktx)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.gms.play.services.ads)

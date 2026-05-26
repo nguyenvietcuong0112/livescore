@@ -18,15 +18,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.livescore.football.livescores.footballscores.R
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.databinding.ActivityMatchDetailBinding
+import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallBottomSheet
 import com.livescore.football.livescores.footballscores.ui.custom.TimelineEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MatchDetailActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var limitManager: RequestLimitManager
 
     private lateinit var binding: ActivityMatchDetailBinding
     private val viewModel: MatchDetailViewModel by viewModels()
@@ -46,6 +52,7 @@ class MatchDetailActivity : AppCompatActivity() {
         }
 
         setupUI(matchId)
+        setupLockOverlays()
         observeViewModel()
         viewModel.startDetailPolling(matchId)
     }
@@ -122,12 +129,12 @@ class MatchDetailActivity : AppCompatActivity() {
 
     private fun shareCombinedMatchView(matchId: Int) {
         try {
-            val currentStatsVisible = binding.layoutStats.root.isVisible
+            val currentStatsVisible = binding.containerStats.isVisible
             val currentTimelineVisible = binding.layoutTimeline.root.isVisible
             val currentLineupsVisible = binding.layoutLineups.root.isVisible
 
             // Ensure stats layout is visible to perform measurements and drawing
-            binding.layoutStats.root.isVisible = true
+            binding.containerStats.isVisible = true
 
             // Force layout pass to ensure views have dimensions
             val displayWidth = resources.displayMetrics.widthPixels
@@ -139,22 +146,22 @@ class MatchDetailActivity : AppCompatActivity() {
                 0, 0, binding.matchHeader.root.measuredWidth, binding.matchHeader.root.measuredHeight
             )
 
-            binding.layoutStats.root.measure(widthSpec, heightSpec)
-            binding.layoutStats.root.layout(
-                0, 0, binding.layoutStats.root.measuredWidth, binding.layoutStats.root.measuredHeight
+            binding.containerStats.measure(widthSpec, heightSpec)
+            binding.containerStats.layout(
+                0, 0, binding.containerStats.measuredWidth, binding.containerStats.measuredHeight
             )
 
             val headerWidth = binding.matchHeader.root.measuredWidth
             val headerHeight = binding.matchHeader.root.measuredHeight
-            val statsWidth = binding.layoutStats.root.measuredWidth
-            val statsHeight = binding.layoutStats.root.measuredHeight
+            val statsWidth = binding.containerStats.measuredWidth
+            val statsHeight = binding.containerStats.measuredHeight
 
             val totalWidth = maxOf(headerWidth, statsWidth)
             val totalHeight = headerHeight + statsHeight
 
             if (totalWidth <= 0 || totalHeight <= 0) {
                 // Fallback to simple header capture if measurements failed
-                binding.layoutStats.root.isVisible = currentStatsVisible
+                binding.containerStats.isVisible = currentStatsVisible
                 shareMatchView(binding.matchHeader.root, matchId)
                 return
             }
@@ -169,11 +176,11 @@ class MatchDetailActivity : AppCompatActivity() {
             // 2. Draw Stats View below Match Header
             canvas.save()
             canvas.translate(0f, headerHeight.toFloat())
-            binding.layoutStats.root.draw(canvas)
+            binding.containerStats.draw(canvas)
             canvas.restore()
 
             // Restore original tab visibility states to avoid layout flickering
-            binding.layoutStats.root.isVisible = currentStatsVisible
+            binding.containerStats.isVisible = currentStatsVisible
             binding.layoutTimeline.root.isVisible = currentTimelineVisible
             binding.layoutLineups.root.isVisible = currentLineupsVisible
 
@@ -215,6 +222,13 @@ class MatchDetailActivity : AppCompatActivity() {
     }
 
     private fun switchTab(tabIndex: Int) {
+        if (!limitManager.isPremium() && (tabIndex == 0 || tabIndex == 2)) {
+            if (limitManager.isLimitExceeded() || limitManager.isNearQuotaLimit()) {
+                showPremiumPaywall()
+                return
+            }
+        }
+
         val activeColor = ContextCompat.getColor(this, R.color.accent_green)
         val mutedColor = ContextCompat.getColor(this, R.color.text_muted)
 
@@ -222,7 +236,7 @@ class MatchDetailActivity : AppCompatActivity() {
         binding.btnTabTimeline.setTextColor(if (tabIndex == 1) activeColor else mutedColor)
         binding.btnTabLineups.setTextColor(if (tabIndex == 2) activeColor else mutedColor)
 
-        binding.layoutStats.root.isVisible = tabIndex == 0
+        binding.containerStats.isVisible = tabIndex == 0
         binding.layoutTimeline.root.isVisible = tabIndex == 1
         binding.layoutLineups.root.isVisible = tabIndex == 2
     }
@@ -329,7 +343,7 @@ class MatchDetailActivity : AppCompatActivity() {
                         state.events.let { events ->
                             eventAdapter.submitList(events)
 
-                            // Translate network events to TimelineEvents
+                            val homeTeamId = state.detail?.teams?.home?.id
                             val canvasEvents = events.map {
                                 TimelineEvent(
                                     minute = it.time.elapsed,
@@ -339,7 +353,7 @@ class MatchDetailActivity : AppCompatActivity() {
                                         "SUBST" -> "SUBST"
                                         else -> "GOAL"
                                     },
-                                    isHome = it.comments?.contains("Home", true) ?: true
+                                    isHome = it.team.id == homeTeamId
                                 )
                             }
                             binding.layoutTimeline.timelineVisualView.setEvents(canvasEvents)
@@ -369,7 +383,35 @@ class MatchDetailActivity : AppCompatActivity() {
                         binding.pitchTracker.momentumView.setMomentumData(data)
                     }
                 }
+
+                // Observe request limit exceeds inside detail screen and popup paywall instantly
+                launch {
+                    limitManager.limitExceededFlow.collect {
+                        if (!limitManager.isPremium()) {
+                            showPremiumPaywall()
+                        }
+                    }
+                }
             }
+        }
+    }
+
+    private fun setupLockOverlays() {
+        // Local in-view lock card overlays are permanently hidden as per user request
+        binding.layoutPitchLockOverlay.root.visibility = View.GONE
+        binding.layoutStatsLockOverlay.root.visibility = View.GONE
+
+        // Pop up the Bottom Sheet directly if near limit
+        if (limitManager.isNearQuotaLimit() || limitManager.isLimitExceeded()) {
+            showPremiumPaywall()
+        }
+    }
+
+    private fun showPremiumPaywall() {
+        val existing = supportFragmentManager.findFragmentByTag(PremiumPaywallBottomSheet.TAG)
+        if (existing == null) {
+            val paywall = PremiumPaywallBottomSheet.newInstance()
+            paywall.show(supportFragmentManager, PremiumPaywallBottomSheet.TAG)
         }
     }
 

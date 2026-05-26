@@ -61,6 +61,7 @@
     <!-- Splash Screen -->
     <string name="splash_app_title">LIVESCORE</string>
     <string name="splash_subtitle">TRUNG TÂM THỂ THAO CAO CẤP</string>
+    <string name="splash_ads_warning">Hoạt động này có thể chứa quảng cáo</string>
     
     <!-- Home Screen -->
     <string name="tab_matches">TRẬN ĐẤU</string>
@@ -145,4 +146,54 @@
     <string name="reminder_set_toast">Đã bật nhắc nhở trận đấu!</string>
     <string name="reminder_cancelled_toast">Đã tắt nhắc nhở trận đấu!</string>
     <string name="share_caption_template">Xem chi tiết thống kê trận %1$s vs %2$s tại livescore://match/%3$d (Tải app tại: https://play.google.com/store/apps/details?id=livescore)</string>
+
+    <!-- WC26 New Multilingual Strings -->
+    <string name="wc_tab_fixtures">TRẬN ĐẤU</string>
+    <string name="wc_tab_groups">BXH</string>
+    <string name="wc_tab_bracket">VLTT</string>
+    <string name="wc_no_data">Không có dữ liệu</string>
+    <string name="wc_tbd">Chưa xác định</string>
+    <string name="wc_group_stage_name">Vòng Bảng</string>
+    <string name="wc_default_stadium">Sân vận động</string>
+    <string name="wc_result_format">%1$s  [ Kết quả: %2$d - %3$d ]</string>
+
+    <!-- Reminder Notification -->
+    <string name="reminder_notification_title">⚽ Trận đấu sắp bắt đầu!</string>
+    <string name="reminder_notification_text">%1$s (%2$s) sẽ khởi tranh sau 5 phút nữa. Đừng bỏ lỡ!</string>
+    <string name="reminder_default_match_title">Trận đấu sắp diễn ra</string>
+    <string name="reminder_default_league_name">Giải đấu</string>
+
+    <!-- Intro Slideshow -->
+    <string name="intro_slide_1_title">TỈ SỐ &amp; THỐNG KÊ TRỰC TIẾP</string>
+    <string name="intro_slide_1_desc">Cập nhật diễn biến bóng đá nhanh nhất hành tinh với dữ liệu chi tiết từng giây, tỉ số trực tiếp &amp; sơ đồ trực quan.</string>
+    <string name="intro_slide_2_title">LỊCH THI ĐẤU &amp; BẢNG XẾP HẠNG</string>
+    <string name="intro_slide_2_desc">Theo dõi vị trí của các câu lạc bộ, bảng xếp hạng cập nhật tức thời và lịch thi đấu trọn vẹn mùa giải 2024-2026.</string>
+    <string name="intro_slide_3_title">NHẮC NHỞ &amp; BÁO THỨC TRẬN ĐẤU</string>
+    <string name="intro_slide_3_desc">Nhận cảnh báo thông báo thông minh trước giờ bóng lăn 5 phút để bạn không bỏ lỡ bất kỳ khoảnh khắc ghi bàn nào.</string>
+    <string name="intro_slide_4_title">CÚP THẾ GIỚI WORLD CUP 2026</string>
+    <string name="intro_slide_4_desc">Đón đầu lễ hội bóng đá đỉnh cao với bảng đấu, tin tức &amp; đếm ngược sự kiện tại Mỹ, Canada &amp; Mexico.</string>
+
+    <!-- Permissions -->
+    <string name="permission_title">Bật Thông Báo</string>
+    <string name="permission_desc">Để không bỏ lỡ các trận đấu hấp dẫn, vui lòng cấp quyền gửi thông báo cho ứng dụng.</string>
+    <string name="permission_allow">Cấp Quyền</string>
+    <string name="permission_skip">Bỏ qua</string>
+
+    <!-- Date Picker / Calendar -->
+    <string name="select_match_date">Chọn ngày thi đấu</string>
+    <string name="today">Hôm nay</string>
+    <string name="no_live_matches">Hiện tại không có trận đấu trực tiếp nào</string>
+
+    <!-- Favorites / List Headers -->
+    <string name="club">Câu lạc bộ</string>
+    <string name="league_with_country">Giải đấu • %1$s</string>
+    <string name="no_favorite_matches">Chưa có trận đấu yêu thích nào</string>
+    <string name="no_favorites_found">Chưa có mục yêu thích nào</string>
+
+    <!-- Timeline Legend -->
+    <string name="legend_goal">Bàn thắng</string>
+    <string name="legend_yellow_card">Thẻ vàng</string>
+    <string name="legend_red_card">Thẻ đỏ</string>
+    <string name="legend_subst">Thay người</string>
+    <string name="btn_discover">KHÁM PHÁ</string>
 </resources>

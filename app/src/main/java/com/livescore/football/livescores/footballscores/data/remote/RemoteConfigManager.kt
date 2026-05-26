@@ -28,7 +28,7 @@ class RemoteConfigManager @Inject constructor(
         try {
             // Set up Firebase Remote Config settings
             val configSettings = FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(3600) // 1 hour fetch interval for optimal caching
+                .setMinimumFetchIntervalInSeconds(0) // 1 hour fetch interval for optimal caching
                 .build()
             remoteConfig.setConfigSettingsAsync(configSettings)
 

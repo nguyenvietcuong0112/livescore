@@ -101,35 +101,9 @@ class MatchAdapter(
             if (isLive) {
                 binding.tvMatchStatus.text = match.elapsed?.let { "$it'" } ?: "LIVE"
                 binding.livePulse.isVisible = true
-                binding.layoutLiveExtra.isVisible = true
-                
-                when (match.id) {
-                    103294 -> {
-                        binding.tvLiveScorers.text = "⚽ B. Saka 12' - ⚽ C. Palmer 28' (pen)"
-                        binding.tvLiveStats.text = "Possession: 56% - 44% | Shots: 14 - 8"
-                        binding.tvHomeRedCards.visibility = View.GONE
-                        binding.tvAwayRedCards.visibility = View.GONE
-                    }
-                    103295 -> {
-                        binding.tvLiveScorers.text = "⚽ Vinicius Jr. 15', Bellingham 58' - ⚽ Lewandowski 22', Raphinha 44'"
-                        binding.tvLiveStats.text = "Possession: 48% - 52% | Shots: 11 - 15"
-                        binding.tvHomeRedCards.visibility = View.GONE
-                        binding.tvAwayRedCards.text = "1"
-                        binding.tvAwayRedCards.visibility = View.VISIBLE
-                    }
-                    else -> {
-                        val homeGoals = match.goalsHome ?: 0
-                        val awayGoals = match.goalsAway ?: 0
-                        if (homeGoals == 0 && awayGoals == 0) {
-                            binding.tvLiveScorers.text = "⚽ No goals scored yet"
-                        } else {
-                            binding.tvLiveScorers.text = "⚽ Goals: ${match.homeTeamName} ($homeGoals) - ${match.awayTeamName} ($awayGoals)"
-                        }
-                        binding.tvLiveStats.text = "Possession: 50% - 50% | Shots on Target: ${homeGoals + 1} - ${awayGoals + 1}"
-                        binding.tvHomeRedCards.visibility = View.GONE
-                        binding.tvAwayRedCards.visibility = View.GONE
-                    }
-                }
+                binding.layoutLiveExtra.isVisible = false
+                binding.tvHomeRedCards.visibility = View.GONE
+                binding.tvAwayRedCards.visibility = View.GONE
             } else {
                 binding.livePulse.isVisible = false
                 binding.layoutLiveExtra.isVisible = false

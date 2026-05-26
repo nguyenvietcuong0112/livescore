@@ -4,16 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.livescore.football.livescores.footballscores.MainActivity
+import com.bumptech.glide.Glide
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.repository.LeaguesRepository
 import com.livescore.football.livescores.footballscores.databinding.FragmentWc26Binding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
@@ -28,7 +28,8 @@ class WC26Fragment : Fragment() {
     @Inject
     lateinit var leaguesRepository: LeaguesRepository
 
-    private var selectedTab = 0 // 0: Fixtures, 1: Groups, 2: Teams, 3: News
+    private var selectedTab = 0 // 0: Fixtures, 1: Groups, 2: VLTT (Bracket)
+    private var isWcBracketFullScreen = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,51 +45,342 @@ class WC26Fragment : Fragment() {
         setupCountdown()
         setupListeners()
         updateTabUI()
-        loadWcStandings()
+        populateWcTournamentData()
     }
 
-    private fun loadWcStandings() {
+    private fun populateWcTournamentData() {
         lifecycleScope.launch {
-            // League ID 1 represents World Cup, season 2026
-            leaguesRepository.getStandings(1, 2026)
-                .catch { e ->
-                    e.printStackTrace()
-                    showErrorState()
-                }
-                .collect { list ->
-                    if (list.size >= 8) {
-                        // Dynamically populate Group A
-                        binding.tvGroupATeam1.text = "1. ${list[0].team.name}"
-                        binding.tvGroupATeam2.text = "2. ${list[1].team.name}"
-                        binding.tvGroupATeam3.text = "3. ${list[2].team.name}"
-                        binding.tvGroupATeam4.text = "4. ${list[3].team.name}"
+            try {
+                binding.layoutLoadingOverlay.isVisible = true
+                binding.btnWcZoom.isVisible = false
+                binding.scrollWcFixtures.isVisible = false
+                binding.scrollWcGroups.isVisible = false
+                binding.scrollWcBracket.isVisible = false
 
-                        // Dynamically populate Group B
-                        binding.tvGroupBTeam1.text = "1. ${list[4].team.name}"
-                        binding.tvGroupBTeam2.text = "2. ${list[5].team.name}"
-                        binding.tvGroupBTeam3.text = "3. ${list[6].team.name}"
-                        binding.tvGroupBTeam4.text = "4. ${list[7].team.name}"
-                    } else {
-                        showErrorState()
-                    }
+                val inflater = LayoutInflater.from(requireContext())
+
+                // 1. Fetch and Populate Standings (Groups / BXH)
+                var standingsList = emptyList<com.livescore.football.livescores.footballscores.data.remote.model.StandingRowDto>()
+                
+                try {
+                    leaguesRepository.getStandings(1, 2026)
+                        .collect { list ->
+                            standingsList = list
+                        }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
+
+                if (standingsList.isNotEmpty()) {
+                    binding.layoutWcGroupsContainer.removeAllViews()
+                    
+                    val grouped = standingsList.groupBy { it.group }
+                    val sortedGroups = grouped.entries.sortedBy { it.key }
+                    
+                    sortedGroups.forEach { entry ->
+                        val groupName = entry.key
+                        val rows = entry.value.sortedBy { it.rank }
+                        
+                        val groupView = inflater.inflate(R.layout.item_wc_group, binding.layoutWcGroupsContainer, false)
+                        
+                        // Keep group name in English: e.g. "GROUP A"
+                        val displayGroupName = groupName?.replace("Group", "GROUP")?.uppercase()
+                        groupView.findViewById<android.widget.TextView>(R.id.tvGroupName).text = displayGroupName
+                        
+                        val rowsContainer = groupView.findViewById<android.widget.LinearLayout>(R.id.layoutTeamRowsContainer)
+                        rowsContainer.removeAllViews()
+                        
+                        rows.forEach { row ->
+                            val rowView = inflater.inflate(R.layout.item_wc_group_row, rowsContainer, false)
+                            
+                            rowView.findViewById<android.widget.TextView>(R.id.tvRowRank).text = row.rank.toString()
+                            
+                            val ivFlag = rowView.findViewById<android.widget.ImageView>(R.id.ivRowFlag)
+                            Glide.with(rowView.context)
+                                .load(row.team.logo)
+                                .placeholder(R.drawable.ic_favorite_border)
+                                .into(ivFlag)
+                                
+                            rowView.findViewById<android.widget.TextView>(R.id.tvRowName).text = row.team.name
+                            
+                            // Stats columns
+                            rowView.findViewById<android.widget.TextView>(R.id.tvRowPlayed).text = (row.all?.played ?: 0).toString()
+                            rowView.findViewById<android.widget.TextView>(R.id.tvRowWon).text = (row.all?.win ?: 0).toString()
+                            rowView.findViewById<android.widget.TextView>(R.id.tvRowDrawn).text = (row.all?.draw ?: 0).toString()
+                            rowView.findViewById<android.widget.TextView>(R.id.tvRowLost).text = (row.all?.lose ?: 0).toString()
+                            rowView.findViewById<android.widget.TextView>(R.id.tvRowGF).text = (row.all?.goals?.goalsFor ?: 0).toString()
+                            rowView.findViewById<android.widget.TextView>(R.id.tvRowGA).text = (row.all?.goals?.against ?: 0).toString()
+                            
+                            // GD
+                            val gd = row.goalsDiff ?: 0
+                            val gdText = if (gd > 0) "+$gd" else gd.toString()
+                            rowView.findViewById<android.widget.TextView>(R.id.tvRowGD).text = gdText
+                            
+                            // PTS
+                            rowView.findViewById<android.widget.TextView>(R.id.tvRowPTS).text = row.points.toString()
+                            
+                            rowsContainer.addView(rowView)
+                        }
+                        
+                        binding.layoutWcGroupsContainer.addView(groupView)
+                    }
+                } else {
+                    binding.layoutWcGroupsContainer.removeAllViews()
+                    val noDataText = android.widget.TextView(requireContext()).apply {
+                        text = getString(R.string.wc_no_data)
+                        setTextColor(ContextCompat.getColor(requireContext(), R.color.text_muted))
+                        textSize = 14f
+                        gravity = android.view.Gravity.CENTER
+                        setPadding(0, dpToPx(48f), 0, 0)
+                    }
+                    binding.layoutWcGroupsContainer.addView(noDataText)
+                }
+
+                // 2. Fetch and Populate Fixtures & Bracket (Trận đấu & VLTT)
+                var fixturesList = emptyList<com.livescore.football.livescores.footballscores.data.remote.model.MatchItemDto>()
+                try {
+                    leaguesRepository.getFixturesByLeague(1, 2026)
+                        .collect { list ->
+                            fixturesList = list
+                        }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                if (fixturesList.isNotEmpty()) {
+                    // Populate Tab 1: Trận đấu
+                    binding.layoutWcFixturesContainer.removeAllViews()
+                    fixturesList.forEach { match ->
+                        val fixtureView = inflater.inflate(R.layout.item_wc_fixture, binding.layoutWcFixturesContainer, false)
+                        
+                        val groupStageString = getString(R.string.wc_group_stage_name)
+                        val rawRound = match.league.round ?: groupStageString
+                        val displayRound = rawRound.replace("Group Stage", groupStageString).uppercase()
+                        fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureRound).text = displayRound
+                        
+                        val venueName = match.fixture.venue?.name ?: getString(R.string.wc_default_stadium)
+                        val venueCity = match.fixture.venue?.city ?: ""
+                        fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureStadium).text = "$venueName, $venueCity"
+                        
+                        fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTeam1).text = match.teams.home.name
+                        fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTeam2).text = match.teams.away.name
+                        
+                        val homeGoal = match.goals.home
+                        val awayGoal = match.goals.away
+                        val timeTextView = fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTime)
+                        
+                        val rawDate = match.fixture.date
+                        val displayDate = try {
+                             val parser = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", java.util.Locale.getDefault()).apply {
+                                 timeZone = java.util.TimeZone.getTimeZone("UTC")
+                             }
+                             val date = parser.parse(rawDate)
+                             val formatter = java.text.SimpleDateFormat("dd/MM/yyyy • HH:mm", java.util.Locale.getDefault()).apply {
+                                 timeZone = java.util.TimeZone.getDefault()
+                             }
+                             if (date != null) formatter.format(date) else rawDate
+                        } catch (e: Exception) {
+                            rawDate.split("T").firstOrNull() ?: rawDate
+                        }
+                        
+                        if (homeGoal != null && awayGoal != null) {
+                            timeTextView.text = getString(R.string.wc_result_format, displayDate, homeGoal, awayGoal)
+                            timeTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.accent_green))
+                        } else {
+                            timeTextView.text = displayDate
+                            timeTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_muted))
+                        }
+                        
+                        binding.layoutWcFixturesContainer.addView(fixtureView)
+                    }
+                } else {
+                    binding.layoutWcFixturesContainer.removeAllViews()
+                    val noDataText = android.widget.TextView(requireContext()).apply {
+                        text = getString(R.string.wc_no_data)
+                        setTextColor(ContextCompat.getColor(requireContext(), R.color.text_muted))
+                        textSize = 14f
+                        gravity = android.view.Gravity.CENTER
+                        setPadding(0, dpToPx(48f), 0, 0)
+                    }
+                    binding.layoutWcFixturesContainer.addView(noDataText)
+                }
+
+                // 3. Populate Bracket (VLTT) View
+                val bracketMatches = fixturesList.filter { match ->
+                    val round = match.league.round?.lowercase() ?: ""
+                    round.contains("round of 16") || round.contains("quarter-finals") || round.contains("semi-finals") || (round.contains("final") && !round.contains("third"))
+                }
+
+                val r16List = bracketMatches.filter { it.league.round?.lowercase()?.contains("round of 16") == true }.sortedBy { it.fixture.timestamp }
+                val qfList = bracketMatches.filter { it.league.round?.lowercase()?.contains("quarter-finals") == true }.sortedBy { it.fixture.timestamp }
+                val sfList = bracketMatches.filter { it.league.round?.lowercase()?.contains("semi-finals") == true }.sortedBy { it.fixture.timestamp }
+                val finalMatch = bracketMatches.firstOrNull { it.league.round?.lowercase()?.contains("final") == true && !it.league.round.lowercase().contains("third") }
+
+                binding.colR16.removeAllViews()
+                binding.colQF.removeAllViews()
+                binding.colSF.removeAllViews()
+                binding.colFinal.removeAllViews()
+                binding.connCol1.removeAllViews()
+                binding.connCol2.removeAllViews()
+                binding.connCol3.removeAllViews()
+
+                // Render Column 1: Round of 16 (8 matches)
+                val r16Dates = listOf(
+                    "29/6, 02:00", "30/6, 08:00", "30/6, 03:30", "1/7, 04:00",
+                    "2/7, 03:00", "2/7, 07:00", "3/7, 02:00", "3/7, 06:00"
+                )
+                for (i in 0 until 8) {
+                    if (i > 0) addSpacer(binding.colR16, 16f)
+                    val match = r16List.getOrNull(i)
+                    addBracketMatch(binding.colR16, match, r16Dates[i])
+                }
+
+                // Render Connector 1: R16 -> QF
+                addSpacer(binding.connCol1, 50f)
+                for (i in 0 until 4) {
+                    if (i > 0) addSpacer(binding.connCol1, 116f)
+                    addConnector(binding.connCol1, 116f)
+                }
+
+                // Render Column 2: Quarterfinals (4 matches)
+                val qfDates = listOf("5/7, 00:00", "5/7, 04:00", "7/7, 07:00", "7/7, 11:00")
+                addSpacer(binding.colQF, 58f)
+                for (i in 0 until 4) {
+                    if (i > 0) addSpacer(binding.colQF, 132f)
+                    val match = qfList.getOrNull(i)
+                    addBracketMatch(binding.colQF, match, qfDates[i])
+                }
+
+                // Render Connector 2: QF -> SF
+                addSpacer(binding.connCol2, 108f)
+                for (i in 0 until 2) {
+                    if (i > 0) addSpacer(binding.connCol2, 232f)
+                    addConnector(binding.connCol2, 232f)
+                }
+
+                // Render Column 3: Semifinals (2 matches)
+                val sfDates = listOf("10/7, 03:00", "10/7, 07:00")
+                addSpacer(binding.colSF, 174f)
+                for (i in 0 until 2) {
+                    if (i > 0) addSpacer(binding.colSF, 364f)
+                    val match = sfList.getOrNull(i)
+                    addBracketMatch(binding.colSF, match, sfDates[i])
+                }
+
+                // Render Connector 3: SF -> Final
+                addSpacer(binding.connCol3, 224f)
+                addConnector(binding.connCol3, 464f)
+
+                // Render Column 4: Final (1 match)
+                addSpacer(binding.colFinal, 406f)
+                addBracketMatch(binding.colFinal, finalMatch, "11/7, 02:00")
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                if (_binding != null) {
+                    binding.layoutLoadingOverlay.isVisible = false
+                    updateTabUI()
+                }
+            }
         }
     }
 
-    private fun showErrorState() {
-        binding.tvGroupATeam1.text = "1. Data N/A"
-        binding.tvGroupATeam2.text = "2. Data N/A"
-        binding.tvGroupATeam3.text = "3. Data N/A"
-        binding.tvGroupATeam4.text = "4. Data N/A"
+    private fun addBracketMatch(column: ViewGroup, match: com.livescore.football.livescores.footballscores.data.remote.model.MatchItemDto?, defaultDate: String) {
+        val inflater = LayoutInflater.from(requireContext())
+        val view = inflater.inflate(R.layout.item_wc_bracket_match, column, false)
+        bindBracketMatch(view, match, defaultDate)
+        column.addView(view)
+    }
 
-        binding.tvGroupBTeam1.text = "1. Data N/A"
-        binding.tvGroupBTeam2.text = "2. Data N/A"
-        binding.tvGroupBTeam3.text = "3. Data N/A"
-        binding.tvGroupBTeam4.text = "4. Data N/A"
+    private fun addSpacer(column: ViewGroup, heightDp: Float) {
+        val spacer = View(requireContext())
+        val params = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            dpToPx(heightDp)
+        )
+        spacer.layoutParams = params
+        column.addView(spacer)
+    }
+
+    private fun addConnector(column: ViewGroup, heightDp: Float) {
+        val view = com.livescore.football.livescores.footballscores.ui.custom.BracketConnectorView(requireContext())
+        val params = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            dpToPx(heightDp)
+        )
+        view.layoutParams = params
+        column.addView(view)
+    }
+
+    private fun bindBracketMatch(
+        view: View, 
+        match: com.livescore.football.livescores.footballscores.data.remote.model.MatchItemDto?,
+        defaultDate: String
+    ) {
+        val tvDate = view.findViewById<android.widget.TextView>(R.id.tvMatchDate)
+        val ivLogo1 = view.findViewById<android.widget.ImageView>(R.id.ivTeam1Logo)
+        val tvName1 = view.findViewById<android.widget.TextView>(R.id.tvTeam1Name)
+        val tvScore1 = view.findViewById<android.widget.TextView>(R.id.tvTeam1Score)
+        val ivLogo2 = view.findViewById<android.widget.ImageView>(R.id.ivTeam2Logo)
+        val tvName2 = view.findViewById<android.widget.TextView>(R.id.tvTeam2Name)
+        val tvScore2 = view.findViewById<android.widget.TextView>(R.id.tvTeam2Score)
+
+        if (match != null) {
+            val rawDate = match.fixture.date
+            val displayDate = try {
+                val parser = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", java.util.Locale.getDefault()).apply {
+                    timeZone = java.util.TimeZone.getTimeZone("UTC")
+                }
+                val date = parser.parse(rawDate)
+                val formatter = java.text.SimpleDateFormat("dd/MM, HH:mm", java.util.Locale.getDefault()).apply {
+                    timeZone = java.util.TimeZone.getDefault()
+                }
+                if (date != null) formatter.format(date) else defaultDate
+            } catch (e: Exception) {
+                defaultDate
+            }
+            tvDate.text = displayDate
+
+            tvName1.text = match.teams.home.name
+            Glide.with(view.context)
+                .load(match.teams.home.logo)
+                .placeholder(R.drawable.ic_favorite_border)
+                .into(ivLogo1)
+            ivLogo1.imageTintList = null
+
+            tvName2.text = match.teams.away.name
+            Glide.with(view.context)
+                .load(match.teams.away.logo)
+                .placeholder(R.drawable.ic_favorite_border)
+                .into(ivLogo2)
+            ivLogo2.imageTintList = null
+
+            val homeGoal = match.goals.home
+            val awayGoal = match.goals.away
+            if (homeGoal != null && awayGoal != null) {
+                tvScore1.text = homeGoal.toString()
+                tvScore2.text = awayGoal.toString()
+                tvScore1.visibility = View.VISIBLE
+                tvScore2.visibility = View.VISIBLE
+            } else {
+                tvScore1.visibility = View.GONE
+                tvScore2.visibility = View.GONE
+            }
+        } else {
+            tvDate.text = defaultDate
+            tvName1.text = getString(R.string.wc_tbd)
+            tvName2.text = getString(R.string.wc_tbd)
+            ivLogo1.setImageResource(R.drawable.ic_favorite_border)
+            ivLogo1.imageTintList = ContextCompat.getColorStateList(view.context, R.color.text_muted)
+            ivLogo2.setImageResource(R.drawable.ic_favorite_border)
+            ivLogo2.imageTintList = ContextCompat.getColorStateList(view.context, R.color.text_muted)
+            tvScore1.visibility = View.GONE
+            tvScore2.visibility = View.GONE
+        }
     }
 
     private fun setupCountdown() {
-        // Calculate remaining days until World Cup kickoff: June 11, 2026
         val targetCal = Calendar.getInstance().apply {
             set(Calendar.YEAR, 2026)
             set(Calendar.MONTH, Calendar.JUNE)
@@ -115,24 +407,31 @@ class WC26Fragment : Fragment() {
     private fun setupListeners() {
         binding.tabWcFixtures.setOnClickListener {
             selectedTab = 0
+            isWcBracketFullScreen = false
+            binding.bannerHeader.isVisible = true
+            binding.wcTabsContainer.isVisible = true
+            binding.btnWcZoom.setIconResource(R.drawable.ic_zoom_in)
             updateTabUI()
         }
         binding.tabWcGroups.setOnClickListener {
             selectedTab = 1
+            isWcBracketFullScreen = false
+            binding.bannerHeader.isVisible = true
+            binding.wcTabsContainer.isVisible = true
+            binding.btnWcZoom.setIconResource(R.drawable.ic_zoom_in)
             updateTabUI()
         }
-        binding.tabWcTeams.setOnClickListener {
+        binding.tabWcVLTT.setOnClickListener {
             selectedTab = 2
             updateTabUI()
         }
-        binding.tabWcNews.setOnClickListener {
-            selectedTab = 3
-            updateTabUI()
-        }
-
-        // Click reference news card to route to Main Leagues tab
-        binding.cardLinkToGeneralNews.setOnClickListener {
-            (activity as? MainActivity)?.switchToTab(R.id.nav_leagues)
+        binding.btnWcZoom.setOnClickListener {
+            isWcBracketFullScreen = !isWcBracketFullScreen
+            binding.bannerHeader.isVisible = !isWcBracketFullScreen
+            binding.wcTabsContainer.isVisible = !isWcBracketFullScreen
+            binding.btnWcZoom.setIconResource(
+                if (isWcBracketFullScreen) R.drawable.ic_zoom_out else R.drawable.ic_zoom_in
+            )
         }
     }
 
@@ -140,7 +439,6 @@ class WC26Fragment : Fragment() {
         val activeColor = ContextCompat.getColor(requireContext(), R.color.text_white)
         val inactiveColor = ContextCompat.getColor(requireContext(), R.color.text_muted)
         
-        // Reset all buttons
         binding.tabWcFixtures.apply {
             strokeWidth = 0
             setTextColor(inactiveColor)
@@ -151,24 +449,17 @@ class WC26Fragment : Fragment() {
             setTextColor(inactiveColor)
             backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.card_dark)
         }
-        binding.tabWcTeams.apply {
-            strokeWidth = 0
-            setTextColor(inactiveColor)
-            backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.card_dark)
-        }
-        binding.tabWcNews.apply {
+        binding.tabWcVLTT.apply {
             strokeWidth = 0
             setTextColor(inactiveColor)
             backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.card_dark)
         }
 
-        // Hide all views
         binding.scrollWcFixtures.isVisible = false
         binding.scrollWcGroups.isVisible = false
-        binding.scrollWcTeams.isVisible = false
-        binding.scrollWcNews.isVisible = false
+        binding.scrollWcBracket.isVisible = false
+        binding.btnWcZoom.isVisible = (selectedTab == 2)
 
-        // Apply active button styles and show active views
         when (selectedTab) {
             0 -> {
                 binding.tabWcFixtures.apply {
@@ -189,22 +480,13 @@ class WC26Fragment : Fragment() {
                 binding.scrollWcGroups.isVisible = true
             }
             2 -> {
-                binding.tabWcTeams.apply {
+                binding.tabWcVLTT.apply {
                     strokeColor = ContextCompat.getColorStateList(requireContext(), R.color.accent_green)
                     strokeWidth = dpToPx(1.5f)
                     setTextColor(activeColor)
                     backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.card_dark)
                 }
-                binding.scrollWcTeams.isVisible = true
-            }
-            3 -> {
-                binding.tabWcNews.apply {
-                    strokeColor = ContextCompat.getColorStateList(requireContext(), R.color.accent_green)
-                    strokeWidth = dpToPx(1.5f)
-                    setTextColor(activeColor)
-                    backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.card_dark)
-                }
-                binding.scrollWcNews.isVisible = true
+                binding.scrollWcBracket.isVisible = true
             }
         }
     }

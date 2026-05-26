@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Hôm nay"
+            android:text="@string/today"
             android:textColor="@color/text_white"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -85,7 +85,7 @@
             android:layout_weight="1"
             android:layout_marginEnd="4dp"
             android:backgroundTint="@color/card_dark"
-            android:text="LIVE"
+            android:text="@string/live"
             android:textColor="@color/accent_green"
             app:cornerRadius="8dp"
             app:strokeColor="@color/accent_green"
@@ -99,7 +99,7 @@
             android:layout_weight="1"
             android:layout_marginHorizontal="4dp"
             android:backgroundTint="@color/card_dark"
-            android:text="UPCOMING"
+            android:text="@string/upcoming"
             android:textColor="@color/text_muted"
             app:cornerRadius="8dp" />
 
@@ -111,7 +111,7 @@
             android:layout_weight="1"
             android:layout_marginStart="4dp"
             android:backgroundTint="@color/card_dark"
-            android:text="FINISHED"
+            android:text="@string/finished"
             android:textColor="@color/text_muted"
             app:cornerRadius="8dp" />
     </LinearLayout>
@@ -145,7 +145,7 @@
         android:id="@+id/emptyState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No fixtures found"
+        android:text="@string/empty_fixtures"
         android:textColor="@color/text_muted"
         android:textSize="16sp"
         android:visibility="gone"

@@ -6,6 +6,7 @@ import com.livescore.football.livescores.footballscores.data.local.entity.Cached
 import com.livescore.football.livescores.footballscores.data.repository.MatchRepository
 import com.livescore.football.livescores.footballscores.data.local.FavoriteManager
 import com.livescore.football.livescores.footballscores.data.local.MatchReminderManager
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -26,7 +27,8 @@ enum class MatchFilter {
 class HomeViewModel @Inject constructor(
     private val repository: MatchRepository,
     private val favoriteManager: FavoriteManager,
-    private val reminderManager: MatchReminderManager
+    private val reminderManager: MatchReminderManager,
+    private val limitManager: RequestLimitManager
 ) : ViewModel() {
 
     private val _selectedDate = MutableStateFlow<Date>(Calendar.getInstance().time)
@@ -65,6 +67,7 @@ class HomeViewModel @Inject constructor(
         val items = mutableListOf<MatchListItem>()
         val grouped = filteredMatches.groupBy { it.leagueId }
         var matchCount = 0
+        val isPremium = limitManager.isPremium()
 
         for ((leagueId, matchGroup) in grouped) {
             val firstMatch = matchGroup.first()
@@ -74,7 +77,7 @@ class HomeViewModel @Inject constructor(
                 val isRemind = remindIds.contains(match.id)
                 items.add(MatchListItem.MatchItem(match, isFav, isRemind))
                 matchCount++
-                if (matchCount % 5 == 0) {
+                if (!isPremium && matchCount % 5 == 0) {
                     items.add(MatchListItem.NativeAd(
                         id = "ad_$matchCount",
                         title = "Unlock SofaScore Premium",
@@ -135,7 +138,14 @@ class HomeViewModel @Inject constructor(
                 val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Calendar.getInstance().time)
                 repository.refreshMatchesByDate(todayStr)
                 _isLoading.value = false
-                delay(60000) // Poll every 60 seconds to protect Free API key from rate limits
+                
+                // Adjust delay time based on subscription and quota limit state
+                val delayTime = when {
+                    limitManager.isPremium() -> 15000L      // 15 seconds fast live updates for premium
+                    limitManager.isNearQuotaLimit() -> 180000L // 3 minutes slow refresh when near free quota limit
+                    else -> 60000L                           // 60 seconds normal refresh
+                }
+                delay(delayTime)
             }
         }
     }

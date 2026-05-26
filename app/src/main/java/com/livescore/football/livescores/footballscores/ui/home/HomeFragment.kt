@@ -15,8 +15,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.livescore.football.livescores.footballscores.R
+import com.livescore.football.livescores.footballscores.data.local.FavoriteManager
 import com.livescore.football.livescores.footballscores.data.local.MatchReminderManager
 import com.livescore.football.livescores.footballscores.databinding.FragmentHomeBinding
+import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallBottomSheet
 import com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -37,6 +39,9 @@ class HomeFragment : Fragment() {
 
     @Inject
     lateinit var reminderManager: MatchReminderManager
+
+    @Inject
+    lateinit var favoriteManager: FavoriteManager
 
     private var pendingReminderAction: (() -> Unit)? = null
     private val notificationPermissionLauncher = registerForActivityResult(
@@ -82,7 +87,7 @@ class HomeFragment : Fragment() {
         if (isLiveOnly) {
             binding.timeFilterLayout.visibility = View.GONE
             binding.filterLayout.visibility = View.GONE
-            binding.emptyState.text = "No live matches currently in progress"
+            binding.emptyState.text = getString(R.string.no_live_matches)
             viewModel.setFilter(MatchFilter.LIVE)
         }
 
@@ -125,7 +130,12 @@ class HomeFragment : Fragment() {
                 startActivity(intent)
             },
             onFavoriteClick = { match ->
-                viewModel.toggleFavorite(match)
+                if (favoriteManager.canAddFavoriteFixture(match.id)) {
+                    viewModel.toggleFavorite(match)
+                } else {
+                    val paywall = PremiumPaywallBottomSheet.newInstance()
+                    paywall.show(parentFragmentManager, PremiumPaywallBottomSheet.TAG)
+                }
             },
             onReminderClick = { match ->
                 checkAndRequestNotificationPermission {
@@ -180,7 +190,7 @@ class HomeFragment : Fragment() {
         val selectedDateMs = viewModel.selectedDate.value.time
         val datePicker = MaterialDatePicker.Builder.datePicker().apply {
             setTheme(R.style.CustomDatePickerTheme)
-            setTitleText("Chọn ngày thi đấu")
+            setTitleText(getString(R.string.select_match_date))
             setSelection(selectedDateMs)
         }.build()
 
@@ -252,7 +262,7 @@ class HomeFragment : Fragment() {
                       today.get(Calendar.DAY_OF_YEAR) == target.get(Calendar.DAY_OF_YEAR)
 
         if (isToday) {
-            binding.tvSelectedDateText.text = "Hôm nay"
+            binding.tvSelectedDateText.text = getString(R.string.today)
         } else {
             val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             binding.tvSelectedDateText.text = sdf.format(date)

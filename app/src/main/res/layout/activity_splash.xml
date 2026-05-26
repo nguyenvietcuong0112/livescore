@@ -6,43 +6,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/bg_dark"
     tools:ignore="ExtraText">
 
-    <androidx.cardview.widget.CardView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_splash"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:cardElevation="0dp"
-        app:cardCornerRadius="@dimen/_8sdp"
         app:layout_constraintStart_toStartOf="parent"
-
-        >
-        <androidx.appcompat.widget.AppCompatImageView
-
-            android:layout_width="86dp"
-            android:layout_height="86dp"
-            android:layout_gravity="center_horizontal"
-
-            app:srcCompat="@drawable/logo" />
-    </androidx.cardview.widget.CardView>
-
+        app:srcCompat="@drawable/logo" />
 
     <TextView
         android:id="@+id/tvNameApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="@string/app_name"
-        android:textColor="#1E1E1E"
-        android:textSize="20sp"
+        android:textColor="@color/text_white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.05"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_splash" />
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -57,7 +46,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="8dp"
             android:text="0%"
-            android:textColor="#1E1E1E"
+            android:textColor="@color/text_white"
             android:textSize="16sp"
             android:visibility="visible" />
 
@@ -84,11 +73,10 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/_30sdp"
-            android:text="This action can contain ads"
-            android:textColor="#1E1E1E"
+            android:text="@string/splash_ads_warning"
+            android:textColor="@color/text_muted"
             android:textSize="14sp" />
     </RelativeLayout>
-    >
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

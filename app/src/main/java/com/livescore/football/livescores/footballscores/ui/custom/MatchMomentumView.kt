@@ -68,12 +68,7 @@ class MatchMomentumView @JvmOverloads constructor(
 
     init {
         setLayerType(LAYER_TYPE_SOFTWARE, null)
-        // Mock default values if empty
-        setMomentumData(listOf(
-            15f, 25f, -10f, -40f, 10f, 50f, 75f, 30f, -20f, -60f,
-            -80f, -10f, 40f, 60f, -15f, 20f, 45f, 85f, 90f, 10f,
-            -25f, -45f, -95f, -30f, 5f, 15f, -20f, 40f, 65f, 80f
-        ))
+        setMomentumData(emptyList())
     }
 
     fun setMomentumData(data: List<Float>) {

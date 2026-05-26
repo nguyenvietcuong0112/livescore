@@ -15,8 +15,8 @@ class ReminderBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val matchId = intent.getIntExtra("MATCH_ID", 0)
-        val matchTitle = intent.getStringExtra("MATCH_TITLE") ?: "Trận đấu sắp diễn ra"
-        val leagueName = intent.getStringExtra("LEAGUE_NAME") ?: "Giải đấu"
+        val matchTitle = intent.getStringExtra("MATCH_TITLE") ?: context.getString(R.string.reminder_default_match_title)
+        val leagueName = intent.getStringExtra("LEAGUE_NAME") ?: context.getString(R.string.reminder_default_league_name)
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "match_reminders_channel"
@@ -44,8 +44,8 @@ class ReminderBroadcastReceiver : BroadcastReceiver() {
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_live) // Reusing existing white system icon
-            .setContentTitle("⚽ Trận đấu sắp bắt đầu!")
-            .setContentText("$matchTitle ($leagueName) sẽ khởi tranh sau 5 phút nữa. Đừng bỏ lỡ!")
+            .setContentTitle(context.getString(R.string.reminder_notification_title))
+            .setContentText(context.getString(R.string.reminder_notification_text, matchTitle, leagueName))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
