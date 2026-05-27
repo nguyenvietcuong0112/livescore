@@ -48,6 +48,17 @@ class IAPActivity : AppCompatActivity() {
         setupPlanSelection()
         setupListeners()
         observeProductDetails()
+        observePremiumStatus()
+    }
+
+    private fun observePremiumStatus() {
+        lifecycleScope.launch {
+            limitManager.isPremiumFlow.collectLatest { isPremium ->
+                if (isPremium) {
+                    navigateToHome()
+                }
+            }
+        }
     }
 
     private fun setupPlanSelection() {
@@ -127,8 +138,6 @@ class IAPActivity : AppCompatActivity() {
                 // Real Google Play Purchase Flow
                 try {
                     billingManager.launchBillingFlow(this, targetProduct)
-                    // We let BillingManager verify and finish the lifecycle
-                    finish()
                 } catch (e: Exception) {
                     Toast.makeText(this, getString(R.string.iap_toast_google_play_error, e.message), Toast.LENGTH_SHORT).show()
                 }

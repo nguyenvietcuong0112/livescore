@@ -10,6 +10,9 @@ import com.livescore.football.livescores.footballscores.data.remote.RemoteConfig
 import com.livescore.football.livescores.footballscores.data.remote.adjust.RetentionTracker
 import com.livescore.football.livescores.footballscores.databinding.ActivitySplashBinding
 import com.livescore.football.livescores.footballscores.ui.language.LanguageActivity
+import com.livescore.football.livescores.footballscores.MainActivity
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
+import android.content.Context
 import com.livescore.football.livescores.footballscores.utils.ActivityFullCallback
 import com.livescore.football.livescores.footballscores.utils.ActivityLoadNativeFullV5
 import com.mallegan.ads.callback.InterCallback
@@ -24,6 +27,9 @@ class SplashActivity : AppCompatActivity() {
 
     @Inject
     lateinit var remoteConfigManager: RemoteConfigManager
+
+    @Inject
+    lateinit var limitManager: RequestLimitManager
 
     private lateinit var binding: ActivitySplashBinding
 

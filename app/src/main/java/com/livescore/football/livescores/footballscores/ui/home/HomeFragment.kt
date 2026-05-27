@@ -222,7 +222,9 @@ class HomeFragment : Fragment() {
                 launch {
                     viewModel.matches.collect { items ->
                         binding.emptyState.isVisible = items.isEmpty()
-                        matchAdapter.submitList(items)
+                        matchAdapter.submitList(items) {
+                            binding.rvMatches.scrollToPosition(0)
+                        }
                     }
                 }
 

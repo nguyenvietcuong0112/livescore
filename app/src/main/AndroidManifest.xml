@@ -42,6 +42,7 @@
         <activity
             android:name=".ui.language.LanguageActivity"
             android:exported="false"
+            android:configChanges="locale|layoutDirection"
             android:theme="@style/Theme.MyApplication" />
         <activity
             android:name=".utils.ActivityLoadNativeFullV5"

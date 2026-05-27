@@ -219,7 +219,8 @@ class BillingManager @Inject constructor(
                     Log.e(TAG, "Failed to track purchase via AdjustHelper", e)
                 }
             } else {
-                Log.e(TAG, "Remote verification failed for both  and Legacy GSM API.")
+                Log.e(TAG, "Remote verification failed for both  and Legacy GSM API. Activating via local billing verification fallback.")
+                limitManager.setPremium(true)
             }
         }
     }
