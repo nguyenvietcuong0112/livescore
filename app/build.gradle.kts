@@ -139,7 +139,6 @@ dependencies {
     //fb sdk
     implementation(libs.facebook.android.sdk)
     implementation(libs.facebook)
-    implementation(libs.af.android.sdk)
 
 
     testImplementation(libs.junit)

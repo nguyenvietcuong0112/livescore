@@ -1,18 +1,13 @@
 package com.livescore.football.livescores.footballscores.ui.onboarding
 
-import android.Manifest
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.LoadAdError
-import com.livescore.football.livescores.footballscores.MainActivity
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
+import com.livescore.football.livescores.footballscores.data.remote.adjust.RetentionTracker
 import com.livescore.football.livescores.footballscores.databinding.ActivitySplashBinding
 import com.livescore.football.livescores.footballscores.ui.language.LanguageActivity
 import com.livescore.football.livescores.footballscores.utils.ActivityFullCallback
@@ -40,6 +35,9 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Calculate and track user retention milestones via Adjust
+        RetentionTracker.checkAndTrackRetention(this)
 
         // Pre-fetch and synchronize the dynamic API key from remote config on startup
         lifecycleScope.launch {

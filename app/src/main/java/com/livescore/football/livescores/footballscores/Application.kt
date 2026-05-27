@@ -7,16 +7,16 @@ import com.livescore.football.livescores.footballscores.data.local.BillingManage
 import com.livescore.football.livescores.footballscores.ui.onboarding.SplashActivity
 import com.mallegan.ads.util.AdsApplication
 import com.mallegan.ads.util.AppOpenManager
-import com.mallegan.ads.util.AppsFlyer
 
 import dagger.hilt.android.HiltAndroidApp
-import java.util.Collections
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import android.content.Context
+import com.livescore.football.livescores.footballscores.data.remote.adjust.AppAdjustTokens
+import com.mallegan.ads.util.AdjustHelper
 import kotlinx.coroutines.launch
 
 @HiltAndroidApp
@@ -36,7 +36,6 @@ class Application : AdsApplication() {
     override fun onCreate() {
         super.onCreate()
 
-        // Trigger GSM login 5 seconds after launch
         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
             kotlinx.coroutines.delay(5000)
             gsmManager.loginGSM()
@@ -78,7 +77,12 @@ class Application : AdsApplication() {
         Executors.newSingleThreadExecutor().execute {
             FirebaseApp.initializeApp(this)
             FacebookSdk.setClientToken(getString(R.string.facebook_client_token))
-            AppsFlyer.getInstance().initAppFlyer(this, getString(R.string.AF_DEV_KEY), true)
+            AdjustHelper.init(
+                application = this,
+                appToken = AppAdjustTokens.ADJUST_APP_TOKEN,
+                iapEventToken = AppAdjustTokens.EVENT_IAP_COMMON,
+                isDebug = BuildConfig.DEBUG
+            )
         }
     }
 

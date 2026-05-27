@@ -13,10 +13,10 @@ interface GsmApiService {
     ): Response<GsmLoginResponse>
 
     @POST("/api/economy/google-play/verify")
-    suspend fun verifyWaifu(
+    suspend fun verify(
         @Header("x-device-id") deviceId: String,
-        @Body request: GsmVerifyWaifuRequest
-    ): Response<GsmVerifyWaifuResponse>
+        @Body request: GsmVerifyRequest
+    ): Response<GsmVerifyResponse>
 
     @POST("/api/iap/subcription/check")
     suspend fun verifyLegacy(

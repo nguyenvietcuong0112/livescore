@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.util.Log
 import com.android.billingclient.api.*
+import com.livescore.football.livescores.footballscores.data.remote.adjust.AppAdjustTokens
+import com.mallegan.ads.util.AdjustHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -163,11 +165,11 @@ class BillingManager @Inject constructor(
 
             Log.d(TAG, "Starting remote transaction verification for product: $productId")
 
-            // Method A: Waifu API Verification (Recommended)
+            // Method A:  API Verification (Recommended)
             // For livescore packages (subscriptions), productType is "subscription"
             val productType = "subscription"
-            val waifuSuccess = gsmManager.verifyWaifu(productId, productType)
-            Log.d(TAG, "GSM Waifu Verify result: $waifuSuccess")
+            val Success = gsmManager.verify(productId, productType)
+            Log.d(TAG, "GSM  Verify result: $Success")
 
             // Method B: Legacy GSM Check API Verification (Fallback)
             val productName = if (productId == PRODUCT_WEEKLY) "1 Week VIP" else "1 Month VIP"
@@ -180,11 +182,44 @@ class BillingManager @Inject constructor(
             Log.d(TAG, "GSM Legacy Verify result: $legacySuccess")
 
             // Update UI/State if either verification method succeeded
-            if (waifuSuccess || legacySuccess) {
+            if (Success || legacySuccess) {
                 Log.d(TAG, "Transaction verified successfully via remote servers. Activating VIP.")
                 limitManager.setPremium(true)
+
+                // Adjust Billing Event Tracking Integration
+                try {
+                    val products = _productDetailsList.value
+                    val matchedProduct = products.find { it.productId == productId }
+                    val priceDetails = matchedProduct?.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()
+                    
+                    val rawPriceMicros = priceDetails?.priceAmountMicros ?: 0L
+                    val price = if (rawPriceMicros > 0L) rawPriceMicros / 1000000.0 else (if (productId == PRODUCT_WEEKLY) 1.99 else 5.99)
+                    val currency = priceDetails?.priceCurrencyCode ?: "USD"
+                    val orderId = purchase.orderId ?: ""
+
+                    // 1. General purchase tracking event
+                    AdjustHelper.trackEventInAppPurchase(price, currency, orderId)
+
+                    // 2. Specific billing token event
+                    val eventToken = if (productId == PRODUCT_WEEKLY) {
+                        AppAdjustTokens.EVENT_BUY_WEEKLY
+                    } else {
+                        AppAdjustTokens.EVENT_BUY_MONTHLY
+                    }
+
+                    AdjustHelper.trackRevenueEvent(
+                        eventToken = eventToken,
+                        price = price,
+                        currency = currency,
+                        orderId = orderId,
+                        delayMs = 2000
+                    )
+                    Log.d(TAG, "Adjust successfully tracked purchase for product: $productId ($price $currency)")
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to track purchase via AdjustHelper", e)
+                }
             } else {
-                Log.e(TAG, "Remote verification failed for both Waifu and Legacy GSM API.")
+                Log.e(TAG, "Remote verification failed for both  and Legacy GSM API.")
             }
         }
     }

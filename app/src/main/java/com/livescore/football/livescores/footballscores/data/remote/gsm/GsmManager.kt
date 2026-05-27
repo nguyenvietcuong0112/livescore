@@ -90,21 +90,21 @@ class GsmManager @Inject constructor(
         return@withContext false
     }
 
-    suspend fun verifyWaifu(productId: String, productType: String): Boolean = withContext(Dispatchers.IO) {
+    suspend fun verify(productId: String, productType: String): Boolean = withContext(Dispatchers.IO) {
         try {
             val deviceId = getDeviceId()
-            val request = GsmVerifyWaifuRequest(
+            val request = GsmVerifyRequest(
                 productId = productId,
                 productType = productType
             )
 
-            Log.d(TAG, "Initiating Waifu purchase verification: $request")
-            val response = gsmApiServiceProvider.get().verifyWaifu(deviceId, request)
+            Log.d(TAG, "Initiating  purchase verification: $request")
+            val response = gsmApiServiceProvider.get().verify(deviceId, request)
 
             if (response.isSuccessful && response.body() != null) {
                 val verifyResponse = response.body()!!
                 if (verifyResponse.success) {
-                    Log.d(TAG, "Waifu transaction verified successfully.")
+                    Log.d(TAG, " transaction verified successfully.")
                     
                     // Parse and store gems
                     val grantedGems = verifyResponse.grantedGems ?: verifyResponse.user?.gems ?: 0
@@ -118,13 +118,13 @@ class GsmManager @Inject constructor(
                     limitManager.setPremium(true)
                     return@withContext true
                 } else {
-                    Log.w(TAG, "Waifu transaction verification returned success = false.")
+                    Log.w(TAG, " transaction verification returned success = false.")
                 }
             } else {
-                Log.e(TAG, "Waifu verification failed: Code = ${response.code()}, Msg = ${response.message()}")
+                Log.e(TAG, " verification failed: Code = ${response.code()}, Msg = ${response.message()}")
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Exception during Waifu transaction verification", e)
+            Log.e(TAG, "Exception during  transaction verification", e)
         }
         return@withContext false
     }

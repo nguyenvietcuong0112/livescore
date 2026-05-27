@@ -78,12 +78,24 @@
         app:layout_constraintTop_toBottomOf="@id/timeFilterLayout">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLive"
+            android:id="@+id/btnFinished"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="4dp"
+            android:backgroundTint="@color/card_dark"
+            android:text="@string/finished"
+            android:textColor="@color/text_muted"
+            app:cornerRadius="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLive"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="4dp"
             android:backgroundTint="@color/card_dark"
             android:text="@string/live"
             android:textColor="@color/accent_green"
@@ -97,21 +109,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginHorizontal="4dp"
-            android:backgroundTint="@color/card_dark"
-            android:text="@string/upcoming"
-            android:textColor="@color/text_muted"
-            app:cornerRadius="8dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnFinished"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginStart="4dp"
             android:backgroundTint="@color/card_dark"
-            android:text="@string/finished"
+            android:text="@string/upcoming"
             android:textColor="@color/text_muted"
             app:cornerRadius="8dp" />
     </LinearLayout>

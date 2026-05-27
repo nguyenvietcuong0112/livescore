@@ -37,7 +37,6 @@
 
         <string name="native_keep_user" translatable="false"></string>
 
-        <string name="AF_DEV_KEY" translatable="false">LikYKU2zUYTct7BoQ7MuJY</string>
         <string name="facebook_app_id" translatable="false">1234</string>
         <string name="facebook_client_token" translatable="false">5678</string>
 

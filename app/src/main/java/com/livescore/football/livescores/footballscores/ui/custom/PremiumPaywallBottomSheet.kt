@@ -124,20 +124,24 @@ class PremiumPaywallBottomSheet : BottomSheetDialogFragment() {
                     billingManager.launchBillingFlow(requireActivity(), targetProduct)
                     dismiss()
                 } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "Lỗi khi kết nối Google Play: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.iap_toast_google_play_error, e.message),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } else {
                 // High-Fidelity Mock Billing Fallback
                 binding.progressLoading.visibility = View.VISIBLE
                 binding.btnSubscribe.isEnabled = false
-                binding.btnSubscribe.text = "Đang kết nối Mock Billing..."
+                binding.btnSubscribe.text = getString(R.string.iap_btn_connecting_mock)
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     if (isAdded) {
                         limitManager.setPremium(true)
                         Toast.makeText(
                             requireContext(),
-                            "Chúc mừng! Bạn đã dùng thử Premium thành công (Mock Billing). 🎉",
+                            getString(R.string.iap_toast_mock_success),
                             Toast.LENGTH_LONG
                         ).show()
                         
@@ -153,11 +157,19 @@ class PremiumPaywallBottomSheet : BottomSheetDialogFragment() {
         }
 
         binding.tvTerms.setOnClickListener {
-            Toast.makeText(requireContext(), "Điều khoản sử dụng: Dịch vụ Premium Auto-renewable.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.iap_terms_of_service_toast),
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         binding.tvPrivacy.setOnClickListener {
-            Toast.makeText(requireContext(), "Chính sách bảo mật: Dữ liệu thanh toán của bạn hoàn toàn bảo mật.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.iap_privacy_policy_toast),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

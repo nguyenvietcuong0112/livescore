@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="⚡ NÂNG CẤP PREMIUM"
+            android:text="@string/iap_upgrade_title"
             android:textColor="@color/text_white"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Trải nghiệm bóng đá đỉnh cao không giới hạn"
+            android:text="@string/iap_upgrade_subtitle"
             android:textColor="@color/text_muted"
             android:textSize="13sp" />
     </LinearLayout>
@@ -73,7 +73,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cập nhật trực tiếp siêu tốc (mỗi 15 giây)"
+                android:text="@string/iap_feature_1"
                 android:textColor="@color/text_white"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -96,7 +96,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Theo dõi trận đấu yêu thích không giới hạn"
+                android:text="@string/iap_feature_2"
                 android:textColor="@color/text_white"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -119,7 +119,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hoàn toàn không quảng cáo (Ad-Free)"
+                android:text="@string/iap_feature_3"
                 android:textColor="@color/text_white"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -141,7 +141,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thống kê chuyên sâu, radar chiến thuật &amp; xu hướng"
+                android:text="@string/iap_feature_4"
                 android:textColor="@color/text_white"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -178,7 +178,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gói Tháng"
+                    android:text="@string/iap_monthly_vip"
                     android:textColor="@color/text_white"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -197,13 +197,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Thanh toán mỗi tháng"
+                    android:text="@string/iap_save_monthly"
                     android:textColor="@color/text_muted"
                     android:textSize="10sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Plan 2: Yearly -->
+        <!-- Plan 2: Weekly -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardPlanYearly"
             android:layout_width="0dp"
@@ -226,7 +226,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gói Năm"
+                    android:text="@string/iap_weekly_vip"
                     android:textColor="@color/text_white"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -245,7 +245,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Tiết kiệm ~45% 🔥"
+                    android:text="@string/iap_pay_weekly"
                     android:textColor="#FFD700"
                     android:textSize="10sp"
                     android:textStyle="bold" />
@@ -261,7 +261,7 @@
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:backgroundTint="@color/accent_green"
-        android:text="Đăng ký ngay"
+        android:text="@string/iap_btn_subscribe"
         android:textColor="@color/bg_dark"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -290,7 +290,7 @@
             android:id="@+id/tvTerms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Điều khoản sử dụng"
+            android:text="@string/iap_terms_of_service"
             android:textColor="@color/text_muted"
             android:textSize="11sp"
             android:background="?android:attr/selectableItemBackground"
@@ -308,7 +308,7 @@
             android:id="@+id/tvPrivacy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chính sách bảo mật"
+            android:text="@string/iap_privacy_policy"
             android:textColor="@color/text_muted"
             android:textSize="11sp"
             android:background="?android:attr/selectableItemBackground"

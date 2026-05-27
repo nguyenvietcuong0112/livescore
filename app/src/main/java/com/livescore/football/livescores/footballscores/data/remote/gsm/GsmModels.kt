@@ -24,12 +24,12 @@ data class GsmLoginData(
     @SerializedName("accessToken") val accessToken: String?
 )
 
-data class GsmVerifyWaifuRequest(
+data class GsmVerifyRequest(
     @SerializedName("product_id") val productId: String,
     @SerializedName("product_type") val productType: String
 )
 
-data class GsmVerifyWaifuResponse(
+data class GsmVerifyResponse(
     @SerializedName("success") val success: Boolean,
     @SerializedName("granted_gems") val grantedGems: Int?,
     @SerializedName("user") val user: GsmUserData?

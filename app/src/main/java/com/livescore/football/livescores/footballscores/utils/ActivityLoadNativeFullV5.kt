@@ -83,6 +83,17 @@ class ActivityLoadNativeFullV5 : AbsBaseActivity() {
 
             override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                 super.onNativeAdLoaded(nativeAd)
+//                if (nativeAd != null) {
+//                    nativeAd.setOnPaidEventListener { adValue ->
+//                        AdjustHelper.adjustTrackAdRevenue(
+//                            "Admob",
+//                            adValue.valueMicros / 1000000.0,
+//                            adValue.currencyCode,
+//                            adIdHigh ?: "",
+//                            nativeAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName ?: "AdMob"
+//                        )
+//                    }
+//                }
                 val adView = LayoutInflater.from(this@ActivityLoadNativeFullV5)
                     .inflate(R.layout.native_full_language, null) as NativeAdView
                 val closeButton = adView.findViewById<ImageView>(R.id.close)
