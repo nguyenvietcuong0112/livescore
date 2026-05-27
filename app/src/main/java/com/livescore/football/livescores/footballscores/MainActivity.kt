@@ -14,6 +14,7 @@ import com.livescore.football.livescores.footballscores.ui.leagues.LeaguesFragme
 import com.livescore.football.livescores.footballscores.ui.wc26.WC26Fragment
 import com.livescore.football.livescores.footballscores.ui.profile.ProfileFragment
 import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallBottomSheet
+import com.livescore.football.livescores.footballscores.ui.onboarding.IAPActivity
 import com.livescore.football.livescores.footballscores.ui.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -106,6 +107,24 @@ class MainActivity : AppCompatActivity() {
         if (existing == null) {
             val paywall = PremiumPaywallBottomSheet.newInstance()
             paywall.show(supportFragmentManager, PremiumPaywallBottomSheet.TAG)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::limitManager.isInitialized) {
+            updateVipButtonVisibility()
+        }
+    }
+
+    private fun updateVipButtonVisibility() {
+        if (limitManager.isPremium()) {
+            binding.btnGoVip.visibility = android.view.View.GONE
+        } else {
+            binding.btnGoVip.visibility = android.view.View.VISIBLE
+            binding.btnGoVip.setOnClickListener {
+                startActivity(Intent(this, IAPActivity::class.java))
+            }
         }
     }
 }

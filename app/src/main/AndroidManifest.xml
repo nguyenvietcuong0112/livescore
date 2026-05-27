@@ -64,6 +64,11 @@
             android:theme="@style/Theme.MyApplication" />
 
         <activity
+            android:name=".ui.onboarding.IAPActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyApplication" />
+
+        <activity
             android:name=".ui.leagues.LeagueDetailActivity"
             android:exported="false"
             android:theme="@style/Theme.MyApplication" />

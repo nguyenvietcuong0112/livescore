@@ -37,8 +37,8 @@ class BillingManager @Inject constructor(
 
     companion object {
         private const val TAG = "BillingManager"
+        const val PRODUCT_WEEKLY = "premium_weekly"
         const val PRODUCT_MONTHLY = "premium_monthly"
-        const val PRODUCT_YEARLY = "premium_yearly"
     }
 
     init {
@@ -69,11 +69,11 @@ class BillingManager @Inject constructor(
     private fun queryProductDetails() {
         val productList = listOf(
             QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(PRODUCT_MONTHLY)
+                .setProductId(PRODUCT_WEEKLY)
                 .setProductType(BillingClient.ProductType.SUBS)
                 .build(),
             QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(PRODUCT_YEARLY)
+                .setProductId(PRODUCT_MONTHLY)
                 .setProductType(BillingClient.ProductType.SUBS)
                 .build()
         )

@@ -195,5 +195,26 @@
     <string name="legend_yellow_card">Thẻ vàng</string>
     <string name="legend_red_card">Thẻ đỏ</string>
     <string name="legend_subst">Thay người</string>
+    <!-- IAP Paywall -->
+    <string name="iap_skip">BỎ QUA</string>
+    <string name="iap_upgrade_title">⚡ NÂNG CẤP VIP PREMIUM</string>
+    <string name="iap_upgrade_subtitle">Trải nghiệm bóng đá đỉnh cao không giới hạn</string>
+    <string name="iap_feature_1">Cập nhật trực tiếp siêu tốc (mỗi 15 giây)</string>
+    <string name="iap_feature_2">Theo dõi trận đấu yêu thích không giới hạn</string>
+    <string name="iap_feature_3">Hoàn toàn không quảng cáo (Ad-Free)</string>
+    <string name="iap_feature_4">Thống kê chuyên sâu, radar chiến thuật &amp; xu hướng</string>
+    <string name="iap_weekly_vip">1 Tuần VIP</string>
+    <string name="iap_monthly_vip">1 Tháng VIP</string>
+    <string name="iap_pay_weekly">Thanh toán mỗi tuần</string>
+    <string name="iap_save_monthly">Tiết kiệm ~30\% 🔥</string>
+    <string name="iap_btn_subscribe">Đăng ký ngay</string>
+    <string name="iap_toast_mock_success">Chúc mừng! Bạn đã dùng thử Premium thành công (Mock Billing). 🎉</string>
+    <string name="iap_btn_connecting_mock">Đang kết nối Mock Billing...</string>
+    <string name="iap_terms_of_service">Điều khoản sử dụng</string>
+    <string name="iap_terms_of_service_toast">Điều khoản sử dụng: Dịch vụ Premium Auto-renewable.</string>
+    <string name="iap_privacy_policy">Chính sách bảo mật</string>
+    <string name="iap_privacy_policy_toast">Chính sách bảo mật: Dữ liệu thanh toán của bạn hoàn toàn bảo mật.</string>
+    <string name="iap_toast_google_play_error">Lỗi khi kết nối Google Play: %1$s</string>
+    <string name="iap_vip_button_label">VIP ⚡</string>
     <string name="btn_discover">KHÁM PHÁ</string>
 </resources>

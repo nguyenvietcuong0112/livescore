@@ -9,9 +9,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.livescore.football.livescores.footballscores.MainActivity
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.databinding.ActivityPermissionBinding
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PermissionActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var limitManager: RequestLimitManager
 
     private lateinit var binding: ActivityPermissionBinding
 
@@ -56,7 +63,11 @@ class PermissionActivity : AppCompatActivity() {
     }
 
     private fun navigateToHome() {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = if (limitManager.isPremium()) {
+            Intent(this, MainActivity::class.java)
+        } else {
+            Intent(this, IAPActivity::class.java)
+        }
         startActivity(intent)
         finish()
     }

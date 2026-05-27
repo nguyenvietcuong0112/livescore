@@ -1,10 +1,17 @@
 package com.livescore.football.livescores.footballscores.ui.onboarding
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
+import com.livescore.football.livescores.footballscores.MainActivity
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import android.view.LayoutInflater
 import android.view.View
+import javax.inject.Inject
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -24,6 +31,9 @@ data class IntroSlide(
 
 @AndroidEntryPoint
 class IntroSlideshowActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var limitManager: RequestLimitManager
 
     private lateinit var binding: ActivityIntroSlideshowBinding
     private lateinit var slides: List<IntroSlide>
@@ -84,8 +94,22 @@ class IntroSlideshowActivity : AppCompatActivity() {
             if (current < 3) {
                 binding.vpSlideshow.currentItem = current + 1
             } else {
-                // Launch IntroActivity (the 3 onboarding questions)
-                val intent = Intent(this, IntroActivity::class.java)
+                val onboardingPrefs = getSharedPreferences("livescore_onboarding_prefs", Context.MODE_PRIVATE)
+                val isCompleted = onboardingPrefs.getBoolean("onboarding_completed", false)
+
+                val intent = if (isCompleted) {
+                    if (hasNotificationPermission()) {
+                        if (limitManager.isPremium()) {
+                            Intent(this, MainActivity::class.java)
+                        } else {
+                            Intent(this, IAPActivity::class.java)
+                        }
+                    } else {
+                        Intent(this, PermissionActivity::class.java)
+                    }
+                } else {
+                    Intent(this, IntroActivity::class.java)
+                }
                 startActivity(intent)
                 finish()
             }
@@ -141,6 +165,16 @@ class IntroSlideshowActivity : AppCompatActivity() {
 
     private fun dpToPx(dp: Int): Int {
         return (dp * resources.displayMetrics.density).toInt()
+    }
+
+    private fun hasNotificationPermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+        return true
     }
 }
 

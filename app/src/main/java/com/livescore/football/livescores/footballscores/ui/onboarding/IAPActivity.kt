@@ -1,0 +1,175 @@
+package com.livescore.football.livescores.footballscores.ui.onboarding
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import com.android.billingclient.api.ProductDetails
+import com.livescore.football.livescores.footballscores.MainActivity
+import com.livescore.football.livescores.footballscores.R
+import com.livescore.football.livescores.footballscores.data.local.BillingManager
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
+import com.livescore.football.livescores.footballscores.databinding.ActivityIapBinding
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@AndroidEntryPoint
+class IAPActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var limitManager: RequestLimitManager
+
+    @Inject
+    lateinit var billingManager: BillingManager
+
+    private lateinit var binding: ActivityIapBinding
+    private var isMonthlySelected = false // Default: Weekly VIP selected
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        // Fast-path bypass for premium users: avoid displaying the UI entirely
+        if (limitManager.isPremium()) {
+            navigateToHome()
+            return
+        }
+
+        binding = ActivityIapBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setupPlanSelection()
+        setupListeners()
+        observeProductDetails()
+    }
+
+    private fun setupPlanSelection() {
+        binding.cardPlanWeekly.setOnClickListener {
+            isMonthlySelected = false
+            updatePlanUI()
+        }
+
+        binding.cardPlanMonthly.setOnClickListener {
+            isMonthlySelected = true
+            updatePlanUI()
+        }
+
+        // Initialize UI states
+        updatePlanUI()
+    }
+
+    private fun updatePlanUI() {
+        val activeStrokeColor = ContextCompat.getColor(this, R.color.accent_green)
+        val inactiveStrokeColor = ContextCompat.getColor(this, R.color.divider_dark)
+
+        if (isMonthlySelected) {
+            binding.cardPlanMonthly.strokeColor = activeStrokeColor
+            binding.cardPlanMonthly.strokeWidth = dpToPx(2)
+
+            binding.cardPlanWeekly.strokeColor = inactiveStrokeColor
+            binding.cardPlanWeekly.strokeWidth = dpToPx(1)
+        } else {
+            binding.cardPlanWeekly.strokeColor = activeStrokeColor
+            binding.cardPlanWeekly.strokeWidth = dpToPx(2)
+
+            binding.cardPlanMonthly.strokeColor = inactiveStrokeColor
+            binding.cardPlanMonthly.strokeWidth = dpToPx(1)
+        }
+    }
+
+    private fun observeProductDetails() {
+        lifecycleScope.launch {
+            billingManager.productDetailsList.collectLatest { products ->
+                if (products.isNotEmpty()) {
+                    updateProductPricingUI(products)
+                }
+            }
+        }
+    }
+
+    private fun updateProductPricingUI(products: List<ProductDetails>) {
+        val weeklyProduct = products.find { it.productId == BillingManager.PRODUCT_WEEKLY }
+        val monthlyProduct = products.find { it.productId == BillingManager.PRODUCT_MONTHLY }
+
+        weeklyProduct?.let { product ->
+            val pricingPhase = product.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()
+            pricingPhase?.formattedPrice?.let { price ->
+                binding.tvWeeklyPrice.text = price
+            }
+        }
+
+        monthlyProduct?.let { product ->
+            val pricingPhase = product.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()
+            pricingPhase?.formattedPrice?.let { price ->
+                binding.tvMonthlyPrice.text = price
+            }
+        }
+    }
+
+    private fun setupListeners() {
+        binding.btnSkip.setOnClickListener {
+            navigateToHome()
+        }
+
+        binding.btnSubscribe.setOnClickListener {
+            val products = billingManager.productDetailsList.value
+            val targetProductId = if (isMonthlySelected) BillingManager.PRODUCT_MONTHLY else BillingManager.PRODUCT_WEEKLY
+            val targetProduct = products.find { it.productId == targetProductId }
+
+            if (targetProduct != null) {
+                // Real Google Play Purchase Flow
+                try {
+                    billingManager.launchBillingFlow(this, targetProduct)
+                    // We let BillingManager verify and finish the lifecycle
+                    finish()
+                } catch (e: Exception) {
+                    Toast.makeText(this, getString(R.string.iap_toast_google_play_error, e.message), Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                // High-Fidelity Mock Billing Fallback
+                binding.progressLoading.visibility = View.VISIBLE
+                binding.btnSubscribe.isEnabled = false
+                binding.btnSubscribe.text = getString(R.string.iap_btn_connecting_mock)
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    limitManager.setPremium(true)
+                    Toast.makeText(
+                        this,
+                        getString(R.string.iap_toast_mock_success),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    
+                    binding.progressLoading.visibility = View.GONE
+                    binding.btnSubscribe.isEnabled = true
+                    
+                    navigateToHome()
+                }, 1500)
+            }
+        }
+
+        binding.tvTerms.setOnClickListener {
+            Toast.makeText(this, getString(R.string.iap_terms_of_service_toast), Toast.LENGTH_SHORT).show()
+        }
+
+        binding.tvPrivacy.setOnClickListener {
+            Toast.makeText(this, getString(R.string.iap_privacy_policy_toast), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun navigateToHome() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
+    }
+}

@@ -1,6 +1,9 @@
 package com.livescore.football.livescores.footballscores.ui.onboarding
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -24,12 +27,17 @@ import com.bumptech.glide.Glide
 import com.livescore.football.livescores.footballscores.MainActivity
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.databinding.ActivityIntroBinding
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class IntroActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var limitManager: RequestLimitManager
 
     private lateinit var binding: ActivityIntroBinding
     private val viewModel: OnboardingViewModel by viewModels()
@@ -117,7 +125,15 @@ class IntroActivity : AppCompatActivity() {
                 launch {
                     viewModel.onboardingCompleted.collectLatest { completed ->
                         if (completed) {
-                            val intent = Intent(this@IntroActivity, PermissionActivity::class.java)
+                            val intent = if (hasNotificationPermission()) {
+                                if (limitManager.isPremium()) {
+                                    Intent(this@IntroActivity, MainActivity::class.java)
+                                } else {
+                                    Intent(this@IntroActivity, IAPActivity::class.java)
+                                }
+                            } else {
+                                Intent(this@IntroActivity, PermissionActivity::class.java)
+                            }
                             startActivity(intent)
                             finish()
                         }
@@ -163,6 +179,16 @@ class IntroActivity : AppCompatActivity() {
                 binding.btnNext.text = getString(R.string.intro_finish)
             }
         }
+    }
+
+    private fun hasNotificationPermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+        return true
     }
 }
 

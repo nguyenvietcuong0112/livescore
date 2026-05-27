@@ -195,5 +195,26 @@
     <string name="legend_yellow_card">Yellow Card</string>
     <string name="legend_red_card">Red Card</string>
     <string name="legend_subst">Sub</string>
+    <!-- IAP Paywall -->
+    <string name="iap_skip">SKIP</string>
+    <string name="iap_upgrade_title">⚡ UPGRADE TO VIP PREMIUM</string>
+    <string name="iap_upgrade_subtitle">Experience ultimate football with zero limits</string>
+    <string name="iap_feature_1">Super-fast live updates (every 15s)</string>
+    <string name="iap_feature_2">Unlimited favorite match tracking</string>
+    <string name="iap_feature_3">Completely Ad-Free experience</string>
+    <string name="iap_feature_4">Advanced stats, tactical radar &amp; trends</string>
+    <string name="iap_weekly_vip">1 Week VIP</string>
+    <string name="iap_monthly_vip">1 Month VIP</string>
+    <string name="iap_pay_weekly">Billed every week</string>
+    <string name="iap_save_monthly">Save ~30\% 🔥</string>
+    <string name="iap_btn_subscribe">Subscribe Now</string>
+    <string name="iap_toast_mock_success">Congratulations! Premium successfully activated (Mock Billing). 🎉</string>
+    <string name="iap_btn_connecting_mock">Connecting to Mock Billing...</string>
+    <string name="iap_terms_of_service">Terms of Service</string>
+    <string name="iap_terms_of_service_toast">Terms of Service: Premium Auto-renewable subscription.</string>
+    <string name="iap_privacy_policy">Privacy Policy</string>
+    <string name="iap_privacy_policy_toast">Privacy Policy: Your payment information is fully secure.</string>
+    <string name="iap_toast_google_play_error">Error connecting to Google Play: %1$s</string>
+    <string name="iap_vip_button_label">VIP ⚡</string>
     <string name="btn_discover">DISCOVER</string>
 </resources>

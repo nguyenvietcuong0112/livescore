@@ -1,8 +1,12 @@
 package com.livescore.football.livescores.footballscores.ui.onboarding
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.LoadAdError
@@ -108,14 +112,7 @@ class SplashActivity : AppCompatActivity() {
 
 
     private fun startLanguage() {
-        val onboardingPrefs = getSharedPreferences("livescore_onboarding_prefs", Context.MODE_PRIVATE)
-        val isCompleted = onboardingPrefs.getBoolean("onboarding_completed", false)
-
-        val intent = if (isCompleted) {
-            Intent(this, MainActivity::class.java)
-        } else {
-            Intent(this, LanguageActivity::class.java)
-        }
+        val intent = Intent(this, LanguageActivity::class.java)
         startActivity(intent)
         finish()
     }

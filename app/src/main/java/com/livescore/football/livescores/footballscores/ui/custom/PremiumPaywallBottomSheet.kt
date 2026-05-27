@@ -94,8 +94,15 @@ class PremiumPaywallBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun updateProductPricingUI(products: List<ProductDetails>) {
+        val weeklyProduct = products.find { it.productId == BillingManager.PRODUCT_WEEKLY }
         val monthlyProduct = products.find { it.productId == BillingManager.PRODUCT_MONTHLY }
-        val yearlyProduct = products.find { it.productId == BillingManager.PRODUCT_YEARLY }
+
+        weeklyProduct?.let { product ->
+            val pricingPhase = product.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()
+            pricingPhase?.formattedPrice?.let { price ->
+                binding.tvYearlyPrice.text = price
+            }
+        }
 
         monthlyProduct?.let { product ->
             val pricingPhase = product.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()
@@ -103,19 +110,12 @@ class PremiumPaywallBottomSheet : BottomSheetDialogFragment() {
                 binding.tvMonthlyPrice.text = price
             }
         }
-
-        yearlyProduct?.let { product ->
-            val pricingPhase = product.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()
-            pricingPhase?.formattedPrice?.let { price ->
-                binding.tvYearlyPrice.text = price
-            }
-        }
     }
 
     private fun setupListeners() {
         binding.btnSubscribe.setOnClickListener {
             val products = billingManager.productDetailsList.value
-            val targetProductId = if (isYearlySelected) BillingManager.PRODUCT_YEARLY else BillingManager.PRODUCT_MONTHLY
+            val targetProductId = if (isYearlySelected) BillingManager.PRODUCT_WEEKLY else BillingManager.PRODUCT_MONTHLY
             val targetProduct = products.find { it.productId == targetProductId }
 
             if (targetProduct != null) {
