@@ -77,7 +77,7 @@ class WC26Fragment : Fragment() {
                     val grouped = standingsList.groupBy { it.group }
                     val sortedGroups = grouped.entries.sortedBy { it.key }
                     
-                    sortedGroups.forEach { entry ->
+                    sortedGroups.forEachIndexed { index, entry ->
                         val groupName = entry.key
                         val rows = entry.value.sortedBy { it.rank }
                         
@@ -123,6 +123,33 @@ class WC26Fragment : Fragment() {
                         }
                         
                         binding.layoutWcGroupsContainer.addView(groupView)
+
+                        if ((index + 1) % 2 == 0) {
+                            val adViewWrapper = inflater.inflate(R.layout.layout_native_no_media, binding.layoutWcGroupsContainer, false)
+                            binding.layoutWcGroupsContainer.addView(adViewWrapper)
+                            val adId = try { getString(resources.getIdentifier("native_all", "string", requireContext().packageName)) } catch (e: Exception) { "" }
+                            if (adId.isNotEmpty()) {
+                                com.mallegan.ads.util.Admob.getInstance().loadNativeAds(
+                                    requireContext(),
+                                    adId,
+                                    1,
+                                    object : com.mallegan.ads.callback.NativeCallback() {
+                                        override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
+                                            super.onNativeAdLoaded(nativeAd)
+                                            val closeBtn = adViewWrapper.findViewById<View>(R.id.close)
+                                            closeBtn?.visibility = View.GONE
+                                            com.mallegan.ads.util.Admob.getInstance().pushAdsToViewCustom(nativeAd, adViewWrapper as com.google.android.gms.ads.nativead.NativeAdView)
+                                        }
+                                        override fun onAdFailedToLoad() {
+                                            super.onAdFailedToLoad()
+                                            adViewWrapper.visibility = View.GONE
+                                        }
+                                    }
+                                )
+                            } else {
+                                adViewWrapper.visibility = View.GONE
+                            }
+                        }
                     }
                 } else {
                     binding.layoutWcGroupsContainer.removeAllViews()
@@ -150,7 +177,7 @@ class WC26Fragment : Fragment() {
                 if (fixturesList.isNotEmpty()) {
                     // Populate Tab 1: Trận đấu
                     binding.layoutWcFixturesContainer.removeAllViews()
-                    fixturesList.forEach { match ->
+                    fixturesList.forEachIndexed { index, match ->
                         val fixtureView = inflater.inflate(R.layout.item_wc_fixture, binding.layoutWcFixturesContainer, false)
                         
                         val groupStageString = getString(R.string.wc_group_stage_name)
@@ -192,6 +219,33 @@ class WC26Fragment : Fragment() {
                         }
                         
                         binding.layoutWcFixturesContainer.addView(fixtureView)
+
+                        if ((index + 1) % 3 == 0) {
+                            val adViewWrapper = inflater.inflate(R.layout.layout_native_no_media, binding.layoutWcFixturesContainer, false)
+                            binding.layoutWcFixturesContainer.addView(adViewWrapper)
+                            val adId = try { getString(resources.getIdentifier("native_all", "string", requireContext().packageName)) } catch (e: Exception) { "" }
+                            if (adId.isNotEmpty()) {
+                                com.mallegan.ads.util.Admob.getInstance().loadNativeAds(
+                                    requireContext(),
+                                    adId,
+                                    1,
+                                    object : com.mallegan.ads.callback.NativeCallback() {
+                                        override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
+                                            super.onNativeAdLoaded(nativeAd)
+                                            val closeBtn = adViewWrapper.findViewById<View>(R.id.close)
+                                            closeBtn?.visibility = View.GONE
+                                            com.mallegan.ads.util.Admob.getInstance().pushAdsToViewCustom(nativeAd, adViewWrapper as com.google.android.gms.ads.nativead.NativeAdView)
+                                        }
+                                        override fun onAdFailedToLoad() {
+                                            super.onAdFailedToLoad()
+                                            adViewWrapper.visibility = View.GONE
+                                        }
+                                    }
+                                )
+                            } else {
+                                adViewWrapper.visibility = View.GONE
+                            }
+                        }
                     }
                 } else {
                     binding.layoutWcFixturesContainer.removeAllViews()

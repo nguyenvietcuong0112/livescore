@@ -56,8 +56,8 @@ class SplashActivity : AppCompatActivity() {
 
                 ActivityLoadNativeFullV5.open(
                     this@SplashActivity,
-                    getString(R.string.native_full_splash_high),
-                    getString(R.string.native_full_splash),
+                    getString(R.string.native_splash_full_high),
+                    getString(R.string.native_splash_full),
                     object : ActivityFullCallback {
                         override fun onResultFromActivityFull() {
                             startLanguage()
@@ -69,8 +69,8 @@ class SplashActivity : AppCompatActivity() {
                 super.onAdFailedToLoad(i)
                 ActivityLoadNativeFullV5.open(
                     this@SplashActivity,
-                    getString(R.string.native_full_splash_high),
-                    getString(R.string.native_full_splash),
+                    getString(R.string.native_splash_full_high),
+                    getString(R.string.native_splash_full),
                     object : ActivityFullCallback {
                         override fun onResultFromActivityFull() {
                             startLanguage()

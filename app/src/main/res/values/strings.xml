@@ -217,4 +217,14 @@
     <string name="iap_toast_google_play_error">Error connecting to Google Play: %1$s</string>
     <string name="iap_vip_button_label">VIP ⚡</string>
     <string name="btn_discover">DISCOVER</string>
+
+    <!-- New Permission Screen Strings -->
+    <string name="permission_main_title">Notifications</string>
+    <string name="permission_main_subtitle">Stay on track with your favorite matches</string>
+    <string name="permission_section_title">PERMISSIONS</string>
+    <string name="permission_push_title">Push Notifications</string>
+    <string name="permission_push_desc">Allow notifications for reminders and updates</string>
+    <string name="permission_footer_desc">These permissions help us provide a better experience.</string>
+    <string name="permission_confirm">Confirm</string>
+
 </resources>

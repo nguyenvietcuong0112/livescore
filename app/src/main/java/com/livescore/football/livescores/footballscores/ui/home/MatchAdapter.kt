@@ -9,11 +9,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import androidx.core.content.ContextCompat
+import com.google.android.gms.ads.nativead.NativeAd
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.local.entity.CachedMatchEntity
 import com.livescore.football.livescores.footballscores.databinding.ItemLeagueHeaderBinding
 import com.livescore.football.livescores.footballscores.databinding.ItemMatchBinding
-import com.livescore.football.livescores.footballscores.databinding.LayoutNativeMediaBinding
+import com.livescore.football.livescores.footballscores.databinding.LayoutNativeNoMediaBinding
 import com.mallegan.ads.util.Admob
 import com.mallegan.ads.callback.NativeCallback
 
@@ -62,7 +63,7 @@ class MatchAdapter(
                 MatchItemViewHolder(binding)
             }
             TYPE_NATIVE_AD -> {
-                val binding = LayoutNativeMediaBinding.inflate(inflater, parent, false)
+                val binding = LayoutNativeNoMediaBinding.inflate(inflater, parent, false)
                 NativeAdViewHolder(binding)
             }
             else -> throw IllegalArgumentException("Invalid view type")
@@ -158,7 +159,7 @@ class MatchAdapter(
         }
     }
 
-    inner class NativeAdViewHolder(private val binding: LayoutNativeMediaBinding) :
+    inner class NativeAdViewHolder(private val binding: LayoutNativeNoMediaBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: MatchListItem.NativeAd) {
             val cachedAd = item.nativeAd
@@ -168,7 +169,7 @@ class MatchAdapter(
                 val context = binding.root.context
                 Admob.getInstance().loadNativeAds(
                     context,
-                    context.getString(R.string.native_live),
+                    context.getString(R.string.native_all),
                     1,
                     object : NativeCallback() {
                         override fun onAdFailedToLoad() {
@@ -178,7 +179,7 @@ class MatchAdapter(
                             binding.root.layoutParams = layoutParams
                         }
 
-                        override fun onNativeAdLoaded(loadedAd: com.google.android.gms.ads.nativead.NativeAd?) {
+                        override fun onNativeAdLoaded(loadedAd: NativeAd?) {
                             super.onNativeAdLoaded(loadedAd)
                             if (loadedAd != null) {
                                 item.nativeAd = loadedAd

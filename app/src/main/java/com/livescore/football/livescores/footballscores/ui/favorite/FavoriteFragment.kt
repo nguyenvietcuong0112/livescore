@@ -129,7 +129,19 @@ class FavoriteFragment : Fragment() {
                     viewModel.favoriteMatches.collect { items ->
                         binding.emptyStateLayout.isVisible = items.isEmpty()
                         binding.tvEmptyMessage.text = getString(R.string.no_favorite_matches)
-                        matchAdapter.submitList(items)
+                        
+                        val withAds = mutableListOf<com.livescore.football.livescores.footballscores.ui.home.MatchListItem>()
+                        var matchCount = 0
+                        items.forEach { item ->
+                            withAds.add(item)
+                            if (item is com.livescore.football.livescores.footballscores.ui.home.MatchListItem.MatchItem) {
+                                matchCount++
+                                if (matchCount % 3 == 0) {
+                                    withAds.add(com.livescore.football.livescores.footballscores.ui.home.MatchListItem.NativeAd(id = "fav_ad_$matchCount"))
+                                }
+                            }
+                        }
+                        matchAdapter.submitList(withAds)
                     }
                 }
             }

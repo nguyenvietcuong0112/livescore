@@ -8,9 +8,12 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.MainActivity
+import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.databinding.ActivityPermissionBinding
+import com.mallegan.ads.util.Admob
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -25,7 +28,7 @@ class PermissionActivity : AppCompatActivity() {
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        navigateToHome()
+        binding.switchPermission.isChecked = isGranted
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,22 +36,51 @@ class PermissionActivity : AppCompatActivity() {
         binding = ActivityPermissionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // If permission is already granted or not needed, we can just go to home
-        if (hasNotificationPermission()) {
-            navigateToHome()
-            return
-        }
+        // Set initial state
+        binding.switchPermission.isChecked = hasNotificationPermission()
 
-        binding.btnAllow.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            } else {
-                navigateToHome()
+        binding.switchPermission.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (buttonView.isPressed) { // Only handle user clicks, not programmatic changes
+                if (isChecked && !hasNotificationPermission()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                } else if (!isChecked && hasNotificationPermission()) {
+                    // Cannot easily revoke via app, visual only
+                    // Typically you might launch settings, but visual is fine for now
+                }
             }
         }
 
         binding.btnSkip.setOnClickListener {
             navigateToHome()
+        }
+
+        loadAds()
+    }
+
+    private fun loadAds() {
+        val adId = getString(R.string.native_permission)
+        if (adId.isNotEmpty()) {
+            Admob.getInstance().loadNativeAds(this, adId, 1, object : com.mallegan.ads.callback.NativeCallback() {
+                override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
+                    super.onNativeAdLoaded(nativeAd)
+                    val adView = android.view.LayoutInflater.from(this@PermissionActivity)
+                        .inflate(R.layout.layout_native_media, null) as NativeAdView
+                    binding.frAds.removeAllViews()
+                    binding.frAds.addView(adView)
+                    com.mallegan.ads.util.Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                }
+
+                override fun onAdFailedToLoad() {
+                    super.onAdFailedToLoad()
+                    binding.frAds.removeAllViews()
+                    binding.frAds.visibility = android.view.View.GONE
+                }
+            })
+        } else {
+            binding.frAds.removeAllViews()
+            binding.frAds.visibility = android.view.View.GONE
         }
     }
 
