@@ -19,6 +19,7 @@
 
 
         <string name="native_onboarding1" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+        <string name="native_live" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
         <string name="native_onboarding2" translatable="false"></string>
         <string name="native_full_intro2ads" translatable="false"></string>
         <string name="native_onboarding3" translatable="false"></string>

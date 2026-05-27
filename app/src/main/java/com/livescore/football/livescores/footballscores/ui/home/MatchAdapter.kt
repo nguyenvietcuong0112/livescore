@@ -13,7 +13,9 @@ import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.local.entity.CachedMatchEntity
 import com.livescore.football.livescores.footballscores.databinding.ItemLeagueHeaderBinding
 import com.livescore.football.livescores.footballscores.databinding.ItemMatchBinding
-import com.livescore.football.livescores.footballscores.databinding.ItemNativeAdBinding
+import com.livescore.football.livescores.footballscores.databinding.LayoutNativeMediaBinding
+import com.mallegan.ads.util.Admob
+import com.mallegan.ads.callback.NativeCallback
 
 sealed class MatchListItem {
     data class LeagueHeader(val id: Int, val name: String, val logo: String) : MatchListItem()
@@ -22,7 +24,10 @@ sealed class MatchListItem {
         val isFavorite: Boolean = false,
         val isReminderSet: Boolean = false
     ) : MatchListItem()
-    data class NativeAd(val id: String, val title: String, val body: String) : MatchListItem()
+    data class NativeAd(
+        val id: String,
+        var nativeAd: com.google.android.gms.ads.nativead.NativeAd? = null
+    ) : MatchListItem()
 }
 
 class MatchAdapter(
@@ -57,7 +62,7 @@ class MatchAdapter(
                 MatchItemViewHolder(binding)
             }
             TYPE_NATIVE_AD -> {
-                val binding = ItemNativeAdBinding.inflate(inflater, parent, false)
+                val binding = LayoutNativeMediaBinding.inflate(inflater, parent, false)
                 NativeAdViewHolder(binding)
             }
             else -> throw IllegalArgumentException("Invalid view type")
@@ -153,14 +158,52 @@ class MatchAdapter(
         }
     }
 
-    inner class NativeAdViewHolder(private val binding: ItemNativeAdBinding) :
+    inner class NativeAdViewHolder(private val binding: LayoutNativeMediaBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: MatchListItem.NativeAd) {
-            binding.tvAdTitle.text = item.title
-            binding.tvAdBody.text = item.body
-            binding.btnAdAction.setOnClickListener {
-                // Mock ad action click
+            val cachedAd = item.nativeAd
+            if (cachedAd != null) {
+                renderNativeAd(cachedAd)
+            } else {
+                val context = binding.root.context
+                Admob.getInstance().loadNativeAds(
+                    context,
+                    context.getString(R.string.native_live),
+                    1,
+                    object : NativeCallback() {
+                        override fun onAdFailedToLoad() {
+                            super.onAdFailedToLoad()
+                            val layoutParams = binding.root.layoutParams
+                            layoutParams.height = 0
+                            binding.root.layoutParams = layoutParams
+                        }
+
+                        override fun onNativeAdLoaded(loadedAd: com.google.android.gms.ads.nativead.NativeAd?) {
+                            super.onNativeAdLoaded(loadedAd)
+                            if (loadedAd != null) {
+                                item.nativeAd = loadedAd
+                                renderNativeAd(loadedAd)
+                            }
+                        }
+                    }
+                )
             }
+        }
+
+        private fun renderNativeAd(nativeAd: com.google.android.gms.ads.nativead.NativeAd) {
+            // Restore height in case it was previously collapsed
+            val layoutParams = binding.root.layoutParams
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            binding.root.layoutParams = layoutParams
+
+            // Bind the loaded native ad to our NativeAdView (which is the root of binding)
+            val adView = binding.root
+            
+            // Hide close button if present
+            val closeButton = adView.findViewById<View>(R.id.close)
+            closeButton?.visibility = View.GONE
+
+            Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
         }
     }
 

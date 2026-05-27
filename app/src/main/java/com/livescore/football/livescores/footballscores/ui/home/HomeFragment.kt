@@ -22,6 +22,7 @@ import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywall
 import com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -42,6 +43,8 @@ class HomeFragment : Fragment() {
 
     @Inject
     lateinit var favoriteManager: FavoriteManager
+
+
 
     private var pendingReminderAction: (() -> Unit)? = null
     private val notificationPermissionLauncher = registerForActivityResult(
@@ -309,6 +312,8 @@ class HomeFragment : Fragment() {
         super.onPause()
         viewModel.stopLivePolling()
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

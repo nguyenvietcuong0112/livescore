@@ -116,7 +116,6 @@
             app:cornerRadius="8dp" />
     </LinearLayout>
 
-    <!-- Matches RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMatches"
         android:layout_width="match_parent"

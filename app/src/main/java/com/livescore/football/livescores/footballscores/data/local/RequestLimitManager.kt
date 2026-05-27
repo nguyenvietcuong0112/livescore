@@ -7,6 +7,9 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -26,6 +29,9 @@ class RequestLimitManager @Inject constructor(
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     val limitExceededFlow: SharedFlow<Unit> = _limitExceededFlow.asSharedFlow()
+
+    private val _isPremiumState = MutableStateFlow(isPremium())
+    val isPremiumFlow: StateFlow<Boolean> = _isPremiumState.asStateFlow()
 
     companion object {
         private const val KEY_LAST_DATE = "last_request_date"
@@ -100,6 +106,7 @@ class RequestLimitManager @Inject constructor(
 
     fun setPremium(isPremium: Boolean) {
         prefs.edit().putBoolean(KEY_IS_PREMIUM, isPremium).apply()
+        _isPremiumState.value = isPremium
         // Instantly notify observers of quota changes when premium is acquired
         triggerLimitExceeded() 
     }
