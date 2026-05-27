@@ -21,14 +21,15 @@ android {
         applicationId = "com.livescore.football.livescores.footballscores"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.0.1"
+        versionCode = 2
+        versionName = "0.0.2"
 
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
+            isCrunchPngs = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -48,10 +49,38 @@ android {
 
     applicationVariants.all {
         val variant = this
+        val type = variant.buildType.name
+
+        // APK
         variant.outputs.all {
             val output = this as? com.android.build.gradle.api.ApkVariantOutput
+            output?.outputFileName =
+                "D57_LiveScore_v${variant.versionName}_c${variant.versionCode}_${formattedDate}-${type}.apk"
+        }
+
+        // AAB
+        applicationVariants.all {
+            val variant = this
             val type = variant.buildType.name
-            output?.outputFileName = "D57_LiveScore_v${variant.versionName}_c${variant.versionCode}_${formattedDate}-${type}.apk"
+
+            // APK
+            variant.outputs.all {
+                val output = this as? com.android.build.gradle.api.ApkVariantOutput
+                output?.outputFileName =
+                    "D57_LiveScore_v${variant.versionName}_c${variant.versionCode}_${formattedDate}-${type}.apk"
+            }
+        }
+    }
+    tasks.whenTaskAdded {
+        if (name == "bundleRelease") {
+            doLast {
+                val bundleDir = File(project.buildDir, "outputs/bundle/release")
+                bundleDir.listFiles { f -> f.extension == "aab" }?.forEach { aab ->
+                    val newName =
+                        "D57_LiveScore_v${android.defaultConfig.versionName}_c${android.defaultConfig.versionCode}_${formattedDate}-release.aab"
+                    aab.renameTo(File(aab.parent, newName))
+                }
+            }
         }
     }
 }

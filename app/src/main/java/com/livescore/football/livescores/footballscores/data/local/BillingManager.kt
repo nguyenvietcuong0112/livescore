@@ -37,8 +37,8 @@ class BillingManager @Inject constructor(
 
     companion object {
         private const val TAG = "BillingManager"
-        const val PRODUCT_WEEKLY = "premium_weekly"
-        const val PRODUCT_MONTHLY = "premium_monthly"
+        const val PRODUCT_WEEKLY = "com.livescore.weekly"
+        const val PRODUCT_MONTHLY = "com.livescore.monthly"
     }
 
     init {
