@@ -118,12 +118,7 @@ class MatchDetailViewModel @Inject constructor(
                 }
 
                 isFirstLoad = false
-                val delayTime = when {
-                    limitManager.isPremium() -> 15000L      // 15 seconds fast live updates for premium
-                    limitManager.isNearQuotaLimit() -> 180000L // 3 minutes slow refresh when near free quota limit
-                    else -> 60000L                           // 60 seconds normal refresh
-                }
-                delay(delayTime)
+                delay(limitManager.getPollingInterval())
             }
         }
     }

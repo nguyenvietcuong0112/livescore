@@ -85,7 +85,7 @@ class MatchDetailActivity : AppCompatActivity() {
     private fun captureViewToBitmap(view: View): Bitmap {
         val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        canvas.drawColor(Color.parseColor("#0B0E13")) // Premium deep dark background
+        canvas.drawColor(ContextCompat.getColor(this, R.color.background))
         view.draw(canvas)
         return bitmap
     }
@@ -168,7 +168,7 @@ class MatchDetailActivity : AppCompatActivity() {
 
             val bitmap = Bitmap.createBitmap(totalWidth, totalHeight, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(bitmap)
-            canvas.drawColor(Color.parseColor("#0B0E13")) // Premium deep dark background
+            canvas.drawColor(ContextCompat.getColor(this, R.color.background))
 
             // 1. Draw Match Header
             binding.matchHeader.root.draw(canvas)

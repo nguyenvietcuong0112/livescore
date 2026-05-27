@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark">
+    android:background="@color/bg_light">
 
-    <!-- Time Filter (Left Arrow | Clickable Date Pill | Right Arrow) -->
+    <!-- Modern Horizontal Calendar Strip Layout -->
     <LinearLayout
         android:id="@+id/timeFilterLayout"
         android:layout_width="match_parent"
@@ -15,56 +15,38 @@
         android:gravity="center_vertical"
         android:paddingVertical="8dp"
         android:paddingHorizontal="12dp"
-        android:background="@color/card_dark"
+        android:background="@color/background"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/btnPrevDay"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:padding="12dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_arrow_left"
-            android:contentDescription="Previous Day"
-            app:tint="@color/accent_green" />
-
-        <View
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvDateSelector"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
+            android:layout_height="95dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_date" />
 
-        <TextView
-            android:id="@+id/tvSelectedDateText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/today"
-            android:textColor="@color/text_white"
-            android:textSize="14sp"
-            android:textStyle="bold"
+        <FrameLayout
+            android:id="@+id/btnCalendar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/bg_date_card_unselected"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/bg_date_pill"
-            android:paddingHorizontal="18dp"
-            android:paddingVertical="10dp"
-            android:drawableStart="@drawable/ic_calendar"
-            android:drawablePadding="8dp"
-            app:drawableTint="@color/accent_green" />
+            android:elevation="2dp"
+            android:foreground="?attr/selectableItemBackground">
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:id="@+id/btnNextDay"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:padding="12dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_arrow_right"
-            android:contentDescription="Next Day"
-            app:tint="@color/accent_green" />
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_calendar"
+                app:tint="@color/textPrimary" />
+        </FrameLayout>
     </LinearLayout>
 
     <!-- Filter Status Layout (LIVE | UPCOMING | FINISHED) -->

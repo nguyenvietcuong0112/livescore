@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
+import com.livescore.football.livescores.footballscores.R
 
 class BracketConnectorView @JvmOverloads constructor(
     context: Context,
@@ -14,7 +16,7 @@ class BracketConnectorView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#D1D5DB") // Subtle grey line as in screenshot
+        color = ContextCompat.getColor(context, R.color.border)
         strokeWidth = 3f
         style = Paint.Style.STROKE
     }

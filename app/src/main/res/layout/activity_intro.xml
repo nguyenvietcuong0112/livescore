@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark">
+    android:background="@color/bg_light">
 
     <!-- Header bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -214,7 +214,7 @@
         android:id="@+id/cvFooter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/bg_dark"
+        app:cardBackgroundColor="@color/bg_light"
         app:cardElevation="8dp"
         app:strokeWidth="0dp"
         app:layout_constraintBottom_toBottomOf="parent">

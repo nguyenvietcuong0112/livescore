@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.livescore.football.livescores.footballscores.R
@@ -144,7 +145,7 @@ class CustomCalendarDialog(
                     holder.tvDayText.setTextColor(Color.WHITE)
                     holder.tvDayText.setBackgroundResource(R.drawable.bg_calendar_selected_day)
                 } else {
-                    holder.tvDayText.setTextColor(Color.parseColor("#38B6FF"))
+                    holder.tvDayText.setTextColor(ContextCompat.getColor(requireContext(), R.color.calendar_day_selected))
                     // Use system selectable item background for modern click feedback
                     val attrs = intArrayOf(android.R.attr.selectableItemBackgroundBorderless)
                     val typedArray = requireContext().obtainStyledAttributes(attrs)

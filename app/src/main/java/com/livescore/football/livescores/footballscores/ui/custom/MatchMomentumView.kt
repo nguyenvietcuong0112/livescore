@@ -6,6 +6,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import androidx.core.content.ContextCompat
+import com.livescore.football.livescores.footballscores.R
 
 class MatchMomentumView @JvmOverloads constructor(
     context: Context,
@@ -24,41 +26,41 @@ class MatchMomentumView @JvmOverloads constructor(
     }
 
     private val homeStrokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#00C853")
+        color = ContextCompat.getColor(context, R.color.momentum_home_stroke)
         style = Paint.Style.STROKE
         strokeWidth = 4.5f
         strokeCap = Paint.Cap.ROUND
     }
 
     private val awayStrokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#9AA4B2")
+        color = ContextCompat.getColor(context, R.color.momentum_away_stroke)
         style = Paint.Style.STROKE
         strokeWidth = 4.5f
         strokeCap = Paint.Cap.ROUND
     }
 
     private val centerAxisPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#2A3342") // Sleek charcoal
+        color = ContextCompat.getColor(context, R.color.momentum_axis)
         strokeWidth = 2.5f
         style = Paint.Style.STROKE
     }
 
     private val gridLinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#171D26") // Subtle background grid
+        color = ContextCompat.getColor(context, R.color.momentum_grid)
         strokeWidth = 1.5f
         style = Paint.Style.STROKE
         pathEffect = DashPathEffect(floatArrayOf(12f, 12f), 0f)
     }
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#4B5565")
+        color = ContextCompat.getColor(context, R.color.momentum_text)
         textSize = 20f
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
     }
 
     private val labelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#9AA4B2")
+        color = ContextCompat.getColor(context, R.color.momentum_text)
         textSize = 18f
         textAlign = Paint.Align.LEFT
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
@@ -143,14 +145,20 @@ class MatchMomentumView @JvmOverloads constructor(
 
             homeFillPaint.shader = LinearGradient(
                 0f, centerY - maxBarHeight, 0f, centerY,
-                intArrayOf(Color.parseColor("#4D00C853"), Color.parseColor("#0500C853")), // Rich translucent green gradient
+                intArrayOf(
+                    ContextCompat.getColor(context, R.color.momentum_home_fill_start),
+                    ContextCompat.getColor(context, R.color.momentum_home_fill_end)
+                ),
                 null, Shader.TileMode.CLAMP
             )
             canvas.drawPath(homeFillPath, homeFillPaint)
 
             val homeLinePath = Path()
             homeLinePath.smoothPathTo(homePoints)
-            homeStrokePaint.setShadowLayer(8f, 0f, 0f, Color.parseColor("#00C853"))
+            homeStrokePaint.setShadowLayer(
+                8f, 0f, 0f,
+                ContextCompat.getColor(context, R.color.momentum_home_stroke)
+            )
             canvas.drawPath(homeLinePath, homeStrokePaint)
         }
 
@@ -164,14 +172,20 @@ class MatchMomentumView @JvmOverloads constructor(
 
             awayFillPaint.shader = LinearGradient(
                 0f, centerY + maxBarHeight, 0f, centerY,
-                intArrayOf(Color.parseColor("#4D9AA4B2"), Color.parseColor("#059AA4B2")), // Rich translucent grey gradient
+                intArrayOf(
+                    ContextCompat.getColor(context, R.color.momentum_away_fill_start),
+                    ContextCompat.getColor(context, R.color.momentum_away_fill_end)
+                ),
                 null, Shader.TileMode.CLAMP
             )
             canvas.drawPath(awayFillPath, awayFillPaint)
 
             val awayLinePath = Path()
             awayLinePath.smoothPathTo(awayPoints)
-            awayStrokePaint.setShadowLayer(8f, 0f, 0f, Color.parseColor("#9AA4B2"))
+            awayStrokePaint.setShadowLayer(
+                8f, 0f, 0f,
+                ContextCompat.getColor(context, R.color.momentum_away_stroke)
+            )
             canvas.drawPath(awayLinePath, awayStrokePaint)
         }
     }

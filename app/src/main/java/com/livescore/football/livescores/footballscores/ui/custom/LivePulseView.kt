@@ -6,6 +6,8 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
+import androidx.core.content.ContextCompat
+import com.livescore.football.livescores.footballscores.R
 
 class LivePulseView @JvmOverloads constructor(
     context: Context,
@@ -29,10 +31,13 @@ class LivePulseView @JvmOverloads constructor(
     private var animator: ValueAnimator? = null
     private var pulseProgress = 0f
 
-    // Premium color palette values
-    private val colorCenter = Color.parseColor("#66FFB2") // Bright mint neon green core
-    private val colorPrimary = Color.parseColor("#00C853") // Pitch green
-    private val colorTransparent = Color.parseColor("#0000C853") // Translucent green for gradients
+    // Premium color palette values resolved dynamically from XML resources
+    private val colorCenter by lazy { ContextCompat.getColor(context, R.color.live_pulse_center) }
+    private val colorPrimary by lazy { ContextCompat.getColor(context, R.color.live_pulse_primary) }
+    private val colorTransparent by lazy { ContextCompat.getColor(context, R.color.live_pulse_transparent) }
+    private val colorGlowStart by lazy { ContextCompat.getColor(context, R.color.live_pulse_glow_start) }
+    private val colorGlowMid by lazy { ContextCompat.getColor(context, R.color.live_pulse_glow_mid) }
+    private val colorDark by lazy { ContextCompat.getColor(context, R.color.live_pulse_dark) }
 
     init {
         // Support shadow layers for soft glows
@@ -98,7 +103,7 @@ class LivePulseView @JvmOverloads constructor(
         val glowRadius = baseRadius * 1.8f
         val glowShader = RadialGradient(
             cx, cy, glowRadius,
-            intArrayOf(Color.argb(90, 0, 200, 83), Color.argb(30, 0, 200, 83), colorTransparent),
+            intArrayOf(colorGlowStart, colorGlowMid, colorTransparent),
             null, Shader.TileMode.CLAMP
         )
         glowPaint.shader = glowShader
@@ -107,7 +112,7 @@ class LivePulseView @JvmOverloads constructor(
         // Draw the premium solid inner dot with radial gradient core
         val dotShader = RadialGradient(
             cx, cy, baseRadius,
-            intArrayOf(colorCenter, colorPrimary, Color.parseColor("#008000")),
+            intArrayOf(colorCenter, colorPrimary, colorDark),
             floatArrayOf(0f, 0.7f, 1f),
             Shader.TileMode.CLAMP
         )

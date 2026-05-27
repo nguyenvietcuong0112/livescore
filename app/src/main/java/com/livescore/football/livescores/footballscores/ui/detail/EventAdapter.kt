@@ -10,6 +10,7 @@ import com.livescore.football.livescores.footballscores.databinding.ItemMatchEve
 
 import android.graphics.Color
 import android.content.res.ColorStateList
+import androidx.core.content.ContextCompat
 
 class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
@@ -85,17 +86,18 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
         }
 
         private fun getEventColor(type: String, detail: String?): Int {
+            val context = itemView.context
             return when (type.uppercase()) {
-                "GOAL" -> Color.parseColor("#FFFFFF") // White soccer ball
+                "GOAL" -> ContextCompat.getColor(context, R.color.white)
                 "CARD" -> {
                     if (detail?.contains("Red", ignoreCase = true) == true) {
-                        Color.parseColor("#DD2C00") // Red card color
+                        ContextCompat.getColor(context, R.color.colorError)
                     } else {
-                        Color.parseColor("#FFD600") // Yellow card color
+                        ContextCompat.getColor(context, R.color.colorWarning)
                     }
                 }
-                "SUBST" -> Color.parseColor("#00C853") // Green substitution arrows
-                else -> Color.parseColor("#00C853")
+                "SUBST" -> ContextCompat.getColor(context, R.color.colorSuccess)
+                else -> ContextCompat.getColor(context, R.color.colorSuccess)
             }
         }
     }

@@ -4,47 +4,62 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dateTabRoot"
     android:layout_width="65dp"
-    android:layout_height="match_parent"
-    android:background="@color/transparent"
+    android:layout_height="85dp"
+    android:layout_margin="4dp"
+    android:background="@drawable/bg_date_card_unselected"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?attr/selectableItemBackgroundBorderless">
+    android:foreground="?attr/selectableItemBackground"
+    android:elevation="2dp">
 
     <TextView
         android:id="@+id/tvDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textColor="@color/text_muted"
-        android:textSize="12sp"
+        android:textColor="@color/textSecondary"
+        android:textSize="11sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="MON" />
+        tools:text="Tue" />
 
     <TextView
         android:id="@+id/tvDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/text_white"
-        android:textSize="16sp"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/textPrimary"
+        android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/indicator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDay"
-        tools:text="12" />
+        tools:text="20" />
+
+    <TextView
+        android:id="@+id/tvMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/textSecondary"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDate"
+        tools:text="May" />
 
     <View
         android:id="@+id/indicator"
         android:layout_width="16dp"
-        android:layout_height="3dp"
-        android:background="@color/accent_green"
+        android:layout_height="2.5dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/white"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMonth"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

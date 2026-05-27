@@ -37,7 +37,20 @@ class RequestLimitManager @Inject constructor(
         private const val KEY_LAST_DATE = "last_request_date"
         private const val KEY_REQ_COUNT = "request_count"
         private const val KEY_IS_PREMIUM = "is_premium_user"
-        private const val DAILY_LIMIT = 20
+        
+        // Manage all request rate properties in one single place
+        const val DAILY_LIMIT = 20
+        const val PREMIUM_POLLING_INTERVAL = 30000L
+        const val NEAR_LIMIT_POLLING_INTERVAL = 30000L
+        const val NORMAL_POLLING_INTERVAL = 60000L
+    }
+
+    fun getPollingInterval(): Long {
+        return when {
+            isPremium() -> PREMIUM_POLLING_INTERVAL
+            isNearQuotaLimit() -> NEAR_LIMIT_POLLING_INTERVAL
+            else -> NORMAL_POLLING_INTERVAL
+        }
     }
 
     private fun getTodayDateString(): String {

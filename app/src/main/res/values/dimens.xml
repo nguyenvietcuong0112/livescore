@@ -89,4 +89,25 @@
     <dimen name="headline_margin_start">8dp</dimen>
     <dimen name="cta_button_margin_top">32dp</dimen>
     <dimen name="cta_button_text_size">12sp</dimen>
+
+    <!-- Standardized Typography Text Sizes -->
+    <dimen name="text_xs">10sp</dimen>
+    <dimen name="text_sm">12sp</dimen>
+    <dimen name="text_md">14sp</dimen>
+    <dimen name="text_lg">16sp</dimen>
+    <dimen name="text_xl">18sp</dimen>
+    <dimen name="text_xxl">20sp</dimen>
+    <dimen name="text_title">24sp</dimen>
+
+    <!-- Standardized Spacing Systems -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">12dp</dimen>
+    <dimen name="spacing_lg">16dp</dimen>
+    <dimen name="spacing_xl">24dp</dimen>
+
+    <!-- Standardized Shapes Corner Radii -->
+    <dimen name="radius_sm">8dp</dimen>
+    <dimen name="radius_md">12dp</dimen>
+    <dimen name="radius_lg">16dp</dimen>
 </resources>

@@ -37,6 +37,7 @@ class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels()
     private lateinit var matchAdapter: MatchAdapter
+    private lateinit var dateAdapter: DateAdapter
 
     @Inject
     lateinit var reminderManager: MatchReminderManager
@@ -155,6 +156,15 @@ class HomeFragment : Fragment() {
         )
         binding.rvMatches.layoutManager = LinearLayoutManager(requireContext())
         binding.rvMatches.adapter = matchAdapter
+
+        // Date Selector Adapter setup
+        dateAdapter = DateAdapter(
+            onDateClick = { item, position ->
+                viewModel.setSelectedDate(item.date)
+            }
+        )
+        binding.rvDateSelector.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvDateSelector.adapter = dateAdapter
     }
 
     private fun setupFilters() {
@@ -170,23 +180,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupCalendarPicker() {
-        binding.btnPrevDay.setOnClickListener {
-            adjustSelectedDate(-1)
-        }
-        binding.btnNextDay.setOnClickListener {
-            adjustSelectedDate(1)
-        }
-        binding.tvSelectedDateText.setOnClickListener {
+        binding.btnCalendar.setOnClickListener {
             showDatePickerDialog()
         }
-    }
-
-    private fun adjustSelectedDate(days: Int) {
-        val cal = Calendar.getInstance().apply {
-            time = viewModel.selectedDate.value
-            add(Calendar.DAY_OF_YEAR, days)
-        }
-        viewModel.setSelectedDate(cal.time)
     }
 
     private fun showDatePickerDialog() {
@@ -244,10 +240,12 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                // Collect Date picker/arrows selection and update TextView title
+                // Collect Date selection and update Horizontal calendar strip
                 launch {
                     viewModel.selectedDate.collect { date ->
-                        updateDateText(date)
+                        dateAdapter.setSelectedDate(date)
+                        binding.rvDateSelector.scrollToPosition(dateAdapter.getSelectedPosition())
+                        
                         // Synchronize state: hide sub-filters layout when selected date is NOT today
                         val isLiveOnly = arguments?.getBoolean(ARG_LIVE_ONLY, false) ?: false
                         binding.filterLayout.isVisible = isToday(date) && !isLiveOnly
@@ -257,20 +255,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun updateDateText(date: Date) {
-        val today = Calendar.getInstance()
-        val target = Calendar.getInstance().apply { time = date }
 
-        val isToday = today.get(Calendar.YEAR) == target.get(Calendar.YEAR) &&
-                      today.get(Calendar.DAY_OF_YEAR) == target.get(Calendar.DAY_OF_YEAR)
-
-        if (isToday) {
-            binding.tvSelectedDateText.text = getString(R.string.today)
-        } else {
-            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            binding.tvSelectedDateText.text = sdf.format(date)
-        }
-    }
 
     private fun updateFilterButtonUI(selectedFilter: MatchFilter) {
         val ctx = requireContext()

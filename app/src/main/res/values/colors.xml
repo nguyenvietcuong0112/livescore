@@ -5,24 +5,92 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
 
-    <!-- Theme Custom Colors -->
-    <color name="bg_dark">#0B0E13</color>
-    <color name="card_dark">#141922</color>
-    <color name="accent_green">#00C853</color>
-    <color name="accent_green_secondary">#00E676</color>
-    <color name="text_white">#FFFFFF</color>
-    <color name="text_muted">#9AA4B2</color>
-    <color name="divider_dark">#1E2530</color>
+    <!-- Modern White Clean Theme Color System -->
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#F8F9FB</color>
+    <color name="border">#E5E7EB</color>
+    <color name="divider">#F1F3F5</color>
+
+    <!-- Brand Accent Colors (Tech Blue Primary) -->
+    <color name="primaryBlue">#2563EB</color>
+    <color name="selectedBlue">@color/primaryBlue</color>
+    <color name="accentBlue">#3B82F6</color>
+    <color name="accentBlueLight">#60A5FA</color>
+    <color name="primaryRed">#E53935</color>
+
+    <!-- Typography Text Colors -->
+    <color name="textPrimary">#111111</color>
+    <color name="textSecondary">#666666</color>
+    <color name="textHint">#999999</color>
+
+    <!-- Semantic Status Colors -->
+    <color name="colorSuccess">#16A34A</color>
+    <color name="colorError">#DC2626</color>
+    <color name="colorWarning">#F59E0B</color>
+    <color name="colorInfo">@color/primaryBlue</color>
+
+    <!-- Backward Compatibility Mapping (Keeps 50+ Layouts Unbroken & Beautiful in Blue) -->
+    <color name="bg_light">@color/background</color>
+    <color name="card_dark">@color/surface</color>
+    <color name="accent_green">@color/primaryBlue</color>
+    <color name="accent_green_secondary">@color/accentBlue</color>
+    <color name="text_white">@color/textPrimary</color>
+    <color name="text_muted">@color/textSecondary</color>
+    <color name="divider_dark">@color/divider</color>
     
     <!-- Shimmer Loading Colors -->
-    <color name="shimmer_base">#1A222E</color>
-    <color name="shimmer_highlight">#2D394C</color>
+    <color name="shimmer_base">#E5E7EB</color>
+    <color name="shimmer_highlight">#F3F4F6</color>
     
     <!-- Event Badge Colors -->
-    <color name="card_yellow">#FFD600</color>
-    <color name="card_red">#DD2C00</color>
+    <color name="card_yellow">@color/colorWarning</color>
+    <color name="card_red">@color/colorError</color>
 
     <!-- Intro Slideshow Indicator Colors -->
-    <color name="neon_lime_green">#C5FF29</color>
-    <color name="inactive_indicator_grey">#2E303D</color>
+    <color name="neon_lime_green">@color/primaryBlue</color>
+    <color name="inactive_indicator_grey">@color/border</color>
+
+    <!-- Live Pulse Special Colors (Unified Brand Blue Tech Highlights) -->
+    <color name="live_pulse_center">@color/accentBlueLight</color>
+    <color name="live_pulse_primary">@color/primaryBlue</color>
+    <color name="live_pulse_transparent">#002563EB</color>
+    <color name="live_pulse_glow_start">#5A2563EB</color>
+    <color name="live_pulse_glow_mid">#1E2563EB</color>
+    <color name="live_pulse_dark">#1E40AF</color>
+
+    <!-- Match Momentum Special Colors -->
+    <color name="momentum_home_stroke">@color/primaryBlue</color>
+    <color name="momentum_away_stroke">@color/textSecondary</color>
+    <color name="momentum_axis">@color/border</color>
+    <color name="momentum_grid">@color/divider</color>
+    <color name="momentum_text">@color/textSecondary</color>
+    <color name="momentum_home_fill_start">#4D2563EB</color>
+    <color name="momentum_home_fill_end">#052563EB</color>
+    <color name="momentum_away_fill_start">#4D9AA4B2</color>
+    <color name="momentum_away_fill_end">#059AA4B2</color>
+
+    <!-- Timeline Special Colors -->
+    <color name="timeline_progress_end">@color/accentBlue</color>
+    <color name="timeline_playhead_glow">#332563EB</color>
+    <color name="timeline_soccer_ball_border">#9AA4B2</color>
+    <color name="timeline_soccer_ball_dark">#666666</color>
+    <color name="black_alpha_25">#40000000</color>
+
+    <!-- Pitch View Special Colors -->
+    <color name="pitch_stripe_a">#E8F5E9</color>
+    <color name="pitch_stripe_b">#C8E6C9</color>
+    <color name="pitch_line">#99111111</color>
+    <color name="pitch_border_glow">#A7F3D0</color>
+    <color name="pitch_ball_shadow">#30111111</color>
+
+    <!-- Calendar Special Colors -->
+    <color name="calendar_day_selected">@color/primaryBlue</color>
+
+    <!-- Standings Special Colors -->
+    <color name="standing_promotion_blue">@color/accentBlue</color>
+
+    <!-- Top Stats Podium Colors -->
+    <color name="stats_rank_gold">#FFD700</color>
+    <color name="stats_rank_silver">#C0C0C0</color>
+    <color name="stats_rank_bronze">#CD7F32</color>
 </resources>

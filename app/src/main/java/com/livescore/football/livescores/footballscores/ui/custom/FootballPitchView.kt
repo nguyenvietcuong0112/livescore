@@ -6,6 +6,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import androidx.core.content.ContextCompat
+import com.livescore.football.livescores.footballscores.R
 
 class FootballPitchView @JvmOverloads constructor(
     context: Context,
@@ -15,78 +17,78 @@ class FootballPitchView @JvmOverloads constructor(
 
     // Harmonious modern lawn greens
     private val stripePaintA = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#152419") // Deep stadium green
+        color = ContextCompat.getColor(context, R.color.pitch_stripe_a)
         style = Paint.Style.FILL
     }
 
     private val stripePaintB = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#1C3122") // Sleek contrasting dark green
+        color = ContextCompat.getColor(context, R.color.pitch_stripe_b)
         style = Paint.Style.FILL
     }
 
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#80FFFFFF") // Semi-transparent white lines
+        color = ContextCompat.getColor(context, R.color.pitch_line)
         strokeWidth = 2.5f
         style = Paint.Style.STROKE
     }
 
     private val glowingBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#1D8E3B") // Neon border glow
+        color = ContextCompat.getColor(context, R.color.pitch_border_glow)
         strokeWidth = 3f
         style = Paint.Style.STROKE
     }
 
     private val pointerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#00C853")
+        color = ContextCompat.getColor(context, R.color.selectedBlue)
         strokeWidth = 2.5f
         style = Paint.Style.STROKE
         pathEffect = DashPathEffect(floatArrayOf(10f, 8f), 0f)
     }
 
     private val textBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#D90B0E13") // Dark sleek card translucency
+        color = ContextCompat.getColor(context, R.color.background)
         style = Paint.Style.FILL
     }
 
     private val textBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#1E2530")
+        color = ContextCompat.getColor(context, R.color.border)
         strokeWidth = 1.5f
         style = Paint.Style.STROKE
     }
 
     private val headerBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#F2141922") // Sleek translucent header
+        color = ContextCompat.getColor(context, R.color.surface)
         style = Paint.Style.FILL
     }
 
     private val headerTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.WHITE
+        color = ContextCompat.getColor(context, R.color.textPrimary)
         textSize = 18f
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         textAlign = Paint.Align.CENTER
     }
 
     private val badgeTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#FFD600")
+        color = ContextCompat.getColor(context, R.color.primaryRed)
         textSize = 18f
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         textAlign = Paint.Align.CENTER
     }
 
     private val teamPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.WHITE
+        color = ContextCompat.getColor(context, R.color.textPrimary)
         textSize = 21f
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
     }
 
     private val situationPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#00C853")
+        color = ContextCompat.getColor(context, R.color.colorSuccess)
         textSize = 17f
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
     }
 
     private val ballGlowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#66FFFFFF")
+        color = ContextCompat.getColor(context, R.color.pitch_ball_shadow)
         style = Paint.Style.FILL
     }
 
@@ -196,12 +198,12 @@ class FootballPitchView @JvmOverloads constructor(
 
                 val wavePath = Path()
                 if (activeAttackSide == 1) { // Home attacking right
-                    wavePaint.color = Color.parseColor("#00C853")
+                    wavePaint.color = ContextCompat.getColor(context, R.color.colorSuccess)
                     val x = midX + phase * (midX - pad)
                     wavePath.moveTo(x - 40f * (1f - phase), pad + 8f)
                     wavePath.quadTo(x + 50f * phase, h / 2f, x - 40f * (1f - phase), h - pad - 8f)
                 } else { // Away attacking left
-                    wavePaint.color = Color.parseColor("#9AA4B2")
+                    wavePaint.color = ContextCompat.getColor(context, R.color.textSecondary)
                     val x = midX - phase * (midX - pad)
                     wavePath.moveTo(x + 40f * (1f - phase), pad + 8f)
                     wavePath.quadTo(x - 50f * phase, h / 2f, x + 40f * (1f - phase), h - pad - 8f)
@@ -215,7 +217,7 @@ class FootballPitchView @JvmOverloads constructor(
         canvas.drawRect(pitchRect, linePaint)
         
         // Pitch Neon border outer glow
-        glowingBorderPaint.setShadowLayer(10f, 0f, 0f, Color.parseColor("#00C853"))
+        glowingBorderPaint.setShadowLayer(10f, 0f, 0f, ContextCompat.getColor(context, R.color.pitch_border_glow))
         canvas.drawRect(pitchRect, glowingBorderPaint)
 
         // Center line
@@ -274,14 +276,14 @@ class FootballPitchView @JvmOverloads constructor(
 
         // Indicator color stripe
         val indicatorPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = if (activeAttackSide == 1) Color.parseColor("#00C853") else if (activeAttackSide == 2) Color.parseColor("#9AA4B2") else Color.parseColor("#FFD600")
+            color = if (activeAttackSide == 1) ContextCompat.getColor(context, R.color.colorSuccess) else if (activeAttackSide == 2) ContextCompat.getColor(context, R.color.textSecondary) else ContextCompat.getColor(context, R.color.colorWarning)
             style = Paint.Style.FILL
         }
         canvas.drawRect(textX, textY, textX + 6f, textY + textHeight, indicatorPaint)
 
         // Text titles
         canvas.drawText(activeTeam, textX + 16f, textY + 28f, teamPaint)
-        situationPaint.color = if (activeSituation.contains("Dangerous")) Color.parseColor("#DD2C00") else Color.parseColor("#00C853")
+        situationPaint.color = if (activeSituation.contains("Dangerous")) ContextCompat.getColor(context, R.color.colorError) else ContextCompat.getColor(context, R.color.colorSuccess)
         canvas.drawText(activeSituation, textX + 16f, textY + 54f, situationPaint)
 
         // Sleek connecting pointer lines
@@ -318,12 +320,12 @@ class FootballPitchView @JvmOverloads constructor(
             style = Paint.Style.FILL
         }
         val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#121620")
+            color = ContextCompat.getColor(context, R.color.border)
             style = Paint.Style.STROKE
             strokeWidth = 1.5f
         }
         val darkPanelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#1E2530")
+            color = ContextCompat.getColor(context, R.color.textSecondary)
             style = Paint.Style.FILL
         }
 

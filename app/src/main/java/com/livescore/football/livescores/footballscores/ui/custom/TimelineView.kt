@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
+import com.livescore.football.livescores.footballscores.R
 
 data class TimelineEvent(
     val minute: Int,
@@ -21,7 +23,7 @@ class TimelineView @JvmOverloads constructor(
     private val density = context.resources.displayMetrics.density
 
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#171D26") // Deep charcoal grid line
+        color = ContextCompat.getColor(context, R.color.border)
         strokeWidth = 3f * density
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
@@ -34,31 +36,31 @@ class TimelineView @JvmOverloads constructor(
     }
 
     private val playheadGlowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#3300C853")
+        color = ContextCompat.getColor(context, R.color.timeline_playhead_glow)
         style = Paint.Style.FILL
     }
 
     private val playheadCorePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#00C853")
+        color = ContextCompat.getColor(context, R.color.selectedBlue)
         style = Paint.Style.FILL
     }
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#4B5565") // Elegant muted grey labels
+        color = ContextCompat.getColor(context, R.color.textSecondary)
         textSize = 10f * density
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
     }
 
     private val minuteLabelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#9AA4B2") // High-contrast grey
+        color = ContextCompat.getColor(context, R.color.textSecondary)
         textSize = 9.5f * density
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
     }
 
     private val connectorPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#2D394C")
+        color = ContextCompat.getColor(context, R.color.border)
         strokeWidth = 1.2f * density
         style = Paint.Style.STROKE
     }
@@ -92,7 +94,7 @@ class TimelineView @JvmOverloads constructor(
         canvas.drawLine(padding, centerY, w - padding, centerY, linePaint)
         
         val tickPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#2D394C")
+            color = ContextCompat.getColor(context, R.color.border)
             strokeWidth = 1f * density
             style = Paint.Style.STROKE
         }
@@ -107,7 +109,10 @@ class TimelineView @JvmOverloads constructor(
 
         progressPaint.shader = LinearGradient(
             padding, centerY, progressX, centerY,
-            intArrayOf(Color.parseColor("#00C853"), Color.parseColor("#00E676")),
+            intArrayOf(
+                ContextCompat.getColor(context, R.color.selectedBlue),
+                ContextCompat.getColor(context, R.color.timeline_progress_end)
+            ),
             null, Shader.TileMode.CLAMP
         )
         canvas.drawLine(padding, centerY, progressX, centerY, progressPaint)
@@ -166,12 +171,12 @@ class TimelineView @JvmOverloads constructor(
             style = Paint.Style.FILL
         }
         val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#121620")
+            color = ContextCompat.getColor(context, R.color.timeline_soccer_ball_border)
             style = Paint.Style.STROKE
             strokeWidth = 0.8f * density
         }
         val darkPanelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#1E2530")
+            color = ContextCompat.getColor(context, R.color.timeline_soccer_ball_dark)
             style = Paint.Style.FILL
         }
 
@@ -212,12 +217,12 @@ class TimelineView @JvmOverloads constructor(
      */
     private fun drawCardNode(canvas: Canvas, cx: Float, cy: Float, isRed: Boolean) {
         val cardPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = if (isRed) Color.parseColor("#DD2C00") else Color.parseColor("#FFD600")
+            color = if (isRed) ContextCompat.getColor(context, R.color.colorError) else ContextCompat.getColor(context, R.color.colorWarning)
             style = Paint.Style.FILL
-            setShadowLayer(3f * density, 0f, 1f * density, Color.parseColor("#40000000"))
+            setShadowLayer(3f * density, 0f, 1f * density, ContextCompat.getColor(context, R.color.black_alpha_25))
         }
         val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#121620")
+            color = ContextCompat.getColor(context, R.color.border)
             style = Paint.Style.STROKE
             strokeWidth = 0.8f * density
         }
@@ -240,15 +245,15 @@ class TimelineView @JvmOverloads constructor(
      */
     private fun drawSubstitutionNode(canvas: Canvas, cx: Float, cy: Float, radius: Float) {
         val greenPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#00C853")
+            color = ContextCompat.getColor(context, R.color.colorSuccess)
             style = Paint.Style.FILL
         }
         val redPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#DD2C00")
+            color = ContextCompat.getColor(context, R.color.colorError)
             style = Paint.Style.FILL
         }
         val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#121620")
+            color = ContextCompat.getColor(context, R.color.border)
             style = Paint.Style.STROKE
             strokeWidth = 0.8f * density
         }

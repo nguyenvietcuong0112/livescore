@@ -1,19 +1,26 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.MyApplication" parent="Theme.MaterialComponents.NoActionBar">
-        <!-- Primary brand color. -->
+    <style name="Theme.MyApplication" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Primary brand color (Red Accent) -->
         <item name="colorPrimary">@color/accent_green</item>
-        <item name="colorPrimaryVariant">@color/bg_dark</item>
+        <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
+        
+        <!-- Secondary brand color (Blue selected state) -->
         <item name="colorSecondary">@color/accent_green_secondary</item>
         <item name="colorSecondaryVariant">@color/accent_green</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar and navigation bar customization -->
-        <item name="android:statusBarColor">@color/bg_dark</item>
-        <item name="android:windowBackground">@color/bg_dark</item>
-        <item name="android:navigationBarColor">@color/bg_dark</item>
-        <!-- Custom typography and styles -->
+        <item name="colorOnSecondary">@color/white</item>
+        
+        <!-- Status bar and navigation bar customization for Light Theme -->
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        
+        <!-- Light status and navigation bar to force dark icons (Required on Android 6.0+) -->
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        
+        <!-- Custom typography and colors -->
         <item name="android:textColor">@color/text_white</item>
         <item name="android:textColorSecondary">@color/text_muted</item>
     </style>

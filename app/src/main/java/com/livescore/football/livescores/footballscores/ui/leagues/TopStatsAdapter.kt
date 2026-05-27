@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.remote.model.TopPlayerItemDto
 import com.livescore.football.livescores.footballscores.databinding.ItemTopPlayerBinding
+import androidx.core.content.ContextCompat
 
 class TopStatsAdapter(
     private val isAssists: Boolean,
@@ -63,33 +64,34 @@ class TopStatsAdapter(
             binding.tvStatLabel.text = if (isAssists) "ASSISTS" else "GOALS"
 
             // Set Up Metallic Top 3 Glowing Badges (Gold, Silver, Bronze)
+            val context = itemView.context
             when (rank) {
                 1 -> {
                     // Gold
-                    binding.tvPlayerRank.setTextColor(Color.parseColor("#FFD700"))
+                    binding.tvPlayerRank.setTextColor(ContextCompat.getColor(context, R.color.stats_rank_gold))
                     binding.tvPlayerRank.textStyleBold()
-                    binding.cardPlayerImage.strokeColor = Color.parseColor("#FFD700")
+                    binding.cardPlayerImage.strokeColor = ContextCompat.getColor(context, R.color.stats_rank_gold)
                     binding.cardPlayerImage.strokeWidth = dpToPx(2)
                 }
                 2 -> {
                     // Silver
-                    binding.tvPlayerRank.setTextColor(Color.parseColor("#C0C0C0"))
+                    binding.tvPlayerRank.setTextColor(ContextCompat.getColor(context, R.color.stats_rank_silver))
                     binding.tvPlayerRank.textStyleBold()
-                    binding.cardPlayerImage.strokeColor = Color.parseColor("#C0C0C0")
+                    binding.cardPlayerImage.strokeColor = ContextCompat.getColor(context, R.color.stats_rank_silver)
                     binding.cardPlayerImage.strokeWidth = dpToPx(1.5f)
                 }
                 3 -> {
                     // Bronze
-                    binding.tvPlayerRank.setTextColor(Color.parseColor("#CD7F32"))
+                    binding.tvPlayerRank.setTextColor(ContextCompat.getColor(context, R.color.stats_rank_bronze))
                     binding.tvPlayerRank.textStyleBold()
-                    binding.cardPlayerImage.strokeColor = Color.parseColor("#CD7F32")
+                    binding.cardPlayerImage.strokeColor = ContextCompat.getColor(context, R.color.stats_rank_bronze)
                     binding.cardPlayerImage.strokeWidth = dpToPx(1.5f)
                 }
                 else -> {
                     // Normal
-                    binding.tvPlayerRank.setTextColor(Color.parseColor("#9AA4B2")) // muted text
+                    binding.tvPlayerRank.setTextColor(ContextCompat.getColor(context, R.color.textSecondary)) // muted text
                     binding.tvPlayerRank.textStyleNormal()
-                    binding.cardPlayerImage.strokeColor = Color.parseColor("#1E2530") // divider_dark
+                    binding.cardPlayerImage.strokeColor = ContextCompat.getColor(context, R.color.divider) // divider_dark -> divider
                     binding.cardPlayerImage.strokeWidth = dpToPx(1)
                 }
             }

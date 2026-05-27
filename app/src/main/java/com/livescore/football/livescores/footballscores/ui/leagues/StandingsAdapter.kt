@@ -3,6 +3,7 @@ package com.livescore.football.livescores.footballscores.ui.leagues
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -49,24 +50,24 @@ class StandingsAdapter(
                 .placeholder(R.mipmap.ic_launcher)
                 .into(binding.ivTeamLogo)
 
-            // Color code rank based on qualification/relegation zones
+            val context = binding.root.context
             val desc = item.description?.lowercase() ?: ""
             when {
                 desc.contains("champions league") -> {
                     // Champions League -> Green
-                    binding.tvRank.setTextColor(Color.parseColor("#00C853"))
+                    binding.tvRank.setTextColor(ContextCompat.getColor(context, R.color.colorSuccess))
                 }
                 desc.contains("europa league") -> {
                     // Europa League -> Sky Blue
-                    binding.tvRank.setTextColor(Color.parseColor("#29B6F6"))
+                    binding.tvRank.setTextColor(ContextCompat.getColor(context, R.color.standing_promotion_blue))
                 }
                 desc.contains("relegation") -> {
                     // Relegation -> Red
-                    binding.tvRank.setTextColor(Color.parseColor("#DD2C00"))
+                    binding.tvRank.setTextColor(ContextCompat.getColor(context, R.color.colorError))
                 }
                 else -> {
-                    // Normal -> White
-                    binding.tvRank.setTextColor(Color.parseColor("#FFFFFF"))
+                    // Normal -> Primary Text Black (White would be invisible on white theme)
+                    binding.tvRank.setTextColor(ContextCompat.getColor(context, R.color.textPrimary))
                 }
             }
 

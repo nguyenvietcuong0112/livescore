@@ -144,7 +144,7 @@ class IntroSlideshowActivity : AppCompatActivity() {
             binding.btnNextSlide.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(this, R.color.neon_lime_green)
             )
-            binding.btnNextSlide.setTextColor(ContextCompat.getColor(this, R.color.bg_dark))
+            binding.btnNextSlide.setTextColor(ContextCompat.getColor(this, R.color.bg_light))
             binding.btnNextSlide.strokeWidth = 0
         } else {
             binding.btnNextSlide.text = getString(R.string.intro_next)

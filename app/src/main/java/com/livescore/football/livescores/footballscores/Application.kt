@@ -34,6 +34,7 @@ class Application : AdsApplication() {
     override fun buildDebug(): Boolean? = null
 
     override fun onCreate() {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate()
 
         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
