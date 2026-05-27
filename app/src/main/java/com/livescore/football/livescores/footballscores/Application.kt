@@ -17,12 +17,16 @@ import javax.inject.Inject
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import android.content.Context
+import kotlinx.coroutines.launch
 
 @HiltAndroidApp
 class Application : AdsApplication() {
 
     @Inject
     lateinit var billingManager: BillingManager
+
+    @Inject
+    lateinit var gsmManager: com.livescore.football.livescores.footballscores.data.remote.gsm.GsmManager
 
     override fun enableAdsResume(): Boolean = true
     override fun getListTestDeviceId(): List<String>? = null
@@ -31,6 +35,12 @@ class Application : AdsApplication() {
 
     override fun onCreate() {
         super.onCreate()
+
+        // Trigger GSM login 5 seconds after launch
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+            kotlinx.coroutines.delay(5000)
+            gsmManager.loginGSM()
+        }
         
         // Ensure default language is English on first launch
         val onboardingPrefs = getSharedPreferences("livescore_onboarding_prefs", Context.MODE_PRIVATE)

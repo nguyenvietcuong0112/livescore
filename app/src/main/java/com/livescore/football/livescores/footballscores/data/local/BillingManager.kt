@@ -17,7 +17,8 @@ import javax.inject.Singleton
 @Singleton
 class BillingManager @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val limitManager: RequestLimitManager
+    private val limitManager: RequestLimitManager,
+    private val gsmManager: com.livescore.football.livescores.footballscores.data.remote.gsm.GsmManager
 ) : PurchasesUpdatedListener, BillingClientStateListener {
 
     private val billingClient = BillingClient.newBuilder(context)
@@ -98,18 +99,10 @@ class BillingManager @Inject constructor(
         billingClient.queryPurchasesAsync(params) { billingResult, purchasesList ->
             Log.d(TAG, "Query purchases finished: Code = ${billingResult.responseCode}")
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                var hasActiveSubscription = false
                 for (purchase in purchasesList) {
                     if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                        hasActiveSubscription = true
                         handlePurchase(purchase)
                     }
-                }
-                
-                // Only reset premium state if the user was on active Play Billing premium
-                // (Avoiding resetting in case they are manually testing with local mock switch)
-                if (hasActiveSubscription) {
-                    limitManager.setPremium(true)
                 }
             }
         }
@@ -139,7 +132,6 @@ class BillingManager @Inject constructor(
             for (purchase in purchases) {
                 handlePurchase(purchase)
             }
-            limitManager.setPremium(true)
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             Log.d(TAG, "User cancelled purchase flow.")
         } else {
@@ -156,13 +148,44 @@ class BillingManager @Inject constructor(
             billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
                 Log.d(TAG, "Purchase acknowledgement finished: Code = ${billingResult.responseCode}")
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    coroutineScope.launch {
-                        limitManager.setPremium(true)
-                    }
+                    verifyTransactionRemote(purchase)
                 }
             }
         } else if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-            limitManager.setPremium(true)
+            verifyTransactionRemote(purchase)
+        }
+    }
+
+    private fun verifyTransactionRemote(purchase: Purchase) {
+        coroutineScope.launch {
+            val productId = purchase.products.firstOrNull() ?: ""
+            if (productId.isEmpty()) return@launch
+
+            Log.d(TAG, "Starting remote transaction verification for product: $productId")
+
+            // Method A: Waifu API Verification (Recommended)
+            // For livescore packages (subscriptions), productType is "subscription"
+            val productType = "subscription"
+            val waifuSuccess = gsmManager.verifyWaifu(productId, productType)
+            Log.d(TAG, "GSM Waifu Verify result: $waifuSuccess")
+
+            // Method B: Legacy GSM Check API Verification (Fallback)
+            val productName = if (productId == PRODUCT_WEEKLY) "1 Week VIP" else "1 Month VIP"
+            val legacySuccess = gsmManager.verifyLegacy(
+                packageName = context.packageName,
+                purchaseToken = purchase.purchaseToken,
+                productId = productId,
+                productName = productName
+            )
+            Log.d(TAG, "GSM Legacy Verify result: $legacySuccess")
+
+            // Update UI/State if either verification method succeeded
+            if (waifuSuccess || legacySuccess) {
+                Log.d(TAG, "Transaction verified successfully via remote servers. Activating VIP.")
+                limitManager.setPremium(true)
+            } else {
+                Log.e(TAG, "Remote verification failed for both Waifu and Legacy GSM API.")
+            }
         }
     }
 }

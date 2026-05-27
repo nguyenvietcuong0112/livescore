@@ -64,4 +64,48 @@ object NetworkModule {
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideGsmAuthInterceptor(): com.livescore.football.livescores.footballscores.data.remote.gsm.GsmAuthInterceptor {
+        return com.livescore.football.livescores.footballscores.data.remote.gsm.GsmAuthInterceptor()
+    }
+
+    @Provides
+    @Singleton
+    @GsmNetwork
+    fun provideGsmOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor,
+        gsmAuthInterceptor: com.livescore.football.livescores.footballscores.data.remote.gsm.GsmAuthInterceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(gsmAuthInterceptor)
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @GsmNetwork
+    fun provideGsmRetrofit(@GsmNetwork okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(com.livescore.football.livescores.footballscores.data.remote.gsm.GsmConfig.CURRENT_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGsmApiService(@GsmNetwork retrofit: Retrofit): com.livescore.football.livescores.footballscores.data.remote.gsm.GsmApiService {
+        return retrofit.create(com.livescore.football.livescores.footballscores.data.remote.gsm.GsmApiService::class.java)
+    }
 }
+
+@javax.inject.Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class GsmNetwork
+
