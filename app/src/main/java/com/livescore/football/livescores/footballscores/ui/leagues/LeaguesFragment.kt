@@ -17,9 +17,17 @@ import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.databinding.FragmentLeaguesBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import com.mallegan.ads.callback.NativeCallback
+import com.mallegan.ads.util.Admob
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LeaguesFragment : Fragment() {
+
+    @Inject
+    lateinit var limitManager: com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 
     private var _binding: FragmentLeaguesBinding? = null
     private val binding get() = _binding!!
@@ -46,6 +54,7 @@ class LeaguesFragment : Fragment() {
         setupRecyclerViews()
         setupListeners()
         observeViewModel()
+        loadNativeAd()
     }
 
     private fun setupRecyclerViews() {
@@ -238,6 +247,43 @@ class LeaguesFragment : Fragment() {
                 }
                 adapter.submitList(state.list)
             }
+        }
+    }
+
+    private fun loadNativeAd() {
+        if (::limitManager.isInitialized && limitManager.isPremium()) {
+            binding.frAdsLeague.visibility = View.GONE
+            return
+        }
+
+        val adId = getString(R.string.native_all)
+        if (adId.isNotEmpty()) {
+            Admob.getInstance().loadNativeAds(
+                requireContext(),
+                adId,
+                1,
+                object : NativeCallback() {
+                    override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                        super.onNativeAdLoaded(nativeAd)
+                        if (!isAdded) return
+                        val adView = LayoutInflater.from(requireContext())
+                            .inflate(R.layout.layout_native_league, null) as NativeAdView
+                        
+                        binding.frAdsLeague.removeAllViews()
+                        binding.frAdsLeague.addView(adView)
+                        
+                        Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                    }
+
+                    override fun onAdFailedToLoad() {
+                        super.onAdFailedToLoad()
+                        if (!isAdded) return
+                        binding.frAdsLeague.visibility = View.GONE
+                    }
+                }
+            )
+        } else {
+            binding.frAdsLeague.visibility = View.GONE
         }
     }
 

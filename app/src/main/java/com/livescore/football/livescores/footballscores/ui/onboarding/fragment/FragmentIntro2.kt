@@ -1,13 +1,24 @@
 package com.livescore.football.livescores.footballscores.ui.onboarding.fragment
 
+import android.view.LayoutInflater
 import android.view.View
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
 import com.livescore.football.livescores.footballscores.databinding.FragmentIntro2Binding
+import com.mallegan.ads.callback.NativeCallback
+import com.mallegan.ads.util.Admob
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class FragmentIntro2 : AbsBaseFragment<FragmentIntro2Binding?>() {
+    
+    @Inject
+    lateinit var limitManager: com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
+
     override fun getLayout(): Int {
         return R.layout.fragment_intro2
     }
@@ -19,6 +30,43 @@ class FragmentIntro2 : AbsBaseFragment<FragmentIntro2Binding?>() {
                 2
             )
         })
+        loadAds()
+    }
+
+    private fun loadAds() {
+        if (::limitManager.isInitialized && limitManager.isPremium()) {
+            binding!!.frAds.visibility = View.GONE
+            return
+        }
+
+        val adId = getString(R.string.native_banner_ob)
+        if (adId.isNotEmpty()) {
+            Admob.getInstance().loadNativeAd(
+                requireActivity(),
+                adId,
+                object : NativeCallback() {
+                    override fun onAdFailedToLoad() {
+                        super.onAdFailedToLoad()
+                        if (!isAdded) return
+                        binding!!.frAds.removeAllViews()
+                        binding!!.frAds.visibility = View.GONE
+                    }
+
+                    override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                        super.onNativeAdLoaded(nativeAd)
+                        if (!isAdded) return
+                        val adView = LayoutInflater.from(requireActivity())
+                            .inflate(R.layout.layout_native_no_media, null) as NativeAdView
+
+                        binding!!.frAds.removeAllViews()
+                        binding!!.frAds.addView(adView)
+                        Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                    }
+                }
+            )
+        } else {
+            binding!!.frAds.visibility = View.GONE
+        }
     }
 
     override fun onPause() {

@@ -1,5 +1,6 @@
 package com.livescore.football.livescores.footballscores.ui.onboarding
 
+
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2

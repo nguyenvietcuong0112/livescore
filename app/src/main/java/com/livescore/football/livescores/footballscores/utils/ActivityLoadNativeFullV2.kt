@@ -53,7 +53,7 @@ class ActivityLoadNativeFullV2 : AbsBaseActivity() {
                 val mediaView =
                     adView.findViewById<com.google.android.gms.ads.nativead.MediaView>(R.id.ad_media)
                 closeButton.setOnClickListener(android.view.View.OnClickListener { v: android.view.View? -> mediaView.performClick() })
-                object : CountDownTimer(5000, 1000) {
+                object : CountDownTimer(2000, 1000) {
                     override fun onTick(millisUntilFinished: kotlin.Long) {
                     }
 
