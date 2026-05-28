@@ -23,5 +23,7 @@
         <!-- Custom typography and colors -->
         <item name="android:textColor">@color/text_white</item>
         <item name="android:textColorSecondary">@color/text_muted</item>
+        <item name="android:fontFamily">@font/sf_pro</item>
+        <item name="fontFamily">@font/sf_pro</item>
     </style>
 </resources>

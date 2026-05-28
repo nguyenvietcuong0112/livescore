@@ -232,8 +232,7 @@
     <!-- Extracted Layout & Code Strings -->
     <string name="leagues_header_title">LEAGUE CENTER</string>
     <string name="leagues_header_desc">Real-time Standings and Top Performers</string>
-    <string name="tab_scorers">SCORERS</string>
-    <string name="tab_assists">ASSISTS</string>
+    <string name="leagues_col_rank">#</string>
     <string name="toast_share_match_failed">Failed to share match info</string>
     <string name="toast_select_language_continue">Please select language to continue</string>
     <string name="toast_language_switched_vi">Đã chuyển đổi sang Tiếng Việt</string>

@@ -31,6 +31,7 @@
 
     <!-- Backward Compatibility Mapping (Keeps 50+ Layouts Unbroken & Beautiful in Blue) -->
     <color name="bg_light">@color/background</color>
+    <color name="bg_intro">#f9f9fc</color>
     <color name="card_dark">@color/surface</color>
     <color name="accent_green">@color/primaryBlue</color>
     <color name="accent_green_secondary">@color/accentBlue</color>

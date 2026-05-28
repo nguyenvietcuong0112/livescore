@@ -232,8 +232,7 @@
     <!-- Extracted Layout & Code Strings -->
     <string name="leagues_header_title">GIẢI ĐẤU</string>
     <string name="leagues_header_desc">Bảng xếp hạng &amp; Danh sách vua phá lưới thời gian thực</string>
-    <string name="tab_scorers">VUA PHÁ LƯỚI</string>
-    <string name="tab_assists">KIẾN TẠO</string>
+    <string name="leagues_col_rank">#</string>
     <string name="toast_share_match_failed">Chia sẻ thông tin trận đấu thất bại</string>
     <string name="toast_select_language_continue">Vui lòng chọn ngôn ngữ để tiếp tục</string>
     <string name="toast_language_switched_vi">Đã chuyển đổi sang Tiếng Việt</string>
