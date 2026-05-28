@@ -13,6 +13,7 @@ import com.livescore.football.livescores.footballscores.ui.language.LanguageActi
 import com.livescore.football.livescores.footballscores.MainActivity
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import android.content.Context
+import android.view.View
 import com.livescore.football.livescores.footballscores.utils.ActivityFullCallback
 import com.livescore.football.livescores.footballscores.utils.ActivityLoadNativeFullV1
 import com.mallegan.ads.callback.InterCallback
@@ -38,11 +39,16 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Calculate and track user retention milestones via Adjust
+        if (limitManager.isPremium()) {
+            binding.frAdsBanner.visibility = View.GONE
+        } else {
+            binding.frAdsBanner.visibility = View.VISIBLE
+            Admob.getInstance().loadBanner(this, getString(R.string.banner_splash))
+        }
+
         RetentionTracker.checkAndTrackRetention(this)
 
         // Pre-fetch and synchronize the dynamic API key from remote config on startup
