@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,6 +23,7 @@ import com.livescore.football.livescores.footballscores.data.local.RequestLimitM
 import com.livescore.football.livescores.footballscores.databinding.ActivityMatchDetailBinding
 import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallBottomSheet
 import com.livescore.football.livescores.footballscores.ui.custom.TimelineEvent
+import com.livescore.football.livescores.footballscores.utils.AdsConfig
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
@@ -45,6 +47,16 @@ class MatchDetailActivity : AppCompatActivity() {
         binding = ActivityMatchDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Setup onBackPressed frequency capped interstitial ad (35s)
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                AdsConfig.showInterClickAd(this@MatchDetailActivity) {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
+
         val matchId = intent.getIntExtra("MATCH_ID", -1)
         if (matchId == -1) {
             finish()
@@ -59,7 +71,7 @@ class MatchDetailActivity : AppCompatActivity() {
 
     private fun setupUI(matchId: Int) {
         binding.matchHeader.btnBack.setOnClickListener {
-            finish()
+            onBackPressedDispatcher.onBackPressed()
         }
 
         binding.matchHeader.btnShare.setOnClickListener {
@@ -408,6 +420,7 @@ class MatchDetailActivity : AppCompatActivity() {
     }
 
     private fun showPremiumPaywall() {
+        if (supportFragmentManager.isStateSaved) return
         val existing = supportFragmentManager.findFragmentByTag(PremiumPaywallBottomSheet.TAG)
         if (existing == null) {
             val paywall = PremiumPaywallBottomSheet.newInstance()

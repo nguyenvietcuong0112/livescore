@@ -173,8 +173,11 @@ class IAPActivity : AppCompatActivity() {
     }
 
     private fun navigateToHome() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
+        val fromOnboarding = intent.getBooleanExtra("FROM_ONBOARDING", false)
+        if (fromOnboarding) {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
         finish()
     }
 

@@ -53,7 +53,6 @@ class SplashActivity : AppCompatActivity() {
         interCallback = object : InterCallback() {
             override fun onAdClosedByUser() {
                 super.onAdClosedByUser()
-
                 ActivityLoadNativeFullV1.open(
                     this@SplashActivity,
                     getString(R.string.native_splash_full_high),

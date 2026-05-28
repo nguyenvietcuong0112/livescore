@@ -50,6 +50,11 @@
             android:theme="@style/Theme.MyApplication" />
 
         <activity
+            android:name=".utils.ActivityLoadNativeFullV2"
+            android:exported="false"
+            android:theme="@style/Theme.MyApplication" />
+
+        <activity
             android:name=".ui.onboarding.IntroSlideshowActivity"
             android:exported="false"
             android:theme="@style/Theme.MyApplication" />

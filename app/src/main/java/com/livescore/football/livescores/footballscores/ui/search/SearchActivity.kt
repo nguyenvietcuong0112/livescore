@@ -18,6 +18,8 @@ import com.livescore.football.livescores.footballscores.data.local.entity.Cached
 import com.livescore.football.livescores.footballscores.data.repository.MatchRepository
 import com.livescore.football.livescores.footballscores.databinding.ActivitySearchBinding
 import com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity
+import com.livescore.football.livescores.footballscores.utils.AdsConfig
+import androidx.activity.OnBackPressedCallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -76,6 +78,16 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Setup onBackPressed frequency capped interstitial ad (35s)
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                AdsConfig.showInterClickAd(this@SearchActivity) {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
+
         setupUI()
         setupRecyclerView()
         observeData()
@@ -83,7 +95,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setupUI() {
         binding.btnBack.setOnClickListener {
-            finish()
+            onBackPressedDispatcher.onBackPressed()
         }
 
         binding.btnClear.setOnClickListener {

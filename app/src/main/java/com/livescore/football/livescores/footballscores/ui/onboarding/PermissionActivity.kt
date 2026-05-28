@@ -81,6 +81,7 @@ class PermissionActivity : AppCompatActivity() {
             Admob.getInstance().loadNativeAds(this, adId, 1, object : com.mallegan.ads.callback.NativeCallback() {
                 override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
                     super.onNativeAdLoaded(nativeAd)
+                    if (isDestroyed || isFinishing || supportFragmentManager.isStateSaved) return
                     val adView = android.view.LayoutInflater.from(this@PermissionActivity)
                         .inflate(R.layout.layout_native_media, null) as NativeAdView
                     binding.frAds.removeAllViews()
@@ -91,6 +92,7 @@ class PermissionActivity : AppCompatActivity() {
 
                 override fun onAdFailedToLoad() {
                     super.onAdFailedToLoad()
+                    if (isDestroyed || isFinishing || supportFragmentManager.isStateSaved) return
                     binding.frAds.removeAllViews()
                     binding.frAds.visibility = android.view.View.GONE
                     enableSkip()
@@ -117,7 +119,9 @@ class PermissionActivity : AppCompatActivity() {
         val intent = if (limitManager.isPremium()) {
             Intent(this, MainActivity::class.java)
         } else {
-            Intent(this, IAPActivity::class.java)
+            Intent(this, IAPActivity::class.java).apply {
+                putExtra("FROM_ONBOARDING", true)
+            }
         }
         startActivity(intent)
         finish()

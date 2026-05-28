@@ -3,6 +3,7 @@ package com.livescore.football.livescores.footballscores.ui.leagues
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -18,10 +19,12 @@ import com.livescore.football.livescores.footballscores.data.local.MatchReminder
 import com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity
 import com.livescore.football.livescores.footballscores.ui.home.MatchAdapter
 import com.livescore.football.livescores.footballscores.ui.home.MatchListItem
+import com.livescore.football.livescores.footballscores.utils.AdsConfig
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class LeagueDetailActivity : AppCompatActivity() {
@@ -78,6 +81,16 @@ class LeagueDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLeagueDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Setup onBackPressed frequency capped interstitial ad (35s)
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                AdsConfig.showInterClickAd(this@LeagueDetailActivity) {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
 
         // Read extras
         leagueId = intent.getIntExtra("LEAGUE_ID", 39)
@@ -152,7 +165,7 @@ class LeagueDetailActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.btnBack.setOnClickListener {
-            finish()
+            onBackPressedDispatcher.onBackPressed()
         }
         binding.tabStandings.setOnClickListener {
             selectedTab = 0

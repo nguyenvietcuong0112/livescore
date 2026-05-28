@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.Lifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.databinding.ActivityMainBinding
@@ -16,6 +18,7 @@ import com.livescore.football.livescores.footballscores.ui.profile.ProfileFragme
 import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallBottomSheet
 import com.livescore.football.livescores.footballscores.ui.onboarding.IAPActivity
 import com.livescore.football.livescores.footballscores.ui.search.SearchActivity
+import com.livescore.football.livescores.footballscores.utils.AdsConfig
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -51,48 +54,38 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
-        // Setup bottom navigation selection
+        // Setup bottom navigation selection with Interstitial Ad frequency capping (35s)
         binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_live -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, HomeFragment.newInstance(false))
-                        .commit()
-                    true
-                }
-                R.id.nav_leagues -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, LeaguesFragment())
-                        .commit()
-                    true
-                }
-                R.id.nav_wc26 -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, WC26Fragment())
-                        .commit()
-                    true
-                }
-                R.id.nav_favorite -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, FavoriteFragment())
-                        .commit()
-                    true
-                }
-                R.id.nav_profile -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, ProfileFragment())
-                        .commit()
-                    true
-                }
-                else -> false
+            val currentSelectedId = binding.bottomNavigation.selectedItemId
+            if (currentSelectedId == item.itemId) {
+                return@setOnItemSelectedListener false
             }
+
+            AdsConfig.showInterClickAd(this) {
+                val fragment = when (item.itemId) {
+                    R.id.nav_live -> HomeFragment.newInstance(false)
+                    R.id.nav_leagues -> LeaguesFragment()
+                    R.id.nav_wc26 -> WC26Fragment()
+                    R.id.nav_favorite -> FavoriteFragment()
+                    R.id.nav_profile -> ProfileFragment()
+                    else -> null
+                }
+                if (fragment != null) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit()
+                }
+            }
+            true
         }
 
-        // Observe request limit exceeds
+        // Observe request limit exceeds safely in RESUMED state to prevent StateLoss crashes
         lifecycleScope.launch {
-            limitManager.limitExceededFlow.collect {
-                if (!limitManager.isPremium()) {
-                    showPremiumPaywall()
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                limitManager.limitExceededFlow.collect {
+                    if (!limitManager.isPremium()) {
+                        showPremiumPaywall()
+                    }
                 }
             }
         }
@@ -103,6 +96,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showPremiumPaywall() {
+        if (supportFragmentManager.isStateSaved) return
         val existing = supportFragmentManager.findFragmentByTag(PremiumPaywallBottomSheet.TAG)
         if (existing == null) {
             val paywall = PremiumPaywallBottomSheet.newInstance()

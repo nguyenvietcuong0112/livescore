@@ -6,7 +6,6 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
-import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.R
@@ -17,7 +16,7 @@ import com.mallegan.ads.util.Admob
 
 class ActivityLoadNativeFullV1 : AbsBaseActivity() {
     var binding: ActivityNativeFullBinding? = null
-    public override fun bind() {
+     override fun bind() {
         SystemConfiguration.setStatusBarColor(
             this,
             R.color.transparent,

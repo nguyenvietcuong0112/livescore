@@ -129,7 +129,9 @@ class IntroActivity : AppCompatActivity() {
                                 if (limitManager.isPremium()) {
                                     Intent(this@IntroActivity, MainActivity::class.java)
                                 } else {
-                                    Intent(this@IntroActivity, IAPActivity::class.java)
+                                    Intent(this@IntroActivity, IAPActivity::class.java).apply {
+                                        putExtra("FROM_ONBOARDING", true)
+                                    }
                                 }
                             } else {
                                 Intent(this@IntroActivity, PermissionActivity::class.java)

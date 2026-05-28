@@ -55,7 +55,9 @@ class FragmentIntro4 : AbsBaseFragment<FragmentIntro4Binding?>() {
                 if (limitManager.isPremium()) {
                     intent = Intent(requireActivity(), MainActivity::class.java)
                 } else {
-                    intent = Intent(requireActivity(), IAPActivity::class.java)
+                    intent = Intent(requireActivity(), IAPActivity::class.java).apply {
+                        putExtra("FROM_ONBOARDING", true)
+                    }
                 }
             } else {
                 intent = Intent(requireActivity(), PermissionActivity::class.java)
@@ -84,12 +86,14 @@ class FragmentIntro4 : AbsBaseFragment<FragmentIntro4Binding?>() {
             object : NativeCallback() {
                 override fun onAdFailedToLoad() {
                     super.onAdFailedToLoad()
+                    if (!isAdded || isDetached || activity == null || requireActivity().isDestroyed || requireActivity().isFinishing) return
                     binding!!.frAds.removeAllViews()
                     binding!!.frAds.setVisibility(View.GONE)
                 }
 
                 override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                     super.onNativeAdLoaded(nativeAd)
+                    if (!isAdded || isDetached || activity == null || requireActivity().isDestroyed || requireActivity().isFinishing) return
                     val adView = LayoutInflater.from(requireActivity())
                         .inflate(R.layout.layout_native_media, null) as NativeAdView?
 
