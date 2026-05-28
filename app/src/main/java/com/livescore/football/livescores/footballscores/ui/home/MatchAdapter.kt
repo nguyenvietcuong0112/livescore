@@ -15,6 +15,7 @@ import com.livescore.football.livescores.footballscores.data.local.entity.Cached
 import com.livescore.football.livescores.footballscores.databinding.ItemLeagueHeaderBinding
 import com.livescore.football.livescores.footballscores.databinding.ItemMatchBinding
 import com.livescore.football.livescores.footballscores.databinding.LayoutNativeNoMediaBinding
+import androidx.appcompat.app.AppCompatActivity
 import com.mallegan.ads.util.Admob
 import com.mallegan.ads.callback.NativeCallback
 

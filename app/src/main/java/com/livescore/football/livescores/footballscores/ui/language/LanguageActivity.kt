@@ -110,7 +110,6 @@ class LanguageActivity : AppCompatActivity() {
             Admob.getInstance().loadNativeAds(this, adId, 1, object : NativeCallback() {
                 override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                     super.onNativeAdLoaded(nativeAd)
-                    if (isDestroyed || isFinishing || supportFragmentManager.isStateSaved) return
                     val adView = LayoutInflater.from(this@LanguageActivity)
                         .inflate(R.layout.layout_native_media, null) as NativeAdView
                     binding.frAds.removeAllViews()
@@ -121,7 +120,6 @@ class LanguageActivity : AppCompatActivity() {
 
                 override fun onAdFailedToLoad() {
                     super.onAdFailedToLoad()
-                    if (isDestroyed || isFinishing || supportFragmentManager.isStateSaved) return
                     binding.frAds.removeAllViews()
                     binding.frAds.visibility = View.GONE
                     checkNextButtonStatus(true)
@@ -140,7 +138,6 @@ class LanguageActivity : AppCompatActivity() {
             getString(R.string.native_onboarding_1),
             object : NativeCallback() {
                 override fun onNativeAdLoaded(nativeAd: NativeAd?) {
-                    if (isDestroyed || isFinishing || supportFragmentManager.isStateSaved) return
                     AdsConfig.nativeIntro1 = nativeAd
                 }
 
@@ -158,7 +155,6 @@ class LanguageActivity : AppCompatActivity() {
             Admob.getInstance().loadNativeAds(this, adId, 1, object : NativeCallback() {
                 override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                     super.onNativeAdLoaded(nativeAd)
-                    if (isDestroyed || isFinishing || supportFragmentManager.isStateSaved) return
                     val adView = LayoutInflater.from(this@LanguageActivity)
                         .inflate(R.layout.layout_native_media, null) as NativeAdView
                     binding.frAds.removeAllViews()
@@ -169,7 +165,6 @@ class LanguageActivity : AppCompatActivity() {
 
                 override fun onAdFailedToLoad() {
                     super.onAdFailedToLoad()
-                    if (isDestroyed || isFinishing || supportFragmentManager.isStateSaved) return
                     binding.frAds.removeAllViews()
                     checkNextButtonStatus(true) // Safe fallback to not block the user
                 }

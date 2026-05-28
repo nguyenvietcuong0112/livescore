@@ -31,14 +31,14 @@ class FragmentIntro2ads : AbsBaseFragment<FragmentAdsBinding?>() {
         Admob.getInstance().loadNativeAds(requireActivity(), adId, 1, object : NativeCallback() {
             override fun onAdFailedToLoad() {
                 super.onAdFailedToLoad()
-                if (!isAdded || isDetached || activity == null || requireActivity().isDestroyed || requireActivity().isFinishing) return
+                if (!isAdded) return
                 binding!!.frAdsFull.setVisibility(View.GONE)
                 binding!!.animLoading.setVisibility(View.VISIBLE)
             }
 
             override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                 super.onNativeAdLoaded(nativeAd)
-                if (!isAdded || isDetached || activity == null || requireActivity().isDestroyed || requireActivity().isFinishing) return
+                if (!isAdded) return
                 val adView = LayoutInflater.from(requireActivity())
                     .inflate(R.layout.native_full_language, null) as NativeAdView
                 val closeButton = adView.findViewById<ImageView>(R.id.close)
@@ -49,7 +49,7 @@ class FragmentIntro2ads : AbsBaseFragment<FragmentAdsBinding?>() {
                     }
 
                     override fun onFinish() {
-                        if (!isAdded || isDetached || activity == null || requireActivity().isDestroyed || requireActivity().isFinishing) return
+                        if (!isAdded) return
                         closeButton.setOnClickListener(View.OnClickListener { v: View? ->
                             viewPager!!.setCurrentItem(3)
                         })

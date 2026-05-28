@@ -136,12 +136,14 @@ class WC26Fragment : Fragment() {
                                     object : com.mallegan.ads.callback.NativeCallback() {
                                         override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
                                             super.onNativeAdLoaded(nativeAd)
+                                            if (!isAdded) return
                                             val closeBtn = adViewWrapper.findViewById<View>(R.id.close)
                                             closeBtn?.visibility = View.GONE
                                             com.mallegan.ads.util.Admob.getInstance().pushAdsToViewCustom(nativeAd, adViewWrapper as com.google.android.gms.ads.nativead.NativeAdView)
                                         }
                                         override fun onAdFailedToLoad() {
                                             super.onAdFailedToLoad()
+                                            if (!isAdded) return
                                             adViewWrapper.visibility = View.GONE
                                         }
                                     }
@@ -232,12 +234,14 @@ class WC26Fragment : Fragment() {
                                     object : com.mallegan.ads.callback.NativeCallback() {
                                         override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
                                             super.onNativeAdLoaded(nativeAd)
+                                            if (!isAdded) return
                                             val closeBtn = adViewWrapper.findViewById<View>(R.id.close)
                                             closeBtn?.visibility = View.GONE
                                             com.mallegan.ads.util.Admob.getInstance().pushAdsToViewCustom(nativeAd, adViewWrapper as com.google.android.gms.ads.nativead.NativeAdView)
                                         }
                                         override fun onAdFailedToLoad() {
                                             super.onAdFailedToLoad()
+                                            if (!isAdded) return
                                             adViewWrapper.visibility = View.GONE
                                         }
                                     }

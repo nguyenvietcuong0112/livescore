@@ -86,14 +86,14 @@ class FragmentIntro4 : AbsBaseFragment<FragmentIntro4Binding?>() {
             object : NativeCallback() {
                 override fun onAdFailedToLoad() {
                     super.onAdFailedToLoad()
-                    if (!isAdded || isDetached || activity == null || requireActivity().isDestroyed || requireActivity().isFinishing) return
+                    if (!isAdded) return
                     binding!!.frAds.removeAllViews()
                     binding!!.frAds.setVisibility(View.GONE)
                 }
 
                 override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                     super.onNativeAdLoaded(nativeAd)
-                    if (!isAdded || isDetached || activity == null || requireActivity().isDestroyed || requireActivity().isFinishing) return
+                    if (!isAdded) return
                     val adView = LayoutInflater.from(requireActivity())
                         .inflate(R.layout.layout_native_media, null) as NativeAdView?
 

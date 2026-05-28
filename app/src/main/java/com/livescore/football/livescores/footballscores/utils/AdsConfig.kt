@@ -25,15 +25,12 @@ object AdsConfig {
                 object : InterCallback() {
                     override fun onAdClosed() {
                         super.onAdClosed()
-                        if (activity.isDestroyed || activity.isFinishing || activity.supportFragmentManager.isStateSaved) return
                         lastInterAdShowTime = System.currentTimeMillis()
-                        ActivityLoadNativeFullV1.open(
+                        ActivityLoadNativeFullV2.open(
                             activity,
-                            activity.getString(R.string.native_splash_full_high),
-                            activity.getString(R.string.native_splash_full),
+                            activity.getString(R.string.native_all),
                             object : ActivityFullCallback {
                                 override fun onResultFromActivityFull() {
-                                    if (activity.isDestroyed || activity.isFinishing || activity.supportFragmentManager.isStateSaved) return
                                     onAdClosed()
                                 }
                             }
@@ -42,14 +39,11 @@ object AdsConfig {
 
                     override fun onAdFailedToLoad(error: LoadAdError?) {
                         super.onAdFailedToLoad(error)
-                        if (activity.isDestroyed || activity.isFinishing || activity.supportFragmentManager.isStateSaved) return
-                        ActivityLoadNativeFullV1.open(
+                        ActivityLoadNativeFullV2.open(
                             activity,
-                            activity.getString(R.string.native_splash_full_high),
-                            activity.getString(R.string.native_splash_full),
+                            activity.getString(R.string.native_all),
                             object : ActivityFullCallback {
                                 override fun onResultFromActivityFull() {
-                                    if (activity.isDestroyed || activity.isFinishing || activity.supportFragmentManager.isStateSaved) return
                                     onAdClosed()
                                 }
                             }

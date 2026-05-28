@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var isLimitDialogShowing = false
+    private var activeTabId: Int = R.id.nav_live
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,12 +57,12 @@ class MainActivity : AppCompatActivity() {
 
         // Setup bottom navigation selection with Interstitial Ad frequency capping (35s)
         binding.bottomNavigation.setOnItemSelectedListener { item ->
-            val currentSelectedId = binding.bottomNavigation.selectedItemId
-            if (currentSelectedId == item.itemId) {
+            if (activeTabId == item.itemId) {
                 return@setOnItemSelectedListener false
             }
 
             AdsConfig.showInterClickAd(this) {
+                activeTabId = item.itemId
                 val fragment = when (item.itemId) {
                     R.id.nav_live -> HomeFragment.newInstance(false)
                     R.id.nav_leagues -> LeaguesFragment()
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                 if (fragment != null) {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, fragment)
-                        .commit()
+                        .commitAllowingStateLoss()
                 }
             }
             true
