@@ -12,13 +12,12 @@
     app:strokeColor="@color/divider_dark"
     app:strokeWidth="1dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:gravity="center">
+        android:padding="16dp">
 
+        <!-- Round Stage Info -->
         <TextView
             android:id="@+id/tvFixtureRound"
             android:layout_width="wrap_content"
@@ -26,8 +25,13 @@
             android:text="TRẬN KHAI MẠC"
             android:textColor="@color/accent_green"
             android:textSize="11sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="@font/sf_pro"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- Stadium/Location Info -->
         <TextView
             android:id="@+id/tvFixtureStadium"
             android:layout_width="wrap_content"
@@ -35,15 +39,40 @@
             android:layout_marginTop="4dp"
             android:text="Estadio Azteca, Mexico City"
             android:textColor="@color/text_muted"
-            android:textSize="11sp" />
+            android:textSize="11sp"
+            android:fontFamily="@font/sf_pro"
+            app:layout_constraintTop_toBottomOf="@id/tvFixtureRound"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- Alarm / Reminder Icon (Top Right) -->
+        <ImageView
+            android:id="@+id/ivReminder"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="Reminder"
+            android:src="@drawable/ic_bell"
+            android:padding="2dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            app:tint="@color/text_muted"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Middle Row: Team 1 - VS - Team 2 -->
         <LinearLayout
+            android:id="@+id/layoutTeams"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/tvFixtureStadium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
+            <!-- Team 1 -->
             <TextView
                 android:id="@+id/tvFixtureTeam1"
                 android:layout_width="0dp"
@@ -52,19 +81,24 @@
                 android:gravity="end"
                 android:text="🇲🇽 Mexico"
                 android:textColor="@color/text_white"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/sf_pro" />
 
+            <!-- VS Badge -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardVS"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginHorizontal="12dp"
                 app:cardBackgroundColor="@color/card_dark"
                 app:cardCornerRadius="6dp"
                 app:cardElevation="0dp"
                 app:strokeColor="@color/divider_dark"
                 app:strokeWidth="1dp">
+                
                 <TextView
+                    android:id="@+id/tvVS"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="10dp"
@@ -72,9 +106,12 @@
                     android:text="VS"
                     android:textColor="@color/accent_green"
                     android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:fontFamily="@font/sf_pro" />
+                    
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Team 2 -->
             <TextView
                 android:id="@+id/tvFixtureTeam2"
                 android:layout_width="0dp"
@@ -83,19 +120,42 @@
                 android:gravity="start"
                 android:text="🇪🇨 Ecuador"
                 android:textColor="@color/text_white"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/sf_pro" />
 
         </LinearLayout>
 
+        <!-- Bottom Row: Kickoff Time (Center) -->
         <TextView
             android:id="@+id/tvFixtureTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="11/06/2026 • 20:00"
+            android:layout_marginTop="16dp"
+            android:text="20:00"
             android:textColor="@color/text_muted"
-            android:textSize="11sp" />
+            android:textSize="11sp"
+            android:fontFamily="@font/sf_pro"
+            app:layout_constraintTop_toBottomOf="@id/layoutTeams"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    </LinearLayout>
+        <!-- Favorite Heart Icon (Bottom Right) -->
+        <ImageView
+            android:id="@+id/ivFavorite"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="Favorite"
+            android:src="@drawable/ic_favorite_border"
+            android:padding="2dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            app:tint="@color/text_muted"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </com.google.android.material.card.MaterialCardView>

@@ -49,12 +49,21 @@ class MatchReminderManager @Inject constructor(
         }
         val pendingIntent = PendingIntent.getBroadcast(context, match.id, intent, flags)
 
+        val kickoffTimeMs = match.dateTimestamp * 1000
+        val currentTimeMs = System.currentTimeMillis()
+
+        // If the match kickoff time is already in the past, do not schedule any alarm
+        if (kickoffTimeMs <= currentTimeMs) {
+            Log.d("MatchReminderManager", "Match ${match.id} kickoff is in the past. No alarm scheduled.")
+            return
+        }
+
         // Schedule 5 minutes before match start time
-        val triggerTimeMs = (match.dateTimestamp * 1000) - (5 * 60 * 1000)
+        val triggerTimeMs = kickoffTimeMs - (5 * 60 * 1000)
         
-        // If it starts in less than 5 minutes or already started, trigger in 5 seconds for visual testing
-        val finalTriggerTimeMs = if (triggerTimeMs <= System.currentTimeMillis()) {
-            System.currentTimeMillis() + 5000
+        // If it starts in less than 5 minutes, it is "sát giờ", trigger in 5 seconds for visual testing
+        val finalTriggerTimeMs = if (triggerTimeMs <= currentTimeMs) {
+            currentTimeMs + 5000
         } else {
             triggerTimeMs
         }

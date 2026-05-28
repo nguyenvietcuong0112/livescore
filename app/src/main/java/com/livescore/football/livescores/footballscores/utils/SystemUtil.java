@@ -26,14 +26,26 @@ public class SystemUtil {
         setPreLanguage(context, lang);
     }
 
-    // Load lại ngôn ngữ đã lưu và thay đổi chúng
     public static void setLocale(Context context) {
         String language = getPreLanguage(context);
         if (language.equals("")) {
+            Locale defaultLocale = Locale.getDefault();
+            Configuration currentConfig = context.getResources().getConfiguration();
+            Locale currentLocale = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                if (currentConfig.getLocales().size() > 0) {
+                    currentLocale = currentConfig.getLocales().get(0);
+                }
+            } else {
+                currentLocale = currentConfig.locale;
+            }
+            if (currentLocale != null && currentLocale.getLanguage().equals(defaultLocale.getLanguage())) {
+                return;
+            }
+
             Configuration config = new Configuration();
-            Locale locale = Locale.getDefault();
-            Locale.setDefault(locale);
-            config.locale = locale;
+            Locale.setDefault(defaultLocale);
+            config.locale = defaultLocale;
 
             context.getResources()
                     .updateConfiguration(config, context.getResources().getDisplayMetrics());
@@ -42,11 +54,24 @@ public class SystemUtil {
         }
     }
 
-    // method phục vụ cho việc thay đổi ngôn ngữ.
     public static void changeLang(String lang, Context context) {
         if (lang.equalsIgnoreCase(""))
             return;
-        myLocale = new Locale(lang);
+        Locale newLocale = new Locale(lang);
+        Configuration currentConfig = context.getResources().getConfiguration();
+        Locale currentLocale = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            if (currentConfig.getLocales().size() > 0) {
+                currentLocale = currentConfig.getLocales().get(0);
+            }
+        } else {
+            currentLocale = currentConfig.locale;
+        }
+        if (currentLocale != null && currentLocale.getLanguage().equals(newLocale.getLanguage())) {
+            return;
+        }
+
+        myLocale = newLocale;
         saveLocale(context, lang);
         Locale.setDefault(myLocale);
         Configuration config = new Configuration();

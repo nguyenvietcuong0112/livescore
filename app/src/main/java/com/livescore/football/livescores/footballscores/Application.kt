@@ -51,6 +51,7 @@ class Application : AdsApplication() {
         val savedLang = onboardingPrefs.getString("selected_language", null)
         if (savedLang == null) {
             onboardingPrefs.edit().putString("selected_language", "English").apply()
+            com.livescore.football.livescores.footballscores.utils.SystemUtil.saveLocale(this, "en")
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("en"))
         } else {
             val localeCode = when (savedLang) {
@@ -71,6 +72,7 @@ class Application : AdsApplication() {
                 "Vietnamese" -> "vi"
                 else -> "en"
             }
+            com.livescore.football.livescores.footballscores.utils.SystemUtil.saveLocale(this, localeCode)
             val currentLocales = AppCompatDelegate.getApplicationLocales()
             if (currentLocales.isEmpty || currentLocales.get(0)?.language != localeCode) {
                 AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeCode))
@@ -90,65 +92,5 @@ class Application : AdsApplication() {
             )
         }
 
-        registerActivityLifecycleCallbacks(object : android.app.Application.ActivityLifecycleCallbacks {
-            override fun onActivityCreated(activity: android.app.Activity, savedInstanceState: android.os.Bundle?) {
-                // Do not hide here or touch decorView, let onResume handle it safely to avoid PhoneWindow null DecorView crashes
-            }
-
-            override fun onActivityStarted(activity: android.app.Activity) {}
-
-            override fun onActivityResumed(activity: android.app.Activity) {
-                hideSystemBars(activity)
-                
-                // Safely listen for focus changes to restore fullscreen when returning from ads, dialogs, etc.
-                val decorView = activity.window?.peekDecorView()
-                if (decorView != null && decorView.tag != "focus_listener_attached") {
-                    decorView.tag = "focus_listener_attached"
-                    decorView.viewTreeObserver?.addOnWindowFocusChangeListener { hasFocus ->
-                        if (hasFocus) {
-                            hideSystemBars(activity)
-                        }
-                    }
-                }
-            }
-
-            override fun onActivityPaused(activity: android.app.Activity) {}
-
-            override fun onActivityStopped(activity: android.app.Activity) {}
-
-            override fun onActivitySaveInstanceState(activity: android.app.Activity, outState: android.os.Bundle) {}
-
-            override fun onActivityDestroyed(activity: android.app.Activity) {}
-        })
     }
-
-    private fun hideSystemBars(activity: android.app.Activity) {
-        val window = activity.window ?: return
-        val decorView = window.peekDecorView() ?: return // Safely avoid PhoneWindow's internal null DecorView crash
-        
-        try {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-                window.setDecorFitsSystemWindows(false)
-                val insetsController = window.insetsController
-                if (insetsController != null) {
-                    insetsController.hide(android.view.WindowInsets.Type.systemBars())
-                    insetsController.systemBarsBehavior =
-                        android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                }
-            } else {
-                @Suppress("DEPRECATION")
-                decorView.systemUiVisibility =
-                    android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                        android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                        android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                        android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                        android.view.View.SYSTEM_UI_FLAG_FULLSCREEN or
-                        android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-
 }

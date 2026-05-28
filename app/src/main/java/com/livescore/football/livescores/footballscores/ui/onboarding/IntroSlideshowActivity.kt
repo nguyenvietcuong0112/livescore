@@ -15,6 +15,9 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class IntroSlideshowActivity : AbsBaseActivity() {
 
+    @javax.inject.Inject
+    lateinit var limitManager: com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
+
     private lateinit var binding: ActivityIntroSlideshowBinding
 
     override fun bind() {
@@ -58,6 +61,9 @@ class IntroSlideshowActivity : AbsBaseActivity() {
             object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
+                    if (position == 2 && ::limitManager.isInitialized && limitManager.isPremium()) {
+                        binding.viewPager.setCurrentItem(3, false)
+                    }
                 }
             }
         )

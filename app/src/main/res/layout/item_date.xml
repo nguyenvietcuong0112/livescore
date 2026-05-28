@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dateTabRoot"
     android:layout_width="65dp"
-    android:layout_height="85dp"
+    android:layout_height="wrap_content"
     android:layout_margin="4dp"
     android:background="@drawable/bg_date_card_unselected"
     android:clickable="true"

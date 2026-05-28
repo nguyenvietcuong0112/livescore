@@ -101,9 +101,20 @@ class MainActivity : AppCompatActivity() {
         // Observe request limit exceeds safely in RESUMED state to prevent StateLoss crashes
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                limitManager.limitExceededFlow.collect {
-                    if (!limitManager.isPremium()) {
-                        showPremiumPaywall(isOutOfQuota = true)
+                launch {
+                    limitManager.limitExceededFlow.collect {
+                        if (!limitManager.isPremium()) {
+                            showPremiumPaywall(isOutOfQuota = true)
+                        }
+                    }
+                }
+                launch {
+                    var wasPremium = limitManager.isPremium()
+                    limitManager.isPremiumFlow.collect { isPremium ->
+                        if (isPremium && !wasPremium) {
+                            recreate()
+                        }
+                        wasPremium = isPremium
                     }
                 }
             }

@@ -51,13 +51,33 @@ class HomeViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val matches: StateFlow<List<MatchListItem>> = combine(
         _selectedDate.flatMapLatest { date ->
-            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
+                timeZone = java.util.TimeZone.getDefault()
+            }
             val dateStr = sdf.format(date)
-            repository.getCachedMatchesByQueryDate(dateStr)
+            repository.allCachedMatches.map { matchesList ->
+                matchesList.filter { match ->
+                    val matchDate = java.util.Date(match.dateTimestamp * 1000)
+                    val matchDateStr = sdf.format(matchDate)
+                    val isMatch = matchDateStr == dateStr
+                    android.util.Log.d("HomeViewModelFilter", 
+                        "Match ID: ${match.id}, Title: ${match.homeTeamName} vs ${match.awayTeamName}, " +
+                        "Timestamp: ${match.dateTimestamp}, MatchDateStr: $matchDateStr, SelectedDateStr: $dateStr, " +
+                        "IsMatch: $isMatch, DeviceTimeZone: ${sdf.timeZone.id}"
+                    )
+                    isMatch
+                }
+            }
         }.combine(_currentFilter) { filteredMatches, filter ->
+            val currentTime = System.currentTimeMillis()
             when (filter) {
-                MatchFilter.LIVE -> filteredMatches.filter { isLiveStatus(it.statusShort) }
-                MatchFilter.UPCOMING -> filteredMatches.filter { it.statusShort == "NS" || it.statusShort == "TBD" }
+                MatchFilter.LIVE -> filteredMatches.filter { 
+                    isLiveStatus(it.statusShort) || 
+                    ((it.statusShort == "NS" || it.statusShort == "TBD") && it.dateTimestamp * 1000 <= currentTime)
+                }
+                MatchFilter.UPCOMING -> filteredMatches.filter { 
+                    (it.statusShort == "NS" || it.statusShort == "TBD") && it.dateTimestamp * 1000 > currentTime
+                }
                 MatchFilter.FINISHED -> filteredMatches.filter { it.statusShort == "FT" || it.statusShort == "AET" || it.statusShort == "PEN" }
             }
         },

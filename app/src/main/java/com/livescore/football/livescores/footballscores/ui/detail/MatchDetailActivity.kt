@@ -404,6 +404,15 @@ class MatchDetailActivity : AppCompatActivity() {
                         }
                     }
                 }
+                launch {
+                    var wasPremium = limitManager.isPremium()
+                    limitManager.isPremiumFlow.collect { isPremium ->
+                        if (isPremium && !wasPremium) {
+                            recreate()
+                        }
+                        wasPremium = isPremium
+                    }
+                }
             }
         }
     }

@@ -15,6 +15,9 @@ import com.livescore.football.livescores.footballscores.data.repository.LeaguesR
 import com.livescore.football.livescores.footballscores.databinding.FragmentWc26Binding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import com.livescore.football.livescores.footballscores.data.local.FavoriteManager
+import com.livescore.football.livescores.footballscores.data.local.MatchReminderManager
+import com.livescore.football.livescores.footballscores.data.local.entity.CachedMatchEntity
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -27,6 +30,12 @@ class WC26Fragment : Fragment() {
 
     @Inject
     lateinit var leaguesRepository: LeaguesRepository
+
+    @Inject
+    lateinit var favoriteManager: FavoriteManager
+
+    @Inject
+    lateinit var reminderManager: MatchReminderManager
 
     private var selectedTab = 0 // 0: Fixtures, 1: Groups, 2: VLTT (Bracket)
     private var isWcBracketFullScreen = false
@@ -171,78 +180,167 @@ class WC26Fragment : Fragment() {
                     e.printStackTrace()
                 }
 
-                if (fixturesList.isNotEmpty()) {
-                    // Populate Tab 1: Trận đấu
-                    binding.layoutWcFixturesContainer.removeAllViews()
-                    fixturesList.forEachIndexed { index, match ->
-                        val fixtureView = inflater.inflate(R.layout.item_wc_fixture, binding.layoutWcFixturesContainer, false)
-                        
-                        val groupStageString = getString(R.string.wc_group_stage_name)
-                        val rawRound = match.league.round ?: groupStageString
-                        val displayRound = rawRound.replace("Group Stage", groupStageString).uppercase()
-                        fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureRound).text = displayRound
-                        
-                        val venueName = match.fixture.venue?.name ?: getString(R.string.wc_default_stadium)
-                        val venueCity = match.fixture.venue?.city ?: ""
-                        fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureStadium).text = "$venueName, $venueCity"
-                        
-                        fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTeam1).text = match.teams.home.name
-                        fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTeam2).text = match.teams.away.name
-                        
-                        val homeGoal = match.goals.home
-                        val awayGoal = match.goals.away
-                        val timeTextView = fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTime)
-                        
-                        val rawDate = match.fixture.date
-                        val displayDate = try {
-                             val parser = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", java.util.Locale.getDefault()).apply {
-                                 timeZone = java.util.TimeZone.getTimeZone("UTC")
-                             }
-                             val date = parser.parse(rawDate)
-                             val formatter = java.text.SimpleDateFormat("dd/MM/yyyy • HH:mm", java.util.Locale.getDefault()).apply {
-                                 timeZone = java.util.TimeZone.getDefault()
-                             }
-                             if (date != null) formatter.format(date) else rawDate
-                        } catch (e: Exception) {
-                            rawDate.split("T").firstOrNull() ?: rawDate
-                        }
-                        
-                        if (homeGoal != null && awayGoal != null) {
-                            timeTextView.text = getString(R.string.wc_result_format, displayDate, homeGoal, awayGoal)
-                            timeTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.accent_green))
-                        } else {
-                            timeTextView.text = displayDate
-                            timeTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_muted))
-                        }
-                        
-                        binding.layoutWcFixturesContainer.addView(fixtureView)
 
-                        if ((index + 1) % 3 == 0) {
-                            val adViewWrapper = inflater.inflate(R.layout.layout_native_no_media, binding.layoutWcFixturesContainer, false)
-                            binding.layoutWcFixturesContainer.addView(adViewWrapper)
-                            val adId = try { getString(resources.getIdentifier("native_all", "string", requireContext().packageName)) } catch (e: Exception) { "" }
-                            if (adId.isNotEmpty()) {
-                                com.mallegan.ads.util.Admob.getInstance().loadNativeAds(
-                                    requireContext(),
-                                    adId,
-                                    1,
-                                    object : com.mallegan.ads.callback.NativeCallback() {
-                                        override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
-                                            super.onNativeAdLoaded(nativeAd)
-                                            if (!isAdded) return
-                                            val closeBtn = adViewWrapper.findViewById<View>(R.id.close)
-                                            closeBtn?.visibility = View.GONE
-                                            com.mallegan.ads.util.Admob.getInstance().pushAdsToViewCustom(nativeAd, adViewWrapper as com.google.android.gms.ads.nativead.NativeAdView)
-                                        }
-                                        override fun onAdFailedToLoad() {
-                                            super.onAdFailedToLoad()
-                                            if (!isAdded) return
-                                            adViewWrapper.visibility = View.GONE
-                                        }
-                                    }
-                                )
+                if (fixturesList.isNotEmpty()) {
+                    binding.layoutWcFixturesContainer.removeAllViews()
+                    
+                    val parser = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", java.util.Locale.getDefault()).apply {
+                        timeZone = java.util.TimeZone.getTimeZone("UTC")
+                    }
+                    val localDateKeyFormat = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).apply {
+                        timeZone = java.util.TimeZone.getDefault()
+                    }
+                    val localTimeFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault()).apply {
+                        timeZone = java.util.TimeZone.getDefault()
+                    }
+                    
+                    val groupedMatches = fixturesList.groupBy { match ->
+                        try {
+                            val dateObj = parser.parse(match.fixture.date)
+                            if (dateObj != null) localDateKeyFormat.format(dateObj) else "Unknown"
+                        } catch (e: Exception) {
+                            "Unknown"
+                        }
+                    }.entries.sortedBy { it.key }
+                    
+                    val locale = java.util.Locale.getDefault()
+                    val headerDateFormat = if (locale.language == "vi") {
+                        java.text.SimpleDateFormat("'Ngày' dd 'tháng' MM 'năm' yyyy", locale)
+                    } else {
+                        java.text.SimpleDateFormat("EEEE, dd MMMM yyyy", locale)
+                    }
+                    
+                    var matchCount = 0
+                    
+                    groupedMatches.forEach { entry ->
+                        val dateKeyStr = entry.key
+                        val matchesForDate = entry.value
+                        
+                        if (dateKeyStr != "Unknown") {
+                            val headerDateObj = localDateKeyFormat.parse(dateKeyStr)
+                            if (headerDateObj != null) {
+                                val headerView = inflater.inflate(R.layout.item_wc_date_header, binding.layoutWcFixturesContainer, false)
+                                headerView.findViewById<android.widget.TextView>(R.id.tvDateHeader).text = headerDateFormat.format(headerDateObj)
+                                binding.layoutWcFixturesContainer.addView(headerView)
+                            }
+                        }
+                        
+                        matchesForDate.forEach { match ->
+                            val fixtureView = inflater.inflate(R.layout.item_wc_fixture, binding.layoutWcFixturesContainer, false)
+                            
+                            val groupStageString = getString(R.string.wc_group_stage_name)
+                            val rawRound = match.league.round ?: groupStageString
+                            val displayRound = rawRound.replace("Group Stage", groupStageString).uppercase()
+                            fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureRound).text = displayRound
+                            
+                            val venueName = match.fixture.venue?.name ?: getString(R.string.wc_default_stadium)
+                            val venueCity = match.fixture.venue?.city ?: ""
+                            fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureStadium).text = "$venueName, $venueCity"
+                            
+                            fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTeam1).text = match.teams.home.name
+                            fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTeam2).text = match.teams.away.name
+                            
+                            val kickoffTime = try {
+                                val dateObj = parser.parse(match.fixture.date)
+                                if (dateObj != null) localTimeFormat.format(dateObj) else ""
+                            } catch (e: Exception) {
+                                ""
+                            }
+                            
+                            val homeGoal = match.goals.home
+                            val awayGoal = match.goals.away
+                            val tvVS = fixtureView.findViewById<android.widget.TextView>(R.id.tvVS)
+                            val tvFixtureTime = fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTime)
+                            
+                            if (homeGoal != null && awayGoal != null) {
+                                tvVS.text = "$homeGoal - $awayGoal"
+                                tvVS.setTextColor(ContextCompat.getColor(requireContext(), R.color.accent_green))
+                                tvFixtureTime.text = if (kickoffTime.isNotEmpty()) "$kickoffTime • ${match.fixture.status.short}" else match.fixture.status.short
                             } else {
-                                adViewWrapper.visibility = View.GONE
+                                tvVS.text = "VS"
+                                tvVS.setTextColor(ContextCompat.getColor(requireContext(), R.color.accent_green))
+                                tvFixtureTime.text = kickoffTime
+                            }
+                            
+                            val ivReminder = fixtureView.findViewById<android.widget.ImageView>(R.id.ivReminder)
+                            val ivFavorite = fixtureView.findViewById<android.widget.ImageView>(R.id.ivFavorite)
+                            
+                            val isRemind = reminderManager.isReminderSet(match.fixture.id)
+                            ivReminder.setImageResource(if (isRemind) R.drawable.ic_bell_active else R.drawable.ic_bell)
+                            ivReminder.setColorFilter(ContextCompat.getColor(requireContext(), if (isRemind) R.color.accent_green else R.color.text_muted))
+                            
+                            val isFav = favoriteManager.isFixtureFavorite(match.fixture.id)
+                            ivFavorite.setImageResource(if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
+                            ivFavorite.setColorFilter(ContextCompat.getColor(requireContext(), if (isFav) R.color.accent_green else R.color.text_muted))
+                            
+                            ivReminder.setOnClickListener {
+                                val matchEntity = CachedMatchEntity(
+                                    id = match.fixture.id,
+                                    leagueId = match.league.id,
+                                    leagueName = match.league.name,
+                                    leagueLogo = match.league.logo,
+                                    homeTeamId = match.teams.home.id,
+                                    homeTeamName = match.teams.home.name,
+                                    homeTeamLogo = match.teams.home.logo,
+                                    awayTeamId = match.teams.away.id,
+                                    awayTeamName = match.teams.away.name,
+                                    awayTeamLogo = match.teams.away.logo,
+                                    statusShort = match.fixture.status.short,
+                                    elapsed = match.fixture.status.elapsed,
+                                    goalsHome = match.goals.home,
+                                    goalsAway = match.goals.away,
+                                    dateTimestamp = match.fixture.timestamp,
+                                    statusLong = match.fixture.status.long,
+                                    queryDate = ""
+                                )
+                                val newRemind = reminderManager.toggleReminder(matchEntity)
+                                ivReminder.setImageResource(if (newRemind) R.drawable.ic_bell_active else R.drawable.ic_bell)
+                                ivReminder.setColorFilter(ContextCompat.getColor(requireContext(), if (newRemind) R.color.accent_green else R.color.text_muted))
+                                val msg = if (newRemind) getString(R.string.reminder_set_toast) else getString(R.string.reminder_cancelled_toast)
+                                android.widget.Toast.makeText(requireContext(), msg, android.widget.Toast.LENGTH_SHORT).show()
+                            }
+                            
+                            ivFavorite.setOnClickListener {
+                                if (favoriteManager.canAddFavoriteFixture(match.fixture.id)) {
+                                    val newFav = favoriteManager.toggleFixtureFavorite(match.fixture.id)
+                                    ivFavorite.setImageResource(if (newFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
+                                    ivFavorite.setColorFilter(ContextCompat.getColor(requireContext(), if (newFav) R.color.accent_green else R.color.text_muted))
+                                } else {
+                                    val paywall = com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallDialog.newInstance()
+                                    paywall.show(parentFragmentManager, com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallDialog.TAG)
+                                }
+                            }
+                            
+                            binding.layoutWcFixturesContainer.addView(fixtureView)
+                            matchCount++
+                            
+                            if (matchCount % 3 == 0) {
+                                val adViewWrapper = inflater.inflate(R.layout.layout_native_no_media, binding.layoutWcFixturesContainer, false)
+                                binding.layoutWcFixturesContainer.addView(adViewWrapper)
+                                val adId = try { getString(resources.getIdentifier("native_all", "string", requireContext().packageName)) } catch (e: Exception) { "" }
+                                if (adId.isNotEmpty()) {
+                                    com.mallegan.ads.util.Admob.getInstance().loadNativeAds(
+                                        requireContext(),
+                                        adId,
+                                        1,
+                                        object : com.mallegan.ads.callback.NativeCallback() {
+                                            override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
+                                                super.onNativeAdLoaded(nativeAd)
+                                                if (!isAdded) return
+                                                val closeBtn = adViewWrapper.findViewById<View>(R.id.close)
+                                                closeBtn?.visibility = View.GONE
+                                                com.mallegan.ads.util.Admob.getInstance().pushAdsToViewCustom(nativeAd, adViewWrapper as com.google.android.gms.ads.nativead.NativeAdView)
+                                            }
+                                            override fun onAdFailedToLoad() {
+                                                super.onAdFailedToLoad()
+                                                if (!isAdded) return
+                                                adViewWrapper.visibility = View.GONE
+                                            }
+                                        }
+                                    )
+                                } else {
+                                    adViewWrapper.visibility = View.GONE
+                                }
                             }
                         }
                     }

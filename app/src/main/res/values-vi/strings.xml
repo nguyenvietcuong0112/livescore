@@ -67,6 +67,7 @@
     <string name="tab_matches">TRẬN ĐẤU</string>
     <string name="tab_leagues">GIẢI ĐẤU</string>
     <string name="empty_fixtures">Không tìm thấy trận đấu nào</string>
+    <string name="limit_exceeded_empty_state">Bạn đã sử dụng hết lượt miễn phí hôm nay</string>
     
     <!-- League Details -->
     <string name="tab_standings">BẢNG XẾP HẠNG</string>

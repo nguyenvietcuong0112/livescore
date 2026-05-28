@@ -25,6 +25,7 @@ import com.livescore.football.livescores.footballscores.data.remote.RemoteConfig
 import com.livescore.football.livescores.footballscores.databinding.ActivityLanguageBinding
 import com.livescore.football.livescores.footballscores.ui.onboarding.IntroSlideshowActivity
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
+import com.livescore.football.livescores.footballscores.utils.SystemUtil
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,6 +68,9 @@ class LanguageActivity : AppCompatActivity() {
                 val onboardingPrefs = getSharedPreferences("livescore_onboarding_prefs", Context.MODE_PRIVATE)
                 onboardingPrefs.edit().putString("selected_language", lang).apply()
 
+                val localeCode = getLocaleCode(lang)
+                SystemUtil.saveLocale(this@LanguageActivity, localeCode)
+
                 // Refresh checked indicators in lists
                 adapter.notifyDataSetChanged()
 
@@ -99,10 +103,10 @@ class LanguageActivity : AppCompatActivity() {
 
             // Apply selected application locale dynamically on transition
             val localeCode = getLocaleCode(selectedLanguage)
+            com.livescore.football.livescores.footballscores.utils.SystemUtil.saveLocale(this, localeCode)
             val appLocale = LocaleListCompat.forLanguageTags(localeCode)
             AppCompatDelegate.setApplicationLocales(appLocale)
 
-            // Transition directly to IntroSlideshowActivity
             val intent = Intent(this, IntroSlideshowActivity::class.java)
             startActivity(intent)
             finish()

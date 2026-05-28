@@ -27,9 +27,8 @@ class FragmentIntro2 : AbsBaseFragment<FragmentIntro2Binding?>() {
     override fun initView() {
         val viewPager = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
         binding!!.txtNext.setOnClickListener(View.OnClickListener { view: View? ->
-            viewPager.setCurrentItem(
-                2
-            )
+            val nextItem = if (::limitManager.isInitialized && limitManager.isPremium()) 3 else 2
+            viewPager.setCurrentItem(nextItem)
         })
         loadAds()
     }

@@ -32,9 +32,6 @@ class FragmentIntro2ads : AbsBaseFragment<FragmentAdsBinding?>() {
         viewPager = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
         if (::limitManager.isInitialized && limitManager.isPremium()) {
             binding!!.frAdsFull.visibility = View.GONE
-            viewPager?.post {
-                viewPager?.setCurrentItem(3, false)
-            }
             return
         }
         val adId = try {

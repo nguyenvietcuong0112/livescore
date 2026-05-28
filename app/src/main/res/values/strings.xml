@@ -67,6 +67,7 @@
     <string name="tab_matches">MATCHES</string>
     <string name="tab_leagues">LEAGUES</string>
     <string name="empty_fixtures">No data record</string>
+    <string name="limit_exceeded_empty_state">You have used up all free limits today</string>
     
     <!-- League Details -->
     <string name="tab_standings">STANDINGS</string>
