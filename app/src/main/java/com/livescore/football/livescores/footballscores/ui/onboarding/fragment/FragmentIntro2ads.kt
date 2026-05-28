@@ -13,10 +13,15 @@ import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
 import com.livescore.football.livescores.footballscores.databinding.FragmentAdsBinding
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class FragmentIntro2ads : AbsBaseFragment<FragmentAdsBinding?>() {
     var viewPager: ViewPager2? = null
+
+    @Inject
+    lateinit var limitManager: com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 
     override fun getLayout(): Int {
         return R.layout.fragment_ads
@@ -24,6 +29,13 @@ class FragmentIntro2ads : AbsBaseFragment<FragmentAdsBinding?>() {
 
     override fun initView() {
         viewPager = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
+        if (::limitManager.isInitialized && limitManager.isPremium()) {
+            binding!!.frAdsFull.visibility = View.GONE
+            viewPager?.post {
+                viewPager?.setCurrentItem(3, false)
+            }
+            return
+        }
         loadNativeFull(getString(R.string.native_onboarding_full_1))
     }
 

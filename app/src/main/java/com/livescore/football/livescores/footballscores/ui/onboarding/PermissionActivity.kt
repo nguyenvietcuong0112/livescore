@@ -76,6 +76,11 @@ class PermissionActivity : AppCompatActivity() {
     }
 
     private fun loadAds() {
+        if (::limitManager.isInitialized && limitManager.isPremium()) {
+            binding.frAds.visibility = android.view.View.GONE
+            enableSkip()
+            return
+        }
         val adId = getString(R.string.native_permission)
         if (adId.isNotEmpty()) {
             Admob.getInstance().loadNativeAds(this, adId, 1, object : com.mallegan.ads.callback.NativeCallback() {

@@ -108,8 +108,6 @@ class WC26Fragment : Fragment() {
                             rowView.findViewById<android.widget.TextView>(R.id.tvRowWon).text = (row.all?.win ?: 0).toString()
                             rowView.findViewById<android.widget.TextView>(R.id.tvRowDrawn).text = (row.all?.draw ?: 0).toString()
                             rowView.findViewById<android.widget.TextView>(R.id.tvRowLost).text = (row.all?.lose ?: 0).toString()
-                            rowView.findViewById<android.widget.TextView>(R.id.tvRowGF).text = (row.all?.goals?.goalsFor ?: 0).toString()
-                            rowView.findViewById<android.widget.TextView>(R.id.tvRowGA).text = (row.all?.goals?.against ?: 0).toString()
                             
                             // GD
                             val gd = row.goalsDiff ?: 0
@@ -155,14 +153,11 @@ class WC26Fragment : Fragment() {
                     }
                 } else {
                     binding.layoutWcGroupsContainer.removeAllViews()
-                    val noDataText = android.widget.TextView(requireContext()).apply {
-                        text = getString(R.string.wc_no_data)
-                        setTextColor(ContextCompat.getColor(requireContext(), R.color.text_muted))
-                        textSize = 14f
-                        gravity = android.view.Gravity.CENTER
-                        setPadding(0, dpToPx(48f), 0, 0)
+                    val emptyStateView = com.livescore.football.livescores.footballscores.ui.custom.EmptyStateView(requireContext()).apply {
+                        text = getString(R.string.empty_fixtures)
+                        setPadding(0, dpToPx(32f), 0, 0)
                     }
-                    binding.layoutWcGroupsContainer.addView(noDataText)
+                    binding.layoutWcGroupsContainer.addView(emptyStateView)
                 }
 
                 // 2. Fetch and Populate Fixtures & Bracket (Trận đấu & VLTT)
@@ -253,14 +248,11 @@ class WC26Fragment : Fragment() {
                     }
                 } else {
                     binding.layoutWcFixturesContainer.removeAllViews()
-                    val noDataText = android.widget.TextView(requireContext()).apply {
-                        text = getString(R.string.wc_no_data)
-                        setTextColor(ContextCompat.getColor(requireContext(), R.color.text_muted))
-                        textSize = 14f
-                        gravity = android.view.Gravity.CENTER
-                        setPadding(0, dpToPx(48f), 0, 0)
+                    val emptyStateView = com.livescore.football.livescores.footballscores.ui.custom.EmptyStateView(requireContext()).apply {
+                        text = getString(R.string.empty_fixtures)
+                        setPadding(0, dpToPx(32f), 0, 0)
                     }
-                    binding.layoutWcFixturesContainer.addView(noDataText)
+                    binding.layoutWcFixturesContainer.addView(emptyStateView)
                 }
 
                 // 3. Populate Bracket (VLTT) View

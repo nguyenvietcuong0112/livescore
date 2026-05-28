@@ -18,7 +18,7 @@ import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.local.FavoriteManager
 import com.livescore.football.livescores.footballscores.data.local.MatchReminderManager
 import com.livescore.football.livescores.footballscores.databinding.FragmentHomeBinding
-import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallBottomSheet
+import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallDialog
 import com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -91,7 +91,7 @@ class HomeFragment : Fragment() {
         if (isLiveOnly) {
             binding.timeFilterLayout.visibility = View.GONE
             binding.filterLayout.visibility = View.GONE
-            binding.emptyState.text = getString(R.string.no_live_matches)
+            binding.emptyState.text = getString(R.string.empty_fixtures)
             viewModel.setFilter(MatchFilter.LIVE)
         }
 
@@ -137,8 +137,8 @@ class HomeFragment : Fragment() {
                 if (favoriteManager.canAddFavoriteFixture(match.id)) {
                     viewModel.toggleFavorite(match)
                 } else {
-                    val paywall = PremiumPaywallBottomSheet.newInstance()
-                    paywall.show(parentFragmentManager, PremiumPaywallBottomSheet.TAG)
+                    val paywall = PremiumPaywallDialog.newInstance()
+                    paywall.show(parentFragmentManager, PremiumPaywallDialog.TAG)
                 }
             },
             onReminderClick = { match ->

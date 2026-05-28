@@ -55,17 +55,25 @@
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:background="#2E2E2E"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
-                android:text="VS"
-                android:textColor="#FFD700"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                app:cardBackgroundColor="@color/card_dark"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/divider_dark"
+                app:strokeWidth="1dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:text="VS"
+                    android:textColor="@color/accent_green"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:id="@+id/tvFixtureTeam2"

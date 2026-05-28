@@ -211,14 +211,14 @@ class LeaguesFragment : Fragment() {
             is StandingsUiState.Error -> {
                 binding.loadingSpinner.isVisible = false
                 binding.emptyState.isVisible = true
-                binding.emptyState.text = state.message
+                binding.emptyState.text = getString(R.string.empty_fixtures)
                 standingsAdapter.submitList(emptyList())
             }
             is StandingsUiState.Success -> {
                 binding.loadingSpinner.isVisible = false
                 binding.emptyState.isVisible = state.list.isEmpty()
                 if (state.list.isEmpty()) {
-                    binding.emptyState.text = "No standings data found"
+                    binding.emptyState.text = getString(R.string.empty_fixtures)
                 }
                 standingsAdapter.submitList(state.list)
             }
@@ -236,14 +236,14 @@ class LeaguesFragment : Fragment() {
             is TopPlayersUiState.Error -> {
                 binding.loadingSpinner.isVisible = false
                 binding.emptyState.isVisible = true
-                binding.emptyState.text = state.message
+                binding.emptyState.text = getString(R.string.empty_fixtures)
                 adapter.submitList(emptyList())
             }
             is TopPlayersUiState.Success -> {
                 binding.loadingSpinner.isVisible = false
                 binding.emptyState.isVisible = state.list.isEmpty()
                 if (state.list.isEmpty()) {
-                    binding.emptyState.text = "No players data found"
+                    binding.emptyState.text = getString(R.string.empty_fixtures)
                 }
                 adapter.submitList(state.list)
             }

@@ -80,6 +80,10 @@ class FragmentIntro4 : AbsBaseFragment<FragmentIntro4Binding?>() {
     }
 
     private fun loadAds() {
+        if (::limitManager.isInitialized && limitManager.isPremium()) {
+            binding!!.frAds.visibility = View.GONE
+            return
+        }
         Admob.getInstance().loadNativeAd(
             requireActivity(),
             getString(R.string.native_onboarding_4),

@@ -66,7 +66,7 @@
     <!-- Home Screen -->
     <string name="tab_matches">MATCHES</string>
     <string name="tab_leagues">LEAGUES</string>
-    <string name="empty_fixtures">No fixtures found</string>
+    <string name="empty_fixtures">No data record</string>
     
     <!-- League Details -->
     <string name="tab_standings">STANDINGS</string>
@@ -199,6 +199,8 @@
     <string name="iap_skip">SKIP</string>
     <string name="iap_upgrade_title">⚡ UPGRADE TO VIP PREMIUM</string>
     <string name="iap_upgrade_subtitle">Experience ultimate football with zero limits</string>
+    <string name="iap_out_of_quota_title">⚠️ DAILY FREE LIMIT REACHED</string>
+    <string name="iap_out_of_quota_subtitle">You have used up all 20 free requests for today. Upgrade to Premium to continue unlimited experience!</string>
     <string name="iap_feature_1">Super-fast live updates (every 15s)</string>
     <string name="iap_feature_2">Unlimited favorite match tracking</string>
     <string name="iap_feature_3">Completely Ad-Free experience</string>

@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import com.livescore.football.livescores.footballscores.data.local.MatchReminderManager
 import javax.inject.Inject
 import androidx.core.content.ContextCompat
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.ui.home.MatchListItem
 
 @AndroidEntryPoint
@@ -36,6 +37,9 @@ class FavoriteFragment : Fragment() {
 
     @Inject
     lateinit var reminderManager: MatchReminderManager
+
+    @Inject
+    lateinit var limitManager: RequestLimitManager
 
     private var pendingReminderAction: (() -> Unit)? = null
     private val notificationPermissionLauncher = registerForActivityResult(
@@ -137,7 +141,7 @@ class FavoriteFragment : Fragment() {
                             withAds.add(item)
                             if (item is MatchListItem.MatchItem) {
                                 matchCount++
-                                if (matchCount % 3 == 0) {
+                                if (!limitManager.isPremium() && matchCount % 3 == 0) {
                                     withAds.add(MatchListItem.NativeAd(id = "fav_ad_$matchCount"))
                                 }
                             }

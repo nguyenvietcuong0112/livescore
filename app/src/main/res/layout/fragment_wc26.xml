@@ -6,23 +6,24 @@
     android:layout_height="match_parent"
     android:background="@color/bg_light">
 
-    <!-- Gold Metallic Banner Header -->
+    <!-- Clean Synchronized Header -->
     <LinearLayout
         android:id="@+id/bannerHeader"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:background="#1E1E1E"
-        android:gravity="center"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="12dp"
+        android:background="@color/bg_light"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/wc26"
-            android:textColor="#FFD700"
-            android:textSize="20sp"
+            android:textColor="@color/text_white"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
@@ -30,45 +31,44 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:text="USA • MEXICO • CANADA"
-            android:textColor="@color/text_white"
+            android:textColor="@color/text_muted"
             android:textSize="12sp"
-            android:textStyle="bold"
-            android:alpha="0.8" />
+            android:textStyle="bold" />
 
         <!-- Countdown Card -->
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            app:cardBackgroundColor="#2E2E2E"
-            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@color/card_dark"
+            app:cardCornerRadius="10dp"
             app:cardElevation="0dp"
-            app:strokeColor="#FFD700"
+            app:strokeColor="@color/divider_dark"
             app:strokeWidth="1dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="4dp">
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp">
 
-                <View
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:background="@drawable/ic_favorite"
-                    android:backgroundTint="#FFD700" />
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_trophy"
+                    app:tint="@color/accent_green" />
 
                 <TextView
                     android:id="@+id/tvCountdown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Còn 12 ngày đến Lễ Khai Mạc"
-                    android:textColor="#FFD700"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/text_white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    tools:text="Còn 12 ngày đến Lễ Khai Mạc" />
 
             </LinearLayout>
 
@@ -278,7 +278,7 @@
         android:id="@+id/layoutLoadingOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#E6121212"
+        android:background="#E6FFFFFF"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"
@@ -289,8 +289,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottieLoading"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
             app:lottie_rawRes="@raw/loading_football"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"

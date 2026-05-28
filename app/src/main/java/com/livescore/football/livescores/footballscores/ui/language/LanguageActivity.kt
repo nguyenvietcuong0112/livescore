@@ -20,15 +20,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.R
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.databinding.ActivityLanguageBinding
 import com.livescore.football.livescores.footballscores.ui.onboarding.IntroSlideshowActivity
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
 import dagger.hilt.android.AndroidEntryPoint
+import jakarta.inject.Inject
 
 @AndroidEntryPoint
 class LanguageActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var limitManager: RequestLimitManager
 
     private lateinit var binding: ActivityLanguageBinding
     private lateinit var adapter: LanguageSelectionListAdapter
@@ -104,6 +109,11 @@ class LanguageActivity : AppCompatActivity() {
     }
 
     private fun loadAds() {
+        if (::limitManager.isInitialized && limitManager.isPremium()) {
+            binding.frAds.visibility = View.GONE
+            checkNextButtonStatus(true)
+            return
+        }
         checkNextButtonStatus(false)
         val adId = getString(R.string.native_language)
         if (adId.isNotEmpty()) {
@@ -133,6 +143,10 @@ class LanguageActivity : AppCompatActivity() {
     }
 
     private fun nativeIntro1() {
+        if (::limitManager.isInitialized && limitManager.isPremium()) {
+            AdsConfig.nativeIntro1 = null
+            return
+        }
         Admob.getInstance().loadNativeAd(
             this,
             getString(R.string.native_onboarding_1),
@@ -149,6 +163,11 @@ class LanguageActivity : AppCompatActivity() {
     }
 
     private fun loadAdsNativeLanguageSelect() {
+        if (::limitManager.isInitialized && limitManager.isPremium()) {
+            binding.frAds.visibility = View.GONE
+            checkNextButtonStatus(true)
+            return
+        }
         checkNextButtonStatus(false)
         val adId = getString(R.string.native_language_click)
         if (adId.isNotEmpty()) {

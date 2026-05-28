@@ -199,6 +199,8 @@
     <string name="iap_skip">BỎ QUA</string>
     <string name="iap_upgrade_title">⚡ NÂNG CẤP VIP PREMIUM</string>
     <string name="iap_upgrade_subtitle">Trải nghiệm bóng đá đỉnh cao không giới hạn</string>
+    <string name="iap_out_of_quota_title">⚠️ HẾT LƯỢT MIỄN PHÍ HÔM NAY</string>
+    <string name="iap_out_of_quota_subtitle">Bạn đã sử dụng hết 20 lượt truy cập miễn phí trong ngày hôm nay. Hãy nâng cấp lên Premium để tiếp tục trải nghiệm không giới hạn!</string>
     <string name="iap_feature_1">Cập nhật trực tiếp siêu tốc (mỗi 15 giây)</string>
     <string name="iap_feature_2">Theo dõi trận đấu yêu thích không giới hạn</string>
     <string name="iap_feature_3">Hoàn toàn không quảng cáo (Ad-Free)</string>

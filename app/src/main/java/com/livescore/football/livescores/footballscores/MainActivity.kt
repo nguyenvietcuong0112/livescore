@@ -15,7 +15,7 @@ import com.livescore.football.livescores.footballscores.ui.home.HomeFragment
 import com.livescore.football.livescores.footballscores.ui.leagues.LeaguesFragment
 import com.livescore.football.livescores.footballscores.ui.wc26.WC26Fragment
 import com.livescore.football.livescores.footballscores.ui.profile.ProfileFragment
-import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallBottomSheet
+import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallDialog
 import com.livescore.football.livescores.footballscores.ui.onboarding.IAPActivity
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 limitManager.limitExceededFlow.collect {
                     if (!limitManager.isPremium()) {
-                        showPremiumPaywall()
+                        showPremiumPaywall(isOutOfQuota = true)
                     }
                 }
             }
@@ -111,12 +111,12 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.selectedItemId = tabId
     }
 
-    fun showPremiumPaywall() {
+    fun showPremiumPaywall(isOutOfQuota: Boolean = false) {
         if (supportFragmentManager.isStateSaved) return
-        val existing = supportFragmentManager.findFragmentByTag(PremiumPaywallBottomSheet.TAG)
+        val existing = supportFragmentManager.findFragmentByTag(PremiumPaywallDialog.TAG)
         if (existing == null) {
-            val paywall = PremiumPaywallBottomSheet.newInstance()
-            paywall.show(supportFragmentManager, PremiumPaywallBottomSheet.TAG)
+            val paywall = PremiumPaywallDialog.newInstance(isOutOfQuota)
+            paywall.show(supportFragmentManager, PremiumPaywallDialog.TAG)
         }
     }
 

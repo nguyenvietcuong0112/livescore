@@ -51,7 +51,6 @@ class SplashActivity : AppCompatActivity() {
 
         RetentionTracker.checkAndTrackRetention(this)
 
-        // Pre-fetch and synchronize the dynamic API key from remote config on startup
         lifecycleScope.launch {
             remoteConfigManager.fetchAndActivate()
         }
@@ -89,33 +88,50 @@ class SplashActivity : AppCompatActivity() {
 
 
     private fun loadAdsInter() {
+        val isVIP = limitManager.isPremium()
+
         Thread(Runnable {
             for (progress in 0..99) {
                 val currentProgress = progress
-                runOnUiThread({
-                    binding.tvProgressPercent.setText(currentProgress.toString() + "%")
-                })
+                runOnUiThread {
+                    binding.tvProgressPercent.text = "$currentProgress%"
+                }
                 try {
-                    Thread.sleep(150)
+                    Thread.sleep(if (isVIP) 10 else 150)
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
                 }
             }
+            if (isVIP) {
+                runOnUiThread {
+                    startLanguage()
+                }
+            }
         }).start()
+
+        if (isVIP) {
+            return
+        }
+
         val consentHelper = ConsentHelper.getInstance(this)
         if (!consentHelper.canLoadAndShowAds()) {
             consentHelper.reset()
         }
+
         consentHelper.obtainConsentAndShow(this) {
-            Admob.getInstance().loadSplashInterAdsFloor(
-                this@SplashActivity,
-                arrayListOf(
-                    getString(R.string.inter_splash_high),
-                    getString(R.string.inter_splash)
-                ),
-                3000,
-                interCallback
-            )
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                if (!isFinishing && !isDestroyed) {
+                    Admob.getInstance().loadSplashInterAdsFloor(
+                        this@SplashActivity,
+                        arrayListOf(
+                            getString(R.string.inter_splash_high),
+                            getString(R.string.inter_splash)
+                        ),
+                        3000,
+                        interCallback
+                    )
+                }
+            }, 2000)
         }
     }
 
