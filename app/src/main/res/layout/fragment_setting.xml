@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
-        android:text="CÀI ĐẶT"
+        android:text="@string/profile_settings"
         android:textColor="@color/text_white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="8dp"
-                android:text="GIAO DIỆN &amp; CÁ NHÂN HÓA"
+                android:text="@string/profile_display_preferences"
                 android:textColor="@color/text_muted"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -73,7 +73,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Ngôn ngữ"
+                            android:text="@string/language"
                             android:textColor="@color/text_white"
                             android:textSize="15sp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="8dp"
-                android:text="BỘ NHỚ &amp; HỆ THỐNG"
+                android:text="@string/profile_system"
                 android:textColor="@color/text_muted"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="8dp"
-                android:text="THÔNG TIN PHẦN MỀM"
+                android:text="@string/profile_about"
                 android:textColor="@color/text_muted"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -143,7 +143,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Phiên bản"
+                            android:text="@string/profile_version"
                             android:textColor="@color/text_white"
                             android:textSize="15sp"
                             app:layout_constraintBottom_toTopOf="@id/tvBuildInfo"

@@ -114,4 +114,44 @@
     <string name="league_center_subtitle">Klasemen &amp; statistik global</string>
     <string name="tab_scorers">PENCETAK GOL</string>
     <string name="tab_assists">ASSIST</string>
+    <!-- Paywall Screen -->
+    <string name="iap_upgrade_title">⚡ UPGRADE KE VIP PREMIUM</string>
+    <string name="iap_upgrade_subtitle">Rasakan sepak bola terbaik tanpa batas</string>
+    <string name="iap_out_of_quota_title">⚠️ BATAS GRATIS HARIAN HABIS</string>
+    <string name="iap_out_of_quota_subtitle">Anda telah menggunakan semua 20 permintaan gratis hari ini. Upgrade ke Premium untuk melanjutkan tanpa batas!</string>
+    <string name="iap_feature_1">Pembaruan langsung super cepat (setiap 15 detik)</string>
+    <string name="iap_feature_2">Pelacakan pertandingan favorit tanpa batas</string>
+    <string name="iap_feature_3">Pengalaman sepenuhnya Tanpa Iklan</string>
+    <string name="iap_feature_4">Statistik tingkat lanjut, radar taktis &amp; tren</string>
+    <string name="iap_weekly_vip">1 Minggu VIP</string>
+    <string name="iap_monthly_vip">1 Bulan VIP</string>
+    <string name="iap_pay_weekly">Ditagih setiap minggu</string>
+    <string name="iap_save_monthly">Hemat ~30\% 🔥</string>
+    <string name="iap_btn_subscribe">Langganan Sekarang</string>
+    <string name="iap_toast_mock_success">Selamat! Premium berhasil diaktifkan (Mock Billing). 🎉</string>
+    <string name="iap_btn_connecting_mock">Menghubungkan ke Mock Billing...</string>
+    <string name="iap_terms_of_service">Ketentuan Layanan</string>
+    <string name="iap_terms_of_service_toast">Ketentuan Layanan: Langganan Premium yang diperbarui otomatis.</string>
+    <string name="iap_privacy_policy">Kebijakan Privasi</string>
+    <string name="iap_privacy_policy_toast">Kebijakan Privasi: Informasi pembayaran Anda sepenuhnya aman.</string>
+    <string name="iap_toast_google_play_error">Kesalahan menghubungkan ke Google Play: %1$s</string>
+    <string name="iap_vip_button_label">VIP ⚡</string>
+    <string name="btn_discover">TEMUKAN</string>
+
+    <!-- New Permission Screen Strings -->
+    <string name="permission_main_title">Izin Akses</string>
+    <string name="permission_main_subtitle">Jangan lewatkan info pertandingan favorit Anda</string>
+    <string name="permission_section_title">IZIN AKSES</string>
+    <string name="permission_push_title">Notifikasi Push</string>
+    <string name="permission_push_desc">Izinkan notifikasi untuk pengingat dan pembaruan langsung</string>
+    <string name="permission_footer_desc">Izin ini membantu kami memberikan pengalaman pengguna yang lebih baik.</string>
+    <string name="permission_confirm">Konfirmasi</string>
+
+    <!-- Extracted Layout & Code Strings -->
+    <string name="leagues_header_title">PUSAT LIGA</string>
+    <string name="leagues_header_desc">Klasemen dan pencetak gol terbanyak waktu nyata</string>
+    <string name="toast_share_match_failed">Gagal membagikan info pertandingan</string>
+    <string name="toast_select_language_continue">Silakan pilih bahasa untuk melanjutkan</string>
+    <string name="toast_language_switched_vi">Diubah ke Bahasa Vietnam</string>
+    <string name="toast_language_switched_en">Diubah ke Bahasa Inggris</string>
 </resources>

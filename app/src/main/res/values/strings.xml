@@ -229,4 +229,14 @@
     <string name="permission_footer_desc">These permissions help us provide a better experience.</string>
     <string name="permission_confirm">Confirm</string>
 
+    <!-- Extracted Layout & Code Strings -->
+    <string name="leagues_header_title">LEAGUE CENTER</string>
+    <string name="leagues_header_desc">Real-time Standings and Top Performers</string>
+    <string name="tab_scorers">SCORERS</string>
+    <string name="tab_assists">ASSISTS</string>
+    <string name="toast_share_match_failed">Failed to share match info</string>
+    <string name="toast_select_language_continue">Please select language to continue</string>
+    <string name="toast_language_switched_vi">Đã chuyển đổi sang Tiếng Việt</string>
+    <string name="toast_language_switched_en">Switched to English</string>
+
 </resources>

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="LEAGUE CENTER"
+        android:text="@string/leagues_header_title"
         android:textColor="@color/text_white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="2dp"
-        android:text="Real-time Standings and Top Performers"
+        android:text="@string/leagues_header_desc"
         android:textColor="@color/text_muted"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +70,7 @@
             android:layout_weight="1.2"
             android:layout_marginEnd="4dp"
             android:backgroundTint="@color/card_dark"
-            android:text="STANDINGS"
+            android:text="@string/tab_standings"
             android:textColor="@color/accent_green"
             android:textSize="11sp"
             app:cornerRadius="8dp"
@@ -85,7 +85,7 @@
             android:layout_weight="1"
             android:layout_marginHorizontal="4dp"
             android:backgroundTint="@color/card_dark"
-            android:text="SCORERS"
+            android:text="@string/tab_scorers"
             android:textColor="@color/text_muted"
             android:textSize="11sp"
             app:cornerRadius="8dp" />
@@ -98,7 +98,7 @@
             android:layout_weight="1"
             android:layout_marginStart="4dp"
             android:backgroundTint="@color/card_dark"
-            android:text="ASSISTS"
+            android:text="@string/tab_assists"
             android:textColor="@color/text_muted"
             android:textSize="11sp"
             app:cornerRadius="8dp" />
@@ -120,7 +120,7 @@
             android:id="@+id/tvColRank"
             android:layout_width="28dp"
             android:layout_height="wrap_content"
-            android:text="#"
+            android:text="@string/leagues_col_rank"
             android:textColor="@color/text_muted"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -130,7 +130,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
-            android:text="TEAM"
+            android:text="@string/table_header_team"
             android:textColor="@color/text_muted"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -140,7 +140,7 @@
             android:layout_width="28dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="P"
+            android:text="@string/table_header_p"
             android:textColor="@color/text_muted"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -150,7 +150,7 @@
             android:layout_width="24dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="W"
+            android:text="@string/table_header_w"
             android:textColor="@color/text_muted"
             android:textSize="11sp" />
 
@@ -159,7 +159,7 @@
             android:layout_width="24dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="D"
+            android:text="@string/table_header_d"
             android:textColor="@color/text_muted"
             android:textSize="11sp" />
 
@@ -168,7 +168,7 @@
             android:layout_width="24dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="L"
+            android:text="@string/table_header_l"
             android:textColor="@color/text_muted"
             android:textSize="11sp" />
 
@@ -177,7 +177,7 @@
             android:layout_width="28dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="GD"
+            android:text="@string/table_header_gd"
             android:textColor="@color/text_muted"
             android:textSize="11sp" />
 
@@ -186,7 +186,7 @@
             android:layout_width="36dp"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="PTS"
+            android:text="@string/table_header_pts"
             android:textColor="@color/text_white"
             android:textSize="11sp"
             android:textStyle="bold" />

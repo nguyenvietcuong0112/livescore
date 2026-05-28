@@ -114,4 +114,44 @@
     <string name="league_center_subtitle">Мировые таблицы и статистика</string>
     <string name="tab_scorers">БОМБАРДИРЫ</string>
     <string name="tab_assists">АССИСТЫ</string>
+    <!-- Paywall Screen -->
+    <string name="iap_upgrade_title">⚡ ОБНОВИТЬ ДО VIP PREMIUM</string>
+    <string name="iap_upgrade_subtitle">Испытайте незабываемый футбол без ограничений</string>
+    <string name="iap_out_of_quota_title">⚠️ ДОСТИГНУТ ЕЖЕДНЕВНЫЙ ЛИМИТ</string>
+    <string name="iap_out_of_quota_subtitle">Вы исчерпали все 20 бесплатных запросов на сегодня. Обновитесь до Premium, чтобы продолжить без ограничений!</string>
+    <string name="iap_feature_1">Сверхбыстрые обновления результатов (каждые 15 секунд)</string>
+    <string name="iap_feature_2">Безлимитное отслеживание избранных матчей</string>
+    <string name="iap_feature_3">Полное отсутствие рекламы</string>
+    <string name="iap_feature_4">Продвинутая статистика, тактический радар и тренды</string>
+    <string name="iap_weekly_vip">1 неделя VIP</string>
+    <string name="iap_monthly_vip">1 месяц VIP</string>
+    <string name="iap_pay_weekly">Списание каждую неделю</string>
+    <string name="iap_save_monthly">Скидка ~30\% 🔥</string>
+    <string name="iap_btn_subscribe">Подписаться сейчас</string>
+    <string name="iap_toast_mock_success">Поздравляем! Premium успешно активирован (Mock Billing). 🎉</string>
+    <string name="iap_btn_connecting_mock">Подключение к Mock Billing...</string>
+    <string name="iap_terms_of_service">Условия использования</string>
+    <string name="iap_terms_of_service_toast">Условия использования: Premium-подписка с автоматическим продлением.</string>
+    <string name="iap_privacy_policy">Политика конфиденциальности</string>
+    <string name="iap_privacy_policy_toast">Политика конфиденциальности: Ваши платежные данные полностью защищены.</string>
+    <string name="iap_toast_google_play_error">Ошибка подключения к Google Play: %1$s</string>
+    <string name="iap_vip_button_label">VIP ⚡</string>
+    <string name="btn_discover">ОТКРЫТЬ</string>
+
+    <!-- New Permission Screen Strings -->
+    <string name="permission_main_title">Разрешения</string>
+    <string name="permission_main_subtitle">Будьте в курсе ваших любимых матчей</string>
+    <string name="permission_section_title">РАЗРЕШЕНИЯ</string>
+    <string name="permission_push_title">Push-уведомления</string>
+    <string name="permission_push_desc">Разрешить уведомления для напоминаний и обновлений в реальном времени</string>
+    <string name="permission_footer_desc">Эти разрешения помогают нам сделать работу с приложением лучше.</string>
+    <string name="permission_confirm">Подтвердить</string>
+
+    <!-- Extracted Layout & Code Strings -->
+    <string name="leagues_header_title">ЦЕНТР ЛИГ</string>
+    <string name="leagues_header_desc">Таблицы лиг и лучшие бомбардиры в реальном времени</string>
+    <string name="toast_share_match_failed">Не удалось поделиться информацией о матче</string>
+    <string name="toast_select_language_continue">Пожалуйста, выберите язык, чтобы продолжить</string>
+    <string name="toast_language_switched_vi">Переключено на вьетнамский</string>
+    <string name="toast_language_switched_en">Переключено на английский</string>
 </resources>

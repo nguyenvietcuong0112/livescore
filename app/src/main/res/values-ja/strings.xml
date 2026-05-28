@@ -114,4 +114,44 @@
     <string name="league_center_subtitle">グローバル順位表＆スタッツ</string>
     <string name="tab_scorers">得点王</string>
     <string name="tab_assists">アシスト</string>
+    <!-- Paywall Screen -->
+    <string name="iap_upgrade_title">⚡ VIPプレミアムにアップグレード</string>
+    <string name="iap_upgrade_subtitle">制限なしで究極のサッカーを体験</string>
+    <string name="iap_out_of_quota_title">⚠️ 本日の無料制限に達しました</string>
+    <string name="iap_out_of_quota_subtitle">本日の無料リクエストを20回すべて使い切りました。制限なしで続けるにはプレミアムにアップグレードしてください！</string>
+    <string name="iap_feature_1">超高速ライブアップデート（15秒ごと）</string>
+    <string name="iap_feature_2">お気に入り試合の無制限追跡</string>
+    <string name="iap_feature_3">完全な広告なし体験</string>
+    <string name="iap_feature_4">高度な統計、タクティカルレーダー＆トレンド</string>
+    <string name="iap_weekly_vip">1週間VIP</string>
+    <string name="iap_monthly_vip">1ヶ月VIP</string>
+    <string name="iap_pay_weekly">毎週の請求</string>
+    <string name="iap_save_monthly">節約する ~30\% 🔥</string>
+    <string name="iap_btn_subscribe">今すぐ登録</string>
+    <string name="iap_toast_mock_success">おめでとうございます！プレミアムが正常に有効化されました（Mock Billing）。 🎉</string>
+    <string name="iap_btn_connecting_mock">モックビル決済に接続中...</string>
+    <string name="iap_terms_of_service">利用規約</string>
+    <string name="iap_terms_of_service_toast">利用規約：自動更新されるプレミアムサブスクリプション。</string>
+    <string name="iap_privacy_policy">プライバシーポリシー</string>
+    <string name="iap_privacy_policy_toast">プライバシーポリシー：お支払い情報は完全に保護されています。</string>
+    <string name="iap_toast_google_play_error">Google Playへの接続エラー: %1$s</string>
+    <string name="iap_vip_button_label">VIP ⚡</string>
+    <string name="btn_discover">発見する</string>
+
+    <!-- New Permission Screen Strings -->
+    <string name="permission_main_title">権限の付与</string>
+    <string name="permission_main_subtitle">お気に入りの試合を見逃さないようにしましょう</string>
+    <string name="permission_section_title">アクセス権限</string>
+    <string name="permission_push_title">プッシュ通知</string>
+    <string name="permission_push_desc">リマインダーやリアルタイム更新の通知を許可する</string>
+    <string name="permission_footer_desc">これらの権限により、より良い体験を提供することができます。</string>
+    <string name="permission_confirm">確認する</string>
+
+    <!-- Extracted Layout & Code Strings -->
+    <string name="leagues_header_title">リーグセンター</string>
+    <string name="leagues_header_desc">リアルタイムの順位表と得点王リスト</string>
+    <string name="toast_share_match_failed">試合情報の共有に失敗しました</string>
+    <string name="toast_select_language_continue">続行するには言語を選択してください</string>
+    <string name="toast_language_switched_vi">ベトナム語に切り替えました</string>
+    <string name="toast_language_switched_en">英語に切り替えました</string>
 </resources>

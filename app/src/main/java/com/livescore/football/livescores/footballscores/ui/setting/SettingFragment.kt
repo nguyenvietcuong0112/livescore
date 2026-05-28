@@ -37,10 +37,10 @@ class SettingFragment : Fragment() {
             isVietnamese = !isVietnamese
             if (isVietnamese) {
                 binding.tvLanguageValue.text = "Tiếng Việt 🇻🇳"
-                Toast.makeText(requireContext(), "Đã chuyển đổi sang Tiếng Việt", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(com.livescore.football.livescores.footballscores.R.string.toast_language_switched_vi), Toast.LENGTH_SHORT).show()
             } else {
                 binding.tvLanguageValue.text = "English 🇺🇸"
-                Toast.makeText(requireContext(), "Switched to English", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(com.livescore.football.livescores.footballscores.R.string.toast_language_switched_en), Toast.LENGTH_SHORT).show()
             }
         }
     }

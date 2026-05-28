@@ -69,7 +69,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/transparent"
-                    android:text="STATS"
+                    android:text="@string/tab_stats"
                     android:textColor="@color/accent_green"
                     android:textStyle="bold" />
 
@@ -80,7 +80,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/transparent"
-                    android:text="TIMELINE"
+                    android:text="@string/tab_timeline"
                     android:textColor="@color/text_muted" />
 
                 <com.google.android.material.button.MaterialButton
@@ -90,7 +90,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/transparent"
-                    android:text="LINEUPS"
+                    android:text="@string/tab_lineups"
                     android:textColor="@color/text_muted" />
 
             </LinearLayout>

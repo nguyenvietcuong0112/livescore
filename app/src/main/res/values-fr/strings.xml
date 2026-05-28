@@ -130,4 +130,44 @@
     <string name="reminder_set_toast">Rappel activé pour le match !</string>
     <string name="reminder_cancelled_toast">Rappel désactivé pour le match !</string>
     <string name="share_caption_template">"Consultez les statistiques du match %1$s vs %2$s sur livescore://match/%3$d (Téléchargez l'application : https://livescore.premium/download)"</string>
+    <!-- Paywall Screen -->
+    <string name="iap_upgrade_title">⚡ PASSER À VIP PREMIUM</string>
+    <string name="iap_upgrade_subtitle">Vivez le football ultime sans aucune limite</string>
+    <string name="iap_out_of_quota_title">⚠️ LIMITE GRATUITE ATTEINTE</string>
+    <string name="iap_out_of_quota_subtitle">Vous avez épuisé vos 20 requêtes gratuites aujourd\'hui. Passez à Premium pour continuer en illimité !</string>
+    <string name="iap_feature_1">Mises à jour en direct ultra-rapides (toutes les 15s)</string>
+    <string name="iap_feature_2">Suivi illimité des matchs favoris</string>
+    <string name="iap_feature_3">Expérience entièrement sans publicité</string>
+    <string name="iap_feature_4">Stats avancées, radar tactique &amp; tendances</string>
+    <string name="iap_weekly_vip">1 semaine VIP</string>
+    <string name="iap_monthly_vip">1 mois VIP</string>
+    <string name="iap_pay_weekly">Facturé chaque semaine</string>
+    <string name="iap_save_monthly">Économisez ~30\% 🔥</string>
+    <string name="iap_btn_subscribe">S\'abonner maintenant</string>
+    <string name="iap_toast_mock_success">Félicitations ! Premium activé avec succès (Mock Billing). 🎉</string>
+    <string name="iap_btn_connecting_mock">Connexion à la facturation simulée...</string>
+    <string name="iap_terms_of_service">Conditions d\'utilisation</string>
+    <string name="iap_terms_of_service_toast">Conditions d\'utilisation : Abonnement Premium renouvelable automatiquement.</string>
+    <string name="iap_privacy_policy">Politique de confidentialité</string>
+    <string name="iap_privacy_policy_toast">Politique de confidentialité : Vos informations de paiement sont entièrement sécurisées.</string>
+    <string name="iap_toast_google_play_error">Erreur lors de la connexion à Google Play : %1$s</string>
+    <string name="iap_vip_button_label">VIP ⚡</string>
+    <string name="btn_discover">DÉCOUVRIR</string>
+
+    <!-- New Permission Screen Strings -->
+    <string name="permission_main_title">Autorisations</string>
+    <string name="permission_main_subtitle">Restez informé de vos matchs favoris</string>
+    <string name="permission_section_title">AUTORISATIONS</string>
+    <string name="permission_push_title">Notifications Push</string>
+    <string name="permission_push_desc">Autoriser les notifications pour les rappels et les mises à jour</string>
+    <string name="permission_footer_desc">Ces autorisations nous aident à offrir une meilleure expérience.</string>
+    <string name="permission_confirm">Confirmer</string>
+
+    <!-- Extracted Layout & Code Strings -->
+    <string name="leagues_header_title">CENTRE DES LIGUES</string>
+    <string name="leagues_header_desc">Classements et meilleurs buteurs en temps réel</string>
+    <string name="toast_share_match_failed">Échec du partage des informations du match</string>
+    <string name="toast_select_language_continue">Veuillez sélectionner une langue pour continuer</string>
+    <string name="toast_language_switched_vi">Passé en vietnamien</string>
+    <string name="toast_language_switched_en">Passé en anglais</string>
 </resources>

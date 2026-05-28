@@ -114,4 +114,44 @@
     <string name="league_center_subtitle">Classificações e estatísticas globais</string>
     <string name="tab_scorers">ARTILHEIROS</string>
     <string name="tab_assists">ASSISTÊNCIAS</string>
+    <!-- Paywall Screen -->
+    <string name="iap_upgrade_title">⚡ UPGRADE PARA VIP PREMIUM</string>
+    <string name="iap_upgrade_subtitle">Experimente o futebol definitivo sem limites</string>
+    <string name="iap_out_of_quota_title">⚠️ LIMITE DIÁRIO ATINGIDO</string>
+    <string name="iap_out_of_quota_subtitle">Você esgotou todas as 20 solicitações gratuitas de hoje. Faça upgrade para o Premium para continuar sem limites!</string>
+    <string name="iap_feature_1">Atualizações ao vivo super-rápidas (a cada 15s)</string>
+    <string name="iap_feature_2">Acompanhamento ilimitado de favoritos</string>
+    <string name="iap_feature_3">Experiência totalmente livre de anúncios</string>
+    <string name="iap_feature_4">Estatísticas avançadas, radar tático e tendências</string>
+    <string name="iap_weekly_vip">1 Semana VIP</string>
+    <string name="iap_monthly_vip">1 Mês VIP</string>
+    <string name="iap_pay_weekly">Cobrado semanalmente</string>
+    <string name="iap_save_monthly">Poupe ~30\% 🔥</string>
+    <string name="iap_btn_subscribe">Assinar Agora</string>
+    <string name="iap_toast_mock_success">Parabéns! Premium ativado com sucesso (Mock Billing). 🎉</string>
+    <string name="iap_btn_connecting_mock">Conectando ao Faturamento Simulado...</string>
+    <string name="iap_terms_of_service">Termos de Serviço</string>
+    <string name="iap_terms_of_service_toast">Termos de Serviço: Assinatura Premium renovável automaticamente.</string>
+    <string name="iap_privacy_policy">Política de Privacidade</string>
+    <string name="iap_privacy_policy_toast">Política de Privacidade: Suas informações de pagamento estão totalmente seguras.</string>
+    <string name="iap_toast_google_play_error">Erro ao conectar ao Google Play: %1$s</string>
+    <string name="iap_vip_button_label">VIP ⚡</string>
+    <string name="btn_discover">DESCOBRIR</string>
+
+    <!-- New Permission Screen Strings -->
+    <string name="permission_main_title">Permissões</string>
+    <string name="permission_main_subtitle">Fique por dentro de todos os seus jogos favoritos</string>
+    <string name="permission_section_title">PERMISSÕES</string>
+    <string name="permission_push_title">Notificações Push</string>
+    <string name="permission_push_desc">Permitir notificações para lembretes e atualizações ao vivo</string>
+    <string name="permission_footer_desc">Essas permissões nos ajudam a oferecer uma melhor experiência.</string>
+    <string name="permission_confirm">Confirmar</string>
+
+    <!-- Extracted Layout & Code Strings -->
+    <string name="leagues_header_title">CENTRO DE LIGAS</string>
+    <string name="leagues_header_desc">Classificações e artilheiros em tempo real</string>
+    <string name="toast_share_match_failed">Falha ao compartilhar informações da partida</string>
+    <string name="toast_select_language_continue">Por favor selecione um idioma para continuar</string>
+    <string name="toast_language_switched_vi">Alterado para vietnamita</string>
+    <string name="toast_language_switched_en">Alterado para inglês</string>
 </resources>

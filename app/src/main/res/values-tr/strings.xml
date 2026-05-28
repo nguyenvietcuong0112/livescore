@@ -114,4 +114,44 @@
     <string name="league_center_subtitle">Küresel puan durumları &amp; istatistikler</string>
     <string name="tab_scorers">GOL KRALLIĞI</string>
     <string name="tab_assists">ASİSTLER</string>
+    <!-- Paywall Screen -->
+    <string name="iap_upgrade_title">⚡ VIP PREMIUM\'A YÜKSELT</string>
+    <string name="iap_upgrade_subtitle">Limitsiz futbol heyecanını en üst seviyede yaşayın</string>
+    <string name="iap_out_of_quota_title">⚠️ GÜNLÜK ÜCRETSİZ LİMİTE ULAŞILDI</string>
+    <string name="iap_out_of_quota_subtitle">Bugün için 20 ücretsiz istek sınırınızı doldurdunuz. Sınırsız deneyim için Premium\'a yükseltin!</string>
+    <string name="iap_feature_1">Süper hızlı canlı güncellemeler (15 saniyede bir)</string>
+    <string name="iap_feature_2">Sınırsız favori maç takibi yapın</string>
+    <string name="iap_feature_3">Tamamen reklamsız temiz deneyim</string>
+    <string name="iap_feature_4">Gelişmiş istatistikler, taktik radarı &amp; analizler</string>
+    <string name="iap_weekly_vip">1 Haftalık VIP</string>
+    <string name="iap_monthly_vip">1 Aylık VIP</string>
+    <string name="iap_pay_weekly">Haftalık faturalandırılır</string>
+    <string name="iap_save_monthly">Tasarruf et ~30\% 🔥</string>
+    <string name="iap_btn_subscribe">Şimdi Abone Ol</string>
+    <string name="iap_toast_mock_success">Tebrikler! Premium başarıyla aktif edildi (Mock Billing). 🎉</string>
+    <string name="iap_btn_connecting_mock">Simüle ödeme sistemine bağlanıyor...</string>
+    <string name="iap_terms_of_service">Hizmet Şartları</string>
+    <string name="iap_terms_of_service_toast">Hizmet Şartları: Premium abonelik otomatik olarak yenilenir.</string>
+    <string name="iap_privacy_policy">Gizlilik Politikası</string>
+    <string name="iap_privacy_policy_toast">Gizlilik Politikası: Ödeme bilgileriniz tamamen güvendedir.</string>
+    <string name="iap_toast_google_play_error">Google Play\'e bağlanırken hata oluştu: %1$s</string>
+    <string name="iap_vip_button_label">VIP ⚡</string>
+    <string name="btn_discover">KEŞFET</string>
+
+    <!-- New Permission Screen Strings -->
+    <string name="permission_main_title">İzinler</string>
+    <string name="permission_main_subtitle">Favori maçlarınızı her zaman yakından takip edin</string>
+    <string name="permission_section_title">İZİNLER</string>
+    <string name="permission_push_title">Anlık Bildirimler</string>
+    <string name="permission_push_desc">Hatırlatıcılar ve anlık güncellemeler için izin verin</string>
+    <string name="permission_footer_desc">Bu izinler size daha iyi bir deneyim sunmamıza yardımcı olur.</string>
+    <string name="permission_confirm">Onayla</string>
+
+    <!-- Extracted Layout & Code Strings -->
+    <string name="leagues_header_title">LİG MERKEZİ</string>
+    <string name="leagues_header_desc">Gerçek zamanlı puan durumları ve gol krallığı</string>
+    <string name="toast_share_match_failed">Maç bilgileri paylaşılamadı</string>
+    <string name="toast_select_language_continue">Devam etmek için lütfen bir dil seçin</string>
+    <string name="toast_language_switched_vi">Vietnamca diline geçildi</string>
+    <string name="toast_language_switched_en">İngilizce diline geçildi</string>
 </resources>

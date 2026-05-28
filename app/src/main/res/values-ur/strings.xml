@@ -114,4 +114,44 @@
     <string name="league_center_subtitle">عالمی درجہ بندی اور اعدادوشمار</string>
     <string name="tab_scorers">اسکوررز</string>
     <string name="tab_assists">اسسٹس</string>
+    <!-- Paywall Screen -->
+    <string name="iap_upgrade_title">⚡ VIP PREMIUM میں اپگریڈ کریں</string>
+    <string name="iap_upgrade_subtitle">بغیر کسی حد کے بہترین فٹ بال کا تجربہ کریں</string>
+    <string name="iap_out_of_quota_title">⚠️ روزانہ مفت استعمال کی حد ختم</string>
+    <string name="iap_out_of_quota_subtitle">آپ نے آج کی تمام 20 مفت درخواستیں استعمال کر لی ہیں۔ لامحدود تجربہ جاری رکھنے کے لیے پریمیم میں اپ گریڈ کریں!</string>
+    <string name="iap_feature_1">سپر فاسٹ لائیو اپ ڈیٹس (ہر 15 سیکنڈ میں)</string>
+    <string name="iap_feature_2">پسندیدہ میچوں کی لامحدود ٹریکنگ</string>
+    <string name="iap_feature_3">مکمل طور پر اشتہارات سے پاک تجربہ</string>
+    <string name="iap_feature_4">جدید اعداد و شمار، ٹیکٹیکل ریڈار اور رجحانات</string>
+    <string name="iap_weekly_vip">1 ہفتہ VIP</string>
+    <string name="iap_monthly_vip">1 ماہ VIP</string>
+    <string name="iap_pay_weekly">ہر ہفتے بل کیا جائے گا</string>
+    <string name="iap_save_monthly">بچت کریں ~30\% 🔥</string>
+    <string name="iap_btn_subscribe">ابھی سبسکرائب کریں</string>
+    <string name="iap_toast_mock_success">مبارک ہو! پریمیم کامیابی کے ساتھ فعال ہو گیا (Mock Billing)۔ 🎉</string>
+    <string name="iap_btn_connecting_mock">مک بلنگ سے منسلک ہو رہا ہے...</string>
+    <string name="iap_terms_of_service">سروس کی شرائط</string>
+    <string name="iap_terms_of_service_toast">سروس کی شرائط: پریمیم از خود قابل تجدید سبسکرپشن۔</string>
+    <string name="iap_privacy_policy">رازداری کی پالیسی</string>
+    <string name="iap_privacy_policy_toast">رازداری کی پالیسی: آپ کی ادائیگی کی معلومات مکمل طور پر محفوظ ہے۔</string>
+    <string name="iap_toast_google_play_error">Google Play سے منسلک ہونے میں خرابی: %1$s</string>
+    <string name="iap_vip_button_label">VIP ⚡</string>
+    <string name="btn_discover">دریافت کریں</string>
+
+    <!-- New Permission Screen Strings -->
+    <string name="permission_main_title">اجازتیں</string>
+    <string name="permission_main_subtitle">اپنے پسندیدہ میچوں کے ساتھ اپ ڈیٹ رہیں</string>
+    <string name="permission_section_title">اجازتیں</string>
+    <string name="permission_push_title">پش نوٹیفیکیشنز</string>
+    <string name="permission_push_desc">یاد دہانیوں اور اپ ڈیٹس کے لیے اطلاعات کی اجازت دیں</string>
+    <string name="permission_footer_desc">یہ اجازتیں ہمیں بہتر تجربہ فراہم کرنے میں مدد کرتی ہیں۔</string>
+    <string name="permission_confirm">تصدیق کریں</string>
+
+    <!-- Extracted Layout & Code Strings -->
+    <string name="leagues_header_title">لیگ مرکز</string>
+    <string name="leagues_header_desc">حقیقی وقت کی صورتحال اور سرفہرست اسکوررز</string>
+    <string name="toast_share_match_failed">میچ کی معلومات شیئر کرنے میں ناکامی</string>
+    <string name="toast_select_language_continue">براہ کرم جاری رکھنے کے لیے زبان منتخب کریں</string>
+    <string name="toast_language_switched_vi">ویتنامی میں تبدیل کر دیا گیا</string>
+    <string name="toast_language_switched_en">انگریزی میں تبدیل کر دیا گیا</string>
 </resources>

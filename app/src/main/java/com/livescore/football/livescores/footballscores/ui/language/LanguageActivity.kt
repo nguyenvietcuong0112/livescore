@@ -87,7 +87,7 @@ class LanguageActivity : AppCompatActivity() {
     private fun setupListeners() {
         binding.frNext.setOnClickListener {
             if (!isLanguageSelected) {
-                Toast.makeText(this, "Please select language to continue", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.toast_select_language_continue), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             

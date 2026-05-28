@@ -130,4 +130,46 @@
     <string name="reminder_set_toast">تم تفعيل تذكير المباراة!</string>
     <string name="reminder_cancelled_toast">تم إلغاء تذكير المباراة!</string>
     <string name="share_caption_template">تحقق من إحصائيات المباراة لـ %1$s ضد %2$s على livescore://match/%3$d (تنزيل التطبيق: https://livescore.premium/download)</string>
+
+    <!-- Paywall Screen -->
+    <string name="iap_upgrade_title">⚡ الترقية إلى VIP PREMIUM</string>
+    <string name="iap_upgrade_subtitle">عش تجربة كرة القدم الكاملة بلا حدود</string>
+    <string name="iap_out_of_quota_title">⚠️ تم الوصول إلى الحد المجاني اليومي</string>
+    <string name="iap_out_of_quota_subtitle">لقد استنفدت جميع طلباتك المجانية الـ 20 لليوم. قم بالترقية إلى Premium لمواصلة التجربة غير المحدودة!</string>
+    <string name="iap_feature_1">تحديثات مباشرة فائقة السرعة (كل 15 ثانية)</string>
+    <string name="iap_feature_2">تتبع غير محدود للمباريات المفضلة</string>
+    <string name="iap_feature_3">تجربة خالية تمامًا من الإعلانات</string>
+    <string name="iap_feature_4">إحصائيات متقدمة ورادار تكتيكي واتجاهات</string>
+    <string name="iap_weekly_vip">VIP لمدة أسبوع</string>
+    <string name="iap_monthly_vip">VIP لمدة شهر</string>
+    <string name="iap_pay_weekly">يتم الفوترة كل أسبوع</string>
+    <string name="iap_save_monthly">وفر ~30\% 🔥</string>
+    <string name="iap_btn_subscribe">اشترك الآن</string>
+    <string name="iap_toast_mock_success">تهانينا! تم تفعيل اشتراك Premium بنجاح ( Mock Billing). 🎉</string>
+    <string name="iap_btn_connecting_mock">جاري الاتصال بالدفع التجريبي...</string>
+    <string name="iap_terms_of_service">شروط الخدمة</string>
+    <string name="iap_terms_of_service_toast">شروط الخدمة: اشتراك Premium يتجدد تلقائيًا.</string>
+    <string name="iap_privacy_policy">سياسة الخصوصية</string>
+    <string name="iap_privacy_policy_toast">سياسة الخصوصية: معلومات الدفع الخاصة بك آمنة تمامًا.</string>
+    <string name="iap_toast_google_play_error">خطأ في الاتصال بـ Google Play: %1$s</string>
+    <string name="iap_vip_button_label">VIP ⚡</string>
+    <string name="btn_discover">اكتشف</string>
+
+    <!-- New Permission Screen Strings -->
+    <string name="permission_main_title">الصلاحيات</string>
+    <string name="permission_main_subtitle">ابق على اطلاع دائم بمبارياتك المفضلة</string>
+    <string name="permission_section_title">الصلاحيات والأذونات</string>
+    <string name="permission_push_title">إشعارات الهاتف</string>
+    <string name="permission_push_desc">السماح بالإشعارات للحصول على التذكيرات والتحديثات</string>
+    <string name="permission_footer_desc">تساعدنا هذه الصلاحيات في تقديم تجربة أفضل.</string>
+    <string name="permission_confirm">تأكيد</string>
+
+    <!-- Extracted Layout & Code Strings -->
+    <string name="leagues_header_title">مركز الدوريات</string>
+    <string name="leagues_header_desc">الترتيب والهدافين في الوقت الفعلي</string>
+    <string name="toast_share_match_failed">فشل مشاركة معلومات المباراة</string>
+    <string name="toast_select_language_continue">يرجى تحديد لغة للمتابعة</string>
+    <string name="toast_language_switched_vi">تم التغيير إلى الفيتنامية</string>
+    <string name="toast_language_switched_en">تم التغيير إلى الإنجليزية</string>
+
 </resources>

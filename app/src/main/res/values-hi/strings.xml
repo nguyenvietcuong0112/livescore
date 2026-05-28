@@ -114,4 +114,44 @@
     <string name="league_center_subtitle">वैश्विक स्थिति और आंकड़े</string>
     <string name="tab_scorers">शीर्ष स्कोरर</string>
     <string name="tab_assists">सहायता</string>
+    <!-- Paywall Screen -->
+    <string name="iap_upgrade_title">⚡ VIP प्रीमियम में अपग्रेड करें</string>
+    <string name="iap_upgrade_subtitle">बिना किसी सीमा के बेहतरीन फुटबॉल का अनुभव करें</string>
+    <string name="iap_out_of_quota_title">⚠️ दैनिक मुफ़्त सीमा समाप्त</string>
+    <string name="iap_out_of_quota_subtitle">आपने आज के सभी 20 मुफ़्त अनुरोधों का उपयोग कर लिया है। असीमित अनुभव जारी रखने के लिए प्रीमियम में अपग्रेड करें!</string>
+    <string name="iap_feature_1">अति-तेज लाइव अपडेट (हर 15 सेकंड में)</string>
+    <string name="iap_feature_2">पसंदीदा मैचों की असीमित ट्रैकिंग</string>
+    <string name="iap_feature_3">पूरी तरह से विज्ञापन-मुक्त अनुभव</string>
+    <string name="iap_feature_4">उन्नत आँकड़े, सामरिक रडार और रुझान</string>
+    <string name="iap_weekly_vip">1 सप्ताह VIP</string>
+    <string name="iap_monthly_vip">1 महीना VIP</string>
+    <string name="iap_pay_weekly">हर हफ्ते बिल किया जाएगा</string>
+    <string name="iap_save_monthly">बचत करें ~30\% 🔥</string>
+    <string name="iap_btn_subscribe">अभी सब्सक्राइब करें</string>
+    <string name="iap_toast_mock_success">बधाई हो! प्रीमियम सफलतापूर्वक सक्रिय हो गया (Mock Billing)। 🎉</string>
+    <string name="iap_btn_connecting_mock">मॉक बिलिंग से कनेक्ट किया जा रहा है...</string>
+    <string name="iap_terms_of_service">सेवा की शर्तें</string>
+    <string name="iap_terms_of_service_toast">सेवा की शर्तें: प्रीमियम ऑटो-नवीकरणीय सदस्यता।</string>
+    <string name="iap_privacy_policy">गोपनीयता नीति</string>
+    <string name="iap_privacy_policy_toast">गोपनीयता नीति: आपकी भुगतान जानकारी पूरी तरह से सुरक्षित है।</string>
+    <string name="iap_toast_google_play_error">Google Play से कनेक्ट करने में त्रुटि: %1$s</string>
+    <string name="iap_vip_button_label">VIP ⚡</string>
+    <string name="btn_discover">खोजें</string>
+
+    <!-- New Permission Screen Strings -->
+    <string name="permission_main_title">अनुमतियाँ</string>
+    <string name="permission_main_subtitle">अपने पसंदीदा मैचों के साथ अपडेट रहें</string>
+    <string name="permission_section_title">अनुमतियाँ</string>
+    <string name="permission_push_title">पुश नोटिफिकेशन</string>
+    <string name="permission_push_desc">अनुस्मारक और अपडेट के लिए सूचनाओं की अनुमति दें</string>
+    <string name="permission_footer_desc">ये अनुमतियाँ हमें बेहतर अनुभव प्रदान करने में मदद करती हैं।</string>
+    <string name="permission_confirm">पुष्टि करें</string>
+
+    <!-- Extracted Layout & Code Strings -->
+    <string name="leagues_header_title">लीग केंद्र</string>
+    <string name="leagues_header_desc">वास्तविक समय स्टैंडिंग और शीर्ष स्कोरर</string>
+    <string name="toast_share_match_failed">मैच की जानकारी साझा करने में विफल</string>
+    <string name="toast_select_language_continue">कृपया जारी रखने के लिए भाषा चुनें</string>
+    <string name="toast_language_switched_vi">वियतनामी में बदला गया</string>
+    <string name="toast_language_switched_en">अंग्रेजी में बदला गया</string>
 </resources>

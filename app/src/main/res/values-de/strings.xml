@@ -114,4 +114,46 @@
     <string name="league_center_subtitle">Globale Tabellen &amp; Statistiken</string>
     <string name="tab_scorers">TORSCHÜTZEN</string>
     <string name="tab_assists">VORLAGEN</string>
+
+    <!-- Paywall Screen -->
+    <string name="iap_upgrade_title">⚡ AUF VIP PREMIUM UPGRADEN</string>
+    <string name="iap_upgrade_subtitle">Erleben Sie ultimativen Fußball ohne Grenzen</string>
+    <string name="iap_out_of_quota_title">⚠️ TÄGLICHES FREILIMIT ERREICHT</string>
+    <string name="iap_out_of_quota_subtitle">Sie haben heute alle 20 kostenlosen Anfragen aufgebraucht. Upgraden Sie auf Premium, um unbegrenzt fortzufahren!</string>
+    <string name="iap_feature_1">Superschnelle Live-Updates (alle 15 Sek.)</string>
+    <string name="iap_feature_2">Unbegrenzte Verfolgung von Favoriten</string>
+    <string name="iap_feature_3">Vollständig werbefreies Erlebnis</string>
+    <string name="iap_feature_4">Erweiterte Statistiken, Taktik-Radar &amp; trends</string>
+    <string name="iap_weekly_vip">1 Woche VIP</string>
+    <string name="iap_monthly_vip">1 Monat VIP</string>
+    <string name="iap_pay_weekly">Wöchentliche Abrechnung</string>
+    <string name="iap_save_monthly">Sparen Sie ~30\% 🔥</string>
+    <string name="iap_btn_subscribe">Jetzt abonnieren</string>
+    <string name="iap_toast_mock_success">Herzlichen Glückwunsch! Premium erfolgreich aktiviert (Mock Billing). 🎉</string>
+    <string name="iap_btn_connecting_mock">Verbindung zu Mock Billing wird hergestellt...</string>
+    <string name="iap_terms_of_service">Nutzungsbedingungen</string>
+    <string name="iap_terms_of_service_toast">Nutzungsbedingungen: Premium-Abonnement mit automatischer Verlängerung.</string>
+    <string name="iap_privacy_policy">Datenschutzerklärung</string>
+    <string name="iap_privacy_policy_toast">Datenschutzerklärung: Ihre Zahlungsinformationen sind absolut sicher.</string>
+    <string name="iap_toast_google_play_error">Fehler beim Verbinden mit Google Play: %1$s</string>
+    <string name="iap_vip_button_label">VIP ⚡</string>
+    <string name="btn_discover">ENTDECKEN</string>
+
+    <!-- New Permission Screen Strings -->
+    <string name="permission_main_title">Berechtigungen</string>
+    <string name="permission_main_subtitle">Bleiben Sie bei Ihren Lieblingsspielen auf dem Laufenden</string>
+    <string name="permission_section_title">BERECHTIGUNGEN</string>
+    <string name="permission_push_title">Push-Benachrichtigungen</string>
+    <string name="permission_push_desc">Benachrichtigungen für Erinnerungen und Updates zulassen</string>
+    <string name="permission_footer_desc">Diese Berechtigungen helfen uns, eine bessere Erfahrung zu bieten.</string>
+    <string name="permission_confirm">Bestätigen</string>
+
+    <!-- Extracted Layout & Code Strings -->
+    <string name="leagues_header_title">LIGA-CENTER</string>
+    <string name="leagues_header_desc">Live-Tabellen und Torschützen in Echtzeit</string>
+    <string name="toast_share_match_failed">Freigabe der Spielinfo fehlgeschlagen</string>
+    <string name="toast_select_language_continue">Bitte wählen Sie eine Sprache aus, um fortzufahren</string>
+    <string name="toast_language_switched_vi">Auf Vietnamesisch umgestellt</string>
+    <string name="toast_language_switched_en">Auf Englisch umgestellt</string>
+
 </resources>

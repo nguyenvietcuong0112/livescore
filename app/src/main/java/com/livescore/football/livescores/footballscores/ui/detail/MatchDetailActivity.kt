@@ -135,7 +135,7 @@ class MatchDetailActivity : AppCompatActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            android.widget.Toast.makeText(this, "Failed to share match info", android.widget.Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(this, getString(R.string.toast_share_match_failed), android.widget.Toast.LENGTH_SHORT).show()
         }
     }
 

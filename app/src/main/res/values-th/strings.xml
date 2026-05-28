@@ -114,4 +114,44 @@
     <string name="league_center_subtitle">ตารางคะแนน &amp; สถิติทั่วโลก</string>
     <string name="tab_scorers">ดาวซัลโว</string>
     <string name="tab_assists">แอสซิสต์</string>
+    <!-- Paywall Screen -->
+    <string name="iap_upgrade_title">⚡ อัปเกรดเป็น VIP PREMIUM</string>
+    <string name="iap_upgrade_subtitle">สัมผัสประสบการณ์ฟุตบอลขั้นสุดยอดอย่างไร้ขีดจำกัด</string>
+    <string name="iap_out_of_quota_title">⚠️ ถึงขีดจำกัดโควตาฟรีประจำวันแล้ว</string>
+    <string name="iap_out_of_quota_subtitle">คุณใช้สิทธิ์ส่งคำขอฟรีครบ 20 ครั้งสำหรับวันนี้แล้ว อัปเกรดเป็นพรีเมียมเพื่อใช้งานต่ออย่างไร้ขีดจำกัด!</string>
+    <string name="iap_feature_1">อัปเดตผลการแข่งขันสดรวดเร็วทันใจ (ทุก 15 วินาที)</string>
+    <string name="iap_feature_2">ติดตามแมตช์โปรดได้ไม่จำกัดจำนวน</string>
+    <string name="iap_feature_3">ประสบการณ์การใช้งานแบบไม่มีโฆษณาคั่นเลย</string>
+    <string name="iap_feature_4">สถิติขั้นสูง เรดาร์วางแผนการเล่น และแนวโน้มผลการแข่ง</string>
+    <string name="iap_weekly_vip">VIP 1 สัปดาห์</string>
+    <string name="iap_monthly_vip">VIP 1 เดือน</string>
+    <string name="iap_pay_weekly">เรียกเก็บเงินทุกสัปดาห์</string>
+    <string name="iap_save_monthly">ประหยัด ~30\% 🔥</string>
+    <string name="iap_btn_subscribe">สมัครสมาชิกตอนนี้</string>
+    <string name="iap_toast_mock_success">ยินดีด้วย! เปิดใช้งานพรีเมียมสำเร็จแล้ว (จำลองการชำระเงิน) 🎉</string>
+    <string name="iap_btn_connecting_mock">กำลังเชื่อมต่อกับระบบจำลองการจ่ายเงิน...</string>
+    <string name="iap_terms_of_service">ข้อกำหนดการให้บริการ</string>
+    <string name="iap_terms_of_service_toast">ข้อกำหนดการให้บริการ: สมัครสมาชิกพรีเมียมแบบต่ออายุอัตโนมัติ</string>
+    <string name="iap_privacy_policy">นโยบายความเป็นส่วนตัว</string>
+    <string name="iap_privacy_policy_toast">นโยบายความเป็นส่วนตัว: ข้อมูลการชำระเงินของคุณปลอดภัย 100%</string>
+    <string name="iap_toast_google_play_error">เกิดข้อผิดพลาดในการเชื่อมต่อกับ Google Play: %1$s</string>
+    <string name="iap_vip_button_label">VIP ⚡</string>
+    <string name="btn_discover">ค้นพบ</string>
+
+    <!-- New Permission Screen Strings -->
+    <string name="permission_main_title">การขออนุญาตเข้าถึง</string>
+    <string name="permission_main_subtitle">ติดตามข่าวสารของแมตช์โปรดของคุณไม่ให้พลาด</string>
+    <string name="permission_section_title">การอนุญาตสิทธิ์</string>
+    <string name="permission_push_title">การแจ้งเตือนแบบพุช</string>
+    <string name="permission_push_desc">อนุญาตสิทธิ์แจ้งเตือนเพื่อรับการแจ้งเตือนสำคัญและผลสด</string>
+    <string name="permission_footer_desc">การอนุญาตสิทธิ์เหล่านี้ช่วยให้เราสามารถมอบประสบการณ์ที่ดีขึ้นให้คุณได้</string>
+    <string name="permission_confirm">ยืนยันการตั้งค่า</string>
+
+    <!-- Extracted Layout & Code Strings -->
+    <string name="leagues_header_title">ศูนย์กลางลีก</string>
+    <string name="leagues_header_desc">อันดับตารางคะแนนและอันดับดาวซัลโวแบบเรียลไทม์</string>
+    <string name="toast_share_match_failed">ไม่สามารถแชร์ข้อมูลการแข่งขันได้</string>
+    <string name="toast_select_language_continue">กรุณาเลือกภาษาเพื่อดำเนินการต่อ</string>
+    <string name="toast_language_switched_vi">เปลี่ยนเป็นภาษาเวียดนามแล้ว</string>
+    <string name="toast_language_switched_en">เปลี่ยนเป็นภาษาอังกฤษแล้ว</string>
 </resources>
