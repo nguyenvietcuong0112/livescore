@@ -17,8 +17,15 @@ import com.livescore.football.livescores.footballscores.ui.wc26.WC26Fragment
 import com.livescore.football.livescores.footballscores.ui.profile.ProfileFragment
 import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallBottomSheet
 import com.livescore.football.livescores.footballscores.ui.onboarding.IAPActivity
+import android.view.LayoutInflater
+import android.widget.ImageView
+import com.google.android.gms.ads.nativead.MediaView
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.ui.search.SearchActivity
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
+import com.mallegan.ads.callback.NativeCallback
+import com.mallegan.ads.util.Admob
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,10 +40,18 @@ class MainActivity : AppCompatActivity() {
     private var isLimitDialogShowing = false
     private var activeTabId: Int = R.id.nav_live
 
+    private val handlerADS = android.os.Handler(android.os.Looper.getMainLooper())
+    private var isFirstLoad = true
+    private var delayedLoadExpandTask: Runnable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Force ad layouts to draw on top of the bottom navigation bar and floating gold button
+        binding.frAdsBanner.bringToFront()
+        binding.frAdsCollap.bringToFront()
 
         // Setup toolbar action
         binding.searchIcon.setOnClickListener {
@@ -110,6 +125,115 @@ class MainActivity : AppCompatActivity() {
         if (::limitManager.isInitialized) {
             updateVipButtonVisibility()
         }
+
+        if (!limitManager.isPremium()) {
+            if (isFirstLoad) {
+                loadNativeBanner {
+                    delayedLoadExpandTask = Runnable {
+                        loadNativeBannerse()
+                        isFirstLoad = false
+                    }
+                    handlerADS.postDelayed(delayedLoadExpandTask!!, 1000)
+                }
+            } else {
+                loadNativeBanner {
+                    delayedLoadExpandTask = Runnable {
+                        loadNativeBannerse()
+                    }
+                    handlerADS.postDelayed(delayedLoadExpandTask!!, 35000)
+                }
+            }
+        } else {
+            binding.frAdsCollap.removeAllViews()
+            binding.frAdsBanner.removeAllViews()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        delayedLoadExpandTask?.let {
+            handlerADS.removeCallbacks(it)
+            delayedLoadExpandTask = null
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handlerADS.removeCallbacksAndMessages(null)
+    }
+
+    private fun loadNativeBannerse() {
+        Admob.getInstance().loadNativeAd(this, getString(R.string.native_all), object : NativeCallback() {
+            override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                if (isDestroyed || isFinishing) return
+                val adView = LayoutInflater.from(this@MainActivity)
+                    .inflate(R.layout.layout_native_home_collapse, null) as NativeAdView
+
+                // Hide bottom navigation and floating trophy button so they never overlap the expanded ad view
+                binding.bottomNavigation.visibility = android.view.View.GONE
+                binding.btnFloatingWc.visibility = android.view.View.GONE
+
+                binding.frAdsCollap.removeAllViews()
+
+                val mediaView = adView.findViewById<MediaView>(R.id.ad_media)
+                val closeButton = adView.findViewById<ImageView>(R.id.close)
+
+                closeButton?.setOnClickListener {
+                    binding.frAdsCollap.removeAllViews()
+                    binding.bottomNavigation.visibility = android.view.View.VISIBLE
+                    binding.btnFloatingWc.visibility = android.view.View.VISIBLE
+                    loadNativeBanner()
+                }
+
+                binding.frAdsCollap.addView(adView)
+                binding.frAdsCollap.bringToFront() // Force draw on top of navbar
+                Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+            }
+
+            override fun onAdFailedToLoad() {
+                if (isDestroyed || isFinishing) return
+                binding.frAdsCollap.removeAllViews()
+                
+                // Show bottom navigation and floating button again if ad fails to load
+                binding.bottomNavigation.visibility = android.view.View.VISIBLE
+                binding.btnFloatingWc.visibility = android.view.View.VISIBLE
+            }
+        })
+    }
+
+    private fun loadNativeBanner(onLoaded: (() -> Unit)? = null) {
+        binding.frAdsCollap.removeAllViews()
+
+        Admob.getInstance().loadNativeAd(this, getString(R.string.native_all), object : NativeCallback() {
+            override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                if (isDestroyed || isFinishing) return
+                val adView = LayoutInflater.from(this@MainActivity)
+                    .inflate(R.layout.layout_native_banner, null) as NativeAdView
+
+                // Show bottom navigation and floating button when collapsed ad is displayed
+                binding.bottomNavigation.visibility = android.view.View.VISIBLE
+                binding.btnFloatingWc.visibility = android.view.View.VISIBLE
+
+                binding.frAdsBanner.removeAllViews()
+                binding.frAdsBanner.addView(adView)
+                binding.frAdsBanner.bringToFront() // Force draw on top of navbar
+
+                Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+
+                onLoaded?.invoke()
+            }
+
+            override fun onAdFailedToLoad() {
+                if (isDestroyed || isFinishing) return
+                binding.frAdsBanner.removeAllViews()
+                
+                // Ensure navbar is visible if ad failed
+                binding.bottomNavigation.visibility = android.view.View.VISIBLE
+                binding.btnFloatingWc.visibility = android.view.View.VISIBLE
+                
+                onLoaded?.invoke()
+            }
+        })
     }
 
     private fun updateVipButtonVisibility() {
