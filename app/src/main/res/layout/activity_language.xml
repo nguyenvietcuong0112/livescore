@@ -52,8 +52,8 @@
 
                 <ImageView
                     android:id="@+id/iv_select"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
                     android:gravity="center"
                     android:padding="6dp"
                     android:alpha="0.5"

@@ -46,7 +46,10 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        dataBinding = true
+
     }
+
 
     applicationVariants.all {
         val variant = this

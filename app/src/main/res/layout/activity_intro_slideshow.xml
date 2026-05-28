@@ -1,100 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_light">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- ViewPager2 for Slideshow swipes -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vpSlideshow"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/clBottomBar"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Bottom Controls Bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clBottomBar"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:paddingHorizontal="24dp"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:layout_height="match_parent"
+        android:background="@color/bg_light"
+        >
 
-        <!-- Horizontal Slide indicator dots (Capsule style) -->
-        <LinearLayout
-            android:id="@+id/llIndicators"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <!-- Indicator Dot 1 (Capsule shape initial) -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/dot1"
-                android:layout_width="32dp"
-                android:layout_height="6dp"
-                android:layout_marginEnd="8dp"
-                app:cardCornerRadius="3dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp"
-                app:cardBackgroundColor="@color/neon_lime_green" />
-
-            <!-- Indicator Dot 2 -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/dot2"
-                android:layout_width="16dp"
-                android:layout_height="6dp"
-                android:layout_marginEnd="8dp"
-                app:cardCornerRadius="3dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp"
-                app:cardBackgroundColor="@color/inactive_indicator_grey" />
-
-            <!-- Indicator Dot 3 -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/dot3"
-                android:layout_width="16dp"
-                android:layout_height="6dp"
-                android:layout_marginEnd="8dp"
-                app:cardCornerRadius="3dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp"
-                app:cardBackgroundColor="@color/inactive_indicator_grey" />
-
-            <!-- Indicator Dot 4 -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/dot4"
-                android:layout_width="16dp"
-                android:layout_height="6dp"
-                app:cardCornerRadius="3dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp"
-                app:cardBackgroundColor="@color/inactive_indicator_grey" />
-
-        </LinearLayout>
-
-        <!-- Premium Next Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnNextSlide"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="Next"
-            android:textColor="@color/text_white"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:paddingHorizontal="24dp"
-            app:backgroundTint="@android:color/transparent"
-            app:strokeColor="@color/neon_lime_green"
-            app:strokeWidth="1dp"
-            app:cornerRadius="20dp"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

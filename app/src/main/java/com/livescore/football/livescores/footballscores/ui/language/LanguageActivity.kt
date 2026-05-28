@@ -17,13 +17,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.databinding.ActivityLanguageBinding
 import com.livescore.football.livescores.footballscores.ui.onboarding.IntroSlideshowActivity
-import com.mallegan.ads.util.Admob
+import com.livescore.football.livescores.footballscores.utils.AdsConfig
 import com.mallegan.ads.callback.NativeCallback
-import com.google.android.gms.ads.nativead.NativeAd
-import com.google.android.gms.ads.nativead.NativeAdView
+import com.mallegan.ads.util.Admob
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -48,6 +49,7 @@ class LanguageActivity : AppCompatActivity() {
         setupRecyclerView()
         setupListeners()
         loadAds()
+        nativeIntro1()
     }
 
     private fun setupRecyclerView() {
@@ -128,6 +130,22 @@ class LanguageActivity : AppCompatActivity() {
             binding.frAds.visibility = View.GONE
             checkNextButtonStatus(true)
         }
+    }
+
+    private fun nativeIntro1() {
+        Admob.getInstance().loadNativeAd(
+            this,
+            getString(R.string.native_onboarding_1),
+            object : NativeCallback() {
+                override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                    AdsConfig.nativeIntro1 = nativeAd
+                }
+
+                override fun onAdFailedToLoad() {
+                    AdsConfig.nativeIntro1 = null
+                }
+            }
+        )
     }
 
     private fun loadAdsNativeLanguageSelect() {

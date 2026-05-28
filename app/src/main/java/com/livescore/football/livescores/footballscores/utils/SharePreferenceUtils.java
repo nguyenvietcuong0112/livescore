@@ -51,17 +51,7 @@ public class SharePreferenceUtils {
         return instance;
     }
 
-    public static boolean isOrganic(Context context) {
-        return !Admob.getInstance().isLoadFullAds();
-//        return true;
-    }
 
-    public static void setOrganicValue(Context context, boolean value) {
-        SharedPreferences pre = context.getSharedPreferences("data", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pre.edit();
-        editor.putBoolean("organic", value);
-        editor.apply();
-    }
 
     public int getCurrentValue() {
         return sharePreference.getInt(COUNTER_KEY, 0);

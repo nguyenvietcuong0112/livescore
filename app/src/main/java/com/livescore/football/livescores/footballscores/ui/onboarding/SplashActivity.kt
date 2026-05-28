@@ -14,7 +14,7 @@ import com.livescore.football.livescores.footballscores.MainActivity
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import android.content.Context
 import com.livescore.football.livescores.footballscores.utils.ActivityFullCallback
-import com.livescore.football.livescores.footballscores.utils.ActivityLoadNativeFullV5
+import com.livescore.football.livescores.footballscores.utils.ActivityLoadNativeFullV1
 import com.mallegan.ads.callback.InterCallback
 import com.mallegan.ads.util.Admob
 import com.mallegan.ads.util.ConsentHelper
@@ -54,7 +54,7 @@ class SplashActivity : AppCompatActivity() {
             override fun onAdClosedByUser() {
                 super.onAdClosedByUser()
 
-                ActivityLoadNativeFullV5.open(
+                ActivityLoadNativeFullV1.open(
                     this@SplashActivity,
                     getString(R.string.native_splash_full_high),
                     getString(R.string.native_splash_full),
@@ -67,7 +67,7 @@ class SplashActivity : AppCompatActivity() {
 
             override fun onAdFailedToLoad(i: LoadAdError?) {
                 super.onAdFailedToLoad(i)
-                ActivityLoadNativeFullV5.open(
+                ActivityLoadNativeFullV1.open(
                     this@SplashActivity,
                     getString(R.string.native_splash_full_high),
                     getString(R.string.native_splash_full),

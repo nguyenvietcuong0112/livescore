@@ -13,8 +13,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:contentDescription="Back"
-        android:src="@drawable/ic_arrow_drop_down"
-        android:rotation="90"
+        android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/text_white" />

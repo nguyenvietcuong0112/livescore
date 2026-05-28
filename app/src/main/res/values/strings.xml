@@ -219,7 +219,7 @@
     <string name="btn_discover">DISCOVER</string>
 
     <!-- New Permission Screen Strings -->
-    <string name="permission_main_title">Notifications</string>
+    <string name="permission_main_title">Permission</string>
     <string name="permission_main_subtitle">Stay on track with your favorite matches</string>
     <string name="permission_section_title">PERMISSIONS</string>
     <string name="permission_push_title">Push Notifications</string>

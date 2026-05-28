@@ -19,7 +19,17 @@ data class OnboardingItem(
     val type: String, // "language", "league", "team", "player"
     val isHot: Boolean = false,
     val parentId: Int = 0, // e.g. team maps to leagueId, player maps to teamId
-    val flagEmoji: String = ""
+    val flagEmoji: String = "",
+    val isSelected: Boolean = false
+)
+
+private data class SelectionState(
+    val step: Int,
+    val query: String,
+    val leagues: Set<Int>,
+    val teams: Set<Int>,
+    val players: Set<Int>,
+    val language: String
 )
 
 @HiltViewModel
@@ -108,16 +118,26 @@ class OnboardingViewModel @Inject constructor(
         _currentStep,
         _searchQuery,
         _selectedLeagues,
-        _selectedTeams
-    ) { step, query, selLeagues, selTeams ->
-        when (step) {
+        _selectedTeams,
+        _selectedPlayers
+    ) { step, query, leagues, teams, players ->
+        SelectionState(step, query, leagues, teams, players, _selectedLanguage.value)
+    }.combine(_selectedLanguage) { state, lang ->
+        state.copy(language = lang)
+    }.map { state ->
+        val step = state.step
+        val query = state.query
+        val selLeagues = state.leagues
+        val selTeams = state.teams
+        val selPlayers = state.players
+        val selLang = state.language
+
+        val rawList = when (step) {
             0 -> {
-                // Language screen: Filter alphabetically or by text match
                 if (query.isEmpty()) masterLanguages
                 else masterLanguages.filter { it.name.contains(query, ignoreCase = true) }
             }
             1 -> {
-                // Step 1: Select Leagues. Prioritize Hot Leagues (Hot list first!)
                 val baseList = masterLeagues.sortedWith(
                     compareByDescending<OnboardingItem> { it.isHot }
                         .thenBy { it.name }
@@ -126,7 +146,6 @@ class OnboardingViewModel @Inject constructor(
                 else baseList.filter { it.name.contains(query, ignoreCase = true) || it.subtitle.contains(query, ignoreCase = true) }
             }
             2 -> {
-                // Step 2: Select Teams. Prioritize clubs belonging to selected leagues (parent league IDs)
                 val baseList = masterTeams.sortedWith(
                     compareByDescending<OnboardingItem> { selLeagues.contains(it.parentId) }
                         .thenBy { it.name }
@@ -135,7 +154,6 @@ class OnboardingViewModel @Inject constructor(
                 else baseList.filter { it.name.contains(query, ignoreCase = true) || it.subtitle.contains(query, ignoreCase = true) }
             }
             3 -> {
-                // Step 3: Select Players. Prioritize players playing for selected clubs (parent team IDs)
                 val baseList = masterPlayers.sortedWith(
                     compareByDescending<OnboardingItem> { selTeams.contains(it.parentId) }
                         .thenBy { it.name }
@@ -144,6 +162,17 @@ class OnboardingViewModel @Inject constructor(
                 else baseList.filter { it.name.contains(query, ignoreCase = true) }
             }
             else -> emptyList()
+        }
+
+        rawList.map { item ->
+            val isSel = when (step) {
+                0 -> selLang == item.name
+                1 -> selLeagues.contains(item.id)
+                2 -> selTeams.contains(item.id)
+                3 -> selPlayers.contains(item.id)
+                else -> false
+            }
+            item.copy(isSelected = isSel)
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 

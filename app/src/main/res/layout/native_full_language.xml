@@ -58,7 +58,6 @@
             android:textStyle="normal"
            android:paddingVertical="8dp"
             android:textColor="@color/black"
-
             app:layout_constraintBottom_toTopOf="@id/ad_body"
             app:layout_constraintStart_toEndOf="@id/ad_badge" />
         <TextView

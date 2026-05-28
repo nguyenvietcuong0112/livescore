@@ -192,10 +192,6 @@ class IntroActivity : AppCompatActivity() {
     }
 }
 
-// ==========================================
-// Selection ListAdapter definition
-// ==========================================
-
 class IntroSelectionAdapter(
     private val onItemClick: (OnboardingItem) -> Unit,
     private val isSelectedPredicate: (OnboardingItem) -> Boolean

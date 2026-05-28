@@ -15,7 +15,7 @@ import com.livescore.football.livescores.footballscores.databinding.ActivityNati
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
 
-class ActivityLoadNativeFullV5 : AbsBaseActivity() {
+class ActivityLoadNativeFullV1 : AbsBaseActivity() {
     var binding: ActivityNativeFullBinding? = null
     public override fun bind() {
         SystemConfiguration.setStatusBarColor(
@@ -45,7 +45,7 @@ class ActivityLoadNativeFullV5 : AbsBaseActivity() {
             override fun onAdFailedToLoad() {
                 super.onAdFailedToLoad()
                 Admob.getInstance().loadNativeAds(
-                    this@ActivityLoadNativeFullV5,
+                    this@ActivityLoadNativeFullV1,
                     adIdLow,
                     1,
                     object : NativeCallback() {
@@ -58,20 +58,18 @@ class ActivityLoadNativeFullV5 : AbsBaseActivity() {
 
                         override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                             super.onNativeAdLoaded(nativeAd)
-                            val adView = LayoutInflater.from(this@ActivityLoadNativeFullV5)
+                            val adView = LayoutInflater.from(this@ActivityLoadNativeFullV1)
                                 .inflate(R.layout.native_full_language, null) as NativeAdView
                             val closeButton = adView.findViewById<ImageView>(R.id.close)
-                            val mediaView = adView.findViewById<MediaView>(R.id.ad_media)
-                            closeButton.setOnClickListener(View.OnClickListener { v: View? -> mediaView.performClick() })
-                            object : CountDownTimer(5000, 1000) {
-                                override fun onTick(millisUntilFinished: Long) {
-                                }
-
+                            closeButton.visibility = View.GONE
+                            object : CountDownTimer(2000, 1000) {
+                                override fun onTick(millisUntilFinished: Long) {}
                                 override fun onFinish() {
-                                    closeButton.setOnClickListener(View.OnClickListener { v: View? ->
+                                    closeButton.visibility = View.VISIBLE
+                                    closeButton.setOnClickListener {
                                         callback?.onResultFromActivityFull()
                                         finish()
-                                    })
+                                    }
                                 }
                             }.start()
                             binding?.frAdsFull?.removeAllViews()
@@ -94,20 +92,18 @@ class ActivityLoadNativeFullV5 : AbsBaseActivity() {
 //                        )
 //                    }
 //                }
-                val adView = LayoutInflater.from(this@ActivityLoadNativeFullV5)
+                val adView = LayoutInflater.from(this@ActivityLoadNativeFullV1)
                     .inflate(R.layout.native_full_language, null) as NativeAdView
                 val closeButton = adView.findViewById<ImageView>(R.id.close)
-                val mediaView = adView.findViewById<MediaView>(R.id.ad_media)
-                closeButton.setOnClickListener(View.OnClickListener { v: View? -> mediaView.performClick() })
-                object : CountDownTimer(5000, 1000) {
-                    override fun onTick(millisUntilFinished: Long) {
-                    }
-
+                closeButton.visibility = View.GONE
+                object : CountDownTimer(2000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {}
                     override fun onFinish() {
-                        closeButton.setOnClickListener(View.OnClickListener { v: View? ->
+                        closeButton.visibility = View.VISIBLE
+                        closeButton.setOnClickListener {
                             callback?.onResultFromActivityFull()
                             finish()
-                        })
+                        }
                     }
                 }.start()
                 binding?.frAdsFull?.removeAllViews()
@@ -137,7 +133,7 @@ class ActivityLoadNativeFullV5 : AbsBaseActivity() {
 
         fun open(context: Context, high: String?, low: String?, cb: ActivityFullCallback?) {
             callback = cb
-            val intent = Intent(context, ActivityLoadNativeFullV5::class.java)
+            val intent = Intent(context, ActivityLoadNativeFullV1::class.java)
             intent.putExtra(NATIVE_FUll_AD_ID_HIGH, high)
             intent.putExtra(NATIVE_FUll_AD_ID, low)
             context.startActivity(intent)

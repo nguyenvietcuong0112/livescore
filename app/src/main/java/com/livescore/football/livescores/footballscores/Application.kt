@@ -30,7 +30,7 @@ class Application : AdsApplication() {
 
     override fun enableAdsResume(): Boolean = true
     override fun getListTestDeviceId(): List<String>? = null
-    override fun getResumeAdId(): String = getString(R.string.open_resume)
+    override fun getResumeAdId(): String = getString(R.string.resume_open_app)
     override fun buildDebug(): Boolean? = null
 
     override fun onCreate() {

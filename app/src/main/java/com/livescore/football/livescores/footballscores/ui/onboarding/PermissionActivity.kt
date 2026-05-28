@@ -53,10 +53,26 @@ class PermissionActivity : AppCompatActivity() {
         }
 
         binding.btnSkip.setOnClickListener {
-            navigateToHome()
+            if (binding.frSkip.isClickable) {
+                navigateToHome()
+            }
+        }
+        binding.frSkip.setOnClickListener {
+            if (binding.frSkip.isClickable) {
+                navigateToHome()
+            }
         }
 
         loadAds()
+    }
+
+    private fun enableSkip() {
+        binding.icLoading.visibility = android.view.View.GONE
+        binding.btnSkip.visibility = android.view.View.VISIBLE
+        binding.frSkip.isClickable = true
+        binding.frSkip.isFocusable = true
+        binding.btnSkip.isClickable = true
+        binding.btnSkip.isFocusable = true
     }
 
     private fun loadAds() {
@@ -70,17 +86,20 @@ class PermissionActivity : AppCompatActivity() {
                     binding.frAds.removeAllViews()
                     binding.frAds.addView(adView)
                     com.mallegan.ads.util.Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                    enableSkip()
                 }
 
                 override fun onAdFailedToLoad() {
                     super.onAdFailedToLoad()
                     binding.frAds.removeAllViews()
                     binding.frAds.visibility = android.view.View.GONE
+                    enableSkip()
                 }
             })
         } else {
             binding.frAds.removeAllViews()
             binding.frAds.visibility = android.view.View.GONE
+            enableSkip()
         }
     }
 
