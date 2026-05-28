@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import android.content.Context
 import com.livescore.football.livescores.footballscores.data.remote.adjust.AppAdjustTokens
+import com.livescore.football.livescores.footballscores.data.remote.getRemoteAdId
+
 import com.mallegan.ads.util.AdjustHelper
 import kotlinx.coroutines.launch
 
@@ -30,7 +32,9 @@ class Application : AdsApplication() {
 
     override fun enableAdsResume(): Boolean = true
     override fun getListTestDeviceId(): List<String>? = null
-    override fun getResumeAdId(): String = getString(R.string.resume_open_app)
+    override fun getResumeAdId(): String {
+        return getRemoteAdId("resume_open_app", R.string.resume_open_app)
+    }
     override fun buildDebug(): Boolean? = null
 
     override fun onCreate() {

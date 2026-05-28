@@ -16,6 +16,7 @@ import com.livescore.football.livescores.footballscores.MainActivity
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.databinding.FragmentIntro4Binding
 import com.livescore.football.livescores.footballscores.ui.onboarding.IAPActivity
 import com.livescore.football.livescores.footballscores.ui.onboarding.IntroActivity
@@ -84,9 +85,15 @@ class FragmentIntro4 : AbsBaseFragment<FragmentIntro4Binding?>() {
             binding!!.frAds.visibility = View.GONE
             return
         }
+        val adId = try {
+            RemoteConfigManager.getInstance()
+                .getAdId("native_onboarding_4", getString(R.string.native_onboarding_4))
+        } catch (e: Exception) {
+            getString(R.string.native_onboarding_4)
+        }
         Admob.getInstance().loadNativeAd(
             requireActivity(),
-            getString(R.string.native_onboarding_4),
+            adId,
             object : NativeCallback() {
                 override fun onAdFailedToLoad() {
                     super.onAdFailedToLoad()

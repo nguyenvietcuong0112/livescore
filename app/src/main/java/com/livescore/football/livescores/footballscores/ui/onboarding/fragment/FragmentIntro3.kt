@@ -7,6 +7,7 @@ import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.databinding.FragmentIntro3Binding
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
@@ -37,7 +38,12 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
             return
         }
 
-        val adId = getString(R.string.native_banner_ob)
+        val adId = try {
+            RemoteConfigManager.getInstance()
+                .getAdId("native_banner_ob", getString(R.string.native_banner_ob))
+        } catch (e: Exception) {
+            getString(R.string.native_banner_ob)
+        }
         if (adId.isNotEmpty()) {
             Admob.getInstance().loadNativeAd(
                 requireActivity(),

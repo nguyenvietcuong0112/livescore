@@ -16,6 +16,7 @@ import com.livescore.football.livescores.footballscores.databinding.ItemLeagueHe
 import com.livescore.football.livescores.footballscores.databinding.ItemMatchBinding
 import com.livescore.football.livescores.footballscores.databinding.LayoutNativeNoMediaBinding
 import androidx.appcompat.app.AppCompatActivity
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.mallegan.ads.util.Admob
 import com.mallegan.ads.callback.NativeCallback
 
@@ -168,9 +169,15 @@ class MatchAdapter(
                 renderNativeAd(cachedAd)
             } else {
                 val context = binding.root.context
+                val adId = try {
+                    RemoteConfigManager.getInstance()
+                        .getAdId("native_all", context.getString(R.string.native_all))
+                } catch (e: Exception) {
+                    context.getString(R.string.native_all)
+                }
                 Admob.getInstance().loadNativeAds(
                     context,
-                    context.getString(R.string.native_all),
+                    adId,
                     1,
                     object : NativeCallback() {
                         override fun onAdFailedToLoad() {

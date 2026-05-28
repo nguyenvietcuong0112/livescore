@@ -21,6 +21,7 @@ import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -256,7 +257,12 @@ class LeaguesFragment : Fragment() {
             return
         }
 
-        val adId = getString(R.string.native_all)
+        val adId = try {
+            RemoteConfigManager.getInstance()
+                .getAdId("native_all", getString(R.string.native_all))
+        } catch (e: Exception) {
+            getString(R.string.native_all)
+        }
         if (adId.isNotEmpty()) {
             Admob.getInstance().loadNativeAds(
                 requireContext(),

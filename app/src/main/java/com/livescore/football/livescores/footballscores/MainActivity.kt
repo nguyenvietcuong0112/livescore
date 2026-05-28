@@ -22,6 +22,7 @@ import android.widget.ImageView
 import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.ui.search.SearchActivity
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
 import com.mallegan.ads.callback.NativeCallback
@@ -76,21 +77,23 @@ class MainActivity : AppCompatActivity() {
                 return@setOnItemSelectedListener false
             }
 
+            activeTabId = item.itemId
+            val fragment = when (item.itemId) {
+                R.id.nav_live -> HomeFragment.newInstance(false)
+                R.id.nav_leagues -> LeaguesFragment()
+                R.id.nav_wc26 -> WC26Fragment()
+                R.id.nav_favorite -> FavoriteFragment()
+                R.id.nav_profile -> ProfileFragment()
+                else -> null
+            }
+            if (fragment != null) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commitAllowingStateLoss()
+            }
+
             AdsConfig.showInterClickAd(this) {
-                activeTabId = item.itemId
-                val fragment = when (item.itemId) {
-                    R.id.nav_live -> HomeFragment.newInstance(false)
-                    R.id.nav_leagues -> LeaguesFragment()
-                    R.id.nav_wc26 -> WC26Fragment()
-                    R.id.nav_favorite -> FavoriteFragment()
-                    R.id.nav_profile -> ProfileFragment()
-                    else -> null
-                }
-                if (fragment != null) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, fragment)
-                        .commitAllowingStateLoss()
-                }
+                // Done in background without blocking transitions
             }
             true
         }
@@ -163,7 +166,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadNativeBannerse() {
-        Admob.getInstance().loadNativeAd(this, getString(R.string.native_all), object : NativeCallback() {
+        val nativeAllId = try {
+            RemoteConfigManager.getInstance()
+                .getAdId("native_all", getString(R.string.native_all))
+        } catch (e: Exception) {
+            getString(R.string.native_all)
+        }
+
+        Admob.getInstance().loadNativeAd(this, nativeAllId, object : NativeCallback() {
             override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                 if (isDestroyed || isFinishing) return
                 val adView = LayoutInflater.from(this@MainActivity)
@@ -204,7 +214,14 @@ class MainActivity : AppCompatActivity() {
     private fun loadNativeBanner(onLoaded: (() -> Unit)? = null) {
         binding.frAdsCollap.removeAllViews()
 
-        Admob.getInstance().loadNativeAd(this, getString(R.string.native_all), object : NativeCallback() {
+        val nativeAllId = try {
+            RemoteConfigManager.getInstance()
+                .getAdId("native_all", getString(R.string.native_all))
+        } catch (e: Exception) {
+            getString(R.string.native_all)
+        }
+
+        Admob.getInstance().loadNativeAd(this, nativeAllId, object : NativeCallback() {
             override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                 if (isDestroyed || isFinishing) return
                 val adView = LayoutInflater.from(this@MainActivity)

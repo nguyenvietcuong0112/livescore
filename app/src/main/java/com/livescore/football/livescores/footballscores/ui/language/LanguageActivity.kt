@@ -21,6 +21,7 @@ import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.databinding.ActivityLanguageBinding
 import com.livescore.football.livescores.footballscores.ui.onboarding.IntroSlideshowActivity
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
@@ -115,7 +116,12 @@ class LanguageActivity : AppCompatActivity() {
             return
         }
         checkNextButtonStatus(false)
-        val adId = getString(R.string.native_language)
+        val adId = try {
+            RemoteConfigManager.getInstance()
+                .getAdId("native_language", getString(R.string.native_language))
+        } catch (e: Exception) {
+            getString(R.string.native_language)
+        }
         if (adId.isNotEmpty()) {
             Admob.getInstance().loadNativeAds(this, adId, 1, object : NativeCallback() {
                 override fun onNativeAdLoaded(nativeAd: NativeAd?) {
@@ -147,9 +153,15 @@ class LanguageActivity : AppCompatActivity() {
             AdsConfig.nativeIntro1 = null
             return
         }
+        val adId = try {
+            RemoteConfigManager.getInstance()
+                .getAdId("native_onboarding_1", getString(R.string.native_onboarding_1))
+        } catch (e: Exception) {
+            getString(R.string.native_onboarding_1)
+        }
         Admob.getInstance().loadNativeAd(
             this,
-            getString(R.string.native_onboarding_1),
+            adId,
             object : NativeCallback() {
                 override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                     AdsConfig.nativeIntro1 = nativeAd
@@ -169,7 +181,12 @@ class LanguageActivity : AppCompatActivity() {
             return
         }
         checkNextButtonStatus(false)
-        val adId = getString(R.string.native_language_click)
+        val adId = try {
+            RemoteConfigManager.getInstance()
+                .getAdId("native_language_click", getString(R.string.native_language_click))
+        } catch (e: Exception) {
+            getString(R.string.native_language_click)
+        }
         if (adId.isNotEmpty()) {
             Admob.getInstance().loadNativeAds(this, adId, 1, object : NativeCallback() {
                 override fun onNativeAdLoaded(nativeAd: NativeAd?) {

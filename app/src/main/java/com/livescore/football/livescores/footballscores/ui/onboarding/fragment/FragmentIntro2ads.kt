@@ -10,6 +10,7 @@ import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.databinding.FragmentAdsBinding
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
@@ -36,7 +37,13 @@ class FragmentIntro2ads : AbsBaseFragment<FragmentAdsBinding?>() {
             }
             return
         }
-        loadNativeFull(getString(R.string.native_onboarding_full_1))
+        val adId = try {
+            RemoteConfigManager.getInstance()
+                .getAdId("native_onboarding_full_1", getString(R.string.native_onboarding_full_1))
+        } catch (e: Exception) {
+            getString(R.string.native_onboarding_full_1)
+        }
+        loadNativeFull(adId)
     }
 
     private fun loadNativeFull(adId: String?) {

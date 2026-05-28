@@ -2,6 +2,7 @@ package com.livescore.football.livescores.footballscores.data.remote
 
 import android.content.Context
 import android.util.Log
+import androidx.fragment.app.Fragment
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -14,7 +15,6 @@ import kotlin.coroutines.suspendCoroutine
 class RemoteConfigManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    // Lazily initialize Firebase Remote Config instance to prevent crashes if Firebase is not yet initialized
     private val remoteConfig: FirebaseRemoteConfig by lazy {
         FirebaseRemoteConfig.getInstance()
     }
@@ -22,28 +22,51 @@ class RemoteConfigManager @Inject constructor(
     companion object {
         private const val KEY_API_KEY = "apisports_key"
         private const val DEFAULT_API_KEY = "eeb82da4384bf7352f346c9371fe3dad"
+
+        @Volatile
+        private var instance: RemoteConfigManager? = null
+
+        fun getInstance(): RemoteConfigManager {
+            val inst = instance
+            if (inst != null) return inst
+
+            return synchronized(this) {
+                var currentInst = instance
+                if (currentInst == null) {
+                    try {
+                        val activityThreadClass = Class.forName("android.app.ActivityThread")
+                        val currentApplicationMethod = activityThreadClass.getMethod("currentApplication")
+                        val app = currentApplicationMethod.invoke(null) as android.app.Application
+                        currentInst = RemoteConfigManager(app)
+                        instance = currentInst
+                    } catch (e: Exception) {
+                        Log.e("RemoteConfigManager", "Failed to construct fallback RemoteConfigManager: ${e.message}")
+                        throw IllegalStateException("RemoteConfigManager has not been initialized.")
+                    }
+                }
+                currentInst!!
+            }
+        }
     }
 
     init {
+        instance = this
         try {
-            // Set up Firebase Remote Config settings
             val configSettings = FirebaseRemoteConfigSettings.Builder()
                 .setMinimumFetchIntervalInSeconds(0) // 1 hour fetch interval for optimal caching
                 .build()
             remoteConfig.setConfigSettingsAsync(configSettings)
 
-            // Define default local fallback values in case of network issues
-            val defaults = mapOf(KEY_API_KEY to DEFAULT_API_KEY)
+            val defaults = mapOf(
+                KEY_API_KEY to DEFAULT_API_KEY,
+                "inter_click_enabled" to "true"
+            )
             remoteConfig.setDefaultsAsync(defaults)
         } catch (e: Exception) {
             Log.e("RemoteConfigManager", "Failed to initialize Firebase Remote Config defaults: ${e.message}")
         }
     }
 
-    /**
-     * Retrieve the active API Key from Firebase Remote Config.
-     * Falls back to the hardcoded local default key on any retrieval error.
-     */
     fun getApiKey(): String {
         return try {
             val key = remoteConfig.getString(KEY_API_KEY)
@@ -54,9 +77,44 @@ class RemoteConfigManager @Inject constructor(
         }
     }
 
-    /**
-     * Fetch the latest config variables from Firebase servers and apply them
-     */
+    fun getAdId(key: String, fallback: String): String {
+        return try {
+            val rawValue = remoteConfig.getString(key).trim()
+
+            if (rawValue.equals("false", ignoreCase = true)) {
+                return ""
+            }
+
+            if (rawValue.equals("true", ignoreCase = true)) {
+                return fallback
+            }
+
+            // 3. If empty or missing -> Use local fallback
+            if (rawValue.isEmpty()) {
+                return fallback
+            }
+
+            // 4. Otherwise, return the custom Ad ID string from Remote Config
+            rawValue
+        } catch (e: Exception) {
+            Log.e("RemoteConfigManager", "Error reading ad ID key '$key' from Remote Config: ${e.message}")
+            fallback
+        }
+    }
+
+    fun isInterClickEnabled(): Boolean {
+        return try {
+            val value = remoteConfig.getString("inter_click_enabled").trim()
+            if (value.equals("false", ignoreCase = true)) {
+                false
+            } else {
+                true
+            }
+        } catch (e: Exception) {
+            true
+        }
+    }
+
     suspend fun fetchAndActivate(): Boolean = suspendCoroutine { continuation ->
         try {
             remoteConfig.fetchAndActivate()
@@ -78,5 +136,27 @@ class RemoteConfigManager @Inject constructor(
             Log.e("RemoteConfigManager", "Firebase Remote Config SDK is not initialized, using local fallback key: ${e.message}")
             continuation.resume(false)
         }
+    }
+}
+
+/**
+ * Clean extension function to retrieve ad unit IDs directly from any Context (Activity, Service, etc.)
+ */
+fun Context.getRemoteAdId(key: String, fallbackResId: Int): String {
+    return try {
+        RemoteConfigManager.getInstance().getAdId(key, getString(fallbackResId))
+    } catch (e: Exception) {
+        getString(fallbackResId)
+    }
+}
+
+/**
+ * Clean extension function to retrieve ad unit IDs directly from any Fragment
+ */
+fun Fragment.getRemoteAdId(key: String, fallbackResId: Int): String {
+    return try {
+        requireContext().getRemoteAdId(key, fallbackResId)
+    } catch (e: Exception) {
+        getString(fallbackResId)
     }
 }

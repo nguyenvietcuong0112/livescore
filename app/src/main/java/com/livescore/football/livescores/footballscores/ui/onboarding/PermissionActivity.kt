@@ -12,6 +12,7 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.MainActivity
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.databinding.ActivityPermissionBinding
 import com.mallegan.ads.util.Admob
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,7 +82,12 @@ class PermissionActivity : AppCompatActivity() {
             enableSkip()
             return
         }
-        val adId = getString(R.string.native_permission)
+        val adId = try {
+            RemoteConfigManager.getInstance()
+                .getAdId("native_permission", getString(R.string.native_permission))
+        } catch (e: Exception) {
+            getString(R.string.native_permission)
+        }
         if (adId.isNotEmpty()) {
             Admob.getInstance().loadNativeAds(this, adId, 1, object : com.mallegan.ads.callback.NativeCallback() {
                 override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {

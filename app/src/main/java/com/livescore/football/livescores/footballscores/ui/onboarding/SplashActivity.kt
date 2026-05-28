@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.LoadAdError
 import com.livescore.football.livescores.footballscores.R
-import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.data.remote.adjust.RetentionTracker
 import com.livescore.football.livescores.footballscores.databinding.ActivitySplashBinding
 import com.livescore.football.livescores.footballscores.ui.language.LanguageActivity
@@ -14,6 +13,7 @@ import com.livescore.football.livescores.footballscores.MainActivity
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import android.content.Context
 import android.view.View
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.utils.ActivityFullCallback
 import com.livescore.football.livescores.footballscores.utils.ActivityLoadNativeFullV1
 import com.mallegan.ads.callback.InterCallback
@@ -22,6 +22,7 @@ import com.mallegan.ads.util.ConsentHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.livescore.football.livescores.footballscores.data.remote.getRemoteAdId
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
@@ -46,7 +47,7 @@ class SplashActivity : AppCompatActivity() {
             binding.frAdsBanner.visibility = View.GONE
         } else {
             binding.frAdsBanner.visibility = View.VISIBLE
-            Admob.getInstance().loadBanner(this, getString(R.string.banner_splash))
+            Admob.getInstance().loadBanner(this, getRemoteAdId("banner_splash", R.string.banner_splash))
         }
 
         RetentionTracker.checkAndTrackRetention(this)
@@ -60,8 +61,8 @@ class SplashActivity : AppCompatActivity() {
                 super.onAdClosedByUser()
                 ActivityLoadNativeFullV1.open(
                     this@SplashActivity,
-                    getString(R.string.native_splash_full_high),
-                    getString(R.string.native_splash_full),
+                    getRemoteAdId("native_splash_full_high", R.string.native_splash_full_high),
+                    getRemoteAdId("native_splash_full", R.string.native_splash_full),
                     object : ActivityFullCallback {
                         override fun onResultFromActivityFull() {
                             startLanguage()
@@ -73,8 +74,8 @@ class SplashActivity : AppCompatActivity() {
                 super.onAdFailedToLoad(i)
                 ActivityLoadNativeFullV1.open(
                     this@SplashActivity,
-                    getString(R.string.native_splash_full_high),
-                    getString(R.string.native_splash_full),
+                    getRemoteAdId("native_splash_full_high", R.string.native_splash_full_high),
+                    getRemoteAdId("native_splash_full", R.string.native_splash_full),
                     object : ActivityFullCallback {
                         override fun onResultFromActivityFull() {
                             startLanguage()
@@ -124,8 +125,8 @@ class SplashActivity : AppCompatActivity() {
                     Admob.getInstance().loadSplashInterAdsFloor(
                         this@SplashActivity,
                         arrayListOf(
-                            getString(R.string.inter_splash_high),
-                            getString(R.string.inter_splash)
+                            remoteConfigManager.getAdId("inter_splash_high", getString(R.string.inter_splash_high)),
+                            remoteConfigManager.getAdId("inter_splash", getString(R.string.inter_splash))
                         ),
                         3000,
                         interCallback

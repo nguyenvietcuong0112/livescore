@@ -28,7 +28,18 @@ class SettingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        displayAppVersion()
         setupListeners()
+    }
+
+    private fun displayAppVersion() {
+        try {
+            val packageInfo = requireContext().packageManager.getPackageInfo(requireContext().packageName, 0)
+            val versionName = packageInfo.versionName
+            binding.tvVersion.text = "v$versionName"
+        } catch (e: Exception) {
+            binding.tvVersion.text = "v1.0.0"
+        }
     }
 
     private fun setupListeners() {
@@ -41,6 +52,18 @@ class SettingFragment : Fragment() {
             } else {
                 binding.tvLanguageValue.text = "English 🇺🇸"
                 Toast.makeText(requireContext(), getString(com.livescore.football.livescores.footballscores.R.string.toast_language_switched_en), Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Privacy Policy link
+        binding.rowPrivacyPolicy.setOnClickListener {
+            try {
+                val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
+                    data = android.net.Uri.parse("https://sites.google.com/view/apfolife-privacy-policy/")
+                }
+                startActivity(intent)
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Unable to open link", Toast.LENGTH_SHORT).show()
             }
         }
     }
