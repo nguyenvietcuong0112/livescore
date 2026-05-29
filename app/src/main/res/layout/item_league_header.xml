@@ -28,19 +28,10 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/ivCollapse"
         app:layout_constraintStart_toEndOf="@id/ivLeagueLogo"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Premier League - England" />
 
-    <ImageView
-        android:id="@+id/ivCollapse"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:contentDescription="Collapse Section"
-        android:src="@drawable/ic_arrow_drop_down"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
