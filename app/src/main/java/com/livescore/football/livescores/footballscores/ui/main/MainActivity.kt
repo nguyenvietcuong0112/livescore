@@ -315,14 +315,21 @@ class MainActivity : BaseActivity() {
     }
 
     private fun updateLogoText(tabId: Int) {
-        val title = when (tabId) {
-            R.id.nav_live -> getString(R.string.splash_app_title)
-            R.id.nav_leagues -> getString(R.string.leagues_header_title)
-            R.id.nav_wc26 -> getString(R.string.splash_app_title)
-            R.id.nav_favorite -> getString(R.string.favorite_title)
-            R.id.nav_profile -> getString(R.string.profile_settings)
-            else -> getString(R.string.splash_app_title)
+        if (tabId == R.id.nav_live) {
+            binding.logoImage.visibility = View.VISIBLE
+            binding.logoText.visibility = View.GONE
+        } else {
+            binding.logoImage.visibility = View.GONE
+            binding.logoText.visibility = View.VISIBLE
+            
+            val title = when (tabId) {
+                R.id.nav_leagues -> getString(R.string.leagues_header_title)
+                R.id.nav_wc26 -> getString(R.string.splash_app_title)
+                R.id.nav_favorite -> getString(R.string.favorite_title)
+                R.id.nav_profile -> getString(R.string.profile_settings)
+                else -> getString(R.string.splash_app_title)
+            }
+            binding.logoText.text = title
         }
-        binding.logoText.text = title
     }
 }
