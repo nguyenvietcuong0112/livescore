@@ -89,6 +89,11 @@
     <string name="search_input_hint">Tìm kiếm trận, đội, giải đấu...</string>
     <string name="search_empty_title">Khám phá bóng đá</string>
     <string name="search_empty_desc">Tìm kiếm các đội bóng, giải đấu hàng đầu như Ngoại hạng Anh, Real Madrid, ĐT Việt Nam hay World Cup 2026...</string>
+    <string name="search_header_matches">Trận đấu</string>
+    <string name="search_header_teams">Đội bóng</string>
+    <string name="search_header_leagues">Giải đấu</string>
+    <string name="search_no_results">Không tìm thấy kết quả</string>
+    <string name="search_no_results_desc">Chúng tôi không tìm thấy kết quả cho \"%1$s\". Hãy thử từ khóa khác!</string>
     
     <!-- News Screen -->
     <string name="news_center_title">TIN NÓNG 24H</string>

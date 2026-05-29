@@ -66,6 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="4dp"
+            android:textSize="12dp"
             android:backgroundTint="@color/card_dark"
             android:text="@string/finished"
             android:textColor="@color/text_muted"
@@ -80,6 +81,7 @@
             android:layout_marginHorizontal="4dp"
             android:backgroundTint="@color/card_dark"
             android:text="@string/live"
+            android:textSize="12dp"
             android:textColor="@color/accent_green"
             app:cornerRadius="8dp"
             app:strokeColor="@color/accent_green"
@@ -94,6 +96,7 @@
             android:layout_marginStart="4dp"
             android:backgroundTint="@color/card_dark"
             android:text="@string/upcoming"
+            android:textSize="12dp"
             android:textColor="@color/text_muted"
             app:cornerRadius="8dp" />
     </LinearLayout>

@@ -17,6 +17,11 @@ import androidx.core.os.LocaleListCompat
 import android.content.Context
 import com.livescore.football.livescores.footballscores.data.remote.adjust.AppAdjustTokens
 import com.livescore.football.livescores.footballscores.data.remote.getRemoteAdId
+import com.livescore.football.livescores.footballscores.ui.language.LanguageActivity
+import com.livescore.football.livescores.footballscores.ui.main.MainActivity
+import com.livescore.football.livescores.footballscores.ui.onboarding.IntroActivity
+import com.livescore.football.livescores.footballscores.ui.onboarding.IntroSlideshowActivity
+import com.livescore.football.livescores.footballscores.ui.onboarding.PermissionActivity
 
 import com.mallegan.ads.util.AdjustHelper
 import kotlinx.coroutines.launch
@@ -41,12 +46,18 @@ class Application : AdsApplication() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate()
 
+        AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity::class.java)
+        AppOpenManager.getInstance().disableAppResumeWithActivity(LanguageActivity::class.java)
+        AppOpenManager.getInstance().disableAppResumeWithActivity(IntroActivity::class.java)
+        AppOpenManager.getInstance().disableAppResumeWithActivity(IntroSlideshowActivity::class.java)
+        AppOpenManager.getInstance().disableAppResumeWithActivity(PermissionActivity::class.java)
+        AppOpenManager.getInstance().disableAppResumeWithActivity(MainActivity::class.java)
+
         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
             kotlinx.coroutines.delay(5000)
             gsmManager.loginGSM()
         }
         
-        // Ensure default language is English on first launch
         val onboardingPrefs = getSharedPreferences("livescore_onboarding_prefs", Context.MODE_PRIVATE)
         val savedLang = onboardingPrefs.getString("selected_language", null)
         if (savedLang == null) {
@@ -79,8 +90,6 @@ class Application : AdsApplication() {
             }
         }
 
-        AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity::class.java)
-        AppOpenManager.getInstance().disableAppResumeWithActivity(MainActivity::class.java)
         Executors.newSingleThreadExecutor().execute {
             FirebaseApp.initializeApp(this)
             FacebookSdk.setClientToken(getString(R.string.facebook_client_token))

@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.OnBackPressedCallback
+import com.livescore.football.livescores.footballscores.base.BaseActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -19,15 +19,16 @@ import com.livescore.football.livescores.footballscores.data.repository.MatchRep
 import com.livescore.football.livescores.footballscores.databinding.ActivitySearchBinding
 import com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
-import androidx.activity.OnBackPressedCallback
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : BaseActivity() {
 
     private lateinit var binding: ActivitySearchBinding
 
@@ -73,10 +74,12 @@ class SearchActivity : AppCompatActivity() {
         Triple(1, "World Cup 2026", Pair("https://media.api-sports.io/football/leagues/1.png", "World"))
     )
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun bind() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Initialize favorite match IDs
+        favoriteMatchIds.value = favoriteManager.getFavoriteFixtureIds()
 
         // Setup onBackPressed frequency capped interstitial ad (35s)
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -114,7 +117,6 @@ class SearchActivity : AppCompatActivity() {
 
         binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                // Dismiss keyboard or clear focus
                 binding.etSearch.clearFocus()
                 true
             } else {
@@ -135,19 +137,16 @@ class SearchActivity : AppCompatActivity() {
             },
             onMatchFavToggle = { match ->
                 favoriteManager.toggleFixtureFavorite(match.id)
-                // Reload favorites
                 favoriteMatchIds.value = favoriteManager.getFavoriteFixtureIds()
             },
             onTeamFavToggle = { id, name, logo ->
                 lifecycleScope.launch {
                     favoriteManager.toggleTeamFavorite(id, name, logo)
-                    updateLocalFavoriteStates()
                 }
             },
             onLeagueFavToggle = { id, name, logo, country ->
                 lifecycleScope.launch {
                     favoriteManager.toggleLeagueFavorite(id, name, logo, country)
-                    updateLocalFavoriteStates()
                 }
             }
         )
@@ -156,6 +155,7 @@ class SearchActivity : AppCompatActivity() {
         binding.rvSearchResults.adapter = resultsAdapter
     }
 
+    @OptIn(FlowPreview::class)
     private fun observeData() {
         // Collect Matches from database
         lifecycleScope.launch {
@@ -164,17 +164,27 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        // Collect Real-time favorite states
+        // Collect Real-time favorite states in parallel coroutines to avoid block suspending flow collections
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                updateLocalFavoriteStates()
+                favoriteManager.getAllFavoriteTeams().collect { list ->
+                    favoriteTeamIds.value = list.map { it.id }.toSet()
+                }
             }
         }
 
-        // Combine search query, matches, and favorite states to produce SearchResultItems
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                favoriteManager.getAllFavoriteLeagues().collect { list ->
+                    favoriteLeagueIds.value = list.map { it.id }.toSet()
+                }
+            }
+        }
+
+        // Combine search query (debounced), matches, and favorite states to produce SearchResultItems
         lifecycleScope.launch {
             combine(
-                searchQuery,
+                searchQuery.debounce(250),
                 allMatches,
                 favoriteMatchIds,
                 favoriteTeamIds,
@@ -193,21 +203,21 @@ class SearchActivity : AppCompatActivity() {
                             it.leagueName.contains(query, ignoreCase = true)
                 }
                 if (matchedMatches.isNotEmpty()) {
-                    list.add(SearchResultItem.Header("Trận đấu"))
+                    list.add(SearchResultItem.Header(getString(R.string.search_header_matches)))
                     list.addAll(matchedMatches.map { SearchResultItem.Match(it, favMatches.contains(it.id.toString())) })
                 }
 
                 // 2. Teams Search
                 val matchedTeams = standardClubs.filter { it.second.first.contains(query, ignoreCase = true) }
                 if (matchedTeams.isNotEmpty()) {
-                    list.add(SearchResultItem.Header("Đội bóng"))
+                    list.add(SearchResultItem.Header(getString(R.string.search_header_teams)))
                     list.addAll(matchedTeams.map { SearchResultItem.Team(it.first, it.second.first, it.second.second, favTeams.contains(it.first)) })
                 }
 
                 // 3. Leagues Search
                 val matchedLeagues = standardLeagues.filter { it.second.contains(query, ignoreCase = true) || it.third.second.contains(query, ignoreCase = true) }
                 if (matchedLeagues.isNotEmpty()) {
-                    list.add(SearchResultItem.Header("Giải đấu"))
+                    list.add(SearchResultItem.Header(getString(R.string.search_header_leagues)))
                     list.addAll(matchedLeagues.map { SearchResultItem.League(it.first, it.second, it.third.first, it.third.second, favLeagues.contains(it.first)) })
                 }
 
@@ -217,27 +227,16 @@ class SearchActivity : AppCompatActivity() {
                 binding.emptyStateLayout.isVisible = results.isEmpty()
                 binding.rvSearchResults.isVisible = results.isNotEmpty()
 
-                // Custom text message adjustments
-                if (searchQuery.value.length >= 2 && results.isEmpty()) {
-                    binding.tvEmptyTitle.text = "Không tìm thấy kết quả"
-                    binding.tvEmptyDescription.text = "Chúng tôi không tìm thấy kết quả cho \"${searchQuery.value}\". Hãy thử từ khóa khác!"
-                } else if (searchQuery.value.length < 2) {
-                    binding.tvEmptyTitle.text = "Khám phá bóng đá"
-                    binding.tvEmptyDescription.text = "Tìm kiếm các đội bóng, giải đấu hàng đầu như Ngoại hạng Anh, Real Madrid, ĐT Việt Nam hay World Cup 2026..."
+                // Custom text message adjustments using localized strings
+                val currentQuery = searchQuery.value
+                if (currentQuery.length >= 2 && results.isEmpty()) {
+                    binding.tvEmptyTitle.text = getString(R.string.search_no_results)
+                    binding.tvEmptyDescription.text = getString(R.string.search_no_results_desc, currentQuery)
+                } else if (currentQuery.length < 2) {
+                    binding.tvEmptyTitle.text = getString(R.string.search_empty_title)
+                    binding.tvEmptyDescription.text = getString(R.string.search_empty_desc)
                 }
             }
-        }
-    }
-
-    private suspend fun updateLocalFavoriteStates() {
-        favoriteMatchIds.value = favoriteManager.getFavoriteFixtureIds()
-        
-        favoriteManager.getAllFavoriteTeams().collect { list ->
-            favoriteTeamIds.value = list.map { it.id }.toSet()
-        }
-
-        favoriteManager.getAllFavoriteLeagues().collect { list ->
-            favoriteLeagueIds.value = list.map { it.id }.toSet()
         }
     }
 }

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_light"
+    android:layout_marginTop="@dimen/_10sdp"
     android:padding="24dp">
 
     <!-- Skip Button in Top Right Corner -->
@@ -47,7 +48,7 @@
                 android:layout_marginBottom="16dp"
                 android:contentDescription="VIP Emblem"
                 app:srcCompat="@drawable/ic_trophy"
-                app:tint="#FFD700" />
+              />
 
             <!-- VIP Premium Header -->
             <TextView

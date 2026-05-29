@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_light"
-    tools:context=".MainActivity">
+    tools:context=".ui.main.MainActivity">
 
     <!-- Top Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
@@ -63,6 +63,7 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
@@ -70,8 +71,10 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
+        android:minHeight="64dp"
         android:background="@color/card_dark"
+        app:paddingBottomSystemWindowInsets="false"
         app:itemIconTint="@color/nav_item_color"
         app:itemTextColor="@color/nav_item_color"
         app:itemActiveIndicatorStyle="@null"
@@ -80,7 +83,7 @@
         app:layout_constraintBottom_toTopOf="@id/frAdsBanner"
         app:menu="@menu/bottom_navigation" />
 
-    <!-- Floating World Cup Gold Button -->
+    <!-- Floating World Cup Obsidian Blue Button -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/btnFloatingWc"
         android:layout_width="54dp"
@@ -88,22 +91,21 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
-        app:cardBackgroundColor="#FFD700"
+        app:cardBackgroundColor="#232221"
         app:cardCornerRadius="27dp"
-        app:cardElevation="8dp"
-        app:strokeColor="#FFFFFF"
-        app:strokeWidth="1.5dp"
+        app:cardElevation="12dp"
+        app:strokeColor="#A80F04"
+        app:strokeWidth="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/bottom_navigation"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation">
 
         <ImageView
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_trophy"
-            app:tint="#0B0E13" />
+            android:src="@drawable/ic_trophy" />
 
     </com.google.android.material.card.MaterialCardView>
 

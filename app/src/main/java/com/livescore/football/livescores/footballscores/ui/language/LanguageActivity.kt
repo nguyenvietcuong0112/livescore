@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import com.livescore.football.livescores.footballscores.base.BaseActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.os.LocaleListCompat
@@ -32,7 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import jakarta.inject.Inject
 
 @AndroidEntryPoint
-class LanguageActivity : AppCompatActivity() {
+class LanguageActivity : BaseActivity() {
 
     @Inject
     lateinit var limitManager: RequestLimitManager
@@ -48,8 +48,7 @@ class LanguageActivity : AppCompatActivity() {
         "Spanish", "Thai", "Turkish", "Urdu", "Vietnamese"
     )
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun bind() {
         binding = ActivityLanguageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

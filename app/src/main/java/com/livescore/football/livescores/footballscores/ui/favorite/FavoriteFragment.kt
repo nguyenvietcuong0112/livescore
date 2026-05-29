@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.livescore.football.livescores.footballscores.R
-import com.livescore.football.livescores.footballscores.MainActivity
+import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.databinding.FragmentFavoriteBinding
 import com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity
 import com.livescore.football.livescores.footballscores.ui.home.MatchAdapter

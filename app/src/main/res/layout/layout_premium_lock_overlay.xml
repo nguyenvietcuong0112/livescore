@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:cardBackgroundColor="#EC0B0E13"
+    app:cardBackgroundColor="#ffffff"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="MỞ KHÓA PREMIUM"
-            android:textColor="#FFD700"
+            android:textColor="@color/accentBlue"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="6dp" />

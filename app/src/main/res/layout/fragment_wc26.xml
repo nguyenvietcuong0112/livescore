@@ -39,7 +39,6 @@
                     android:layout_width="52dp"
                     android:layout_height="52dp"
                     android:src="@drawable/ic_trophy"
-                    app:tint="@color/accent_green"
                     android:layout_marginEnd="16dp"
                     android:contentDescription="World Cup Trophy" />
 
@@ -271,7 +270,7 @@
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
-        android:backgroundTint="#CC222222"
+        android:backgroundTint="#CCFFFFFF"
         android:visibility="gone"
         app:icon="@drawable/ic_zoom_in"
         app:iconSize="18dp"

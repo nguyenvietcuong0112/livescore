@@ -7,11 +7,11 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import com.livescore.football.livescores.footballscores.base.BaseActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.android.billingclient.api.ProductDetails
-import com.livescore.football.livescores.footballscores.MainActivity
+import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.local.BillingManager
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class IAPActivity : AppCompatActivity() {
+class IAPActivity : BaseActivity() {
 
     @Inject
     lateinit var limitManager: RequestLimitManager
@@ -33,9 +33,7 @@ class IAPActivity : AppCompatActivity() {
     private lateinit var binding: ActivityIapBinding
     private var isMonthlySelected = false // Default: Weekly VIP selected
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        
+    override fun bind() {
         // Fast-path bypass for premium users: avoid displaying the UI entirely
         if (limitManager.isPremium()) {
             navigateToHome()

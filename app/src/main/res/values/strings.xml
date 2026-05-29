@@ -89,6 +89,11 @@
     <string name="search_input_hint">Search matches, teams, leagues...</string>
     <string name="search_empty_title">Explore Soccer</string>
     <string name="search_empty_desc">Search for top teams and leagues like Premier League, Real Madrid, Vietnam or World Cup 2026...</string>
+    <string name="search_header_matches">Matches</string>
+    <string name="search_header_teams">Teams</string>
+    <string name="search_header_leagues">Leagues</string>
+    <string name="search_no_results">No results found</string>
+    <string name="search_no_results_desc">We couldn\'t find any results for \"%1$s\". Try another keyword!</string>
     
     <!-- News Screen -->
     <string name="news_center_title">HOT NEWS 24H</string>

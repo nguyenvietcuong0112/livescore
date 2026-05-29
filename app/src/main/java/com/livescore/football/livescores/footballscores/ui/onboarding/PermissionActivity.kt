@@ -6,10 +6,10 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
+import com.livescore.football.livescores.footballscores.base.BaseActivity
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.nativead.NativeAdView
-import com.livescore.football.livescores.footballscores.MainActivity
+import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
@@ -19,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class PermissionActivity : AppCompatActivity() {
+class PermissionActivity : BaseActivity() {
 
     @Inject
     lateinit var limitManager: RequestLimitManager
@@ -32,8 +32,7 @@ class PermissionActivity : AppCompatActivity() {
         binding.switchPermission.isChecked = isGranted
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun bind() {
         binding = ActivityPermissionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

@@ -6,9 +6,9 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import com.livescore.football.livescores.footballscores.base.BaseActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
@@ -31,7 +31,7 @@ import java.io.FileOutputStream
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MatchDetailActivity : AppCompatActivity() {
+class MatchDetailActivity : BaseActivity() {
 
     @Inject
     lateinit var limitManager: RequestLimitManager
@@ -42,8 +42,7 @@ class MatchDetailActivity : AppCompatActivity() {
     private lateinit var eventAdapter: EventAdapter
     private lateinit var lineupAdapter: LineupAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun bind() {
         binding = ActivityMatchDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

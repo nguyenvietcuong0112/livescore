@@ -2,14 +2,14 @@ package com.livescore.football.livescores.footballscores.ui.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import com.livescore.football.livescores.footballscores.base.BaseActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.LoadAdError
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.remote.adjust.RetentionTracker
 import com.livescore.football.livescores.footballscores.databinding.ActivitySplashBinding
 import com.livescore.football.livescores.footballscores.ui.language.LanguageActivity
-import com.livescore.football.livescores.footballscores.MainActivity
+import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import android.content.Context
 import android.view.View
@@ -25,7 +25,7 @@ import javax.inject.Inject
 import com.livescore.football.livescores.footballscores.data.remote.getRemoteAdId
 
 @AndroidEntryPoint
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseActivity() {
 
     @Inject
     lateinit var remoteConfigManager: RemoteConfigManager
@@ -38,8 +38,7 @@ class SplashActivity : AppCompatActivity() {
 
     private var interCallback: InterCallback? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun bind() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

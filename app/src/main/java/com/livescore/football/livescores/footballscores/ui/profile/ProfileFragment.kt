@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.livescore.football.livescores.footballscores.BuildConfig
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.databinding.FragmentProfileBinding
@@ -34,6 +35,13 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
+        displayAppVersion()
+
+    }
+
+
+    private fun displayAppVersion() {
+        binding.tvVersion.text = "v${BuildConfig.VERSION_NAME}"
     }
 
     private fun setupListeners() {
@@ -49,14 +57,14 @@ class ProfileFragment : Fragment() {
                 "Spanish", "Thai", "Turkish", "Urdu", "Vietnamese"
             )
             val currentIdx = languages.indexOf(binding.tvLanguageValue.text.toString()).coerceAtLeast(0)
-            
+
             com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.language_dialog_title))
                 .setSingleChoiceItems(languages, currentIdx) { dialog, which ->
                     val newLang = languages[which]
                     onboardingPrefs.edit().putString("selected_language", newLang).apply()
                     binding.tvLanguageValue.text = newLang
-                    
+
                     // Apply dynamic system locale instantly
                     val localeCode = when (newLang) {
                         "Arabic" -> "ar"
@@ -83,6 +91,17 @@ class ProfileFragment : Fragment() {
                     dialog.dismiss()
                 }
                 .show()
+        }
+
+        binding.rowPrivacyPolicy.setOnClickListener {
+            try {
+                val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
+                    data = android.net.Uri.parse("https://sites.google.com/view/apfolife-privacy-policy/")
+                }
+                startActivity(intent)
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Unable to open link", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

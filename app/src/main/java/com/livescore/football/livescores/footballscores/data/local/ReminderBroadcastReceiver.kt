@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.livescore.football.livescores.footballscores.MainActivity
+import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.R
 
 class ReminderBroadcastReceiver : BroadcastReceiver() {

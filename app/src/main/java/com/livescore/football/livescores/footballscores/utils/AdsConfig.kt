@@ -4,17 +4,42 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAd
 import com.livescore.football.livescores.footballscores.R
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.mallegan.ads.callback.InterCallback
 import com.mallegan.ads.util.Admob
+import dagger.hilt.EntryPoint
+import dagger.hilt.EntryPoints
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
 object AdsConfig {
+
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface AdsConfigEntryPoint {
+        fun requestLimitManager(): RequestLimitManager
+    }
 
     var nativeIntro1: NativeAd? = null
 
     var lastInterAdShowTime: Long = 0L
 
     fun showInterClickAd(activity: AppCompatActivity, onAdClosed: () -> Unit) {
+        val limitManager = try {
+            EntryPoints.get(
+                activity.applicationContext,
+                AdsConfigEntryPoint::class.java
+            ).requestLimitManager()
+        } catch (e: Exception) {
+            null
+        }
+
+        if (limitManager != null && limitManager.isPremium()) {
+            onAdClosed()
+            return
+        }
+
         val currentTime = System.currentTimeMillis()
         val isEnabled = try {
             RemoteConfigManager.getInstance().isInterClickEnabled()
@@ -71,6 +96,8 @@ object AdsConfig {
                     }
                 }
             )
+        } else {
+            onAdClosed()
         }
 
     }

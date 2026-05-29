@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import com.livescore.football.livescores.footballscores.base.BaseActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.livescore.football.livescores.footballscores.MainActivity
+import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.databinding.ActivityIntroBinding
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class IntroActivity : AppCompatActivity() {
+class IntroActivity : BaseActivity() {
 
     @Inject
     lateinit var limitManager: RequestLimitManager
@@ -43,8 +43,7 @@ class IntroActivity : AppCompatActivity() {
     private val viewModel: OnboardingViewModel by viewModels()
     private lateinit var selectionAdapter: IntroSelectionAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun bind() {
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

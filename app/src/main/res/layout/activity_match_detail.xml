@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/bg_light">
 
-    <!-- Match Header Included at Top -->
     <include
         android:id="@+id/matchHeader"
         layout="@layout/layout_match_header"
@@ -14,7 +13,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Scrollable container for live trackers & tabs content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"

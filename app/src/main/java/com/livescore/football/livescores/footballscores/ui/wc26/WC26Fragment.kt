@@ -10,6 +10,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.repository.LeaguesRepository
 import com.livescore.football.livescores.footballscores.databinding.FragmentWc26Binding
@@ -17,7 +19,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import com.livescore.football.livescores.footballscores.data.local.FavoriteManager
 import com.livescore.football.livescores.footballscores.data.local.MatchReminderManager
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.data.local.entity.CachedMatchEntity
+import com.mallegan.ads.callback.NativeCallback
+import com.mallegan.ads.util.Admob
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -37,7 +42,10 @@ class WC26Fragment : Fragment() {
     @Inject
     lateinit var reminderManager: MatchReminderManager
 
-    private var selectedTab = 0 // 0: Fixtures, 1: Groups, 2: VLTT (Bracket)
+    @Inject
+    lateinit var limitManager: RequestLimitManager
+
+    private var selectedTab = 0
     private var isWcBracketFullScreen = false
 
     override fun onCreateView(
@@ -131,21 +139,20 @@ class WC26Fragment : Fragment() {
                         
                         binding.layoutWcGroupsContainer.addView(groupView)
 
-                        if ((index + 1) % 2 == 0) {
+                        if (!limitManager.isPremium() && (index + 1) % 2 == 0) {
                             val adViewWrapper = inflater.inflate(R.layout.layout_native_no_media, binding.layoutWcGroupsContainer, false)
                             binding.layoutWcGroupsContainer.addView(adViewWrapper)
                             val adId = try { getString(resources.getIdentifier("native_all", "string", requireContext().packageName)) } catch (e: Exception) { "" }
                             if (adId.isNotEmpty()) {
-                                com.mallegan.ads.util.Admob.getInstance().loadNativeAds(
+                                Admob.getInstance().loadNativeAds(
                                     requireContext(),
                                     adId,
                                     1,
-                                    object : com.mallegan.ads.callback.NativeCallback() {
+                                    object : NativeCallback() {
                                         override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
                                             super.onNativeAdLoaded(nativeAd)
                                             if (!isAdded) return
-                                            val closeBtn = adViewWrapper.findViewById<View>(R.id.close)
-                                            closeBtn?.visibility = View.GONE
+
                                             com.mallegan.ads.util.Admob.getInstance().pushAdsToViewCustom(nativeAd, adViewWrapper as com.google.android.gms.ads.nativead.NativeAdView)
                                         }
                                         override fun onAdFailedToLoad() {
@@ -314,7 +321,7 @@ class WC26Fragment : Fragment() {
                             binding.layoutWcFixturesContainer.addView(fixtureView)
                             matchCount++
                             
-                            if (matchCount % 3 == 0) {
+                            if (!limitManager.isPremium() && matchCount % 3 == 0) {
                                 val adViewWrapper = inflater.inflate(R.layout.layout_native_no_media, binding.layoutWcFixturesContainer, false)
                                 binding.layoutWcFixturesContainer.addView(adViewWrapper)
                                 val adId = try { getString(resources.getIdentifier("native_all", "string", requireContext().packageName)) } catch (e: Exception) { "" }
@@ -323,13 +330,11 @@ class WC26Fragment : Fragment() {
                                         requireContext(),
                                         adId,
                                         1,
-                                        object : com.mallegan.ads.callback.NativeCallback() {
-                                            override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
+                                        object : NativeCallback() {
+                                            override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                                                 super.onNativeAdLoaded(nativeAd)
                                                 if (!isAdded) return
-                                                val closeBtn = adViewWrapper.findViewById<View>(R.id.close)
-                                                closeBtn?.visibility = View.GONE
-                                                com.mallegan.ads.util.Admob.getInstance().pushAdsToViewCustom(nativeAd, adViewWrapper as com.google.android.gms.ads.nativead.NativeAdView)
+                                               Admob.getInstance().pushAdsToViewCustom(nativeAd, adViewWrapper as NativeAdView)
                                             }
                                             override fun onAdFailedToLoad() {
                                                 super.onAdFailedToLoad()

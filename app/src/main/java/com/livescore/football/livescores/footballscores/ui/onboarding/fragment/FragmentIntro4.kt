@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
-import com.livescore.football.livescores.footballscores.MainActivity
+import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager

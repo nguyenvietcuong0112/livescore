@@ -57,28 +57,21 @@ class HomeViewModel @Inject constructor(
             val dateStr = sdf.format(date)
             repository.allCachedMatches.map { matchesList ->
                 matchesList.filter { match ->
-                    val matchDate = java.util.Date(match.dateTimestamp * 1000)
-                    val matchDateStr = sdf.format(matchDate)
-                    val isMatch = matchDateStr == dateStr
-                    android.util.Log.d("HomeViewModelFilter", 
-                        "Match ID: ${match.id}, Title: ${match.homeTeamName} vs ${match.awayTeamName}, " +
-                        "Timestamp: ${match.dateTimestamp}, MatchDateStr: $matchDateStr, SelectedDateStr: $dateStr, " +
-                        "IsMatch: $isMatch, DeviceTimeZone: ${sdf.timeZone.id}"
-                    )
-                    isMatch
+                    match.queryDate == dateStr
                 }
             }
         }.combine(_currentFilter) { filteredMatches, filter ->
             val currentTime = System.currentTimeMillis()
             when (filter) {
                 MatchFilter.LIVE -> filteredMatches.filter { 
-                    isLiveStatus(it.statusShort) || 
-                    ((it.statusShort == "NS" || it.statusShort == "TBD") && it.dateTimestamp * 1000 <= currentTime)
+                    isLiveStatus(it.statusShort)
                 }
                 MatchFilter.UPCOMING -> filteredMatches.filter { 
-                    (it.statusShort == "NS" || it.statusShort == "TBD") && it.dateTimestamp * 1000 > currentTime
+                    (it.statusShort == "NS" || it.statusShort == "TBD" || it.statusShort == "PST") && it.dateTimestamp * 1000 > currentTime
                 }
-                MatchFilter.FINISHED -> filteredMatches.filter { it.statusShort == "FT" || it.statusShort == "AET" || it.statusShort == "PEN" }
+                MatchFilter.FINISHED -> filteredMatches.filter { 
+                    it.statusShort == "FT" || it.statusShort == "AET" || it.statusShort == "PEN" || it.statusShort == "CANC" || it.statusShort == "ABD"
+                }
             }
         },
         _favoriteFixtureIds,

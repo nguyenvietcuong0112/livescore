@@ -160,7 +160,7 @@ class SearchResultsAdapter(
     inner class TeamLeagueViewHolder(private val binding: ItemFavoriteTeamLeagueBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bindTeam(item: SearchResultItem.Team) {
             binding.tvName.text = item.name
-            binding.tvSubtitle.text = "Câu lạc bộ"
+            binding.tvSubtitle.text = binding.root.context.getString(R.string.club)
 
             Glide.with(binding.ivLogo.context)
                 .load(item.logo)
@@ -173,7 +173,7 @@ class SearchResultsAdapter(
 
         fun bindLeague(item: SearchResultItem.League) {
             binding.tvName.text = item.name
-            binding.tvSubtitle.text = "Giải đấu • ${item.country}"
+            binding.tvSubtitle.text = binding.root.context.getString(R.string.league_with_country, item.country)
 
             Glide.with(binding.ivLogo.context)
                 .load(item.logo)
