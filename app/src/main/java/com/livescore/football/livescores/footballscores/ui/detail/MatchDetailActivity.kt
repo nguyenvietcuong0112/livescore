@@ -268,11 +268,25 @@ class MatchDetailActivity : BaseActivity() {
                             binding.matchHeader.tvDetailStatus.text =
                                 detail.fixture.status.elapsed?.let { "${it}' LIVE" } ?: detail.fixture.status.long
 
-                            Glide.with(this@MatchDetailActivity).load(detail.teams.home.logo).into(binding.matchHeader.ivDetailHomeLogo)
-                            Glide.with(this@MatchDetailActivity).load(detail.teams.away.logo).into(binding.matchHeader.ivDetailAwayLogo)
-
-                            // Setup dynamic values in Football Pitch View
-                            binding.pitchTracker.pitchView.setTeamNames(detail.teams.home.name, detail.teams.away.name)
+                             Glide.with(this@MatchDetailActivity).load(detail.teams.home.logo).into(binding.matchHeader.ivDetailHomeLogo)
+                             Glide.with(this@MatchDetailActivity).load(detail.teams.away.logo).into(binding.matchHeader.ivDetailAwayLogo)
+ 
+                             // Setup dynamic values in Football Pitch View
+                             binding.pitchTracker.pitchView.setTeamNames(detail.teams.home.name, detail.teams.away.name)
+                             
+                             val rawHome = detail.teams.home.name.uppercase()
+                             binding.pitchTracker.tvHomeLegend.text = if (rawHome.length > 12) {
+                                 "${rawHome.take(12)}..."
+                             } else {
+                                 rawHome
+                             }
+                             
+                             val rawAway = detail.teams.away.name.uppercase()
+                             binding.pitchTracker.tvAwayLegend.text = if (rawAway.length > 12) {
+                                 "${rawAway.take(12)}..."
+                             } else {
+                                 rawAway
+                             }
                             
                             val elapsed = detail.fixture.status.elapsed ?: 0
                             val period = when (detail.fixture.status.long.uppercase()) {

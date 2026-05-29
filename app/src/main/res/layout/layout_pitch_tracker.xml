@@ -80,6 +80,7 @@
                     android:textSize="10sp" />
 
                 <TextView
+                    android:id="@+id/tvHomeLegend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="HOME"
@@ -97,6 +98,7 @@
                     android:textSize="10sp" />
 
                 <TextView
+                    android:id="@+id/tvAwayLegend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="AWAY"
