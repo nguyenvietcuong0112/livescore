@@ -170,13 +170,13 @@
     <string name="reminder_default_league_name">Giải đấu</string>
 
     <!-- Intro Slideshow -->
-    <string name="intro_slide_1_title">TỈ SỐ &amp; THỐNG KÊ TRỰC TIẾP</string>
+    <string name="intro_slide_1_title">Cập nhật tức thời thời gian thực</string>
     <string name="intro_slide_1_desc">Cập nhật diễn biến bóng đá nhanh nhất hành tinh với dữ liệu chi tiết từng giây, tỉ số trực tiếp &amp; sơ đồ trực quan.</string>
-    <string name="intro_slide_2_title">LỊCH THI ĐẤU &amp; BẢNG XẾP HẠNG</string>
+    <string name="intro_slide_2_title">Chi tiết trận đấu &amp; Bảng xếp hạng</string>
     <string name="intro_slide_2_desc">Theo dõi vị trí của các câu lạc bộ, bảng xếp hạng cập nhật tức thời và lịch thi đấu trọn vẹn mùa giải 2024-2026.</string>
-    <string name="intro_slide_3_title">NHẮC NHỞ &amp; BÁO THỨC TRẬN ĐẤU</string>
+    <string name="intro_slide_3_title">❤️ Theo dõi đội bóng yêu thích</string>
     <string name="intro_slide_3_desc">Nhận cảnh báo thông báo thông minh trước giờ bóng lăn 5 phút để bạn không bỏ lỡ bất kỳ khoảnh khắc ghi bàn nào.</string>
-    <string name="intro_slide_4_title">CÚP THẾ GIỚI WORLD CUP 2026</string>
+    <string name="intro_slide_4_title">🏆 Bảng xếp hạng các giải đấu</string>
     <string name="intro_slide_4_desc">Đón đầu lễ hội bóng đá đỉnh cao với bảng đấu, tin tức &amp; đếm ngược sự kiện tại Mỹ, Canada &amp; Mexico.</string>
 
     <!-- Permissions -->

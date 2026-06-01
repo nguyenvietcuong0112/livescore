@@ -112,7 +112,16 @@ class MainActivity : BaseActivity() {
         }
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
-            if (activeTabId == item.itemId) {
+            val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+            val isSameFragment = when (item.itemId) {
+                R.id.nav_live -> currentFragment is HomeFragment
+                R.id.nav_leagues -> currentFragment is LeaguesFragment
+                R.id.nav_wc26 -> currentFragment is WC26Fragment
+                R.id.nav_favorite -> currentFragment is FavoriteFragment
+                R.id.nav_profile -> currentFragment is ProfileFragment
+                else -> false
+            }
+            if (isSameFragment && activeTabId == item.itemId) {
                 return@setOnItemSelectedListener false
             }
 

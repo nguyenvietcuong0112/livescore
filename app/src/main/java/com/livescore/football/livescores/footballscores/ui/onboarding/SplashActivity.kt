@@ -42,17 +42,23 @@ class SplashActivity : BaseActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        RetentionTracker.checkAndTrackRetention(this)
+
+        lifecycleScope.launch {
+            remoteConfigManager.fetchAndActivate()
+
+            runOnUiThread {
+                initAdsAfterConfig()
+            }
+        }
+    }
+
+    private fun initAdsAfterConfig() {
         if (limitManager.isPremium()) {
             binding.frAdsBanner.visibility = View.GONE
         } else {
             binding.frAdsBanner.visibility = View.VISIBLE
             Admob.getInstance().loadBanner(this, getRemoteAdId("banner_splash", R.string.banner_splash))
-        }
-
-        RetentionTracker.checkAndTrackRetention(this)
-
-        lifecycleScope.launch {
-            remoteConfigManager.fetchAndActivate()
         }
 
         interCallback = object : InterCallback() {
@@ -83,7 +89,6 @@ class SplashActivity : BaseActivity() {
             }
         }
         loadAdsInter()
-
     }
 
 

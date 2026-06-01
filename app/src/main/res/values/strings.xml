@@ -170,13 +170,13 @@
     <string name="reminder_default_league_name">League</string>
 
     <!-- Intro Slideshow -->
-    <string name="intro_slide_1_title">LIVE SCORES &amp; STATISTICS</string>
+    <string name="intro_slide_1_title">Real-Time Instant Updates</string>
     <string name="intro_slide_1_desc">Stay updated on the fastest football actions on earth with second-by-second data, live scores &amp; visual match stats.</string>
-    <string name="intro_slide_2_title">FIXTURES &amp; STANDINGS</string>
+    <string name="intro_slide_2_title">Live Match Details &amp; Standings</string>
     <string name="intro_slide_2_desc">Follow club positions, real-time standings and complete match schedules for the 2024-2026 seasons.</string>
-    <string name="intro_slide_3_title">MATCH ALERTS &amp; REMINDERS</string>
+    <string name="intro_slide_3_title">❤️ Follow Your Favorite Team</string>
     <string name="intro_slide_3_desc">Receive smart notification alerts 5 minutes before kickoff so you never miss a goal-scoring moment.</string>
-    <string name="intro_slide_4_title">WORLD CUP 2026</string>
+    <string name="intro_slide_4_title">🏆 Current League Standings</string>
     <string name="intro_slide_4_desc">Get ahead of the ultimate football festival with groups, news &amp; countdowns in the USA, Canada &amp; Mexico.</string>
 
     <!-- Permissions -->
