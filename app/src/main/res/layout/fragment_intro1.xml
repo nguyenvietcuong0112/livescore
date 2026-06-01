@@ -8,7 +8,6 @@
         android:layout_height="match_parent"
         android:background="#FFFFFF">
 
-        <!-- Phone Image -->
         <ImageView
             android:id="@+id/im_LogoSlide"
             android:layout_width="0dp"
@@ -22,7 +21,6 @@
             app:layout_constraintBottom_toTopOf="@id/tv_title"
             app:layout_constraintVertical_chainStyle="spread_inside" />
 
-        <!-- Title Header -->
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
@@ -38,7 +36,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Bottom Navigation Bar (above ads) -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_navigation"
             android:layout_width="match_parent"
@@ -50,7 +47,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- 4 Dots Indicators on Left -->
             <LinearLayout
                 android:id="@+id/layout_dots"
                 android:layout_width="wrap_content"
@@ -61,27 +57,23 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-                <!-- Dot 1 (Active) -->
                 <View
                     android:layout_width="40dp"
                     android:layout_height="6dp"
                     android:background="@drawable/bg_dot_active" />
 
-                <!-- Dot 2 (Inactive) -->
                 <View
                     android:layout_width="40dp"
                     android:layout_height="6dp"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bg_dot_inactive" />
 
-                <!-- Dot 3 (Inactive) -->
                 <View
                     android:layout_width="40dp"
                     android:layout_height="6dp"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bg_dot_inactive" />
 
-                <!-- Dot 4 (Inactive) -->
                 <View
                     android:layout_width="40dp"
                     android:layout_height="6dp"
@@ -90,7 +82,6 @@
 
             </LinearLayout>
 
-            <!-- Small Outlined Next Button on Right -->
             <TextView
                 android:id="@+id/txtNext"
                 android:layout_width="76dp"
@@ -109,7 +100,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Native Ad at Bottom -->
         <FrameLayout
             android:id="@+id/fr_ads"
             android:layout_width="match_parent"
