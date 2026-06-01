@@ -56,6 +56,11 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("active_tab_id", activeTabId)
+    }
+
     override fun bind() {
         // Enable edge-to-edge drawing
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -102,7 +107,7 @@ class MainActivity : BaseActivity() {
                 .commit()
             updateLogoText(R.id.nav_live)
         } else {
-            activeTabId = binding.bottomNavigation.selectedItemId
+            activeTabId = savedState?.getInt("active_tab_id", R.id.nav_live) ?: R.id.nav_live
             updateLogoText(activeTabId)
         }
 

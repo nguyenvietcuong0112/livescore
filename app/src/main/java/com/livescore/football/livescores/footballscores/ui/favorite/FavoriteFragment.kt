@@ -51,6 +51,12 @@ class FavoriteFragment : Fragment() {
         pendingReminderAction = null
     }
 
+    private fun showSettingsDialog() {
+        val dialog = com.livescore.football.livescores.footballscores.ui.custom.NotificationPermissionDialog.newInstance()
+        dialog.show(childFragmentManager, com.livescore.football.livescores.footballscores.ui.custom.NotificationPermissionDialog.TAG)
+    }
+
+
     private fun checkAndRequestNotificationPermission(onGranted: () -> Unit) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             val permission = android.Manifest.permission.POST_NOTIFICATIONS
@@ -61,8 +67,17 @@ class FavoriteFragment : Fragment() {
             ) {
                 onGranted()
             } else {
-                pendingReminderAction = onGranted
-                notificationPermissionLauncher.launch(permission)
+                val sharedPrefs = requireContext().getSharedPreferences("livescore_permissions_prefs", android.content.Context.MODE_PRIVATE)
+                val hasRequestedBefore = sharedPrefs.getBoolean("has_requested_notification", false)
+                val showRationale = shouldShowRequestPermissionRationale(permission)
+
+                if (hasRequestedBefore && !showRationale) {
+                    showSettingsDialog()
+                } else {
+                    pendingReminderAction = onGranted
+                    sharedPrefs.edit().putBoolean("has_requested_notification", true).apply()
+                    notificationPermissionLauncher.launch(permission)
+                }
             }
         } else {
             onGranted()

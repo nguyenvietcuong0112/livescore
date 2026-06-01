@@ -1,6 +1,8 @@
 package com.livescore.football.livescores.footballscores.ui.onboarding
 
 
+import android.view.MotionEvent
+import androidx.recyclerview.widget.RecyclerView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -56,6 +58,39 @@ class IntroSlideshowActivity : AbsBaseActivity() {
 
         binding.viewPager.adapter = adapter
         binding.viewPager.offscreenPageLimit = 2
+
+        val recyclerView = binding.viewPager.getChildAt(0) as RecyclerView
+        recyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+            private var initialX = 0f
+            private var hasInitialX = false
+
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                when (e.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        initialX = e.x
+                        hasInitialX = true
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        if (!hasInitialX) {
+                            initialX = e.x
+                            hasInitialX = true
+                        }
+                        val currentX = e.x
+                        val diff = currentX - initialX
+                        if (diff > 10) {
+                            return true
+                        }
+                    }
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                        hasInitialX = false
+                    }
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+        })
 
         binding.viewPager.registerOnPageChangeCallback(
             object : ViewPager2.OnPageChangeCallback() {

@@ -49,48 +49,12 @@ class ProfileFragment : Fragment() {
         val selectedLanguage = onboardingPrefs.getString("selected_language", "English") ?: "English"
         binding.tvLanguageValue.text = selectedLanguage
 
-        // Language toggle
+        // Language selection: Navigate to LanguageActivity instead of showing dialog popup
         binding.rowLanguage.setOnClickListener {
-            val languages = arrayOf(
-                "Arabic", "English", "French", "German", "Hindi",
-                "Indonesian", "Italian", "Japanese", "Portuguese", "Russian",
-                "Spanish", "Thai", "Turkish", "Urdu", "Vietnamese"
-            )
-            val currentIdx = languages.indexOf(binding.tvLanguageValue.text.toString()).coerceAtLeast(0)
-
-            com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.language_dialog_title))
-                .setSingleChoiceItems(languages, currentIdx) { dialog, which ->
-                    val newLang = languages[which]
-                    onboardingPrefs.edit().putString("selected_language", newLang).apply()
-                    binding.tvLanguageValue.text = newLang
-
-                    // Apply dynamic system locale instantly
-                    val localeCode = when (newLang) {
-                        "Arabic" -> "ar"
-                        "English" -> "en"
-                        "French" -> "fr"
-                        "German" -> "de"
-                        "Hindi" -> "hi"
-                        "Indonesian" -> "id"
-                        "Italian" -> "it"
-                        "Japanese" -> "ja"
-                        "Portuguese" -> "pt"
-                        "Russian" -> "ru"
-                        "Spanish" -> "es"
-                        "Thai" -> "th"
-                        "Turkish" -> "tr"
-                        "Urdu" -> "ur"
-                        "Vietnamese" -> "vi"
-                        else -> "en"
-                    }
-                    val appLocale = androidx.core.os.LocaleListCompat.forLanguageTags(localeCode)
-                    androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(appLocale)
-
-                    Toast.makeText(requireContext(), getString(R.string.language_changed_toast, newLang), Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                }
-                .show()
+            val intent = android.content.Intent(requireContext(), com.livescore.football.livescores.footballscores.ui.language.LanguageActivity::class.java).apply {
+                putExtra(com.livescore.football.livescores.footballscores.ui.language.LanguageActivity.EXTRA_FROM_PROFILE, true)
+            }
+            startActivity(intent)
         }
 
         binding.rowPrivacyPolicy.setOnClickListener {

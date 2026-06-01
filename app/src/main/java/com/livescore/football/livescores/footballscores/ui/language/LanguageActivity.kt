@@ -34,6 +34,10 @@ import jakarta.inject.Inject
 @AndroidEntryPoint
 class LanguageActivity : BaseActivity() {
 
+    companion object {
+        const val EXTRA_FROM_PROFILE = "extra_from_profile"
+    }
+
     @Inject
     lateinit var limitManager: RequestLimitManager
 
@@ -51,6 +55,20 @@ class LanguageActivity : BaseActivity() {
     override fun bind() {
         binding = ActivityLanguageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Show back button if opened from ProfileFragment
+        val isFromProfile = intent.getBooleanExtra(EXTRA_FROM_PROFILE, false)
+        if (isFromProfile) {
+            binding.ivBack.visibility = View.VISIBLE
+            binding.ivBack.setOnClickListener { finish() }
+
+            // Pre-select the currently active language if coming from profile
+            val onboardingPrefs = getSharedPreferences("livescore_onboarding_prefs", Context.MODE_PRIVATE)
+            val savedLanguage = onboardingPrefs.getString("selected_language", "English") ?: "English"
+            selectedLanguage = savedLanguage
+            isLanguageSelected = true
+            binding.ivSelect.alpha = 1.0f
+        }
 
         setupRecyclerView()
         setupListeners()
@@ -103,12 +121,18 @@ class LanguageActivity : BaseActivity() {
             // Apply selected application locale dynamically on transition
             val localeCode = getLocaleCode(selectedLanguage)
             com.livescore.football.livescores.footballscores.utils.SystemUtil.saveLocale(this, localeCode)
+            com.livescore.football.livescores.footballscores.utils.SystemUtil.changeLang(localeCode, this)
             val appLocale = LocaleListCompat.forLanguageTags(localeCode)
             AppCompatDelegate.setApplicationLocales(appLocale)
 
-            val intent = Intent(this, IntroSlideshowActivity::class.java)
-            startActivity(intent)
-            finish()
+            val isFromProfile = intent.getBooleanExtra(EXTRA_FROM_PROFILE, false)
+            if (isFromProfile) {
+                finish()
+            } else {
+                val intent = Intent(this, IntroSlideshowActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
     }
 
