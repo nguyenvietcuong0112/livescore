@@ -170,4 +170,18 @@
     <string name="toast_select_language_continue">Veuillez sélectionner une langue pour continuer</string>
     <string name="toast_language_switched_vi">Passé en vietnamien</string>
     <string name="toast_language_switched_en">Passé en anglais</string>
+
+    <!-- Match Detail Stats, Radar & Top Players -->
+    <string name="assists_label">PASSES DÉCISIVES</string>
+    <string name="goals_label">BUTS</string>
+    <string name="realtime_match_radar">RADAR DE MATCH EN TEMPS RÉEL</string>
+    <string name="attack_momentum_pressure">PRESSION OFFENSIVE DYNAMIQUE</string>
+    <string name="home_label">DOMICILE</string>
+    <string name="away_label">EXTÉRIEUR</string>
+    <string name="match_statistics">STATISTIQUES DU MATCH</string>
+    <string name="ball_possession">Possession du ballon</string>
+    <string name="total_shots">Total des tirs</string>
+    <string name="shots_on_target">Tirs cadrés</string>
+    <string name="corner_kicks">Corners</string>
+
 </resources>

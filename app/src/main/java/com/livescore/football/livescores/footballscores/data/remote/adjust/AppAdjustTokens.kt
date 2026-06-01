@@ -1,8 +1,8 @@
 package com.livescore.football.livescores.footballscores.data.remote.adjust
 
 object AppAdjustTokens {
-    const val ADJUST_APP_TOKEN = ""
-    const val EVENT_IAP_COMMON = ""
+    const val ADJUST_APP_TOKEN = "9gx07a05ue4g"
+    const val EVENT_IAP_COMMON = "bxhwql"
     
     const val EVENT_BUY_WEEKLY = "weekly_package_success_token"
     const val EVENT_BUY_MONTHLY = "monthly_package_success_token"

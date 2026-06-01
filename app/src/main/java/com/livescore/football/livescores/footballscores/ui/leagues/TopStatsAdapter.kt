@@ -61,10 +61,14 @@ class TopStatsAdapter(
                 stat?.goals?.total ?: 0
             }
             binding.tvStatCount.text = countValue.toString()
-            binding.tvStatLabel.text = if (isAssists) "ASSISTS" else "GOALS"
+            val context = itemView.context
+            binding.tvStatLabel.text = if (isAssists) {
+                context.getString(R.string.assists_label)
+            } else {
+                context.getString(R.string.goals_label)
+            }
 
             // Set Up Metallic Top 3 Glowing Badges (Gold, Silver, Bronze)
-            val context = itemView.context
             when (rank) {
                 1 -> {
                     // Gold

@@ -244,4 +244,17 @@
     <string name="toast_language_switched_vi">Đã chuyển đổi sang Tiếng Việt</string>
     <string name="toast_language_switched_en">Switched to English</string>
 
+    <!-- Match Detail Stats, Radar & Top Players -->
+    <string name="assists_label">ASSISTS</string>
+    <string name="goals_label">GOALS</string>
+    <string name="realtime_match_radar">REALTIME MATCH RADAR</string>
+    <string name="attack_momentum_pressure">ATTACK MOMENTUM PRESSURE</string>
+    <string name="home_label">HOME</string>
+    <string name="away_label">AWAY</string>
+    <string name="match_statistics">MATCH STATISTICS</string>
+    <string name="ball_possession">Ball Possession</string>
+    <string name="total_shots">Total Shots</string>
+    <string name="shots_on_target">Shots on Target</string>
+    <string name="corner_kicks">Corner Kicks</string>
+
 </resources>

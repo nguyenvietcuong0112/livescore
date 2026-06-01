@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="MATCH STATISTICS"
+            android:text="@string/match_statistics"
             android:textColor="@color/accent_green"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Ball Possession"
+                    android:text="@string/ball_possession"
                     android:textColor="@color/text_muted"
                     android:textSize="12sp" />
 
@@ -122,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Total Shots"
+                    android:text="@string/total_shots"
                     android:textColor="@color/text_muted"
                     android:textSize="12sp" />
 
@@ -189,7 +189,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Shots on Target"
+                    android:text="@string/shots_on_target"
                     android:textColor="@color/text_muted"
                     android:textSize="12sp" />
 
@@ -255,7 +255,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Corner Kicks"
+                    android:text="@string/corner_kicks"
                     android:textColor="@color/text_muted"
                     android:textSize="12sp" />
 

@@ -244,4 +244,17 @@
     <string name="toast_language_switched_vi">Đã chuyển đổi sang Tiếng Việt</string>
     <string name="toast_language_switched_en">Switched to English</string>
 
+    <!-- Match Detail Stats, Radar & Top Players -->
+    <string name="assists_label">KIẾN TẠO</string>
+    <string name="goals_label">BÀN THẮNG</string>
+    <string name="realtime_match_radar">RADAR TRẬN ĐẤU THỜI GIAN THỰC</string>
+    <string name="attack_momentum_pressure">ÁP LỰC THỜI ĐIỂM TẤN CÔNG</string>
+    <string name="home_label">SÂN NHÀ</string>
+    <string name="away_label">SÂN KHÁCH</string>
+    <string name="match_statistics">THỐNG KÊ TRẬN ĐẤU</string>
+    <string name="ball_possession">Kiểm soát bóng</string>
+    <string name="total_shots">Tổng cú sút</string>
+    <string name="shots_on_target">Sút trúng đích</string>
+    <string name="corner_kicks">Phạt góc</string>
+
 </resources>
