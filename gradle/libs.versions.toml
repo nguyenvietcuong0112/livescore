@@ -1,5 +1,6 @@
 [versions]
 adsMalleganLibNvc = "1.0.6"
+adjust = "5.7.0"
 agp = "9.0.0"
 billingKtx = "9.0.0"
 bubbletabbar = "1.0.8"
@@ -29,6 +30,7 @@ firebaseCrashlytics = "3.0.2"
 shimmer = "0.5.0"
 
 [libraries]
+adjust-android = { module = "com.adjust.sdk:adjust-android", version.ref = "adjust" }
 ads-mallegan-lib-nvc = { module = "com.github.nguyenvietcuong0112:ads-mallegan-lib-nvc", version.ref = "adsMalleganLibNvc" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 billing-ktx = { module = "com.android.billingclient:billing-ktx", version.ref = "billingKtx" }

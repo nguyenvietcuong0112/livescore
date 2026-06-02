@@ -1,28 +1,33 @@
 package com.livescore.football.livescores.footballscores.ui.onboarding
 
 import android.content.Intent
-import android.os.Bundle
-import com.livescore.football.livescores.footballscores.base.BaseActivity
+import android.util.Log
+import android.view.View
 import androidx.lifecycle.lifecycleScope
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustConfig
 import com.google.android.gms.ads.LoadAdError
+import com.livescore.football.livescores.footballscores.BuildConfig
 import com.livescore.football.livescores.footballscores.R
+import com.livescore.football.livescores.footballscores.base.BaseActivity
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
+import com.livescore.football.livescores.footballscores.data.remote.adjust.AppAdjustTokens
 import com.livescore.football.livescores.footballscores.data.remote.adjust.RetentionTracker
+import com.livescore.football.livescores.footballscores.data.remote.getRemoteAdId
 import com.livescore.football.livescores.footballscores.databinding.ActivitySplashBinding
 import com.livescore.football.livescores.footballscores.ui.language.LanguageActivity
-import com.livescore.football.livescores.footballscores.ui.main.MainActivity
-import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
-import android.content.Context
-import android.view.View
-import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.utils.ActivityFullCallback
 import com.livescore.football.livescores.footballscores.utils.ActivityLoadNativeFullV1
+import com.livescore.football.livescores.footballscores.utils.SharePreferenceUtils
 import com.mallegan.ads.callback.InterCallback
+import com.mallegan.ads.util.AdjustHelper
 import com.mallegan.ads.util.Admob
 import com.mallegan.ads.util.ConsentHelper
+import com.mallegan.ads.util.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.livescore.football.livescores.footballscores.data.remote.getRemoteAdId
 
 @AndroidEntryPoint
 class SplashActivity : BaseActivity() {
@@ -41,7 +46,7 @@ class SplashActivity : BaseActivity() {
     override fun bind() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        checkFullAds()
         RetentionTracker.checkAndTrackRetention(this)
 
         lifecycleScope.launch {
@@ -58,7 +63,8 @@ class SplashActivity : BaseActivity() {
             binding.frAdsBanner.visibility = View.GONE
         } else {
             binding.frAdsBanner.visibility = View.VISIBLE
-            Admob.getInstance().loadBanner(this, getRemoteAdId("banner_splash", R.string.banner_splash))
+            Admob.getInstance()
+                .loadBanner(this, getRemoteAdId("banner_splash", R.string.banner_splash))
         }
 
         interCallback = object : InterCallback() {
@@ -129,14 +135,47 @@ class SplashActivity : BaseActivity() {
                     Admob.getInstance().loadSplashInterAdsFloor(
                         this@SplashActivity,
                         arrayListOf(
-                            remoteConfigManager.getAdId("inter_splash_high", getString(R.string.inter_splash_high)),
-                            remoteConfigManager.getAdId("inter_splash", getString(R.string.inter_splash))
+                            remoteConfigManager.getAdId(
+                                "inter_splash_high",
+                                getString(R.string.inter_splash_high)
+                            ),
+                            remoteConfigManager.getAdId(
+                                "inter_splash",
+                                getString(R.string.inter_splash)
+                            )
                         ),
                         3000,
                         interCallback
                     )
                 }
             }, 2000)
+        }
+    }
+
+    private fun checkFullAds() {
+        if (SharePreferenceUtils.isOrganic(this)) {
+            val appToken = AppAdjustTokens.ADJUST_APP_TOKEN
+            val environment =
+                if (BuildConfig.DEBUG) AdjustConfig.ENVIRONMENT_SANDBOX else AdjustConfig.ENVIRONMENT_PRODUCTION
+            val config = AdjustConfig(this, appToken, environment)
+
+            config.setOnAttributionChangedListener { attribution ->
+                Log.d("ADJUSTtracking", "network=${attribution.network}")
+                Log.d("ADJUST", "campaign=${attribution.campaign}")
+                Log.d("ADJUST", "trackerName=${attribution.trackerName}")
+
+                val isOrganic = attribution.network.isNullOrEmpty() || attribution.network.equals(
+                    "organic",
+                    ignoreCase = true
+                )
+
+                SharePreferenceUtils.setOrganic(
+                    applicationContext,
+                    isOrganic
+                )
+            }
+
+            Adjust.initSdk(config)
         }
     }
 
@@ -153,9 +192,10 @@ class SplashActivity : BaseActivity() {
         Admob.getInstance().dismissLoadingDialog()
     }
 
-    protected override fun onResume() {
+    override fun onResume() {
         super.onResume()
         Admob.getInstance().onCheckShowSplashWhenFail(this, interCallback, 1000)
     }
+
 
 }

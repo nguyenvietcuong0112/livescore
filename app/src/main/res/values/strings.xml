@@ -174,7 +174,7 @@
     <string name="intro_slide_1_desc">Stay updated on the fastest football actions on earth with second-by-second data, live scores &amp; visual match stats.</string>
     <string name="intro_slide_2_title">Live Match Details &amp; Standings</string>
     <string name="intro_slide_2_desc">Follow club positions, real-time standings and complete match schedules for the 2024-2026 seasons.</string>
-    <string name="intro_slide_3_title">❤️ Follow Your Favorite Team</string>
+    <string name="intro_slide_3_title">All Leagues &amp; Tournaments</string>
     <string name="intro_slide_3_desc">Receive smart notification alerts 5 minutes before kickoff so you never miss a goal-scoring moment.</string>
     <string name="intro_slide_4_title">🏆 Current League Standings</string>
     <string name="intro_slide_4_desc">Get ahead of the ultimate football festival with groups, news &amp; countdowns in the USA, Canada &amp; Mexico.</string>
@@ -256,5 +256,14 @@
     <string name="total_shots">Total Shots</string>
     <string name="shots_on_target">Shots on Target</string>
     <string name="corner_kicks">Corner Kicks</string>
+    <!-- Premium Permission Mockup Screen -->
+    <string name="permission_mockup_title">🔔 Never Miss a Goal!</string>
+    <string name="permission_mockup_desc">Get notified when your favorite matches kick off and whenever a goal is scored live. Stay connected to every exciting moment.</string>
+    <string name="permission_card_reminder_title">⏰ Kick-off Reminders</string>
+    <string name="permission_card_reminder_desc">Get notified before your selected matches begin.</string>
+    <string name="permission_card_goal_title">⚽ Live Goal Alerts</string>
+    <string name="permission_card_goal_desc">Receive instant updates whenever a goal is scored.</string>
+    <string name="permission_btn_continue">Continue</string>
+    <string name="permission_btn_skip">Skip</string>
 
 </resources>

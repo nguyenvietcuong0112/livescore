@@ -63,14 +63,16 @@ public class SharePreferenceUtils {
                 .apply();
     }
 
-    public static void saveSelectedCurrencyCode(Context context, String code) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString(KEY_SELECTED_CURRENCY, code).apply();
+    public static void setOrganic(Context context, boolean value) {
+        SharedPreferences pre = context.getSharedPreferences("data", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pre.edit();
+        editor.putBoolean("organic_noti", value);
+        editor.apply();
     }
 
-    public static String getSelectedCurrencyCode(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(KEY_SELECTED_CURRENCY, "");
+    public static boolean isOrganic(Context context) {
+        SharedPreferences pref = context.getSharedPreferences("data", Context.MODE_PRIVATE);
+        return pref.getBoolean("organic_noti", true);
     }
 
 

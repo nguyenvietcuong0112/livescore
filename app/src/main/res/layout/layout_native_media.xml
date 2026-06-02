@@ -83,6 +83,7 @@
                 android:id="@+id/ad_media"
                 android:layout_width="fill_parent"
                 android:layout_height="150dp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
                 tools:ignore="InefficientWeight" />

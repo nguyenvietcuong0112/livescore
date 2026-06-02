@@ -2,7 +2,6 @@
 <font-family xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
-    <!-- Light -->
     <font
         android:font="@font/sf_pro_light"
         android:fontStyle="normal"
@@ -11,7 +10,6 @@
         app:fontStyle="normal"
         app:fontWeight="300" />
     
-    <!-- Regular / Medium -->
     <font
         android:font="@font/sf_pro_medium"
         android:fontStyle="normal"
@@ -20,7 +18,6 @@
         app:fontStyle="normal"
         app:fontWeight="400" />
 
-    <!-- Medium (500) -->
     <font
         android:font="@font/sf_pro_medium"
         android:fontStyle="normal"
@@ -29,7 +26,6 @@
         app:fontStyle="normal"
         app:fontWeight="500" />
 
-    <!-- Bold -->
     <font
         android:font="@font/sf_pro_bold"
         android:fontStyle="normal"

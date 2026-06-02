@@ -95,6 +95,7 @@ dependencies {
     implementation(libs.firebase.config)
     implementation(libs.material)
     implementation(libs.ads.mallegan.lib.nvc)
+    implementation(libs.adjust.android)
     // Navigation
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
