@@ -70,10 +70,16 @@ public class SharePreferenceUtils {
         editor.apply();
     }
 
+
     public static boolean isOrganic(Context context) {
-        SharedPreferences pref = context.getSharedPreferences("data", Context.MODE_PRIVATE);
-        return pref.getBoolean("organic_noti", true);
+//        return !Admob.getInstance().isLoadFullAds();
+        return false;
     }
+
+//    public static boolean isOrganic(Context context) {
+//        SharedPreferences pref = context.getSharedPreferences("data", Context.MODE_PRIVATE);
+//        return pref.getBoolean("organic_noti", true);
+//    }
 
 
     // Phương thức lưu object bất kỳ

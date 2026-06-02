@@ -103,70 +103,6 @@ class Application : AdsApplication() {
         Executors.newSingleThreadExecutor().execute {
             FirebaseApp.initializeApp(this)
             FacebookSdk.setClientToken(getString(R.string.facebook_client_token))
-
-        }
-        initAdjust()
-
-    }
-
-    fun initAdjust() {
-        if (!SharePreferenceUtils.isOrganic(applicationContext)) {
-            AdjustHelper.init(
-                application = this,
-                appToken = AppAdjustTokens.ADJUST_APP_TOKEN,
-                iapEventToken = AppAdjustTokens.EVENT_IAP_COMMON,
-                isDebug = BuildConfig.DEBUG
-            )
-        } else {
-            val appToken = AppAdjustTokens.ADJUST_APP_TOKEN
-            val environment =
-                if (BuildConfig.DEBUG) AdjustConfig.ENVIRONMENT_SANDBOX else AdjustConfig.ENVIRONMENT_PRODUCTION
-            val config = AdjustConfig(this, appToken, environment)
-
-            config.setOnAttributionChangedListener { attribution ->
-                Log.d("ADJUSTtracking", "network=${attribution.network}")
-                Log.d("ADJUST", "campaign=${attribution.campaign}")
-                Log.d("ADJUST", "trackerName=${attribution.trackerName}")
-
-                LogEvent.log(
-                    context = applicationContext,
-                    eventName = "adjust_attribution",
-                    params = mapOf(
-                        "network" to (attribution.network ?: "organic"),
-                        "campaign" to (attribution.campaign ?: ""),
-                        "tracker" to (attribution.trackerName ?: "")
-                    )
-                )
-
-                LogEvent.setUserProperty(
-                    applicationContext,
-                    "install_network",
-                    attribution.network ?: "organic"
-                )
-                LogEvent.setUserProperty(
-                    applicationContext,
-                    "install_campaign",
-                    attribution.campaign ?: ""
-                )
-                LogEvent.setUserProperty(
-                    applicationContext,
-                    "install_tracker",
-                    attribution.trackerName ?: ""
-                )
-
-                val isOrganic = attribution.network.isNullOrEmpty() || attribution.network.equals(
-                    "organic",
-                    ignoreCase = true
-                )
-
-                SharePreferenceUtils.setOrganic(
-                    applicationContext,
-                    isOrganic
-                )
-            }
-
-            Adjust.initSdk(config)
-            PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", true)
             AdjustHelper.init(
                 application = this,
                 appToken = AppAdjustTokens.ADJUST_APP_TOKEN,
@@ -174,5 +110,68 @@ class Application : AdsApplication() {
                 isDebug = BuildConfig.DEBUG
             )
         }
+
     }
+
+//    fun initAdjust() {
+//        if (!SharePreferenceUtils.isOrganic(applicationContext)) {
+//
+//        } else {
+//            val appToken = AppAdjustTokens.ADJUST_APP_TOKEN
+//            val environment =
+//                if (BuildConfig.DEBUG) AdjustConfig.ENVIRONMENT_SANDBOX else AdjustConfig.ENVIRONMENT_PRODUCTION
+//            val config = AdjustConfig(this, appToken, environment)
+//
+//            config.setOnAttributionChangedListener { attribution ->
+//                Log.d("ADJUSTtracking", "network=${attribution.network}")
+//                Log.d("ADJUST", "campaign=${attribution.campaign}")
+//                Log.d("ADJUST", "trackerName=${attribution.trackerName}")
+//
+//                LogEvent.log(
+//                    context = applicationContext,
+//                    eventName = "adjust_attribution",
+//                    params = mapOf(
+//                        "network" to (attribution.network ?: "organic"),
+//                        "campaign" to (attribution.campaign ?: ""),
+//                        "tracker" to (attribution.trackerName ?: "")
+//                    )
+//                )
+//
+//                LogEvent.setUserProperty(
+//                    applicationContext,
+//                    "install_network",
+//                    attribution.network ?: "organic"
+//                )
+//                LogEvent.setUserProperty(
+//                    applicationContext,
+//                    "install_campaign",
+//                    attribution.campaign ?: ""
+//                )
+//                LogEvent.setUserProperty(
+//                    applicationContext,
+//                    "install_tracker",
+//                    attribution.trackerName ?: ""
+//                )
+//
+//                val isOrganic = attribution.network.isNullOrEmpty() || attribution.network.equals(
+//                    "organic",
+//                    ignoreCase = true
+//                )
+//
+//                SharePreferenceUtils.setOrganic(
+//                    applicationContext,
+//                    isOrganic
+//                )
+//            }
+//
+//            Adjust.initSdk(config)
+//            PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", true)
+//            AdjustHelper.init(
+//                application = this,
+//                appToken = AppAdjustTokens.ADJUST_APP_TOKEN,
+//                iapEventToken = AppAdjustTokens.EVENT_IAP_COMMON,
+//                isDebug = BuildConfig.DEBUG
+//            )
+//        }
+//    }
 }
