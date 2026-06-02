@@ -89,29 +89,7 @@ class MatchDetailViewModel @Inject constructor(
                         updateSimulationState(detail)
                     }
 
-                    // 2. Statistics
-                    if (!isFirstLoad) delay(2000)
-                    repository.getMatchStatistics(matchId).collect { stats ->
-                        _uiState.value = _uiState.value.copy(
-                            stats = stats
-                        )
-                    }
 
-                    // 3. Events
-                    if (!isFirstLoad) delay(2000)
-                    repository.getMatchEvents(matchId).collect { events ->
-                        _uiState.value = _uiState.value.copy(
-                            events = events
-                        )
-                    }
-
-                    // 4. Lineups
-                    if (!isFirstLoad) delay(2000)
-                    repository.getMatchLineups(matchId).collect { lineups ->
-                        _uiState.value = _uiState.value.copy(
-                            lineups = lineups
-                        )
-                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                     _uiState.value = _uiState.value.copy(isLoading = false)

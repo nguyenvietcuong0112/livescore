@@ -2,18 +2,39 @@ package com.livescore.football.livescores.footballscores.data.remote.model
 
 // --- COMMON DTOs ---
 
-data class FixtureResponse<T>(
-    val get: String,
-    val parameters: Map<String, String>?,
-    val errors: Any?,
-    val results: Int,
-    val paging: PagingDto?,
-    val response: List<T>
+data class BaseResponse<T>(
+    val code: Int,
+    val message: String,
+    val data: List<T>
 )
 
-data class PagingDto(
-    val current: Int,
-    val total: Int
+data class ServerLeagueDto(
+    val _id: String,
+    val league_id: Int,
+    val name: String,
+    val type: String,
+    val logo: String,
+    val country: ServerCountryDto?,
+    val current_season: ServerSeasonDto?,
+    val is_popular: Boolean,
+    val priority: Int,
+    val is_active: Boolean,
+    val sync_priority: String,
+    val live_detail_ttl_seconds: Int,
+    val created_at: String,
+    val updated_at: String
+)
+
+data class ServerCountryDto(
+    val name: String?,
+    val code: String?,
+    val flag: String?
+)
+
+data class ServerSeasonDto(
+    val year: Int,
+    val start: String?,
+    val end: String?
 )
 
 data class FixtureDto(

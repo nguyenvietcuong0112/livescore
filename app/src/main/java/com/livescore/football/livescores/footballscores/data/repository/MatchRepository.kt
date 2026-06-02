@@ -32,16 +32,9 @@ class MatchRepository @Inject constructor(
     suspend fun refreshLiveMatches() {
         try {
             val response = apiService.getLiveMatches()
-            val errors = response.errors
-            val hasErrors = when {
-                errors == null -> false
-                errors is List<*> -> errors.isNotEmpty()
-                errors is Map<*, *> -> errors.isNotEmpty()
-                else -> true
-            }
-            if (!hasErrors && response.response.isNotEmpty()) {
+            if (response.code == 200 && response.data.isNotEmpty()) {
                 val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Calendar.getInstance().time)
-                val entities = response.response.map { dto ->
+                val entities = response.data.map { dto ->
                     CachedMatchEntity(
                         id = dto.fixture.id,
                         leagueId = dto.league.id,
@@ -79,15 +72,8 @@ class MatchRepository @Inject constructor(
     suspend fun refreshMatchesByDate(dateStr: String) {
         try {
             val response = apiService.getMatchesByDate(dateStr)
-            val errors = response.errors
-            val hasErrors = when {
-                errors == null -> false
-                errors is List<*> -> errors.isNotEmpty()
-                errors is Map<*, *> -> errors.isNotEmpty()
-                else -> true
-            }
-            if (!hasErrors && response.response.isNotEmpty()) {
-                val entities = response.response.map { dto ->
+            if (response.code == 200 && response.data.isNotEmpty()) {
+                val entities = response.data.map { dto ->
                     CachedMatchEntity(
                         id = dto.fixture.id,
                         leagueId = dto.league.id,
@@ -126,15 +112,8 @@ class MatchRepository @Inject constructor(
     fun getMatchDetail(id: Int): Flow<MatchDetailDto?> = flow {
         try {
             val response = apiService.getMatchDetail(id)
-            val errors = response.errors
-            val hasErrors = when {
-                errors == null -> false
-                errors is List<*> -> errors.isNotEmpty()
-                errors is Map<*, *> -> errors.isNotEmpty()
-                else -> true
-            }
-            if (!hasErrors && response.response.isNotEmpty()) {
-                emit(response.response.firstOrNull())
+            if (response.code == 200 && response.data.isNotEmpty()) {
+                emit(response.data.firstOrNull())
             } else {
                 emit(null)
             }
@@ -144,68 +123,7 @@ class MatchRepository @Inject constructor(
         }
     }
 
-    fun getMatchStatistics(id: Int): Flow<List<StatisticItemDto>> = flow {
-        try {
-            val response = apiService.getMatchStatistics(id)
-            val errors = response.errors
-            val hasErrors = when {
-                errors == null -> false
-                errors is List<*> -> errors.isNotEmpty()
-                errors is Map<*, *> -> errors.isNotEmpty()
-                else -> true
-            }
-            if (!hasErrors && response.response.isNotEmpty()) {
-                emit(response.response)
-            } else {
-                emit(emptyList())
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emit(emptyList())
-        }
-    }
 
-    fun getMatchEvents(id: Int): Flow<List<EventItemDto>> = flow {
-        try {
-            val response = apiService.getMatchEvents(id)
-            val errors = response.errors
-            val hasErrors = when {
-                errors == null -> false
-                errors is List<*> -> errors.isNotEmpty()
-                errors is Map<*, *> -> errors.isNotEmpty()
-                else -> true
-            }
-            if (!hasErrors && response.response.isNotEmpty()) {
-                emit(response.response)
-            } else {
-                emit(emptyList())
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emit(emptyList())
-        }
-    }
-
-    fun getMatchLineups(id: Int): Flow<List<LineupItemDto>> = flow {
-        try {
-            val response = apiService.getMatchLineups(id)
-            val errors = response.errors
-            val hasErrors = when {
-                errors == null -> false
-                errors is List<*> -> errors.isNotEmpty()
-                errors is Map<*, *> -> errors.isNotEmpty()
-                else -> true
-            }
-            if (!hasErrors && response.response.isNotEmpty()) {
-                emit(response.response)
-            } else {
-                emit(emptyList())
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emit(emptyList())
-        }
-    }
 
     // --- Favorites ---
     val favoriteTeams: Flow<List<FavoriteTeamEntity>> = favoriteDao.getAllFavoriteTeams()

@@ -4,13 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 // --- STANDINGS DTOs ---
 
-data class StandingsResponse(
-    val get: String,
-    val parameters: Map<String, String>?,
-    val errors: Any?,
-    val results: Int,
-    val response: List<StandingsLeagueWrapperDto>
-)
 
 data class StandingsLeagueWrapperDto(
     val league: StandingsLeagueDto
@@ -61,13 +54,6 @@ data class StandingGoalsDto(
 
 // --- TOP PLAYERS DTOs ---
 
-data class TopPlayersResponse(
-    val get: String,
-    val parameters: Map<String, String>?,
-    val errors: Any?,
-    val results: Int,
-    val response: List<TopPlayerItemDto>
-)
 
 data class TopPlayerItemDto(
     val player: TopPlayerPlayerDto,

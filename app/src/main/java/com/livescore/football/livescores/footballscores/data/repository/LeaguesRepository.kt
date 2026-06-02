@@ -12,18 +12,25 @@ class LeaguesRepository @Inject constructor(
     private val apiService: ApiService
 ) {
 
+    fun getLeagues(): Flow<List<ServerLeagueDto>> = flow {
+        try {
+            val response = apiService.getLeagues()
+            if (response.code == 200 && response.data.isNotEmpty()) {
+                emit(response.data)
+            } else {
+                emit(emptyList())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(emptyList())
+        }
+    }
+
     fun getStandings(leagueId: Int, season: Int): Flow<List<StandingRowDto>> = flow {
         try {
             val response = apiService.getStandings(leagueId, season)
-            val errors = response.errors
-            val hasErrors = when {
-                errors == null -> false
-                errors is List<*> -> errors.isNotEmpty()
-                errors is Map<*, *> -> errors.isNotEmpty()
-                else -> true
-            }
-            if (!hasErrors && response.response.isNotEmpty()) {
-                val wrapper = response.response.firstOrNull()
+            if (response.code == 200 && response.data.isNotEmpty()) {
+                val wrapper = response.data.firstOrNull()
                 val standingsList = wrapper?.league?.standings?.flatten() ?: emptyList()
                 emit(standingsList)
             } else {
@@ -38,15 +45,8 @@ class LeaguesRepository @Inject constructor(
     fun getTopScorers(leagueId: Int, season: Int): Flow<List<TopPlayerItemDto>> = flow {
         try {
             val response = apiService.getTopScorers(leagueId, season)
-            val errors = response.errors
-            val hasErrors = when {
-                errors == null -> false
-                errors is List<*> -> errors.isNotEmpty()
-                errors is Map<*, *> -> errors.isNotEmpty()
-                else -> true
-            }
-            if (!hasErrors && response.response.isNotEmpty()) {
-                emit(response.response)
+            if (response.code == 200 && response.data.isNotEmpty()) {
+                emit(response.data)
             } else {
                 emit(emptyList())
             }
@@ -59,15 +59,8 @@ class LeaguesRepository @Inject constructor(
     fun getTopAssists(leagueId: Int, season: Int): Flow<List<TopPlayerItemDto>> = flow {
         try {
             val response = apiService.getTopAssists(leagueId, season)
-            val errors = response.errors
-            val hasErrors = when {
-                errors == null -> false
-                errors is List<*> -> errors.isNotEmpty()
-                errors is Map<*, *> -> errors.isNotEmpty()
-                else -> true
-            }
-            if (!hasErrors && response.response.isNotEmpty()) {
-                emit(response.response)
+            if (response.code == 200 && response.data.isNotEmpty()) {
+                emit(response.data)
             } else {
                 emit(emptyList())
             }
@@ -80,15 +73,8 @@ class LeaguesRepository @Inject constructor(
     fun getFixturesByLeague(leagueId: Int, season: Int): Flow<List<MatchItemDto>> = flow {
         try {
             val response = apiService.getFixturesByLeague(leagueId, season)
-            val errors = response.errors
-            val hasErrors = when {
-                errors == null -> false
-                errors is List<*> -> errors.isNotEmpty()
-                errors is Map<*, *> -> errors.isNotEmpty()
-                else -> true
-            }
-            if (!hasErrors && response.response.isNotEmpty()) {
-                emit(response.response)
+            if (response.code == 200 && response.data.isNotEmpty()) {
+                emit(response.data)
             } else {
                 emit(emptyList())
             }

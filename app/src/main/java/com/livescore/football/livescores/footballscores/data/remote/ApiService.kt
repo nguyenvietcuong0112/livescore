@@ -2,48 +2,43 @@ package com.livescore.football.livescores.footballscores.data.remote
 
 import com.livescore.football.livescores.footballscores.data.remote.model.*
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    @GET("fixtures")
-    suspend fun getLiveMatches(@Query("live") live: String = "all"): FixtureResponse<MatchItemDto>
+    @GET("api/v1/leagues")
+    suspend fun getLeagues(): BaseResponse<ServerLeagueDto>
 
-    @GET("fixtures")
-    suspend fun getMatchesByDate(@Query("date") date: String): FixtureResponse<MatchItemDto>
+    @GET("api/v1/fixtures/live")
+    suspend fun getLiveMatches(): BaseResponse<MatchItemDto>
 
-    @GET("fixtures")
-    suspend fun getMatchDetail(@Query("id") matchId: Int): FixtureResponse<MatchDetailDto>
+    @GET("api/v1/fixtures/date")
+    suspend fun getMatchesByDate(@Query("date") date: String): BaseResponse<MatchItemDto>
 
-    @GET("fixtures/statistics")
-    suspend fun getMatchStatistics(@Query("fixture") matchId: Int): FixtureResponse<StatisticItemDto>
+    @GET("api/v1/fixtures/{fixture_id}/details")
+    suspend fun getMatchDetail(@Path("fixture_id") matchId: Int): BaseResponse<MatchDetailDto>
 
-    @GET("fixtures/events")
-    suspend fun getMatchEvents(@Query("fixture") matchId: Int): FixtureResponse<EventItemDto>
-
-    @GET("fixtures/lineups")
-    suspend fun getMatchLineups(@Query("fixture") matchId: Int): FixtureResponse<LineupItemDto>
-
-    @GET("standings")
+    @GET("api/v1/leagues/{league_id}/standings")
     suspend fun getStandings(
-        @Query("league") leagueId: Int,
+        @Path("league_id") leagueId: Int,
         @Query("season") season: Int
-    ): StandingsResponse
+    ): BaseResponse<StandingsLeagueWrapperDto>
 
-    @GET("players/topscorers")
+    @GET("api/v1/leagues/{league_id}/topscorers")
     suspend fun getTopScorers(
-        @Query("league") leagueId: Int,
+        @Path("league_id") leagueId: Int,
         @Query("season") season: Int
-    ): TopPlayersResponse
+    ): BaseResponse<TopPlayerItemDto>
 
-    @GET("players/topassists")
+    @GET("api/v1/leagues/{league_id}/topassists")
     suspend fun getTopAssists(
-        @Query("league") leagueId: Int,
+        @Path("league_id") leagueId: Int,
         @Query("season") season: Int
-    ): TopPlayersResponse
+    ): BaseResponse<TopPlayerItemDto>
 
-    @GET("fixtures")
+    @GET("api/v1/fixtures/date")
     suspend fun getFixturesByLeague(
         @Query("league") leagueId: Int,
         @Query("season") season: Int
-    ): FixtureResponse<MatchItemDto>
+    ): BaseResponse<MatchItemDto>
 }

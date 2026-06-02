@@ -29,17 +29,7 @@ class LeaguesViewModel @Inject constructor(
     private val repository: LeaguesRepository
 ) : ViewModel() {
 
-    private val _leagues = MutableStateFlow(
-        listOf(
-            LeagueSelectorItem(1, "World Cup", "https://media.api-sports.io/football/leagues/1.png", "World"),
-            LeagueSelectorItem(39, "Premier League", "https://media.api-sports.io/football/leagues/39.png", "England"),
-            LeagueSelectorItem(140, "La Liga", "https://media.api-sports.io/football/leagues/140.png", "Spain"),
-            LeagueSelectorItem(135, "Serie A", "https://media.api-sports.io/football/leagues/135.png", "Italy"),
-            LeagueSelectorItem(78, "Bundesliga", "https://media.api-sports.io/football/leagues/78.png", "Germany"),
-            LeagueSelectorItem(61, "Ligue 1", "https://media.api-sports.io/football/leagues/61.png", "France"),
-            LeagueSelectorItem(2, "Champions League", "https://media.api-sports.io/football/leagues/2.png", "Europe")
-        )
-    )
+    private val _leagues = MutableStateFlow<List<LeagueSelectorItem>>(emptyList())
     val leagues: StateFlow<List<LeagueSelectorItem>> = _leagues.asStateFlow()
 
     private val _selectedLeagueId = MutableStateFlow(39) // Default: Premier League (39)
@@ -72,8 +62,31 @@ class LeaguesViewModel @Inject constructor(
     }
 
     init {
+        fetchLeagues()
         // Fetch initial league data on startup
         fetchAllLeagueData(_selectedLeagueId.value, _selectedSeason.value)
+    }
+
+    private fun fetchLeagues() {
+        viewModelScope.launch {
+            repository.getLeagues()
+                .catch { e -> e.printStackTrace() }
+                .collect { list ->
+                    val items = list.map { league ->
+                        LeagueSelectorItem(
+                            id = league.league_id,
+                            name = league.name,
+                            logo = league.logo,
+                            country = league.country?.name ?: "World"
+                        )
+                    }
+                    _leagues.value = items
+                    // Select first if not present
+                    if (items.isNotEmpty() && items.none { it.id == _selectedLeagueId.value }) {
+                        selectLeague(items.first().id)
+                    }
+                }
+        }
     }
 
     fun selectLeague(leagueId: Int) {
