@@ -62,7 +62,6 @@ class MainActivity : BaseActivity() {
     }
 
     override fun bind() {
-        // Enable edge-to-edge drawing
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         window.navigationBarColor = android.graphics.Color.TRANSPARENT

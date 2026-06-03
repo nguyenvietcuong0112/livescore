@@ -11,12 +11,16 @@ import androidx.core.app.NotificationCompat
 import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.R
 
+import android.util.Log
+
 class ReminderBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val matchId = intent.getIntExtra("MATCH_ID", 0)
         val matchTitle = intent.getStringExtra("MATCH_TITLE") ?: context.getString(R.string.reminder_default_match_title)
         val leagueName = intent.getStringExtra("LEAGUE_NAME") ?: context.getString(R.string.reminder_default_league_name)
+
+        Log.d("ReminderBroadcast", "onReceive: Triggered alarm broadcast receiver for matchId: $matchId, title: $matchTitle")
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "match_reminders_channel"
@@ -52,5 +56,6 @@ class ReminderBroadcastReceiver : BroadcastReceiver() {
             .build()
 
         notificationManager.notify(matchId, notification)
+        Log.d("ReminderBroadcast", "onReceive: Posted notification successfully for match $matchId")
     }
 }

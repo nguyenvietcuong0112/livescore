@@ -16,6 +16,7 @@
         android:layout_alignParentTop="true"
         android:text="@string/iap_skip"
         android:textColor="@color/text_muted"
+        android:layout_marginTop="@dimen/_20sdp"
         android:textSize="14sp"
         android:textStyle="bold"
         android:padding="8dp"

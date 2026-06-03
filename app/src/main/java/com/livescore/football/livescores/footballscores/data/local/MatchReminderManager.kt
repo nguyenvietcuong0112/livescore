@@ -8,6 +8,9 @@ import android.os.Build
 import android.util.Log
 import com.livescore.football.livescores.footballscores.data.local.entity.CachedMatchEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -69,18 +72,15 @@ class MatchReminderManager @Inject constructor(
         }
 
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (alarmManager.canScheduleExactAlarms()) {
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, finalTriggerTimeMs, pendingIntent)
-                } else {
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, finalTriggerTimeMs, pendingIntent)
-                }
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, finalTriggerTimeMs, pendingIntent)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, finalTriggerTimeMs, pendingIntent)
             } else {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, finalTriggerTimeMs, pendingIntent)
+                alarmManager.set(AlarmManager.RTC_WAKEUP, finalTriggerTimeMs, pendingIntent)
             }
-            Log.d("MatchReminderManager", "Scheduled reminder alarm for match ${match.id} at $finalTriggerTimeMs")
+            val triggerTimeStr = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).apply {
+                timeZone = java.util.TimeZone.getDefault()
+            }.format(Date(finalTriggerTimeMs))
+            Log.d("MatchReminderManager", "Scheduled reminder alarm for match ${match.id} at $triggerTimeStr ($finalTriggerTimeMs)")
         } catch (e: Exception) {
             e.printStackTrace()
             // Fallback

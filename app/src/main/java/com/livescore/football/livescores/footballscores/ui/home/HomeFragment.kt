@@ -265,7 +265,13 @@ class HomeFragment : Fragment() {
                 // Collect Loading
                 launch {
                     viewModel.isLoading.collect { loading ->
-                        binding.loadingSpinner.isVisible = loading && matchAdapter.currentList.isEmpty()
+                        binding.loadingSpinner.isVisible = loading
+                        if (loading) {
+                            binding.rvMatches.visibility = View.INVISIBLE
+                            binding.emptyState.visibility = View.GONE
+                        } else {
+                            binding.rvMatches.visibility = View.VISIBLE
+                        }
                     }
                 }
 

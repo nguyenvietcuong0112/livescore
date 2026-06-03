@@ -69,7 +69,6 @@ class DateAdapter(
                 notifyItemChanged(selectedPosition)
             }
         } else {
-            // Outside of current 5-day window -> Re-center 5 days around new date
             regenerateDates(selectedDate)
         }
     }

@@ -301,7 +301,7 @@
             android:id="@+id/lottieLoading"
             android:layout_width="@dimen/_100sdp"
             android:layout_height="@dimen/_100sdp"
-            app:lottie_rawRes="@raw/loading_football"
+            app:lottie_rawRes="@raw/loading_data"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
             app:layout_constraintTop_toTopOf="parent"
