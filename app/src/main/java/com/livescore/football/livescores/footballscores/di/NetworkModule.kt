@@ -38,18 +38,8 @@ object NetworkModule {
         requestLimitInterceptor: RequestLimitInterceptor,
         remoteConfigManager: RemoteConfigManager
     ): OkHttpClient {
-        val packageName = context.packageName
-        val versionCode = try {
-            val pInfo = context.packageManager.getPackageInfo(packageName, 0)
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-                pInfo.longVersionCode.toString()
-            } else {
-                @Suppress("DEPRECATION")
-                pInfo.versionCode.toString()
-            }
-        } catch (e: Exception) {
-            "3" // Fallback to current versionCode
-        }
+        val packageName = com.livescore.football.livescores.footballscores.BuildConfig.APPLICATION_ID
+        val versionCode = com.livescore.football.livescores.footballscores.BuildConfig.VERSION_CODE.toString()
 
         return OkHttpClient.Builder()
             .addInterceptor(requestLimitInterceptor)

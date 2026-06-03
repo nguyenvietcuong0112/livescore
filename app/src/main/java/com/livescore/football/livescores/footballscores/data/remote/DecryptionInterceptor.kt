@@ -22,12 +22,14 @@ class DecryptionInterceptor(
         val response = chain.proceed(request)
         
         val urlPath = request.url.encodedPath
-        // Chỉ xử lý các API của app (/api/v1/...) và bỏ qua chế độ bypass debug (param1=1&param2=1)
         val isClientApi = urlPath.contains("/api/v1/")
         val isDebugMode = request.url.queryParameter("param1") == "1" && 
                           request.url.queryParameter("param2") == "1"
         
+        Log.d("DecryptionInterceptor", "Intercepted: $urlPath, code: ${response.code}, isClientApi: $isClientApi")
+        
         if (!response.isSuccessful || !isClientApi || isDebugMode) {
+            Log.d("DecryptionInterceptor", "Bypassing decryption for: $urlPath (code=${response.code}, isClientApi=$isClientApi, isDebugMode=$isDebugMode)")
             return response
         }
 
@@ -42,8 +44,11 @@ class DecryptionInterceptor(
                     val code = jsonEnvelope.getInt("code")
                     val dataObj = jsonEnvelope.opt("data")
                     
+                    Log.d("DecryptionInterceptor", "Envelope found for $urlPath, code: $code, data is String: ${dataObj is String}")
+                    
                     if (code == 200 && dataObj is String) {
                         // Thực hiện giải mã
+                        Log.d("DecryptionInterceptor", "Attempting decryption for $urlPath with passphrase: '$passphrase'")
                         val decryptedDataJson = CryptoUtils.decryptAES256(dataObj, passphrase)
                         val trimmed = decryptedDataJson.trim()
                         
@@ -60,15 +65,22 @@ class DecryptionInterceptor(
                         val newResponseBodyString = finalJsonObject.toString()
                         val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
                         
+                        Log.d("DecryptionInterceptor", "Decryption and mapping successful for $urlPath")
+                        
                         return response.newBuilder()
                             .body(newResponseBodyString.toResponseBody(mediaType))
                             .build()
+                    } else {
+                        Log.w("DecryptionInterceptor", "Envelope code not 200 or data is not String: code=$code")
                     }
+                } else {
+                    Log.w("DecryptionInterceptor", "Response envelope lacks code or data fields: $rawBodyString")
                 }
             } catch (e: Exception) {
-                // Trả về response ban đầu nếu có lỗi (tránh làm sập luồng)
-                e.printStackTrace()
+                Log.e("DecryptionInterceptor", "Decryption/Parsing failed for $urlPath. Raw response: $rawBodyString", e)
             }
+        } else {
+            Log.w("DecryptionInterceptor", "Response body is null for $urlPath")
         }
         
         return response

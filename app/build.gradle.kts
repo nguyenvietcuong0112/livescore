@@ -26,6 +26,26 @@ android {
 
     }
 
+//    signingConfigs {
+//        create("release") {
+//            storeFile = rootProject.file("keystore/apfolife.jks")
+//            storePassword = "apfolife"
+//            keyAlias = "apfolife"
+//            keyPassword = "apfolife"
+//        }
+//    }
+
+//    buildTypes {
+//        getByName("release") {
+//            signingConfig = signingConfigs.getByName("release")
+//            isMinifyEnabled = true
+//            isShrinkResources = true
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//        }
+//    }
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -145,6 +165,9 @@ dependencies {
     //fb sdk
     implementation(libs.facebook.android.sdk)
     implementation(libs.facebook)
+
+    // Fix R8 Missing Class Nullsafe/Nullsafe$Mode
+    compileOnly(libs.infer.annotation)
 
 
     testImplementation(libs.junit)
