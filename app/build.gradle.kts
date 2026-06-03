@@ -138,6 +138,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.database)
+    implementation(libs.firebase.messaging)
     implementation(libs.bubbletabbar)
 
     //fb sdk
@@ -146,6 +147,7 @@ dependencies {
 
 
     testImplementation(libs.junit)
+    testImplementation("org.json:json:20230227")
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 }

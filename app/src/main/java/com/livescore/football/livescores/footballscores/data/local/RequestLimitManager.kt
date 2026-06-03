@@ -54,7 +54,9 @@ class RequestLimitManager @Inject constructor(
     }
 
     private fun getTodayDateString(): String {
-        return SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+        return SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
+            timeZone = java.util.TimeZone.getDefault()
+        }.format(Date())
     }
 
     @Synchronized

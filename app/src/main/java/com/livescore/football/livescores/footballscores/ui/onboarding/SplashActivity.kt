@@ -31,6 +31,9 @@ class SplashActivity : BaseActivity() {
     @Inject
     lateinit var limitManager: RequestLimitManager
 
+    @Inject
+    lateinit var deviceRegistrationManager: com.livescore.football.livescores.footballscores.data.remote.DeviceRegistrationManager
+
     private lateinit var binding: ActivitySplashBinding
 
 
@@ -41,6 +44,27 @@ class SplashActivity : BaseActivity() {
         setContentView(binding.root)
 //        checkFullAds()
         RetentionTracker.checkAndTrackRetention(this)
+
+        // 1st Registration (Basic Device Info)
+        lifecycleScope.launch {
+            deviceRegistrationManager.registerDevice(null)
+        }
+
+        // 2nd Registration (With FCM Token)
+        try {
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val token = task.result
+                    if (!token.isNullOrEmpty()) {
+                        lifecycleScope.launch {
+                            deviceRegistrationManager.registerDevice(token)
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         lifecycleScope.launch {
             remoteConfigManager.fetchAndActivate()

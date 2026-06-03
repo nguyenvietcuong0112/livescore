@@ -8,7 +8,11 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
+import com.livescore.football.livescores.footballscores.data.remote.getRemoteAdId
 import com.livescore.football.livescores.footballscores.databinding.FragmentIntro2Binding
+import com.livescore.football.livescores.footballscores.utils.ActivityFullCallback
+import com.livescore.football.livescores.footballscores.utils.ActivityLoadNativeFullV1
+import com.livescore.football.livescores.footballscores.utils.SharePreferenceUtils
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +34,11 @@ class FragmentIntro2 : AbsBaseFragment<FragmentIntro2Binding?>() {
             val nextItem = if (::limitManager.isInitialized && limitManager.isPremium()) 3 else 2
             viewPager.setCurrentItem(nextItem)
         })
-        loadAds()
+        if (!SharePreferenceUtils.isOrganic(context)) {
+            loadAds()
+        } else {
+            binding!!.frAds.visibility = View.GONE
+        }
     }
 
     private fun loadAds() {

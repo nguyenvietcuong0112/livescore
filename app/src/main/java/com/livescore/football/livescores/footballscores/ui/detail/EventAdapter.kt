@@ -15,9 +15,11 @@ import androidx.core.content.ContextCompat
 class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
     private var eventsList = listOf<EventItemDto>()
+    private var homeTeamId: Int? = null
 
-    fun submitList(events: List<EventItemDto>) {
+    fun submitList(events: List<EventItemDto>, homeTeamId: Int? = null) {
         eventsList = events
+        this.homeTeamId = homeTeamId
         notifyDataSetChanged()
     }
 
@@ -40,7 +42,11 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
         fun bind(item: EventItemDto) {
             binding.tvEventTime.text = item.time.elapsed.let { "$it'" }
 
-            val isHomeEvent = item.comments?.contains("Home", ignoreCase = true) ?: true
+            val isHomeEvent = if (homeTeamId != null) {
+                item.team.id == homeTeamId
+            } else {
+                item.comments?.contains("Home", ignoreCase = true) ?: true
+            }
 
             // Format substitution beautifully: coming in ⇄ going out
             val eventText = if (item.type.uppercase() == "SUBST") {

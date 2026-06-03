@@ -58,7 +58,9 @@ class EmptyStateView @JvmOverloads constructor(
             val isPremium = prefs.getBoolean("is_premium_user", false)
             if (isPremium) return false
             
-            val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date())
+            val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
+                timeZone = java.util.TimeZone.getDefault()
+            }.format(java.util.Date())
             val lastDate = prefs.getString("last_request_date", "")
             
             if (lastDate != today) return false

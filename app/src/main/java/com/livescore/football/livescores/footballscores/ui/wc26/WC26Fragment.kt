@@ -215,6 +215,8 @@ class WC26Fragment : Fragment() {
                         java.text.SimpleDateFormat("'Ngày' dd 'tháng' MM 'năm' yyyy", locale)
                     } else {
                         java.text.SimpleDateFormat("EEEE, dd MMMM yyyy", locale)
+                    }.apply {
+                        timeZone = java.util.TimeZone.getDefault()
                     }
                     
                     var matchCount = 0
@@ -247,6 +249,30 @@ class WC26Fragment : Fragment() {
                             fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTeam1).text = match.teams.home.name
                             fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTeam2).text = match.teams.away.name
                             
+                            val ivHomeLogo = fixtureView.findViewById<android.widget.ImageView>(R.id.ivFixtureHomeLogo)
+                            val ivAwayLogo = fixtureView.findViewById<android.widget.ImageView>(R.id.ivFixtureAwayLogo)
+                            
+                            Glide.with(fixtureView.context)
+                                .load(match.teams.home.logo)
+                                .placeholder(R.drawable.ic_favorite_border)
+                                .into(ivHomeLogo)
+                            ivHomeLogo.imageTintList = null
+
+                            Glide.with(fixtureView.context)
+                                .load(match.teams.away.logo)
+                                .placeholder(R.drawable.ic_favorite_border)
+                                .into(ivAwayLogo)
+                            ivAwayLogo.imageTintList = null
+
+                            fixtureView.setOnClickListener {
+                                val intent = android.content.Intent(requireContext(), com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity::class.java).apply {
+                                    putExtra("MATCH_ID", match.fixture.id)
+                                    putExtra("HOME_TEAM", match.teams.home.name)
+                                    putExtra("AWAY_TEAM", match.teams.away.name)
+                                }
+                                startActivity(intent)
+                            }
+                            
                             val kickoffTime = try {
                                 val dateObj = parser.parse(match.fixture.date)
                                 if (dateObj != null) localTimeFormat.format(dateObj) else ""
@@ -271,6 +297,10 @@ class WC26Fragment : Fragment() {
                             
                             val ivReminder = fixtureView.findViewById<android.widget.ImageView>(R.id.ivReminder)
                             val ivFavorite = fixtureView.findViewById<android.widget.ImageView>(R.id.ivFavorite)
+                            
+                            val isUpcoming = match.fixture.status.short == "NS" || match.fixture.status.short == "TBD"
+                            val isUpcomingFuture = isUpcoming && (match.fixture.timestamp * 1000 > System.currentTimeMillis())
+                            ivReminder.visibility = if (isUpcomingFuture) View.VISIBLE else View.GONE
                             
                             val isRemind = reminderManager.isReminderSet(match.fixture.id)
                             ivReminder.setImageResource(if (isRemind) R.drawable.ic_bell_active else R.drawable.ic_bell)
@@ -520,7 +550,17 @@ class WC26Fragment : Fragment() {
                 tvScore1.visibility = View.GONE
                 tvScore2.visibility = View.GONE
             }
+
+            view.setOnClickListener {
+                val intent = android.content.Intent(view.context, com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity::class.java).apply {
+                    putExtra("MATCH_ID", match.fixture.id)
+                    putExtra("HOME_TEAM", match.teams.home.name)
+                    putExtra("AWAY_TEAM", match.teams.away.name)
+                }
+                view.context.startActivity(intent)
+            }
         } else {
+            view.setOnClickListener(null)
             tvDate.text = defaultDate
             tvName1.text = getString(R.string.wc_tbd)
             tvName2.text = getString(R.string.wc_tbd)

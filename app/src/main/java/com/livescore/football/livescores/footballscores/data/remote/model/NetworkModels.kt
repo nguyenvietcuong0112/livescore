@@ -116,7 +116,16 @@ data class MatchItemDto(
 )
 
 // 2. Match Detail (contains events, lineups, statistics too if fetched in details, or just the same structure)
-typealias MatchDetailDto = MatchItemDto
+data class MatchDetailDto(
+    val fixture: FixtureDto,
+    val league: LeagueDto,
+    val teams: TeamsContainerDto,
+    val goals: GoalsDto,
+    val score: ScoreDto?,
+    val statistics: List<StatisticItemDto> = emptyList(),
+    val events: List<EventItemDto> = emptyList(),
+    val lineups: List<LineupItemDto> = emptyList()
+)
 
 // 3. Match Statistics DTO
 data class StatisticItemDto(
@@ -176,3 +185,48 @@ data class LineupPlayerDto(
     val pos: String?, // G, D, M, F
     val grid: String? // e.g. "1:1", "3:4:1:2"
 )
+
+// --- DEVICE REGISTRATION DTOs ---
+
+data class RegisterDeviceRequest(
+    val device_id: String,
+    val push_token: String?,
+    val os_type: String = "android",
+    val os_version: String,
+    val app_version: String,
+    val model_name: String,
+    val language_code: String
+)
+
+data class RegisterDeviceResponse(
+    val device_id: String,
+    val push_token: String?,
+    val device_info: DeviceInfo?,
+    val subscription: SubscriptionInfo?,
+    val favorites: FavoritesInfo?,
+    val created_at: String?,
+    val last_active_at: String?
+)
+
+data class DeviceInfo(
+    val os_type: String?,
+    val os_version: String?,
+    val app_version: String?,
+    val model_name: String?,
+    val language_code: String?,
+    val country_code: String?,
+    val ip_address: String?
+)
+
+data class SubscriptionInfo(
+    val is_vip: Boolean,
+    val vip_expire_at: String?,
+    val purchase_token: String?
+)
+
+data class FavoritesInfo(
+    val fixtures: List<Int>?,
+    val teams: List<Int>?,
+    val leagues: List<Int>?
+)
+

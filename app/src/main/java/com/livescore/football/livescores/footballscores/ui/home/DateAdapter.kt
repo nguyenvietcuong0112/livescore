@@ -79,9 +79,10 @@ class DateAdapter(
         val calendar = Calendar.getInstance().apply { time = centerDate }
         calendar.add(Calendar.DAY_OF_YEAR, -2) // 2 days before center
 
-        val sdfDay = SimpleDateFormat("EEE", Locale.US)
-        val sdfDate = SimpleDateFormat("dd", Locale.US)
-        val sdfMonth = SimpleDateFormat("MMM", Locale.US)
+        val tz = TimeZone.getDefault()
+        val sdfDay = SimpleDateFormat("EEE", Locale.US).apply { timeZone = tz }
+        val sdfDate = SimpleDateFormat("dd", Locale.US).apply { timeZone = tz }
+        val sdfMonth = SimpleDateFormat("MMM", Locale.US).apply { timeZone = tz }
 
         selectedPosition = 2
 

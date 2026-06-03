@@ -118,9 +118,17 @@ class SearchResultsAdapter(
             } else {
                 binding.tvHomeScore.isVisible = false
                 binding.tvAwayScore.isVisible = false
-                // If scheduled, show the time
-                val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.US)
-                binding.tvMatchStatus.text = sdf.format(java.util.Date(match.dateTimestamp * 1000))
+                // If scheduled, show relative date/time based on device timezone
+                val matchDate = java.util.Date(match.dateTimestamp * 1000)
+                val sdfToday = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
+                    timeZone = java.util.TimeZone.getDefault()
+                }
+                val isToday = sdfToday.format(matchDate) == sdfToday.format(java.util.Date())
+                val pattern = if (isToday) "HH:mm" else "dd/MM HH:mm"
+                val sdf = java.text.SimpleDateFormat(pattern, java.util.Locale.getDefault()).apply {
+                    timeZone = java.util.TimeZone.getDefault()
+                }
+                binding.tvMatchStatus.text = sdf.format(matchDate)
             }
 
             // Logos

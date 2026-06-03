@@ -85,6 +85,18 @@
                 android:textStyle="bold"
                 android:fontFamily="@font/sf_pro" />
 
+            <!-- Team 1 Logo -->
+            <ImageView
+                android:id="@+id/ivFixtureHomeLogo"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="4dp"
+                android:contentDescription="Home Logo"
+                android:src="@drawable/ic_favorite_border"
+                app:tint="@color/text_muted"
+                android:layout_gravity="center_vertical" />
+
             <!-- VS Badge -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardVS"
@@ -110,6 +122,18 @@
                     android:fontFamily="@font/sf_pro" />
                     
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- Team 2 Logo -->
+            <ImageView
+                android:id="@+id/ivFixtureAwayLogo"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="Away Logo"
+                android:src="@drawable/ic_favorite_border"
+                app:tint="@color/text_muted"
+                android:layout_gravity="center_vertical" />
 
             <!-- Team 2 -->
             <TextView

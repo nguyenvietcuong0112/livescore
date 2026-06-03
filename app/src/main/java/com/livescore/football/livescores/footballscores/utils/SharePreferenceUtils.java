@@ -72,8 +72,7 @@ public class SharePreferenceUtils {
 
 
     public static boolean isOrganic(Context context) {
-//        return !Admob.getInstance().isLoadFullAds();
-        return false;
+        return !Admob.getInstance().isLoadFullAds();
     }
 
 //    public static boolean isOrganic(Context context) {

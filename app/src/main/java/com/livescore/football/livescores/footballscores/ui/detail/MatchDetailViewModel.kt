@@ -80,16 +80,47 @@ class MatchDetailViewModel @Inject constructor(
                 }
 
                 try {
-                    // 1. Get Match Detail FIRST and update UI instantly to show teams, logos, and scores
-                    repository.getMatchDetail(matchId).collect { detail ->
+                    // Refresh from database cache first to get the latest scores, teams, and statuses
+                    repository.getCachedMatchDetail(matchId)?.let { cachedDetail ->
+                        val current = _uiState.value.detail
                         _uiState.value = _uiState.value.copy(
-                            detail = detail,
-                            isLoading = false // Disable loading spinner immediately
+                            detail = current?.copy(
+                                fixture = cachedDetail.fixture,
+                                league = cachedDetail.league,
+                                teams = cachedDetail.teams,
+                                goals = cachedDetail.goals,
+                                score = cachedDetail.score
+                            ) ?: cachedDetail
                         )
-                        updateSimulationState(detail)
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
 
-
+                try {
+                    // 1. Get Match Detail FIRST and update UI instantly to show teams, logos, and scores
+                    repository.getMatchDetail(matchId).collect { remoteDetail ->
+                        if (remoteDetail != null) {
+                            val current = _uiState.value.detail
+                            val mergedDetail = remoteDetail.copy(
+                                fixture = if (remoteDetail.fixture.status.short.isNotEmpty() && remoteDetail.fixture.status.short != "NS") remoteDetail.fixture else current?.fixture ?: remoteDetail.fixture,
+                                league = if (remoteDetail.league.id != 0) remoteDetail.league else current?.league ?: remoteDetail.league,
+                                teams = if (remoteDetail.teams.home.id != 0) remoteDetail.teams else current?.teams ?: remoteDetail.teams,
+                                goals = if (remoteDetail.goals.home != null || remoteDetail.goals.away != null) remoteDetail.goals else current?.goals ?: remoteDetail.goals,
+                                score = if (remoteDetail.score != null) remoteDetail.score else current?.score ?: remoteDetail.score
+                            )
+                            _uiState.value = _uiState.value.copy(
+                                detail = mergedDetail,
+                                stats = remoteDetail.statistics,
+                                events = remoteDetail.events,
+                                lineups = remoteDetail.lineups,
+                                isLoading = false
+                            )
+                            updateSimulationState(mergedDetail)
+                        } else {
+                            _uiState.value = _uiState.value.copy(isLoading = false)
+                        }
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                     _uiState.value = _uiState.value.copy(isLoading = false)

@@ -265,8 +265,28 @@ class MatchDetailActivity : BaseActivity() {
 
                             binding.matchHeader.tvDetailScore.text =
                                 "${detail.goals.home ?: 0} - ${detail.goals.away ?: 0}"
-                            binding.matchHeader.tvDetailStatus.text =
-                                detail.fixture.status.elapsed?.let { "${it}' LIVE" } ?: detail.fixture.status.long
+                            
+                            val statusShort = detail.fixture.status.short
+                            if (statusShort == "NS" || statusShort == "TBD") {
+                                val matchDate = java.util.Date(detail.fixture.timestamp * 1000)
+                                val sdfToday = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
+                                    timeZone = java.util.TimeZone.getDefault()
+                                }
+                                val isToday = sdfToday.format(matchDate) == sdfToday.format(java.util.Date())
+                                val locale = java.util.Locale.getDefault()
+                                val pattern = if (isToday) {
+                                    if (locale.language == "vi") "'Hôm nay,' HH:mm" else "'Today,' HH:mm"
+                                } else {
+                                    "dd/MM/yyyy HH:mm"
+                                }
+                                val sdf = java.text.SimpleDateFormat(pattern, locale).apply {
+                                    timeZone = java.util.TimeZone.getDefault()
+                                }
+                                binding.matchHeader.tvDetailStatus.text = sdf.format(matchDate)
+                            } else {
+                                binding.matchHeader.tvDetailStatus.text =
+                                    detail.fixture.status.elapsed?.let { "${it}' LIVE" } ?: detail.fixture.status.long
+                            }
 
                              Glide.with(this@MatchDetailActivity).load(detail.teams.home.logo).into(binding.matchHeader.ivDetailHomeLogo)
                              Glide.with(this@MatchDetailActivity).load(detail.teams.away.logo).into(binding.matchHeader.ivDetailAwayLogo)
@@ -366,9 +386,9 @@ class MatchDetailActivity : BaseActivity() {
 
                         // Set events
                         state.events.let { events ->
-                            eventAdapter.submitList(events)
-
                             val homeTeamId = state.detail?.teams?.home?.id
+                            eventAdapter.submitList(events, homeTeamId)
+
                             val canvasEvents = events.map {
                                 TimelineEvent(
                                     minute = it.time.elapsed,

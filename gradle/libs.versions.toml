@@ -39,6 +39,7 @@ consent-library = { module = "com.google.android.ads.consent:consent-library", v
 facebook = { module = "com.google.ads.mediation:facebook", version.ref = "facebook" }
 facebook-android-sdk = { module = "com.facebook.android:facebook-android-sdk", version.ref = "facebookAndroidSdk" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 gms-play-services-ads = { module = "com.google.android.gms:play-services-ads" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-database = { module = "com.google.firebase:firebase-database" }

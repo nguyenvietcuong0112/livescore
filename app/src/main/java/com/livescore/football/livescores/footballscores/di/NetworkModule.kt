@@ -1,10 +1,13 @@
 package com.livescore.football.livescores.footballscores.di
 
+import android.content.Context
 import com.livescore.football.livescores.footballscores.data.remote.ApiService
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
+import com.livescore.football.livescores.footballscores.data.remote.DecryptionInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -30,19 +33,43 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(
+        @ApplicationContext context: Context,
         loggingInterceptor: HttpLoggingInterceptor,
         requestLimitInterceptor: RequestLimitInterceptor,
         remoteConfigManager: RemoteConfigManager
     ): OkHttpClient {
+        val packageName = context.packageName
+        val versionCode = try {
+            val pInfo = context.packageManager.getPackageInfo(packageName, 0)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                pInfo.longVersionCode.toString()
+            } else {
+                @Suppress("DEPRECATION")
+                pInfo.versionCode.toString()
+            }
+        } catch (e: Exception) {
+            "3" // Fallback to current versionCode
+        }
+
         return OkHttpClient.Builder()
             .addInterceptor(requestLimitInterceptor)
             .addInterceptor { chain ->
-                val request = chain.request().newBuilder()
+                val originalRequest = chain.request()
+                val newUrl = originalRequest.url.newBuilder()
+                    .addQueryParameter("param1", packageName)
+                    .addQueryParameter("param2", versionCode)
+                    .build()
+
+                val request = originalRequest.newBuilder()
+                    .url(newUrl)
+                    .addHeader("x-param1", packageName)
+                    .addHeader("x-param2", versionCode)
                     .addHeader("x-apisports-key", remoteConfigManager.getApiKey())
                     .build()
                 chain.proceed(request)
             }
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(DecryptionInterceptor(packageName, versionCode))
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)

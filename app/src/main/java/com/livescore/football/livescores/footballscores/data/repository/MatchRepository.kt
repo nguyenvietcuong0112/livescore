@@ -1,5 +1,6 @@
 package com.livescore.football.livescores.footballscores.data.repository
 
+import android.util.Log
 import com.livescore.football.livescores.footballscores.data.local.dao.FavoriteDao
 import com.livescore.football.livescores.footballscores.data.local.dao.MatchDao
 import com.livescore.football.livescores.footballscores.data.local.entity.CachedMatchEntity
@@ -21,6 +22,10 @@ class MatchRepository @Inject constructor(
     private val matchDao: MatchDao,
     private val favoriteDao: FavoriteDao
 ) {
+    companion object {
+        private const val TAG = "MatchRepository"
+    }
+
     // --- Cached Matches Flow ---
     val allCachedMatches: Flow<List<CachedMatchEntity>> = matchDao.getAllCachedMatches()
     val liveCachedMatches: Flow<List<CachedMatchEntity>> = matchDao.getLiveCachedMatches()
@@ -30,10 +35,14 @@ class MatchRepository @Inject constructor(
     }
 
     suspend fun refreshLiveMatches() {
+        Log.d(TAG, "refreshLiveMatches: Starting request")
         try {
             val response = apiService.getLiveMatches()
+            Log.d(TAG, "refreshLiveMatches: Response code = ${response.code}, data size = ${response.data?.size ?: 0}")
             if (response.code == 200 && response.data.isNotEmpty()) {
-                val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Calendar.getInstance().time)
+                val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
+                    timeZone = java.util.TimeZone.getDefault()
+                }.format(Calendar.getInstance().time)
                 val entities = response.data.map { dto ->
                     CachedMatchEntity(
                         id = dto.fixture.id,
@@ -57,21 +66,24 @@ class MatchRepository @Inject constructor(
                 }
                 matchDao.clearAndInsertMatches(entities)
             } else {
+                Log.w(TAG, "refreshLiveMatches: Response empty or code != 200, clearing live matches")
                 matchDao.clearLiveMatches()
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "refreshLiveMatches: Error occurred: ${e.message}", e)
             try {
                 matchDao.clearLiveMatches()
             } catch (ex: Exception) {
-                ex.printStackTrace()
+                Log.e(TAG, "refreshLiveMatches: Nested error clearing matches: ${ex.message}", ex)
             }
         }
     }
 
     suspend fun refreshMatchesByDate(dateStr: String) {
+        Log.d(TAG, "refreshMatchesByDate: Starting request for date = $dateStr")
         try {
-            val response = apiService.getMatchesByDate(dateStr)
+            val response = apiService.getAllMatchesByDate(dateStr)
+            Log.d(TAG, "refreshMatchesByDate: Response code = ${response.code}, data size = ${response.data?.size ?: 0}")
             if (response.code == 200 && response.data.isNotEmpty()) {
                 val entities = response.data.map { dto ->
                     CachedMatchEntity(
@@ -96,29 +108,33 @@ class MatchRepository @Inject constructor(
                 }
                 matchDao.clearAndInsertMatchesForDate(entities, dateStr)
             } else {
+                Log.w(TAG, "refreshMatchesByDate: Response empty or code != 200, clearing matches for $dateStr")
                 matchDao.clearMatchesByQueryDate(dateStr)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "refreshMatchesByDate: Error occurred: ${e.message}", e)
             try {
                 matchDao.clearMatchesByQueryDate(dateStr)
             } catch (ex: Exception) {
-                ex.printStackTrace()
+                Log.e(TAG, "refreshMatchesByDate: Nested error clearing matches for $dateStr: ${ex.message}", ex)
             }
         }
     }
 
     // --- Detail Api Calls with Zero Mock Fallbacks ---
     fun getMatchDetail(id: Int): Flow<MatchDetailDto?> = flow {
+        Log.d(TAG, "getMatchDetail: Starting request for matchId = $id")
         try {
             val response = apiService.getMatchDetail(id)
+            Log.d(TAG, "getMatchDetail: Response code = ${response.code}, data size = ${response.data?.size ?: 0}")
             if (response.code == 200 && response.data.isNotEmpty()) {
                 emit(response.data.firstOrNull())
             } else {
+                Log.w(TAG, "getMatchDetail: Response empty or code != 200")
                 emit(null)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "getMatchDetail: Error occurred: ${e.message}", e)
             emit(null)
         }
     }
@@ -152,7 +168,17 @@ class MatchRepository @Inject constructor(
     }
 
     suspend fun getCachedMatchDetail(id: Int): MatchDetailDto? {
-        return getCachedMatchById(id)?.toMapDetailDto()
+        val item = getCachedMatchById(id)?.toMapDetailDto() ?: return null
+        return MatchDetailDto(
+            fixture = item.fixture,
+            league = item.league,
+            teams = item.teams,
+            goals = item.goals,
+            score = item.score,
+            statistics = emptyList(),
+            events = emptyList(),
+            lineups = emptyList()
+        )
     }
 }
 

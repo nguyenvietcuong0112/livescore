@@ -2,6 +2,8 @@ package com.livescore.football.livescores.footballscores.data.remote
 
 import com.livescore.football.livescores.footballscores.data.remote.model.*
 import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Body
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -14,6 +16,9 @@ interface ApiService {
 
     @GET("api/v1/fixtures/date")
     suspend fun getMatchesByDate(@Query("date") date: String): BaseResponse<MatchItemDto>
+
+    @GET("api/v1/fixtures/all-date")
+    suspend fun getAllMatchesByDate(@Query("date") date: String): BaseResponse<MatchItemDto>
 
     @GET("api/v1/fixtures/{fixture_id}/details")
     suspend fun getMatchDetail(@Path("fixture_id") matchId: Int): BaseResponse<MatchDetailDto>
@@ -36,9 +41,14 @@ interface ApiService {
         @Query("season") season: Int
     ): BaseResponse<TopPlayerItemDto>
 
-    @GET("api/v1/fixtures/date")
+    @GET("api/v1/fixtures")
     suspend fun getFixturesByLeague(
         @Query("league") leagueId: Int,
         @Query("season") season: Int
     ): BaseResponse<MatchItemDto>
+
+    @POST("api/v1/users/register")
+    suspend fun registerDevice(
+        @Body request: RegisterDeviceRequest
+    ): BaseResponse<RegisterDeviceResponse>
 }

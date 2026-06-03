@@ -119,7 +119,9 @@ class MatchAdapter(
                 binding.tvAwayRedCards.visibility = View.GONE
 
                 if (match.statusShort == "NS" || match.statusShort == "TBD") {
-                    val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+                    val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault()).apply {
+                        timeZone = java.util.TimeZone.getDefault()
+                    }
                     val timeStr = sdf.format(java.util.Date(match.dateTimestamp * 1000))
                     binding.tvMatchStatus.text = timeStr
                 } else {
@@ -139,10 +141,11 @@ class MatchAdapter(
                 )
             )
 
-            // Bind reminder icon state (only visible for upcoming matches)
+            // Bind reminder icon state (only visible for upcoming matches in the future)
             val isUpcoming = match.statusShort == "NS" || match.statusShort == "TBD"
-            binding.ivReminder.isVisible = isUpcoming
-            if (isUpcoming) {
+            val isUpcomingFuture = isUpcoming && (match.dateTimestamp * 1000 > System.currentTimeMillis())
+            binding.ivReminder.isVisible = isUpcomingFuture
+            if (isUpcomingFuture) {
                 val isRemind = item.isReminderSet
                 binding.ivReminder.setImageResource(
                     if (isRemind) R.drawable.ic_bell_active else R.drawable.ic_bell

@@ -9,6 +9,7 @@ import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.databinding.FragmentIntro3Binding
+import com.livescore.football.livescores.footballscores.utils.SharePreferenceUtils
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,7 +30,11 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
         binding!!.txtNext.setOnClickListener(View.OnClickListener { view: View? ->
             viewPager.setCurrentItem(4)
         })
-        loadAds()
+        if (!SharePreferenceUtils.isOrganic(context)) {
+            loadAds()
+        } else {
+            binding!!.frAds.visibility = View.GONE
+        }
     }
 
     private fun loadAds() {

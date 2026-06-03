@@ -57,20 +57,25 @@ class HomeViewModel @Inject constructor(
             val dateStr = sdf.format(date)
             repository.allCachedMatches.map { matchesList ->
                 matchesList.filter { match ->
-                    match.queryDate == dateStr
+                    val matchLocalDay = sdf.format(Date(match.dateTimestamp * 1000))
+                    matchLocalDay == dateStr
                 }
             }
         }.combine(_currentFilter) { filteredMatches, filter ->
             val currentTime = System.currentTimeMillis()
+            val cutoffDuration = 2 * 60 * 60 * 1000L // 2 hours
             when (filter) {
                 MatchFilter.LIVE -> filteredMatches.filter { 
                     isLiveStatus(it.statusShort)
                 }
                 MatchFilter.UPCOMING -> filteredMatches.filter { 
-                    (it.statusShort == "NS" || it.statusShort == "TBD" || it.statusShort == "PST") && it.dateTimestamp * 1000 > currentTime
+                    (it.statusShort == "NS" || it.statusShort == "TBD" || it.statusShort == "PST") &&
+                    ((it.dateTimestamp * 1000 + cutoffDuration) > currentTime)
                 }
                 MatchFilter.FINISHED -> filteredMatches.filter { 
-                    it.statusShort == "FT" || it.statusShort == "AET" || it.statusShort == "PEN" || it.statusShort == "CANC" || it.statusShort == "ABD"
+                    it.statusShort == "FT" || it.statusShort == "AET" || it.statusShort == "PEN" || it.statusShort == "CANC" || it.statusShort == "ABD" ||
+                    ((it.statusShort == "NS" || it.statusShort == "TBD" || it.statusShort == "PST") &&
+                     ((it.dateTimestamp * 1000 + cutoffDuration) <= currentTime))
                 }
             }
         },
@@ -144,10 +149,29 @@ class HomeViewModel @Inject constructor(
         pollingJob = viewModelScope.launch {
             while (true) {
                 _isLoading.value = true
-                val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Calendar.getInstance().time)
-                repository.refreshMatchesByDate(todayStr)
-                _isLoading.value = false
+                try {
+                    // 1. Refresh currently live matches globally to get live scores for all live matches
+                    repository.refreshLiveMatches()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                try {
+                    // 2. Also refresh the overlapping UTC dates for today to keep scheduled and finished matches updated
+                    val today = Calendar.getInstance().time
+                    val utcDates = getOverlappingUtcDates(today)
+                    for (utcDate in utcDates) {
+                        try {
+                            repository.refreshMatchesByDate(utcDate)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
                 
+                _isLoading.value = false
                 delay(limitManager.getPollingInterval())
             }
         }
@@ -161,9 +185,14 @@ class HomeViewModel @Inject constructor(
     fun refreshMatchesForDate(date: Date) {
         viewModelScope.launch {
             _isLoading.value = true
-            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-            val dateStr = sdf.format(date)
-            repository.refreshMatchesByDate(dateStr)
+            val utcDates = getOverlappingUtcDates(date)
+            for (utcDate in utcDates) {
+                try {
+                    repository.refreshMatchesByDate(utcDate)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
             _isLoading.value = false
         }
     }
@@ -190,6 +219,36 @@ class HomeViewModel @Inject constructor(
             set(Calendar.MILLISECOND, 0)
         }
         return target.before(today)
+    }
+
+    private fun getOverlappingUtcDates(localDate: Date): List<String> {
+        val sdfUtc = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
+            timeZone = java.util.TimeZone.getTimeZone("UTC")
+        }
+        
+        val calStart = Calendar.getInstance().apply {
+            time = localDate
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        val dateStartUtc = sdfUtc.format(calStart.time)
+        
+        val calEnd = Calendar.getInstance().apply {
+            time = localDate
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+            set(Calendar.MILLISECOND, 999)
+        }
+        val dateEndUtc = sdfUtc.format(calEnd.time)
+        
+        return if (dateStartUtc == dateEndUtc) {
+            listOf(dateStartUtc)
+        } else {
+            listOf(dateStartUtc, dateEndUtc)
+        }
     }
 
     private fun isLiveStatus(status: String): Boolean {

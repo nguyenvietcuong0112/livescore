@@ -39,6 +39,9 @@ class HomeFragment : Fragment() {
     private lateinit var matchAdapter: MatchAdapter
     private lateinit var dateAdapter: DateAdapter
 
+    private var lastSelectedDateStr: String? = null
+    private var lastFilter: MatchFilter? = null
+
     @Inject
     lateinit var reminderManager: MatchReminderManager
 
@@ -237,8 +240,24 @@ class HomeFragment : Fragment() {
                 launch {
                     viewModel.matches.collect { items ->
                         binding.emptyState.isVisible = items.isEmpty()
+                        
+                        val currentDate = viewModel.selectedDate.value
+                        val currentFilter = viewModel.currentFilter.value
+                        
+                        val sdf = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
+                            timeZone = java.util.TimeZone.getDefault()
+                        }
+                        val currentDateStr = sdf.format(currentDate)
+                        
+                        val hasChanged = currentDateStr != lastSelectedDateStr || currentFilter != lastFilter
+                        
+                        lastSelectedDateStr = currentDateStr
+                        lastFilter = currentFilter
+                        
                         matchAdapter.submitList(items) {
-                            binding.rvMatches.scrollToPosition(0)
+                            if (hasChanged) {
+                                binding.rvMatches.scrollToPosition(0)
+                            }
                         }
                     }
                 }
