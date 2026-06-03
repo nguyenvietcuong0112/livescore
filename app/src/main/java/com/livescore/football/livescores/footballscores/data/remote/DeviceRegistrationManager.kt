@@ -71,7 +71,6 @@ class DeviceRegistrationManager @Inject constructor(
         val lastToken = prefs.getString(KEY_LAST_TOKEN, null)
         val isRegisteredWithoutToken = prefs.getBoolean(KEY_IS_REGISTERED_WITHOUT_TOKEN, false)
 
-        // Kiểm tra xem có cần thiết phải gửi request hay không để tránh gọi API trùng lặp
         if (token == null && isRegisteredWithoutToken) {
             Log.d(TAG, "Already registered basic device info without token. Skipping.")
             return@withContext
@@ -84,6 +83,7 @@ class DeviceRegistrationManager @Inject constructor(
         val request = RegisterDeviceRequest(
             device_id = deviceId,
             push_token = token,
+            os_type = "android",
             os_version = osVersion,
             app_version = appVersion,
             model_name = modelName,

@@ -35,22 +35,21 @@ class SplashActivity : BaseActivity() {
     lateinit var deviceRegistrationManager: com.livescore.football.livescores.footballscores.data.remote.DeviceRegistrationManager
 
     private lateinit var binding: ActivitySplashBinding
-
-
     private var interCallback: InterCallback? = null
+    private var isTransitioning = false
 
     override fun bind() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        checkFullAds()
-        RetentionTracker.checkAndTrackRetention(this)
 
-        // 1st Registration (Basic Device Info)
+        lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+            RetentionTracker.checkAndTrackRetention(this@SplashActivity)
+        }
+
         lifecycleScope.launch {
             deviceRegistrationManager.registerDevice(null)
         }
 
-        // 2nd Registration (With FCM Token)
         try {
             com.google.firebase.messaging.FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -127,24 +126,15 @@ class SplashActivity : BaseActivity() {
     private fun loadAdsInter() {
         val isVIP = limitManager.isPremium()
 
-        Thread(Runnable {
+        lifecycleScope.launch {
             for (progress in 0..99) {
-                val currentProgress = progress
-                runOnUiThread {
-                    binding.tvProgressPercent.text = "$currentProgress%"
-                }
-                try {
-                    Thread.sleep(if (isVIP) 10 else 150)
-                } catch (e: InterruptedException) {
-                    e.printStackTrace()
-                }
+                binding.tvProgressPercent.text = "$progress%"
+                kotlinx.coroutines.delay(if (isVIP) 10L else 150L)
             }
             if (isVIP) {
-                runOnUiThread {
-                    startLanguage()
-                }
+                startLanguage()
             }
-        }).start()
+        }
 
         if (isVIP) {
             return
@@ -170,7 +160,7 @@ class SplashActivity : BaseActivity() {
                                 getString(R.string.inter_splash)
                             )
                         ),
-                        3000,
+                        8000,
                         interCallback
                     )
                 }
@@ -207,6 +197,8 @@ class SplashActivity : BaseActivity() {
 
 
     private fun startLanguage() {
+        if (isTransitioning) return
+        isTransitioning = true
         val intent = Intent(this, LanguageActivity::class.java)
         startActivity(intent)
         finish()
@@ -220,7 +212,7 @@ class SplashActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        Admob.getInstance().onCheckShowSplashWhenFail(this, interCallback, 1000)
+        Admob.getInstance().onCheckShowSplashWhenFail(this, interCallback, 5000)
     }
 
 
