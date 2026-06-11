@@ -138,7 +138,13 @@ class DecryptionInterceptor(
                         val rank = row.optInt("rank", 0)
                         put("rank", rank)
                         put("points", row.optInt("points", 0))
-                        put("goalsDiff", row.optInt("goals_diff", 0))
+                        
+                        val goalsDiff = if (row.has("goalsDiff")) {
+                            row.optInt("goalsDiff", 0)
+                        } else {
+                            row.optInt("goals_diff", 0)
+                        }
+                        put("goalsDiff", goalsDiff)
                         put("form", row.optString("form", null))
 
                         // Trích xuất group name một cách linh hoạt
@@ -183,20 +189,14 @@ class DecryptionInterceptor(
                         // Map team
                         put("team", mapTeam(row.optJSONObject("team")))
                         
-                        // Map "all": played, win, draw, lose, goals
-                        val allObj = JSONObject().apply {
-                            put("played", row.optInt("played", 0))
-                            put("win", row.optInt("win", 0))
-                            put("draw", row.optInt("draw", 0))
-                            put("lose", row.optInt("lose", 0))
-                            put("goals", JSONObject().apply {
-                                put("for", row.optInt("goals_for", 0))
-                                put("against", row.optInt("goals_against", 0))
-                            })
-                        }
-                        put("all", allObj)
-                        put("home", allObj)
-                        put("away", allObj)
+                        // Map "all", "home", "away": played, win, draw, lose, goals
+                        val rawAll = row.optJSONObject("all")
+                        val rawHome = row.optJSONObject("home") ?: rawAll
+                        val rawAway = row.optJSONObject("away") ?: rawAll
+                        
+                        put("all", mapStatGroup(rawAll))
+                        put("home", mapStatGroup(rawHome))
+                        put("away", mapStatGroup(rawAway))
                     }
                     mappedStandings.put(mappedRow)
                 }
@@ -412,6 +412,33 @@ class DecryptionInterceptor(
             put("name", teamObj.optString("name", ""))
             put("logo", teamObj.optString("logo", ""))
             put("winner", teamObj.opt("winner"))
+        }
+    }
+
+    private fun mapStatGroup(statObj: JSONObject?): JSONObject {
+        if (statObj == null) {
+            return JSONObject().apply {
+                put("played", 0)
+                put("win", 0)
+                put("draw", 0)
+                put("lose", 0)
+                put("goals", JSONObject().apply {
+                    put("for", 0)
+                    put("against", 0)
+                })
+            }
+        }
+        return JSONObject().apply {
+            put("played", statObj.optInt("played", 0))
+            put("win", statObj.optInt("win", 0))
+            put("draw", statObj.optInt("draw", 0))
+            put("lose", statObj.optInt("lose", 0))
+            
+            val goals = statObj.optJSONObject("goals")
+            put("goals", JSONObject().apply {
+                put("for", goals?.optInt("for", 0) ?: statObj.optInt("goals_for", 0))
+                put("against", goals?.optInt("against", 0) ?: statObj.optInt("goals_against", 0))
+            })
         }
     }
 

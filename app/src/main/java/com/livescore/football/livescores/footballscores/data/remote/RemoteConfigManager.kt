@@ -124,13 +124,10 @@ class RemoteConfigManager @Inject constructor(
                         Log.d("RemoteConfigManager", "Firebase Config fetched and activated successfully. Updated: $updated")
                         continuation.resume(true)
                     } else {
-                        Log.w("RemoteConfigManager", "Firebase Config fetch failed, utilizing cached/default keys")
+                        val exception = task.exception
+                        Log.w("RemoteConfigManager", "Firebase Config fetch failed: ${exception?.message}", exception)
                         continuation.resume(false)
                     }
-                }
-                .addOnFailureListener { e ->
-                    Log.e("RemoteConfigManager", "Firebase Remote Config fetch failed: ${e.message}")
-                    continuation.resume(false)
                 }
         } catch (e: Exception) {
             Log.e("RemoteConfigManager", "Firebase Remote Config SDK is not initialized, using local fallback key: ${e.message}")

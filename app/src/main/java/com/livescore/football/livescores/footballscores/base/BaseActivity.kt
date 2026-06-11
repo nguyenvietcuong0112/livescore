@@ -1,8 +1,17 @@
 package com.livescore.football.livescores.footballscores.base
 
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +21,10 @@ import com.livescore.football.livescores.footballscores.utils.SystemUtil
 
 
 abstract class BaseActivity : AppCompatActivity() {
+
+    private var connectivityManager: ConnectivityManager? = null
+    private var networkCallback: ConnectivityManager.NetworkCallback? = null
+    private var noInternetDialog: Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         SystemConfiguration.setStatusBarColor(
@@ -26,10 +39,93 @@ abstract class BaseActivity : AppCompatActivity() {
 
     abstract fun bind()
 
+    override fun onStart() {
+        super.onStart()
+        registerNetworkCallback()
+        checkNetworkStatus()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterNetworkCallback()
+        dismissNoInternetDialog()
+    }
 
     override fun onResume() {
         super.onResume()
         hideNavigationBar()
+    }
+
+    private fun checkNetworkStatus() {
+        if (!SystemUtil.isNetworkConnected(this)) {
+            showNoInternetDialog()
+        } else {
+            dismissNoInternetDialog()
+        }
+    }
+
+    private fun registerNetworkCallback() {
+        try {
+            connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            networkCallback = object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    runOnUiThread {
+                        dismissNoInternetDialog()
+                    }
+                }
+
+                override fun onLost(network: Network) {
+                    runOnUiThread {
+                        showNoInternetDialog()
+                    }
+                }
+            }
+            val builder = NetworkRequest.Builder()
+            connectivityManager?.registerNetworkCallback(builder.build(), networkCallback!!)
+        } catch (e: Exception) {
+            android.util.Log.e("BaseActivity", "Failed to register network callback: ${e.message}")
+        }
+    }
+
+    private fun unregisterNetworkCallback() {
+        try {
+            networkCallback?.let {
+                connectivityManager?.unregisterNetworkCallback(it)
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("BaseActivity", "Failed to unregister network callback: ${e.message}")
+        } finally {
+            networkCallback = null
+            connectivityManager = null
+        }
+    }
+
+    private fun showNoInternetDialog() {
+        if (isFinishing || isDestroyed) return
+        if (noInternetDialog?.isShowing == true) return
+
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_no_internet)
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(false)
+
+        dialog.window?.apply {
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
+
+        noInternetDialog = dialog
+        dialog.show()
+    }
+
+    private fun dismissNoInternetDialog() {
+        noInternetDialog?.let {
+            if (it.isShowing) {
+                it.dismiss()
+            }
+        }
+        noInternetDialog = null
     }
 
     private fun hideNavigationBar() {
