@@ -20,6 +20,7 @@ import com.livescore.football.livescores.footballscores.data.local.MatchReminder
 import com.livescore.football.livescores.footballscores.databinding.FragmentHomeBinding
 import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallDialog
 import com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity
+import com.livescore.football.livescores.footballscores.utils.bindScrollableChild
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -120,8 +121,9 @@ class HomeFragment : Fragment() {
         setupFilters()
         setupCalendarPicker()
         
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.manualRefresh()
+        binding.swipeRefreshLayout.apply {
+            bindScrollableChild { binding.rvMatches }
+            setOnRefreshListener { viewModel.manualRefresh() }
         }
         
         observeViewModel()

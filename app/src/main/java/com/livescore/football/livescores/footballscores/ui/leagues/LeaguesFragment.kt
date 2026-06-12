@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.databinding.FragmentLeaguesBinding
+import com.livescore.football.livescores.footballscores.utils.bindScrollableChild
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import com.mallegan.ads.callback.NativeCallback
@@ -68,8 +69,9 @@ class LeaguesFragment : Fragment() {
 
         setupRecyclerViews()
         setupListeners()
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.refreshCurrentData()
+        binding.swipeRefreshLayout.apply {
+            bindScrollableChild { binding.rvLeaguesContent }
+            setOnRefreshListener { viewModel.refreshCurrentData() }
         }
         observeViewModel()
         loadNativeAd()

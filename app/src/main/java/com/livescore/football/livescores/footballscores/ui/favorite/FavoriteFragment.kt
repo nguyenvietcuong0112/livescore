@@ -25,6 +25,7 @@ import javax.inject.Inject
 import androidx.core.content.ContextCompat
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.ui.home.MatchListItem
+import com.livescore.football.livescores.footballscores.utils.bindScrollableChild
 
 @AndroidEntryPoint
 class FavoriteFragment : Fragment() {
@@ -102,8 +103,9 @@ class FavoriteFragment : Fragment() {
         setupRecyclerViews()
         observeViewModel()
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.refreshFavoriteMatchesFromServer()
+        binding.swipeRefreshLayout.apply {
+            bindScrollableChild { binding.rvMatches }
+            setOnRefreshListener { viewModel.refreshFavoriteMatchesFromServer() }
         }
 
         binding.btnDiscover.setOnClickListener {

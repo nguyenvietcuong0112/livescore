@@ -15,6 +15,7 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.repository.LeaguesRepository
 import com.livescore.football.livescores.footballscores.databinding.FragmentWc26Binding
+import com.livescore.football.livescores.footballscores.utils.bindScrollableChild
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import com.livescore.football.livescores.footballscores.data.local.FavoriteManager
@@ -76,17 +77,25 @@ class WC26Fragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupCountdown()
         setupListeners()
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            populateWcTournamentData()
+        binding.swipeRefreshLayout.apply {
+            bindScrollableChild { activeWcScrollView() }
+            setOnRefreshListener { populateWcTournamentData() }
         }
         updateTabUI()
         setupAdScrollListeners()
         populateWcTournamentData()
     }
 
+    private fun activeWcScrollView(): View? = when (selectedTab) {
+        0 -> binding.scrollWcFixtures
+        1 -> binding.scrollWcGroups
+        2 -> binding.scrollWcBracketVertical
+        else -> null
+    }
+
     private fun populateWcTournamentData() {
         pendingAdLoads.clear()
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             val isRefreshing = binding.swipeRefreshLayout.isRefreshing
             try {
                 if (!isRefreshing) {
