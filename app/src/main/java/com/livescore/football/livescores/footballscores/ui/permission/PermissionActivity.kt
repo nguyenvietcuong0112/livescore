@@ -1,20 +1,23 @@
-package com.livescore.football.livescores.footballscores.ui.onboarding
+package com.livescore.football.livescores.footballscores.ui.permission
 
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import com.livescore.football.livescores.footballscores.base.BaseActivity
 import androidx.core.content.ContextCompat
+import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
-import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.R
+import com.livescore.football.livescores.footballscores.base.BaseActivity
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.databinding.ActivityPermissionBinding
+import com.livescore.football.livescores.footballscores.ui.main.MainActivity
+import com.livescore.football.livescores.footballscores.ui.iap.IAPActivity
+import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -72,13 +75,13 @@ class PermissionActivity : BaseActivity() {
             return
         }
         val adId = try {
-            RemoteConfigManager.getInstance()
+            RemoteConfigManager.Companion.getInstance()
                 .getAdId("native_permission", getString(R.string.native_permission))
         } catch (e: Exception) {
             getString(R.string.native_permission)
         }
         if (adId.isNotEmpty()) {
-            Admob.getInstance().loadNativeAds(this, adId, 1, object : com.mallegan.ads.callback.NativeCallback() {
+            Admob.getInstance().loadNativeAds(this, adId, 1, object : NativeCallback() {
                 override fun onAdFailedToLoad() {
                     super.onAdFailedToLoad()
                     binding.frAds.removeAllViews()
@@ -86,9 +89,9 @@ class PermissionActivity : BaseActivity() {
                     enableSkip()
                 }
 
-                override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
+                override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                     super.onNativeAdLoaded(nativeAd)
-                    val adView = android.view.LayoutInflater.from(this@PermissionActivity)
+                    val adView = LayoutInflater.from(this@PermissionActivity)
                         .inflate(R.layout.layout_native_media, null) as NativeAdView
                     binding.frAds.removeAllViews()
                     binding.frAds.addView(adView)

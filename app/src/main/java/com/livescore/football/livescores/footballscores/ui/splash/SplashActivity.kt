@@ -1,12 +1,16 @@
-package com.livescore.football.livescores.footballscores.ui.onboarding
+package com.livescore.football.livescores.footballscores.ui.splash
 
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.LoadAdError
+import com.google.firebase.messaging.FirebaseMessaging
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.base.BaseActivity
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
+import com.livescore.football.livescores.footballscores.data.remote.DeviceRegistrationManager
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.data.remote.adjust.RetentionTracker
 import com.livescore.football.livescores.footballscores.data.remote.getRemoteAdId
@@ -19,6 +23,8 @@ import com.mallegan.ads.callback.InterCallback
 import com.mallegan.ads.util.Admob
 import com.mallegan.ads.util.ConsentHelper
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,7 +38,7 @@ class SplashActivity : BaseActivity() {
     lateinit var limitManager: RequestLimitManager
 
     @Inject
-    lateinit var deviceRegistrationManager: com.livescore.football.livescores.footballscores.data.remote.DeviceRegistrationManager
+    lateinit var deviceRegistrationManager: DeviceRegistrationManager
 
     private lateinit var binding: ActivitySplashBinding
     private var interCallback: InterCallback? = null
@@ -42,7 +48,7 @@ class SplashActivity : BaseActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+        lifecycleScope.launch(Dispatchers.IO) {
             RetentionTracker.checkAndTrackRetention(this@SplashActivity)
         }
 
@@ -51,7 +57,7 @@ class SplashActivity : BaseActivity() {
         }
 
         try {
-            com.google.firebase.messaging.FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val token = task.result
                     if (!token.isNullOrEmpty()) {
@@ -87,7 +93,7 @@ class SplashActivity : BaseActivity() {
             override fun onAdClosedByUser() {
                 super.onAdClosedByUser()
                 if (!SharePreferenceUtils.isOrganic(applicationContext)) {
-                    ActivityLoadNativeFullV1.open(
+                    ActivityLoadNativeFullV1.Companion.open(
                         this@SplashActivity,
                         getRemoteAdId("native_splash_full_high", R.string.native_splash_full_high),
                         getRemoteAdId("native_splash_full", R.string.native_splash_full),
@@ -105,7 +111,7 @@ class SplashActivity : BaseActivity() {
             override fun onAdFailedToLoad(i: LoadAdError?) {
                 super.onAdFailedToLoad(i)
                 if (!SharePreferenceUtils.isOrganic(applicationContext)) {
-                    ActivityLoadNativeFullV1.open(
+                    ActivityLoadNativeFullV1.Companion.open(
                         this@SplashActivity,
                         getRemoteAdId("native_splash_full_high", R.string.native_splash_full_high),
                         getRemoteAdId("native_splash_full", R.string.native_splash_full),
@@ -129,7 +135,7 @@ class SplashActivity : BaseActivity() {
         lifecycleScope.launch {
             for (progress in 0..99) {
                 binding.tvProgressPercent.text = "$progress%"
-                kotlinx.coroutines.delay(if (isVIP) 10L else 150L)
+                delay(if (isVIP) 10L else 150L)
             }
             if (isVIP) {
                 startLanguage()
@@ -146,7 +152,7 @@ class SplashActivity : BaseActivity() {
         }
 
         consentHelper.obtainConsentAndShow(this) {
-            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 if (!isFinishing && !isDestroyed) {
                     Admob.getInstance().loadSplashInterAdsFloor(
                         this@SplashActivity,

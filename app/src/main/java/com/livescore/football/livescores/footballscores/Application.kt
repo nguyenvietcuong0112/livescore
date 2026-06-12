@@ -16,8 +16,8 @@ import com.livescore.football.livescores.footballscores.ui.language.LanguageActi
 import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.ui.onboarding.IntroActivity
 import com.livescore.football.livescores.footballscores.ui.onboarding.IntroSlideshowActivity
-import com.livescore.football.livescores.footballscores.ui.onboarding.PermissionActivity
-import com.livescore.football.livescores.footballscores.ui.onboarding.SplashActivity
+import com.livescore.football.livescores.footballscores.ui.permission.PermissionActivity
+import com.livescore.football.livescores.footballscores.ui.splash.SplashActivity
 import com.livescore.football.livescores.footballscores.utils.SharePreferenceUtils
 import com.livescore.football.livescores.footballscores.utils.LogEvent
 import com.livescore.football.livescores.footballscores.utils.SystemUtil
@@ -57,7 +57,6 @@ class Application : AdsApplication() {
         AppOpenManager.getInstance()
             .disableAppResumeWithActivity(IntroSlideshowActivity::class.java)
         AppOpenManager.getInstance().disableAppResumeWithActivity(PermissionActivity::class.java)
-        AppOpenManager.getInstance().disableAppResumeWithActivity(MainActivity::class.java)
 
         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
             kotlinx.coroutines.delay(5000)

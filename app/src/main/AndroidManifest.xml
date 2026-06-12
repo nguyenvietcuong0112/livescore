@@ -23,7 +23,7 @@
         tools:ignore="UnusedAttribute">
 
         <activity
-            android:name=".ui.onboarding.SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
@@ -63,12 +63,12 @@
             android:theme="@style/Theme.MyApplication" />
 
         <activity
-            android:name=".ui.onboarding.PermissionActivity"
+            android:name=".ui.permission.PermissionActivity"
             android:exported="false"
             android:theme="@style/Theme.MyApplication" />
 
         <activity
-            android:name=".ui.onboarding.IAPActivity"
+            android:name=".ui.iap.IAPActivity"
             android:exported="false"
             android:theme="@style/Theme.MyApplication" />
 

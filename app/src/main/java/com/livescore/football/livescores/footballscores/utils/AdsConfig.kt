@@ -71,28 +71,36 @@ object AdsConfig {
                     override fun onAdClosed() {
                         super.onAdClosed()
                         lastInterAdShowTime = System.currentTimeMillis()
-                        ActivityLoadNativeFullV2.open(
-                            activity,
-                            nativeAllId,
-                            object : ActivityFullCallback {
-                                override fun onResultFromActivityFull() {
-                                    onAdClosed()
+                        if (!SharePreferenceUtils.isOrganic(activity)) {
+                            ActivityLoadNativeFullV2.open(
+                                activity,
+                                nativeAllId,
+                                object : ActivityFullCallback {
+                                    override fun onResultFromActivityFull() {
+                                        onAdClosed()
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        } else {
+                            onAdClosed()
+                        }
                     }
 
                     override fun onAdFailedToLoad(error: LoadAdError?) {
                         super.onAdFailedToLoad(error)
-                        ActivityLoadNativeFullV2.open(
-                            activity,
-                            nativeAllId,
-                            object : ActivityFullCallback {
-                                override fun onResultFromActivityFull() {
-                                    onAdClosed()
+                        if (!SharePreferenceUtils.isOrganic(activity)) {
+                            ActivityLoadNativeFullV2.open(
+                                activity,
+                                nativeAllId,
+                                object : ActivityFullCallback {
+                                    override fun onResultFromActivityFull() {
+                                        onAdClosed()
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        } else {
+                            onAdClosed()
+                        }
                     }
                 }
             )

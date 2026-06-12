@@ -28,6 +28,8 @@ import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.databinding.ActivityIntroBinding
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
+import com.livescore.football.livescores.footballscores.ui.iap.IAPActivity
+import com.livescore.football.livescores.footballscores.ui.permission.PermissionActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -46,6 +48,8 @@ class IntroActivity : BaseActivity() {
     override fun bind() {
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.progressBarSteps.max = 2
 
         setupRecyclerView()
         setupListeners()
@@ -152,7 +156,7 @@ class IntroActivity : BaseActivity() {
             1 -> {
                 // Step 1: Select Leagues (Hot lists first)
                 binding.btnBack.isVisible = false // Back button NOT shown on Step 1
-                binding.tvStepProgress.text = getString(R.string.intro_step_1_progress)
+                binding.tvStepProgress.text = getString(R.string.intro_step_1_progress).replace("/3", "/2")
                 binding.progressBarSteps.progress = 1
                 binding.tvTitle.text = getString(R.string.intro_step_1_title)
                 binding.tvSubtitle.text = getString(R.string.intro_step_1_subtitle)
@@ -162,21 +166,11 @@ class IntroActivity : BaseActivity() {
             2 -> {
                 // Step 2: Select Teams (Priority to clubs inside selected leagues)
                 binding.btnBack.isVisible = true // Back button shown on Step 2
-                binding.tvStepProgress.text = getString(R.string.intro_step_2_progress)
+                binding.tvStepProgress.text = getString(R.string.intro_step_2_progress).replace("/3", "/2")
                 binding.progressBarSteps.progress = 2
                 binding.tvTitle.text = getString(R.string.intro_step_2_title)
                 binding.tvSubtitle.text = getString(R.string.intro_step_2_subtitle)
                 binding.etSearch.hint = getString(R.string.intro_step_2_hint)
-                binding.btnNext.text = getString(R.string.intro_next)
-            }
-            3 -> {
-                // Step 3: Select Players (Priority to players inside selected clubs)
-                binding.btnBack.isVisible = true // Back button shown on Step 3
-                binding.tvStepProgress.text = getString(R.string.intro_step_3_progress)
-                binding.progressBarSteps.progress = 3
-                binding.tvTitle.text = getString(R.string.intro_step_3_title)
-                binding.tvSubtitle.text = getString(R.string.intro_step_3_subtitle)
-                binding.etSearch.hint = getString(R.string.intro_step_3_hint)
                 binding.btnNext.text = getString(R.string.intro_finish)
             }
         }
@@ -253,15 +247,6 @@ class IntroSelectionAdapter(
                         .load(item.logo)
                         .placeholder(R.mipmap.ic_launcher)
                         .into(ivLogo)
-                }
-                "player" -> {
-                    cvLogo.isVisible = true
-                    tvSubtitle.isVisible = true
-                    tvSubtitle.text = itemView.context.getString(R.string.item_nationality, item.flagEmoji)
-                    Glide.with(itemView.context)
-                        .load(R.drawable.ic_profile)
-                        .into(ivLogo)
-                    ivLogo.setColorFilter(ContextCompat.getColor(itemView.context, R.color.accent_green))
                 }
             }
 

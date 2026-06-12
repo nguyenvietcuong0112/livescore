@@ -22,7 +22,7 @@ import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywall
 import com.livescore.football.livescores.footballscores.ui.favorite.FavoriteFragment
 import com.livescore.football.livescores.footballscores.ui.home.HomeFragment
 import com.livescore.football.livescores.footballscores.ui.leagues.LeaguesFragment
-import com.livescore.football.livescores.footballscores.ui.onboarding.IAPActivity
+import com.livescore.football.livescores.footballscores.ui.iap.IAPActivity
 import com.livescore.football.livescores.footballscores.ui.profile.ProfileFragment
 import com.livescore.football.livescores.footballscores.ui.search.SearchActivity
 import com.livescore.football.livescores.footballscores.ui.wc26.WC26Fragment
@@ -192,7 +192,7 @@ class MainActivity : BaseActivity() {
             if (isFirstLoad) {
                 loadNativeBanner {
                     delayedLoadExpandTask = Runnable {
-                        loadNativeBannerse()
+                        loadNativeCollapse()
                         isFirstLoad = false
                     }
                     handlerADS.postDelayed(delayedLoadExpandTask!!, 1000)
@@ -200,9 +200,9 @@ class MainActivity : BaseActivity() {
             } else {
                 loadNativeBanner {
                     delayedLoadExpandTask = Runnable {
-                        loadNativeBannerse()
+                        loadNativeCollapse()
                     }
-                    handlerADS.postDelayed(delayedLoadExpandTask!!, 35000)
+                    handlerADS.postDelayed(delayedLoadExpandTask!!, 15000)
                 }
             }
         } else {
@@ -224,7 +224,7 @@ class MainActivity : BaseActivity() {
         handlerADS.removeCallbacksAndMessages(null)
     }
 
-    private fun loadNativeBannerse() {
+    private fun loadNativeCollapse() {
         val nativeAllId = try {
             RemoteConfigManager.Companion.getInstance()
                 .getAdId("native_all", getString(R.string.native_all))

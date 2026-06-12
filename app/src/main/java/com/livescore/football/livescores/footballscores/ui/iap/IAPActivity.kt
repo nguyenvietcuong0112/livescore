@@ -1,21 +1,19 @@
-package com.livescore.football.livescores.footballscores.ui.onboarding
+package com.livescore.football.livescores.footballscores.ui.iap
 
-import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.Toast
-import com.livescore.football.livescores.footballscores.base.BaseActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.android.billingclient.api.ProductDetails
-import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.R
+import com.livescore.football.livescores.footballscores.base.BaseActivity
 import com.livescore.football.livescores.footballscores.data.local.BillingManager
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.databinding.ActivityIapBinding
+import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -104,8 +102,8 @@ class IAPActivity : BaseActivity() {
     }
 
     private fun updateProductPricingUI(products: List<ProductDetails>) {
-        val weeklyProduct = products.find { it.productId == BillingManager.PRODUCT_WEEKLY }
-        val monthlyProduct = products.find { it.productId == BillingManager.PRODUCT_MONTHLY }
+        val weeklyProduct = products.find { it.productId == BillingManager.Companion.PRODUCT_WEEKLY }
+        val monthlyProduct = products.find { it.productId == BillingManager.Companion.PRODUCT_MONTHLY }
 
         weeklyProduct?.let { product ->
             val pricingPhase = product.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()
@@ -129,7 +127,7 @@ class IAPActivity : BaseActivity() {
 
         binding.btnSubscribe.setOnClickListener {
             val products = billingManager.productDetailsList.value
-            val targetProductId = if (isMonthlySelected) BillingManager.PRODUCT_MONTHLY else BillingManager.PRODUCT_WEEKLY
+            val targetProductId = if (isMonthlySelected) BillingManager.Companion.PRODUCT_MONTHLY else BillingManager.Companion.PRODUCT_WEEKLY
             val targetProduct = products.find { it.productId == targetProductId }
 
             if (targetProduct != null) {
@@ -152,10 +150,10 @@ class IAPActivity : BaseActivity() {
                         getString(R.string.iap_toast_mock_success),
                         Toast.LENGTH_LONG
                     ).show()
-                    
+
                     binding.progressLoading.visibility = View.GONE
                     binding.btnSubscribe.isEnabled = true
-                    
+
                     navigateToHome()
                 }, 1500)
             }

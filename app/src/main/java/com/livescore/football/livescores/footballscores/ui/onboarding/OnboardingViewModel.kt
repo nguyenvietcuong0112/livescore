@@ -2,9 +2,11 @@ package com.livescore.football.livescores.footballscores.ui.onboarding
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livescore.football.livescores.footballscores.data.local.FavoriteManager
+import com.livescore.football.livescores.footballscores.data.repository.LeaguesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
@@ -28,20 +30,22 @@ private data class SelectionState(
     val query: String,
     val leagues: Set<Int>,
     val teams: Set<Int>,
-    val players: Set<Int>,
-    val language: String
+    val language: String,
+    val dynamicLeagues: List<OnboardingItem>,
+    val dynamicTeams: List<OnboardingItem>
 )
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val favoriteManager: FavoriteManager
+    private val favoriteManager: FavoriteManager,
+    private val leaguesRepository: LeaguesRepository
 ) : ViewModel() {
 
     private val onboardingPrefs: SharedPreferences =
         context.getSharedPreferences("livescore_onboarding_prefs", Context.MODE_PRIVATE)
 
-    // Current screen: 1 = Select Leagues, 2 = Select Teams, 3 = Select Players
+    // Current screen: 1 = Select Leagues, 2 = Select Teams
     private val _currentStep = MutableStateFlow(1)
     val currentStep: StateFlow<Int> = _currentStep.asStateFlow()
 
@@ -58,12 +62,92 @@ class OnboardingViewModel @Inject constructor(
     private val _selectedTeams = MutableStateFlow<Set<Int>>(emptySet())
     val selectedTeams: StateFlow<Set<Int>> = _selectedTeams.asStateFlow()
 
-    private val _selectedPlayers = MutableStateFlow<Set<Int>>(emptySet())
-    val selectedPlayers: StateFlow<Set<Int>> = _selectedPlayers.asStateFlow()
-
     // Event flow to notify Activity to redirect to MainActivity when completed
     private val _onboardingCompleted = MutableSharedFlow<Boolean>()
     val onboardingCompleted: SharedFlow<Boolean> = _onboardingCompleted.asSharedFlow()
+
+    private val _dynamicLeagues = MutableStateFlow<List<OnboardingItem>>(emptyList())
+    private val _dynamicTeams = MutableStateFlow<List<OnboardingItem>>(emptyList())
+
+    init {
+        loadLeagues()
+
+        viewModelScope.launch {
+            _selectedLeagues.collect {
+                loadTeamsForSelectedLeagues()
+            }
+        }
+    }
+
+    private fun calculateCurrentSeason(): Int {
+        val calendar = java.util.Calendar.getInstance()
+        val currentYear = calendar.get(java.util.Calendar.YEAR)
+        val currentMonth = calendar.get(java.util.Calendar.MONTH)
+        return if (currentMonth < java.util.Calendar.AUGUST) {
+            currentYear - 1
+        } else {
+            currentYear
+        }
+    }
+
+    private fun loadLeagues() {
+        viewModelScope.launch {
+            leaguesRepository.getLeagues()
+                .catch { e -> Log.e("OnboardingViewModel", "Error loading leagues", e) }
+                .collect { list ->
+                    val items = list.map { league ->
+                        OnboardingItem(
+                            id = league.league_id,
+                            name = league.name,
+                            subtitle = league.country?.name ?: "World",
+                            logo = league.logo,
+                            type = "league",
+                            isHot = league.is_popular
+                        )
+                    }
+                    _dynamicLeagues.value = items
+                }
+        }
+    }
+
+    private fun loadTeamsForSelectedLeagues() {
+        val selectedLeaguesList = _selectedLeagues.value.toList()
+        if (selectedLeaguesList.isEmpty()) {
+            _dynamicTeams.value = emptyList()
+            return
+        }
+        viewModelScope.launch {
+            val allTeams = mutableListOf<OnboardingItem>()
+            selectedLeaguesList.forEach { leagueId ->
+                val season = if (leagueId == 1) 2026 else calculateCurrentSeason()
+                leaguesRepository.getStandings(leagueId, season)
+                    .catch { e -> Log.e("OnboardingViewModel", "Error loading standings for league $leagueId", e) }
+                    .collect { standingRows ->
+                        val teams = standingRows.map { row ->
+                            OnboardingItem(
+                                id = row.team.id,
+                                name = row.team.name,
+                                subtitle = _dynamicLeagues.value.find { it.id == leagueId }?.name ?: "",
+                                logo = row.team.logo,
+                                type = "team",
+                                parentId = leagueId
+                            )
+                        }
+                        allTeams.addAll(teams)
+                    }
+            }
+            val distinctTeams = allTeams.distinctBy { it.id }
+            _dynamicTeams.value = distinctTeams
+
+            // Filter out any selected teams that are no longer in the dynamic list
+            val validTeamIds = distinctTeams.map { it.id }.toSet()
+            val currentSelectedTeams = _selectedTeams.value
+            val updatedSelectedTeams = currentSelectedTeams.intersect(validTeamIds)
+            if (updatedSelectedTeams.size != currentSelectedTeams.size) {
+                _selectedTeams.value = updatedSelectedTeams
+            }
+        }
+    }
 
     // Master Static lists
     private val masterLanguages = listOf(
@@ -74,63 +158,31 @@ class OnboardingViewModel @Inject constructor(
         OnboardingItem(idx, name, "", "", "language")
     }
 
-    private val masterLeagues = listOf(
-        OnboardingItem(39, "Premier League", "England", "https://media.api-sports.io/football/leagues/39.png", "league", isHot = true),
-        OnboardingItem(140, "La Liga", "Spain", "https://media.api-sports.io/football/leagues/140.png", "league", isHot = true),
-        OnboardingItem(2, "UEFA Champions League", "Europe", "https://media.api-sports.io/football/leagues/2.png", "league", isHot = true),
-        OnboardingItem(135, "Serie A", "Italy", "https://media.api-sports.io/football/leagues/135.png", "league", isHot = false),
-        OnboardingItem(78, "Bundesliga", "Germany", "https://media.api-sports.io/football/leagues/78.png", "league", isHot = false),
-        OnboardingItem(61, "Ligue 1", "France", "https://media.api-sports.io/football/leagues/61.png", "league", isHot = false),
-        OnboardingItem(1, "World Cup 2026", "World", "https://media.api-sports.io/football/leagues/1.png", "league", isHot = false)
-    )
-
-    private val masterTeams = listOf(
-        OnboardingItem(42, "Arsenal", "Premier League", "https://media.api-sports.io/football/teams/42.png", "team", parentId = 39),
-        OnboardingItem(49, "Chelsea", "Premier League", "https://media.api-sports.io/football/teams/49.png", "team", parentId = 39),
-        OnboardingItem(541, "Real Madrid", "La Liga", "https://media.api-sports.io/football/teams/541.png", "team", parentId = 140),
-        OnboardingItem(529, "Barcelona", "La Liga", "https://media.api-sports.io/football/teams/529.png", "team", parentId = 140),
-        OnboardingItem(33, "Manchester United", "Premier League", "https://media.api-sports.io/football/teams/33.png", "team", parentId = 39),
-        OnboardingItem(47, "Tottenham", "Premier League", "https://media.api-sports.io/football/teams/47.png", "team", parentId = 39),
-        OnboardingItem(40, "Liverpool", "Premier League", "https://media.api-sports.io/football/teams/40.png", "team", parentId = 39),
-        OnboardingItem(66, "Aston Villa", "Premier League", "https://media.api-sports.io/football/teams/66.png", "team", parentId = 39),
-        OnboardingItem(157, "Bayern Munich", "Bundesliga", "https://media.api-sports.io/football/teams/157.png", "team", parentId = 78),
-        OnboardingItem(165, "Dortmund", "Bundesliga", "https://media.api-sports.io/football/teams/165.png", "team", parentId = 78),
-        OnboardingItem(1111, "Vietnam 🇻🇳", "World Cup 2026", "https://media.api-sports.io/football/teams/1111.png", "team", parentId = 1),
-        OnboardingItem(85, "Paris Saint Germain", "Ligue 1", "https://media.api-sports.io/football/teams/85.png", "team", parentId = 61),
-        OnboardingItem(50, "Man City", "Premier League", "https://media.api-sports.io/football/teams/50.png", "team", parentId = 39)
-    )
-
-    private val masterPlayers = listOf(
-        OnboardingItem(10, "L. Messi", "Cầu thủ quốc tế", "", "player", parentId = 529, flagEmoji = "🇦🇷"),
-        OnboardingItem(7, "C. Ronaldo", "Cầu thủ quốc tế", "", "player", parentId = 541, flagEmoji = "🇵🇹"),
-        OnboardingItem(9, "K. Mbappé", "Cầu thủ quốc tế", "", "player", parentId = 541, flagEmoji = "🇫🇷"),
-        OnboardingItem(19, "Quang Hải", "Cầu thủ quốc tế", "", "player", parentId = 1111, flagEmoji = "🇻🇳"),
-        OnboardingItem(17, "K. De Bruyne", "Cầu thủ quốc tế", "", "player", parentId = 50, flagEmoji = "🇧🇪"),
-        OnboardingItem(103, "E. Haaland", "Cầu thủ quốc tế", "", "player", parentId = 50, flagEmoji = "🇳🇴"),
-        OnboardingItem(11, "M. Salah", "Cầu thủ quốc tế", "", "player", parentId = 40, flagEmoji = "🇪🇬"),
-        OnboardingItem(77, "B. Saka", "Cầu thủ quốc tế", "", "player", parentId = 42, flagEmoji = "🏴\u00AD󠁢\u00AD󠁥\u00AD󠁮\u00AD󠁧\u00AD󠁿"),
-        OnboardingItem(101, "J. Bellingham", "Cầu thủ quốc tế", "", "player", parentId = 541, flagEmoji = "🏴\u00AD󠁢\u00AD󠁥\u00AD󠁮\u00AD󠁧\u00AD󠁿"),
-        OnboardingItem(102, "L. Yamal", "Cầu thủ quốc tế", "", "player", parentId = 529, flagEmoji = "🇪🇸")
-    )
-
     // Highly optimized combining logic that produces real-time filtered and prioritized lists
     val uiItems: StateFlow<List<OnboardingItem>> = combine(
         _currentStep,
         _searchQuery,
-        _selectedLeagues,
-        _selectedTeams,
-        _selectedPlayers
-    ) { step, query, leagues, teams, players ->
-        SelectionState(step, query, leagues, teams, players, _selectedLanguage.value)
-    }.combine(_selectedLanguage) { state, lang ->
-        state.copy(language = lang)
+        combine(_selectedLeagues, _selectedTeams) { l, t -> Pair(l, t) },
+        _dynamicLeagues,
+        _dynamicTeams
+    ) { step, query, selections, dynamicLeagues, dynamicTeams ->
+        SelectionState(
+            step = step,
+            query = query,
+            leagues = selections.first,
+            teams = selections.second,
+            language = _selectedLanguage.value,
+            dynamicLeagues = dynamicLeagues,
+            dynamicTeams = dynamicTeams
+        )
     }.map { state ->
         val step = state.step
         val query = state.query
         val selLeagues = state.leagues
         val selTeams = state.teams
-        val selPlayers = state.players
         val selLang = state.language
+        val dynamicLeagues = state.dynamicLeagues
+        val dynamicTeams = state.dynamicTeams
 
         val rawList = when (step) {
             0 -> {
@@ -138,7 +190,7 @@ class OnboardingViewModel @Inject constructor(
                 else masterLanguages.filter { it.name.contains(query, ignoreCase = true) }
             }
             1 -> {
-                val baseList = masterLeagues.sortedWith(
+                val baseList = dynamicLeagues.sortedWith(
                     compareByDescending<OnboardingItem> { it.isHot }
                         .thenBy { it.name }
                 )
@@ -146,20 +198,12 @@ class OnboardingViewModel @Inject constructor(
                 else baseList.filter { it.name.contains(query, ignoreCase = true) || it.subtitle.contains(query, ignoreCase = true) }
             }
             2 -> {
-                val baseList = masterTeams.sortedWith(
+                val baseList = dynamicTeams.sortedWith(
                     compareByDescending<OnboardingItem> { selLeagues.contains(it.parentId) }
                         .thenBy { it.name }
                 )
                 if (query.isEmpty()) baseList
                 else baseList.filter { it.name.contains(query, ignoreCase = true) || it.subtitle.contains(query, ignoreCase = true) }
-            }
-            3 -> {
-                val baseList = masterPlayers.sortedWith(
-                    compareByDescending<OnboardingItem> { selTeams.contains(it.parentId) }
-                        .thenBy { it.name }
-                )
-                if (query.isEmpty()) baseList
-                else baseList.filter { it.name.contains(query, ignoreCase = true) }
             }
             else -> emptyList()
         }
@@ -169,7 +213,6 @@ class OnboardingViewModel @Inject constructor(
                 0 -> selLang == item.name
                 1 -> selLeagues.contains(item.id)
                 2 -> selTeams.contains(item.id)
-                3 -> selPlayers.contains(item.id)
                 else -> false
             }
             item.copy(isSelected = isSel)
@@ -198,12 +241,6 @@ class OnboardingViewModel @Inject constructor(
                 else current.add(itemId)
                 _selectedTeams.value = current
             }
-            3 -> {
-                val current = _selectedPlayers.value.toMutableSet()
-                if (current.contains(itemId)) current.remove(itemId)
-                else current.add(itemId)
-                _selectedPlayers.value = current
-            }
         }
     }
 
@@ -212,14 +249,13 @@ class OnboardingViewModel @Inject constructor(
             0 -> _selectedLanguage.value == name
             1 -> _selectedLeagues.value.contains(itemId)
             2 -> _selectedTeams.value.contains(itemId)
-            3 -> _selectedPlayers.value.contains(itemId)
             else -> false
         }
     }
 
     fun nextStep() {
         val next = _currentStep.value + 1
-        if (next > 3) {
+        if (next > 2) {
             finishOnboarding()
         } else {
             _currentStep.value = next
@@ -229,7 +265,7 @@ class OnboardingViewModel @Inject constructor(
 
     fun prevStep() {
         val prev = _currentStep.value - 1
-        if (prev >= 0) {
+        if (prev >= 1) {
             _currentStep.value = prev
             _searchQuery.value = "" // Reset search bar text on step transition
         }
@@ -258,7 +294,7 @@ class OnboardingViewModel @Inject constructor(
 
             // 2. Persist Favorite Leagues
             _selectedLeagues.value.forEach { id ->
-                val item = masterLeagues.find { it.id == id }
+                val item = _dynamicLeagues.value.find { it.id == id }
                 if (item != null) {
                     favoriteManager.toggleLeagueFavorite(item.id, item.name, item.logo, item.subtitle)
                 }
@@ -266,15 +302,10 @@ class OnboardingViewModel @Inject constructor(
 
             // 3. Persist Favorite Teams
             _selectedTeams.value.forEach { id ->
-                val item = masterTeams.find { it.id == id }
+                val item = _dynamicTeams.value.find { it.id == id }
                 if (item != null) {
                     favoriteManager.toggleTeamFavorite(item.id, item.name, item.logo)
                 }
-            }
-
-            // 4. Persist Favorite Players
-            _selectedPlayers.value.forEach { id ->
-                favoriteManager.togglePlayerFavorite(id)
             }
 
             // Notify activity of completion

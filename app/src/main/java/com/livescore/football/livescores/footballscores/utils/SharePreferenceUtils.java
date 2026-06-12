@@ -75,11 +75,6 @@ public class SharePreferenceUtils {
         return !Admob.getInstance().isLoadFullAds();
     }
 
-//    public static boolean isOrganic(Context context) {
-//        SharedPreferences pref = context.getSharedPreferences("data", Context.MODE_PRIVATE);
-//        return pref.getBoolean("organic_noti", true);
-//    }
-
 
     // Phương thức lưu object bất kỳ
     public <T> void saveObject(String key, T object) {

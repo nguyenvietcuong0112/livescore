@@ -18,9 +18,9 @@ import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.databinding.FragmentIntro4Binding
-import com.livescore.football.livescores.footballscores.ui.onboarding.IAPActivity
+import com.livescore.football.livescores.footballscores.ui.iap.IAPActivity
 import com.livescore.football.livescores.footballscores.ui.onboarding.IntroActivity
-import com.livescore.football.livescores.footballscores.ui.onboarding.PermissionActivity
+import com.livescore.football.livescores.footballscores.ui.permission.PermissionActivity
 import com.livescore.football.livescores.footballscores.utils.ActivityFullCallback
 import com.livescore.football.livescores.footballscores.utils.ActivityLoadNativeFullV1.Companion.open
 import com.mallegan.ads.callback.InterCallback
