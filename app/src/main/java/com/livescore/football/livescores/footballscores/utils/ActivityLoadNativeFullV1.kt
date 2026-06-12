@@ -108,7 +108,7 @@ class ActivityLoadNativeFullV1 : AbsBaseActivity() {
                                     callback?.onResultFromActivityFull()
                                     finish()
                                 }
-                            }, 1000)
+                            }, 2000)
                             LogEvent.log(this@ActivityLoadNativeFullV1, "native_splash_full")
                         }
                     })

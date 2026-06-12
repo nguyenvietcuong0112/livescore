@@ -91,7 +91,7 @@ class ActivityLoadNativeFullV2 : AbsBaseActivity() {
                         }
                         finish()
                     })
-                }, 1000)
+                }, 2000)
             }
         })
     }
