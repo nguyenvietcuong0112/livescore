@@ -74,6 +74,7 @@ class ActivityLoadNativeFullV1 : AbsBaseActivity() {
                             binding?.frAdsFull?.removeAllViews()
                             binding?.frAdsFull?.addView(adView)
                             Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                            LogEvent.log(this@ActivityLoadNativeFullV1, "native_splash_full")
                         }
                     })
             }
@@ -108,6 +109,7 @@ class ActivityLoadNativeFullV1 : AbsBaseActivity() {
                 binding?.frAdsFull?.removeAllViews()
                 binding?.frAdsFull?.addView(adView)
                 Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                LogEvent.log(this@ActivityLoadNativeFullV1, "native_splash_full")
             }
         })
     }

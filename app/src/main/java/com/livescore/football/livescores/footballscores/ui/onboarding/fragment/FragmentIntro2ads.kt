@@ -11,6 +11,7 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
+import com.livescore.football.livescores.footballscores.utils.LogEvent
 import com.livescore.football.livescores.footballscores.databinding.FragmentAdsBinding
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
@@ -74,6 +75,7 @@ class FragmentIntro2ads : AbsBaseFragment<FragmentAdsBinding?>() {
                 binding!!.frAdsFull.removeAllViews()
                 binding!!.frAdsFull.addView(adView)
                 Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                context?.let { LogEvent.log(it, "native_onboarding_full_1") }
             }
         })
     }

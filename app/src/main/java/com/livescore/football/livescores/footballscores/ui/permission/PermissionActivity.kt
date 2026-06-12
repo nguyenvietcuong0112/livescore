@@ -17,6 +17,7 @@ import com.livescore.football.livescores.footballscores.data.remote.RemoteConfig
 import com.livescore.football.livescores.footballscores.databinding.ActivityPermissionBinding
 import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.ui.iap.IAPActivity
+import com.livescore.football.livescores.footballscores.utils.LogEvent
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,6 +41,7 @@ class PermissionActivity : BaseActivity() {
     override fun bind() {
         binding = ActivityPermissionBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        LogEvent.log(this, "question_view")
 
         // Request permission on Continue click, then proceed
         binding.btnContinue.setOnClickListener {
@@ -96,6 +98,7 @@ class PermissionActivity : BaseActivity() {
                     binding.frAds.removeAllViews()
                     binding.frAds.addView(adView)
                     Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                    LogEvent.log(this@PermissionActivity, "native_permission")
                     enableSkip()
                 }
             })

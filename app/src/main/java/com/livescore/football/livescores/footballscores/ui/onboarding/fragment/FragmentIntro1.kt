@@ -10,6 +10,7 @@ import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.databinding.FragmentIntro1Binding
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
+import com.livescore.football.livescores.footballscores.utils.LogEvent
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,6 +61,7 @@ class FragmentIntro1 : AbsBaseFragment<FragmentIntro1Binding?>() {
             binding!!.frAds.removeAllViews()
             binding!!.frAds.addView(adView)
             Admob.getInstance().pushAdsToViewCustom(AdsConfig.nativeIntro1, adView)
+            context?.let { LogEvent.log(it, "native_onboarding_1") }
         } else {
             loadAdsIntro1Dynamically()
         }
@@ -99,6 +101,7 @@ class FragmentIntro1 : AbsBaseFragment<FragmentIntro1Binding?>() {
                         if (nativeAd != null && adView != null) {
                             Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
                         }
+                        context?.let { LogEvent.log(it, "native_onboarding_1") }
                         binding!!.frAds.postDelayed({
                             showLoadingNext(false)
                         }, 500)

@@ -18,6 +18,7 @@ import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.databinding.FragmentIntro4Binding
+import com.livescore.football.livescores.footballscores.utils.LogEvent
 import com.livescore.football.livescores.footballscores.ui.iap.IAPActivity
 import com.livescore.football.livescores.footballscores.ui.onboarding.IntroActivity
 import com.livescore.football.livescores.footballscores.ui.permission.PermissionActivity
@@ -129,6 +130,7 @@ class FragmentIntro4 : AbsBaseFragment<FragmentIntro4Binding?>() {
                         if (nativeAd != null && adView != null) {
                             Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
                         }
+                        context?.let { LogEvent.log(it, "native_onboarding_4") }
 
                         binding!!.frAds.postDelayed({
                             showLoadingNext(false)

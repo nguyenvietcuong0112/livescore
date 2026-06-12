@@ -9,6 +9,7 @@ import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.databinding.FragmentIntro3Binding
+import com.livescore.football.livescores.footballscores.utils.LogEvent
 import com.livescore.football.livescores.footballscores.utils.SharePreferenceUtils
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
@@ -85,6 +86,7 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
                         binding!!.frAds.removeAllViews()
                         binding!!.frAds.addView(adView)
                         Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                        context?.let { LogEvent.log(it, "native_banner_ob") }
 
                         binding!!.frAds.postDelayed({
                             showLoadingNext(false)

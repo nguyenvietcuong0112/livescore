@@ -25,6 +25,7 @@ import com.livescore.football.livescores.footballscores.data.remote.RemoteConfig
 import com.livescore.football.livescores.footballscores.databinding.ActivityLanguageBinding
 import com.livescore.football.livescores.footballscores.ui.onboarding.IntroSlideshowActivity
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
+import com.livescore.football.livescores.footballscores.utils.LogEvent
 import com.livescore.football.livescores.footballscores.utils.SystemUtil
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
@@ -158,6 +159,7 @@ class LanguageActivity : BaseActivity() {
                     binding.frAds.removeAllViews()
                     binding.frAds.addView(adView)
                     Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                    LogEvent.log(this@LanguageActivity, "native_language")
                     binding.frAds.postDelayed({
                         checkNextButtonStatus(true)
                     }, 500)
@@ -225,6 +227,7 @@ class LanguageActivity : BaseActivity() {
                     binding.frAds.removeAllViews()
                     binding.frAds.addView(adView)
                     Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                    LogEvent.log(this@LanguageActivity, "native_language_click")
                     binding.frAds.postDelayed({
                         checkNextButtonStatus(true)
                     }, 500)

@@ -26,6 +26,8 @@ import com.mallegan.ads.util.Admob
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import android.graphics.Rect
+import android.view.ViewTreeObserver
 
 @AndroidEntryPoint
 class WC26Fragment : Fragment() {
@@ -62,10 +64,12 @@ class WC26Fragment : Fragment() {
         setupCountdown()
         setupListeners()
         updateTabUI()
+        setupAdScrollListeners()
         populateWcTournamentData()
     }
 
     private fun populateWcTournamentData() {
+        pendingAdLoads.clear()
         lifecycleScope.launch {
             try {
                 binding.layoutLoadingOverlay.isVisible = true
@@ -141,27 +145,11 @@ class WC26Fragment : Fragment() {
 
                         if (!limitManager.isPremium() && (index + 1) % 2 == 0) {
                             val adViewWrapper = inflater.inflate(R.layout.layout_native_no_media, binding.layoutWcGroupsContainer, false)
+                            adViewWrapper.visibility = View.INVISIBLE
                             binding.layoutWcGroupsContainer.addView(adViewWrapper)
                             val adId = try { getString(resources.getIdentifier("native_all", "string", requireContext().packageName)) } catch (e: Exception) { "" }
                             if (adId.isNotEmpty()) {
-                                Admob.getInstance().loadNativeAds(
-                                    requireContext(),
-                                    adId,
-                                    1,
-                                    object : NativeCallback() {
-                                        override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
-                                            super.onNativeAdLoaded(nativeAd)
-                                            if (!isAdded) return
-
-                                            com.mallegan.ads.util.Admob.getInstance().pushAdsToViewCustom(nativeAd, adViewWrapper as com.google.android.gms.ads.nativead.NativeAdView)
-                                        }
-                                        override fun onAdFailedToLoad() {
-                                            super.onAdFailedToLoad()
-                                            if (!isAdded) return
-                                            adViewWrapper.visibility = View.GONE
-                                        }
-                                    }
-                                )
+                                pendingAdLoads.add(PendingAdLoad(adViewWrapper, adId))
                             } else {
                                 adViewWrapper.visibility = View.GONE
                             }
@@ -353,26 +341,11 @@ class WC26Fragment : Fragment() {
                             
                             if (!limitManager.isPremium() && matchCount % 3 == 0) {
                                 val adViewWrapper = inflater.inflate(R.layout.layout_native_no_media, binding.layoutWcFixturesContainer, false)
+                                adViewWrapper.visibility = View.INVISIBLE
                                 binding.layoutWcFixturesContainer.addView(adViewWrapper)
                                 val adId = try { getString(resources.getIdentifier("native_all", "string", requireContext().packageName)) } catch (e: Exception) { "" }
                                 if (adId.isNotEmpty()) {
-                                    com.mallegan.ads.util.Admob.getInstance().loadNativeAds(
-                                        requireContext(),
-                                        adId,
-                                        1,
-                                        object : NativeCallback() {
-                                            override fun onNativeAdLoaded(nativeAd: NativeAd?) {
-                                                super.onNativeAdLoaded(nativeAd)
-                                                if (!isAdded) return
-                                               Admob.getInstance().pushAdsToViewCustom(nativeAd, adViewWrapper as NativeAdView)
-                                            }
-                                            override fun onAdFailedToLoad() {
-                                                super.onAdFailedToLoad()
-                                                if (!isAdded) return
-                                                adViewWrapper.visibility = View.GONE
-                                            }
-                                        }
-                                    )
+                                    pendingAdLoads.add(PendingAdLoad(adViewWrapper, adId))
                                 } else {
                                     adViewWrapper.visibility = View.GONE
                                 }
@@ -689,8 +662,90 @@ class WC26Fragment : Fragment() {
         return (dp * density).toInt()
     }
 
+    private val pendingAdLoads = mutableListOf<PendingAdLoad>()
+    private var scrollChangedListener: ViewTreeObserver.OnScrollChangedListener? = null
+    private var layoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
+
+    private data class PendingAdLoad(
+        val adViewWrapper: View,
+        val adId: String
+    )
+
+    private fun setupAdScrollListeners() {
+        scrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
+            checkPendingAds()
+        }
+        layoutListener = ViewTreeObserver.OnGlobalLayoutListener {
+            checkPendingAds()
+        }
+        
+        binding.scrollWcFixtures.viewTreeObserver.addOnScrollChangedListener(scrollChangedListener)
+        binding.scrollWcFixtures.viewTreeObserver.addOnGlobalLayoutListener(layoutListener)
+        binding.scrollWcGroups.viewTreeObserver.addOnScrollChangedListener(scrollChangedListener)
+        binding.scrollWcGroups.viewTreeObserver.addOnGlobalLayoutListener(layoutListener)
+    }
+
+    private fun checkPendingAds() {
+        if (pendingAdLoads.isEmpty()) return
+        val iterator = pendingAdLoads.iterator()
+        while (iterator.hasNext()) {
+            val pending = iterator.next()
+            if (isViewNearScreen(pending.adViewWrapper)) {
+                iterator.remove()
+                triggerAdLoad(pending)
+            }
+        }
+    }
+
+    private fun isViewNearScreen(view: View): Boolean {
+        if (!view.isShown) return false
+        if (view.width == 0 || view.height == 0) return false
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val viewTop = location[1]
+        val screenHeight = resources.displayMetrics.heightPixels
+        return viewTop < screenHeight + 500 && viewTop + view.height > -500
+    }
+
+    private fun triggerAdLoad(pending: PendingAdLoad) {
+        val context = context ?: return
+        Admob.getInstance().loadNativeAds(
+            context,
+            pending.adId,
+            1,
+            object : NativeCallback() {
+                override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
+                    super.onNativeAdLoaded(nativeAd)
+                    if (!isAdded) return
+                    pending.adViewWrapper.visibility = View.VISIBLE
+                    Admob.getInstance().pushAdsToViewCustom(
+                        nativeAd,
+                        pending.adViewWrapper as NativeAdView
+                    )
+                }
+
+                override fun onAdFailedToLoad() {
+                    super.onAdFailedToLoad()
+                    if (!isAdded) return
+                    pending.adViewWrapper.visibility = View.GONE
+                }
+            }
+        )
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        scrollChangedListener?.let {
+            _binding?.scrollWcFixtures?.viewTreeObserver?.removeOnScrollChangedListener(it)
+            _binding?.scrollWcGroups?.viewTreeObserver?.removeOnScrollChangedListener(it)
+        }
+        layoutListener?.let {
+            _binding?.scrollWcFixtures?.viewTreeObserver?.removeOnGlobalLayoutListener(it)
+            _binding?.scrollWcGroups?.viewTreeObserver?.removeOnGlobalLayoutListener(it)
+        }
+        scrollChangedListener = null
+        layoutListener = null
+        pendingAdLoads.clear()
         _binding = null
     }
 }

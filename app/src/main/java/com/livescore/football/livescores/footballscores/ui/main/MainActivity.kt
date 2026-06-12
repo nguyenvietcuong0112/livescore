@@ -27,6 +27,7 @@ import com.livescore.football.livescores.footballscores.ui.profile.ProfileFragme
 import com.livescore.football.livescores.footballscores.ui.search.SearchActivity
 import com.livescore.football.livescores.footballscores.ui.wc26.WC26Fragment
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
+import com.livescore.football.livescores.footballscores.utils.LogEvent
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
 import dagger.hilt.android.AndroidEntryPoint
@@ -68,6 +69,7 @@ class MainActivity : BaseActivity() {
         
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        LogEvent.log(this, "main_view")
 
         val controller = WindowCompat.getInsetsController(window, binding.root)
         controller.isAppearanceLightStatusBars = true

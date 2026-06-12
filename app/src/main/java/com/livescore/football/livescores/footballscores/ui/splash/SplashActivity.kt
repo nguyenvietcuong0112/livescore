@@ -19,6 +19,7 @@ import com.livescore.football.livescores.footballscores.ui.language.LanguageActi
 import com.livescore.football.livescores.footballscores.utils.ActivityFullCallback
 import com.livescore.football.livescores.footballscores.utils.ActivityLoadNativeFullV1
 import com.livescore.football.livescores.footballscores.utils.SharePreferenceUtils
+import com.livescore.football.livescores.footballscores.utils.LogEvent
 import com.mallegan.ads.callback.InterCallback
 import com.mallegan.ads.util.Admob
 import com.mallegan.ads.util.ConsentHelper
@@ -87,11 +88,13 @@ class SplashActivity : BaseActivity() {
             binding.frAdsBanner.visibility = View.VISIBLE
             Admob.getInstance()
                 .loadBanner(this, getRemoteAdId("banner_splash", R.string.banner_splash))
+            LogEvent.log(this, "banner_splash_view")
         }
 
         interCallback = object : InterCallback() {
             override fun onAdClosedByUser() {
                 super.onAdClosedByUser()
+                LogEvent.log(this@SplashActivity, "inter_splash_view")
                 if (!SharePreferenceUtils.isOrganic(applicationContext)) {
                     ActivityLoadNativeFullV1.Companion.open(
                         this@SplashActivity,
