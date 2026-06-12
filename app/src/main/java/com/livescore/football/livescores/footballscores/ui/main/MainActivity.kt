@@ -43,6 +43,9 @@ class MainActivity : BaseActivity() {
     @Inject
     lateinit var limitManager: RequestLimitManager
 
+    @Inject
+    lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
     private lateinit var binding: ActivityMainBinding
     private var isLimitDialogShowing = false
     private var activeTabId: Int = R.id.nav_live
@@ -186,6 +189,13 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        val deviceId = android.provider.Settings.Secure.getString(contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
+            apiService = liveScoreApiService,
+            deviceId = deviceId,
+            newScreen = "MainActivity"
+        )
+
         if (::limitManager.isInitialized) {
             updateVipButtonVisibility()
         }
@@ -234,9 +244,24 @@ class MainActivity : BaseActivity() {
             getString(R.string.native_all)
         }
 
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+            liveScoreApiService, this, "native", nativeAllId, "MainActivity"
+        )
+
         Admob.getInstance().loadNativeAd(this, nativeAllId, object : NativeCallback() {
             override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                 if (isDestroyed || isFinishing) return
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
+                    liveScoreApiService, this@MainActivity, "native", nativeAllId, "MainActivity"
+                )
+
+                nativeAd?.setOnPaidEventListener { adValue ->
+                    val ecpm = adValue.valueMicros / 1000.0
+                    com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                        liveScoreApiService, this@MainActivity, "native", nativeAllId, "MainActivity", ecpm
+                    )
+                }
+
                 val adView = LayoutInflater.from(this@MainActivity)
                     .inflate(R.layout.layout_native_home_collapse, null) as NativeAdView
 
@@ -264,6 +289,9 @@ class MainActivity : BaseActivity() {
 
             override fun onAdFailedToLoad() {
                 if (isDestroyed || isFinishing) return
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                    liveScoreApiService, this@MainActivity, "native", nativeAllId, "MainActivity", null
+                )
                 binding.frAdsCollap.removeAllViews()
 
                 // Show bottom navigation and floating button again if ad fails to load
@@ -284,9 +312,24 @@ class MainActivity : BaseActivity() {
             getString(R.string.native_all)
         }
 
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+            liveScoreApiService, this, "native", nativeAllId, "MainActivity"
+        )
+
         Admob.getInstance().loadNativeAd(this, nativeAllId, object : NativeCallback() {
             override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                 if (isDestroyed || isFinishing) return
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
+                    liveScoreApiService, this@MainActivity, "native", nativeAllId, "MainActivity"
+                )
+
+                nativeAd?.setOnPaidEventListener { adValue ->
+                    val ecpm = adValue.valueMicros / 1000.0
+                    com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                        liveScoreApiService, this@MainActivity, "native", nativeAllId, "MainActivity", ecpm
+                    )
+                }
+
                 val adView = LayoutInflater.from(this@MainActivity)
                     .inflate(R.layout.layout_native_banner, null) as NativeAdView
 
@@ -306,6 +349,9 @@ class MainActivity : BaseActivity() {
 
             override fun onAdFailedToLoad() {
                 if (isDestroyed || isFinishing) return
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                    liveScoreApiService, this@MainActivity, "native", nativeAllId, "MainActivity", null
+                )
                 binding.frAdsBanner.removeAllViews()
 
                 // Ensure navbar is visible if ad failed

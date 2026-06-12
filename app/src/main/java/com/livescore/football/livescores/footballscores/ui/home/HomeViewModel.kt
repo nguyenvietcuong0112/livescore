@@ -197,6 +197,26 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun manualRefresh() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val date = _selectedDate.value
+            try {
+                if (_currentFilter.value == MatchFilter.LIVE && isToday(date)) {
+                    repository.refreshLiveMatches()
+                }
+                val utcDates = getOverlappingUtcDates(date)
+                for (utcDate in utcDates) {
+                    repository.refreshMatchesByDate(utcDate)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
     private fun isToday(date: Date): Boolean {
         val today = Calendar.getInstance()
         val target = Calendar.getInstance().apply { time = date }

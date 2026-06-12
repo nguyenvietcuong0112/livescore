@@ -32,7 +32,7 @@ class LeaguesViewModel @Inject constructor(
     private val _leagues = MutableStateFlow<List<LeagueSelectorItem>>(emptyList())
     val leagues: StateFlow<List<LeagueSelectorItem>> = _leagues.asStateFlow()
 
-    private val _selectedLeagueId = MutableStateFlow(39) // Default: Premier League (39)
+    private val _selectedLeagueId = MutableStateFlow(-1) // Default: -1 (no selection yet, will focus on first API item)
     val selectedLeagueId: StateFlow<Int> = _selectedLeagueId.asStateFlow()
 
     private val _selectedSeason = MutableStateFlow(calculateCurrentSeason())
@@ -40,6 +40,9 @@ class LeaguesViewModel @Inject constructor(
 
     private val _selectedTab = MutableStateFlow(0) // 0: Standings, 1: Top Scorers, 2: Top Assists
     val selectedTab: StateFlow<Int> = _selectedTab.asStateFlow()
+
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
     private val _standingsState = MutableStateFlow<StandingsUiState>(StandingsUiState.Loading)
     val standingsState: StateFlow<StandingsUiState> = _standingsState.asStateFlow()
@@ -63,8 +66,6 @@ class LeaguesViewModel @Inject constructor(
 
     init {
         fetchLeagues()
-        // Fetch initial league data on startup
-        fetchAllLeagueData(_selectedLeagueId.value, _selectedSeason.value)
     }
 
     private fun fetchLeagues() {
@@ -81,9 +82,10 @@ class LeaguesViewModel @Inject constructor(
                         )
                     }
                     _leagues.value = items
-                    // Select first if not present
-                    if (items.isNotEmpty() && items.none { it.id == _selectedLeagueId.value }) {
-                        selectLeague(items.first().id)
+                    if (items.isNotEmpty()) {
+                        if (_selectedLeagueId.value == -1 || items.none { it.id == _selectedLeagueId.value }) {
+                            selectLeague(items.first().id)
+                        }
                     }
                 }
         }
@@ -101,56 +103,64 @@ class LeaguesViewModel @Inject constructor(
     }
 
     fun refreshCurrentData() {
-        fetchAllLeagueData(_selectedLeagueId.value, _selectedSeason.value)
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            fetchAllLeagueDataInternal(_selectedLeagueId.value, _selectedSeason.value)
+            _isRefreshing.value = false
+        }
     }
 
     private fun fetchAllLeagueData(leagueId: Int, season: Int) {
         viewModelScope.launch {
-            _standingsState.value = StandingsUiState.Loading
-            _topScorersState.value = TopPlayersUiState.Loading
-            _topAssistsState.value = TopPlayersUiState.Loading
+            fetchAllLeagueDataInternal(leagueId, season)
+        }
+    }
 
-            try {
-                var standings = emptyList<StandingRowDto>()
-                repository.getStandings(leagueId, season)
-                    .catch { e ->
-                        e.printStackTrace()
-                    }
-                    .collect { list ->
-                        standings = list
-                    }
-                _standingsState.value = StandingsUiState.Success(standings)
+    private suspend fun fetchAllLeagueDataInternal(leagueId: Int, season: Int) {
+        _standingsState.value = StandingsUiState.Loading
+        _topScorersState.value = TopPlayersUiState.Loading
+        _topAssistsState.value = TopPlayersUiState.Loading
 
-                delay(2000)
+        try {
+            var standings = emptyList<StandingRowDto>()
+            repository.getStandings(leagueId, season)
+                .catch { e ->
+                    e.printStackTrace()
+                }
+                .collect { list ->
+                    standings = list
+                }
+            _standingsState.value = StandingsUiState.Success(standings)
 
-                var topScorers = emptyList<TopPlayerItemDto>()
-                repository.getTopScorers(leagueId, season)
-                    .catch { e ->
-                        e.printStackTrace()
-                    }
-                    .collect { list ->
-                        topScorers = list
-                    }
-                _topScorersState.value = TopPlayersUiState.Success(topScorers)
+            delay(2000)
 
-                delay(2000)
+            var topScorers = emptyList<TopPlayerItemDto>()
+            repository.getTopScorers(leagueId, season)
+                .catch { e ->
+                    e.printStackTrace()
+                }
+                .collect { list ->
+                    topScorers = list
+                }
+            _topScorersState.value = TopPlayersUiState.Success(topScorers)
 
-                var topAssists = emptyList<TopPlayerItemDto>()
-                repository.getTopAssists(leagueId, season)
-                    .catch { e ->
-                        e.printStackTrace()
-                    }
-                    .collect { list ->
-                        topAssists = list
-                    }
-                _topAssistsState.value = TopPlayersUiState.Success(topAssists)
+            delay(2000)
 
-            } catch (e: Exception) {
-                e.printStackTrace()
-                _standingsState.value = StandingsUiState.Error(e.message ?: "Failed to load standings")
-                _topScorersState.value = TopPlayersUiState.Error(e.message ?: "Failed to load top players")
-                _topAssistsState.value = TopPlayersUiState.Error(e.message ?: "Failed to load top players")
-            }
+            var topAssists = emptyList<TopPlayerItemDto>()
+            repository.getTopAssists(leagueId, season)
+                .catch { e ->
+                    e.printStackTrace()
+                }
+                .collect { list ->
+                    topAssists = list
+                }
+            _topAssistsState.value = TopPlayersUiState.Success(topAssists)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _standingsState.value = StandingsUiState.Error(e.message ?: "Failed to load standings")
+            _topScorersState.value = TopPlayersUiState.Error(e.message ?: "Failed to load top players")
+            _topAssistsState.value = TopPlayersUiState.Error(e.message ?: "Failed to load top players")
         }
     }
 }

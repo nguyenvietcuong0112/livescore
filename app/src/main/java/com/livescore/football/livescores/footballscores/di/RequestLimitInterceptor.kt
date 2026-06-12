@@ -22,7 +22,8 @@ class RequestLimitInterceptor @Inject constructor(
             if (limitManager.isLimitExceeded()) {
                 limitManager.triggerLimitExceeded()
 
-                val jsonResponse = "{\"message\": \"Bạn đã hết 20 lượt truy cập miễn phí hôm nay! Vui lòng nâng cấp Premium để tiếp tục.\"}"
+                val limit = limitManager.getDailyLimit()
+                val jsonResponse = "{\"message\": \"Bạn đã hết $limit lượt truy cập miễn phí hôm nay! Vui lòng nâng cấp Premium để tiếp tục.\"}"
                 val mediaType = "application/json".toMediaTypeOrNull()
                 val responseBody = jsonResponse.toResponseBody(mediaType)
 

@@ -51,7 +51,9 @@ class PremiumPaywallDialog : DialogFragment() {
         val isOutOfQuota = arguments?.getBoolean(ARG_OUT_OF_QUOTA, false) ?: false
         if (isOutOfQuota) {
             binding.tvTitle.text = getString(R.string.iap_out_of_quota_title)
-            binding.tvSubtitle.text = getString(R.string.iap_out_of_quota_subtitle)
+            val rawSubtitle = getString(R.string.iap_out_of_quota_subtitle)
+            val limit = limitManager.getDailyLimit().toString()
+            binding.tvSubtitle.text = rawSubtitle.replace("20", limit)
         }
         
         setupPlanSelection()

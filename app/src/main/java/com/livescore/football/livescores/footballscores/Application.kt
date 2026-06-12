@@ -39,6 +39,9 @@ class Application : AdsApplication() {
     @Inject
     lateinit var gsmManager: com.livescore.football.livescores.footballscores.data.remote.gsm.GsmManager
 
+    @Inject
+    lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
     override fun enableAdsResume(): Boolean = true
     override fun getListTestDeviceId(): List<String>? = null
     override fun getResumeAdId(): String {
@@ -51,12 +54,20 @@ class Application : AdsApplication() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate()
 
+        val deviceId = android.provider.Settings.Secure.getString(contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.GlobalCrashHandler(
+            context = this,
+            apiService = liveScoreApiService,
+            deviceId = deviceId
+        )
+
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity::class.java)
         AppOpenManager.getInstance().disableAppResumeWithActivity(LanguageActivity::class.java)
         AppOpenManager.getInstance().disableAppResumeWithActivity(IntroActivity::class.java)
         AppOpenManager.getInstance()
             .disableAppResumeWithActivity(IntroSlideshowActivity::class.java)
         AppOpenManager.getInstance().disableAppResumeWithActivity(PermissionActivity::class.java)
+
 
         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
             kotlinx.coroutines.delay(5000)

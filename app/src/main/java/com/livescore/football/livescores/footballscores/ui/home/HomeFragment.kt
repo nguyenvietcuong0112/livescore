@@ -48,6 +48,9 @@ class HomeFragment : Fragment() {
     @Inject
     lateinit var favoriteManager: FavoriteManager
 
+    @Inject
+    lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
 
 
     private var pendingReminderAction: (() -> Unit)? = null
@@ -116,6 +119,11 @@ class HomeFragment : Fragment() {
         setupRecyclerViews()
         setupFilters()
         setupCalendarPicker()
+        
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.manualRefresh()
+        }
+        
         observeViewModel()
     }
 
@@ -126,6 +134,12 @@ class HomeFragment : Fragment() {
         if (viewModel.currentFilter.value == MatchFilter.LIVE) {
             viewModel.startLivePolling()
         }
+        val deviceId = android.provider.Settings.Secure.getString(requireContext().contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
+            apiService = liveScoreApiService,
+            deviceId = deviceId,
+            newScreen = "Home"
+        )
     }
 
     companion object {
@@ -265,12 +279,18 @@ class HomeFragment : Fragment() {
                 // Collect Loading
                 launch {
                     viewModel.isLoading.collect { loading ->
-                        binding.loadingSpinner.isVisible = loading
-                        if (loading) {
-                            binding.rvMatches.visibility = View.INVISIBLE
-                            binding.emptyState.visibility = View.GONE
+                        if (binding.swipeRefreshLayout.isRefreshing) {
+                            if (!loading) {
+                                binding.swipeRefreshLayout.isRefreshing = false
+                            }
                         } else {
-                            binding.rvMatches.visibility = View.VISIBLE
+                            binding.loadingSpinner.isVisible = loading
+                            if (loading) {
+                                binding.rvMatches.visibility = View.INVISIBLE
+                                binding.emptyState.visibility = View.GONE
+                            } else {
+                                binding.rvMatches.visibility = View.VISIBLE
+                            }
                         }
                     }
                 }

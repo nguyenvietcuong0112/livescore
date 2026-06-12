@@ -18,10 +18,23 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
 
+    @Inject
+    lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
     private var isVietnamese = true
+
+    override fun onResume() {
+        super.onResume()
+        val deviceId = android.provider.Settings.Secure.getString(requireContext().contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
+            apiService = liveScoreApiService,
+            deviceId = deviceId,
+            newScreen = "Profile"
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

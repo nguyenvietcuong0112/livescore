@@ -14,8 +14,16 @@ import com.livescore.football.livescores.footballscores.databinding.ActivityNati
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
 
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+
+@AndroidEntryPoint
 class ActivityLoadNativeFullV1 : AbsBaseActivity() {
     var binding: ActivityNativeFullBinding? = null
+
+    @Inject
+    lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
      override fun bind() {
         SystemConfiguration.setStatusBarColor(
             this,
@@ -40,9 +48,24 @@ class ActivityLoadNativeFullV1 : AbsBaseActivity() {
 
 
     private fun loadNativeFull(adIdHigh: String?, adIdLow: String?) {
+        val highId = adIdHigh ?: ""
+        val lowId = adIdLow ?: ""
+
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+            liveScoreApiService, this, "native", highId, "NativeSplashFull"
+        )
+
         Admob.getInstance().loadNativeAds(this, adIdHigh, 1, object : NativeCallback() {
             override fun onAdFailedToLoad() {
                 super.onAdFailedToLoad()
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                    liveScoreApiService, this@ActivityLoadNativeFullV1, "native", highId, "NativeSplashFull", null
+                )
+
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+                    liveScoreApiService, this@ActivityLoadNativeFullV1, "native", lowId, "NativeSplashFull"
+                )
+
                 Admob.getInstance().loadNativeAds(
                     this@ActivityLoadNativeFullV1,
                     adIdLow,
@@ -50,6 +73,9 @@ class ActivityLoadNativeFullV1 : AbsBaseActivity() {
                     object : NativeCallback() {
                         override fun onAdFailedToLoad() {
                             super.onAdFailedToLoad()
+                            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                                liveScoreApiService, this@ActivityLoadNativeFullV1, "native", lowId, "NativeSplashFull", null
+                            )
                             binding?.frAdsFull?.visibility = View.GONE
                             callback?.onResultFromActivityFull()
                             finish()
@@ -57,23 +83,32 @@ class ActivityLoadNativeFullV1 : AbsBaseActivity() {
 
                         override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                             super.onNativeAdLoaded(nativeAd)
+                            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
+                                liveScoreApiService, this@ActivityLoadNativeFullV1, "native", lowId, "NativeSplashFull"
+                            )
+
+                            nativeAd?.setOnPaidEventListener { adValue ->
+                                val ecpm = adValue.valueMicros / 1000.0
+                                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                                    liveScoreApiService, this@ActivityLoadNativeFullV1, "native", lowId, "NativeSplashFull", ecpm
+                                )
+                            }
+
                             val adView = LayoutInflater.from(this@ActivityLoadNativeFullV1)
                                 .inflate(R.layout.native_full_language, null) as NativeAdView
-                            val closeButton = adView.findViewById<ImageView>(R.id.close)
-                            closeButton.visibility = View.GONE
-                            object : CountDownTimer(2000, 1000) {
-                                override fun onTick(millisUntilFinished: Long) {}
-                                override fun onFinish() {
-                                    closeButton.visibility = View.VISIBLE
-                                    closeButton.setOnClickListener {
-                                        callback?.onResultFromActivityFull()
-                                        finish()
-                                    }
-                                }
-                            }.start()
                             binding?.frAdsFull?.removeAllViews()
                             binding?.frAdsFull?.addView(adView)
                             Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+
+                            val closeButton = adView.findViewById<ImageView>(R.id.close)
+                            closeButton.visibility = View.GONE
+                            closeButton.postDelayed({
+                                closeButton.visibility = View.VISIBLE
+                                closeButton.setOnClickListener {
+                                    callback?.onResultFromActivityFull()
+                                    finish()
+                                }
+                            }, 1000)
                             LogEvent.log(this@ActivityLoadNativeFullV1, "native_splash_full")
                         }
                     })
@@ -81,34 +116,32 @@ class ActivityLoadNativeFullV1 : AbsBaseActivity() {
 
             override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                 super.onNativeAdLoaded(nativeAd)
-//                if (nativeAd != null) {
-//                    nativeAd.setOnPaidEventListener { adValue ->
-//                        AdjustHelper.adjustTrackAdRevenue(
-//                            "Admob",
-//                            adValue.valueMicros / 1000000.0,
-//                            adValue.currencyCode,
-//                            adIdHigh ?: "",
-//                            nativeAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName ?: "AdMob"
-//                        )
-//                    }
-//                }
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
+                    liveScoreApiService, this@ActivityLoadNativeFullV1, "native", highId, "NativeSplashFull"
+                )
+
+                nativeAd?.setOnPaidEventListener { adValue ->
+                    val ecpm = adValue.valueMicros / 1000.0
+                    com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                        liveScoreApiService, this@ActivityLoadNativeFullV1, "native", highId, "NativeSplashFull", ecpm
+                    )
+                }
+
                 val adView = LayoutInflater.from(this@ActivityLoadNativeFullV1)
                     .inflate(R.layout.native_full_language, null) as NativeAdView
-                val closeButton = adView.findViewById<ImageView>(R.id.close)
-                closeButton.visibility = View.GONE
-                object : CountDownTimer(2000, 1000) {
-                    override fun onTick(millisUntilFinished: Long) {}
-                    override fun onFinish() {
-                        closeButton.visibility = View.VISIBLE
-                        closeButton.setOnClickListener {
-                            callback?.onResultFromActivityFull()
-                            finish()
-                        }
-                    }
-                }.start()
                 binding?.frAdsFull?.removeAllViews()
                 binding?.frAdsFull?.addView(adView)
                 Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+
+                val closeButton = adView.findViewById<ImageView>(R.id.close)
+                closeButton.visibility = View.GONE
+                closeButton.postDelayed({
+                    closeButton.visibility = View.VISIBLE
+                    closeButton.setOnClickListener {
+                        callback?.onResultFromActivityFull()
+                        finish()
+                    }
+                }, 1000)
                 LogEvent.log(this@ActivityLoadNativeFullV1, "native_splash_full")
             }
         })
@@ -118,6 +151,12 @@ class ActivityLoadNativeFullV1 : AbsBaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        val deviceId = android.provider.Settings.Secure.getString(contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
+            apiService = liveScoreApiService,
+            deviceId = deviceId,
+            newScreen = "NativeSplashFull"
+        )
         count++
         if (count >= 2) {
             callback?.onResultFromActivityFull()

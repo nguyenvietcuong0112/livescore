@@ -30,6 +30,9 @@ class LeaguesFragment : Fragment() {
     @Inject
     lateinit var limitManager: com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 
+    @Inject
+    lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
     private var _binding: FragmentLeaguesBinding? = null
     private val binding get() = _binding!!
 
@@ -37,6 +40,7 @@ class LeaguesFragment : Fragment() {
 
     private lateinit var leagueSelectorAdapter: LeagueSelectorAdapter
     private lateinit var standingsAdapter: StandingsAdapter
+    private lateinit var wcGroupsAdapter: WcGroupsAdapter
     private lateinit var topScorersAdapter: TopStatsAdapter
     private lateinit var topAssistsAdapter: TopStatsAdapter
 
@@ -49,11 +53,24 @@ class LeaguesFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        val deviceId = android.provider.Settings.Secure.getString(requireContext().contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
+            apiService = liveScoreApiService,
+            deviceId = deviceId,
+            newScreen = "Leagues"
+        )
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerViews()
         setupListeners()
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.refreshCurrentData()
+        }
         observeViewModel()
         loadNativeAd()
     }
@@ -83,6 +100,8 @@ class LeaguesFragment : Fragment() {
             // Handle player click if needed
         }
 
+        wcGroupsAdapter = WcGroupsAdapter()
+
         binding.rvLeaguesContent.layoutManager = LinearLayoutManager(requireContext())
     }
 
@@ -108,6 +127,7 @@ class LeaguesFragment : Fragment() {
                 launch {
                     viewModel.selectedLeagueId.collect { leagueId ->
                         leagueSelectorAdapter.setSelectedLeagueId(leagueId)
+                        updateTabButtonsUI(viewModel.selectedTab.value)
                     }
                 }
 
@@ -144,6 +164,13 @@ class LeaguesFragment : Fragment() {
                         }
                     }
                 }
+
+                // Observe refreshing state
+                launch {
+                    viewModel.isRefreshing.collect { refreshing ->
+                        binding.swipeRefreshLayout.isRefreshing = refreshing
+                    }
+                }
             }
         }
     }
@@ -163,8 +190,9 @@ class LeaguesFragment : Fragment() {
                 binding.btnScorers.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
                 binding.btnAssists.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
                 
-                binding.layoutTableHeader.isVisible = true
-                binding.rvLeaguesContent.adapter = standingsAdapter
+                val isWc = viewModel.selectedLeagueId.value == 1
+                binding.layoutTableHeader.isVisible = !isWc
+                binding.rvLeaguesContent.adapter = if (isWc) wcGroupsAdapter else standingsAdapter
                 
                 // Re-render standing state
                 renderStandingsState(viewModel.standingsState.value)
@@ -203,17 +231,28 @@ class LeaguesFragment : Fragment() {
     }
 
     private fun renderStandingsState(state: StandingsUiState) {
+        val isWc = viewModel.selectedLeagueId.value == 1
         when (state) {
             is StandingsUiState.Loading -> {
-                binding.loadingSpinner.isVisible = true
-                binding.emptyState.isVisible = false
-                standingsAdapter.submitList(emptyList())
+                if (!binding.swipeRefreshLayout.isRefreshing) {
+                    binding.loadingSpinner.isVisible = true
+                    binding.emptyState.isVisible = false
+                    if (isWc) {
+                        wcGroupsAdapter.submitList(emptyList())
+                    } else {
+                        standingsAdapter.submitList(emptyList())
+                    }
+                }
             }
             is StandingsUiState.Error -> {
                 binding.loadingSpinner.isVisible = false
                 binding.emptyState.isVisible = true
                 binding.emptyState.text = getString(R.string.empty_fixtures)
-                standingsAdapter.submitList(emptyList())
+                if (isWc) {
+                    wcGroupsAdapter.submitList(emptyList())
+                } else {
+                    standingsAdapter.submitList(emptyList())
+                }
             }
             is StandingsUiState.Success -> {
                 binding.loadingSpinner.isVisible = false
@@ -221,7 +260,15 @@ class LeaguesFragment : Fragment() {
                 if (state.list.isEmpty()) {
                     binding.emptyState.text = getString(R.string.empty_fixtures)
                 }
-                standingsAdapter.submitList(state.list)
+                if (isWc) {
+                    val grouped = state.list.groupBy { it.group ?: "Group A" }
+                    val sortedGroups = grouped.entries.sortedBy { it.key }.map {
+                        WcGroupItem(it.key, it.value)
+                    }
+                    wcGroupsAdapter.submitList(sortedGroups)
+                } else {
+                    standingsAdapter.submitList(state.list)
+                }
             }
         }
     }
@@ -230,9 +277,11 @@ class LeaguesFragment : Fragment() {
         val adapter = if (isAssists) topAssistsAdapter else topScorersAdapter
         when (state) {
             is TopPlayersUiState.Loading -> {
-                binding.loadingSpinner.isVisible = true
-                binding.emptyState.isVisible = false
-                adapter.submitList(emptyList())
+                if (!binding.swipeRefreshLayout.isRefreshing) {
+                    binding.loadingSpinner.isVisible = true
+                    binding.emptyState.isVisible = false
+                    adapter.submitList(emptyList())
+                }
             }
             is TopPlayersUiState.Error -> {
                 binding.loadingSpinner.isVisible = false
@@ -264,6 +313,10 @@ class LeaguesFragment : Fragment() {
             getString(R.string.native_all)
         }
         if (adId.isNotEmpty()) {
+            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+                liveScoreApiService, requireContext(), "native", adId, "Leagues"
+            )
+
             Admob.getInstance().loadNativeAds(
                 requireContext(),
                 adId,
@@ -272,6 +325,18 @@ class LeaguesFragment : Fragment() {
                     override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                         super.onNativeAdLoaded(nativeAd)
                         if (!isAdded) return
+
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
+                            liveScoreApiService, requireContext(), "native", adId, "Leagues"
+                        )
+
+                        nativeAd?.setOnPaidEventListener { adValue ->
+                            val ecpm = adValue.valueMicros / 1000.0
+                            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                                liveScoreApiService, requireContext(), "native", adId, "Leagues", ecpm
+                            )
+                        }
+
                         val adView = LayoutInflater.from(requireContext())
                             .inflate(R.layout.layout_native_league, null) as NativeAdView
                         
@@ -284,6 +349,9 @@ class LeaguesFragment : Fragment() {
                     override fun onAdFailedToLoad() {
                         super.onAdFailedToLoad()
                         if (!isAdded) return
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                            liveScoreApiService, requireContext(), "native", adId, "Leagues", null
+                        )
                         binding.frAdsLeague.visibility = View.GONE
                     }
                 }

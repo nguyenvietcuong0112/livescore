@@ -41,6 +41,9 @@ class FavoriteFragment : Fragment() {
     @Inject
     lateinit var limitManager: RequestLimitManager
 
+    @Inject
+    lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
     private var pendingReminderAction: (() -> Unit)? = null
     private val notificationPermissionLauncher = registerForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
@@ -99,6 +102,10 @@ class FavoriteFragment : Fragment() {
         setupRecyclerViews()
         observeViewModel()
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.refreshFavoriteMatchesFromServer()
+        }
+
         binding.btnDiscover.setOnClickListener {
             (activity as? MainActivity)?.switchToTab(R.id.nav_live)
         }
@@ -108,6 +115,12 @@ class FavoriteFragment : Fragment() {
         super.onResume()
         // Refresh favorite matches when fragment is shown
         viewModel.loadFavoriteMatches()
+        val deviceId = android.provider.Settings.Secure.getString(requireContext().contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
+            apiService = liveScoreApiService,
+            deviceId = deviceId,
+            newScreen = "Favorite"
+        )
     }
 
     private fun setupRecyclerViews() {
@@ -162,6 +175,13 @@ class FavoriteFragment : Fragment() {
                             }
                         }
                         matchAdapter.submitList(withAds)
+                    }
+                }
+
+                // Observe refreshing state
+                launch {
+                    viewModel.isRefreshing.collect { refreshing ->
+                        binding.swipeRefreshLayout.isRefreshing = refreshing
                     }
                 }
             }

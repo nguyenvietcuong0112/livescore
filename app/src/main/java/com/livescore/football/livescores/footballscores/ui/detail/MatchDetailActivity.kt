@@ -36,8 +36,21 @@ class MatchDetailActivity : BaseActivity() {
     @Inject
     lateinit var limitManager: RequestLimitManager
 
+    @Inject
+    lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
     private lateinit var binding: ActivityMatchDetailBinding
     private val viewModel: MatchDetailViewModel by viewModels()
+
+    override fun onResume() {
+        super.onResume()
+        val deviceId = android.provider.Settings.Secure.getString(contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
+            apiService = liveScoreApiService,
+            deviceId = deviceId,
+            newScreen = "MatchDetail"
+        )
+    }
 
     private lateinit var eventAdapter: EventAdapter
     private lateinit var lineupAdapter: LineupAdapter

@@ -22,8 +22,21 @@ class FragmentIntro1 : AbsBaseFragment<FragmentIntro1Binding?>() {
     @Inject
     lateinit var limitManager: com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 
+    @Inject
+    lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
     override fun getLayout(): Int {
         return R.layout.fragment_intro1
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val deviceId = android.provider.Settings.Secure.getString(requireContext().contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
+            apiService = liveScoreApiService,
+            deviceId = deviceId,
+            newScreen = "Onboarding1"
+        )
     }
 
     override fun initView() {
@@ -60,6 +73,21 @@ class FragmentIntro1 : AbsBaseFragment<FragmentIntro1Binding?>() {
 
             binding!!.frAds.removeAllViews()
             binding!!.frAds.addView(adView)
+
+            val adId = try {
+                RemoteConfigManager.getInstance()
+                    .getAdId("native_onboarding_1", getString(R.string.native_onboarding_1))
+            } catch (e: Exception) {
+                getString(R.string.native_onboarding_1)
+            }
+
+            AdsConfig.nativeIntro1?.setOnPaidEventListener { adValue ->
+                val ecpm = adValue.valueMicros / 1000.0
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                    liveScoreApiService, requireContext(), "native", adId, "Onboarding1", ecpm
+                )
+            }
+
             Admob.getInstance().pushAdsToViewCustom(AdsConfig.nativeIntro1, adView)
             context?.let { LogEvent.log(it, "native_onboarding_1") }
         } else {
@@ -77,6 +105,9 @@ class FragmentIntro1 : AbsBaseFragment<FragmentIntro1Binding?>() {
 
         if (adId.isNotEmpty()) {
             showLoadingNext(true)
+            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+                liveScoreApiService, requireContext(), "native", adId, "Onboarding1"
+            )
             Admob.getInstance().loadNativeAd(
                 requireActivity(),
                 adId,
@@ -85,6 +116,9 @@ class FragmentIntro1 : AbsBaseFragment<FragmentIntro1Binding?>() {
                         super.onAdFailedToLoad()
                         if (!isAdded) return
                         showLoadingNext(false)
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                            liveScoreApiService, requireContext(), "native", adId, "Onboarding1", null
+                        )
                         goneAds()
                     }
 
@@ -92,7 +126,18 @@ class FragmentIntro1 : AbsBaseFragment<FragmentIntro1Binding?>() {
                         super.onNativeAdLoaded(nativeAd)
                         if (!isAdded) return
                         AdsConfig.nativeIntro1 = nativeAd
-                        
+
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
+                            liveScoreApiService, requireContext(), "native", adId, "Onboarding1"
+                        )
+
+                        nativeAd?.setOnPaidEventListener { adValue ->
+                            val ecpm = adValue.valueMicros / 1000.0
+                            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                                liveScoreApiService, requireContext(), "native", adId, "Onboarding1", ecpm
+                            )
+                        }
+
                         val adView = LayoutInflater.from(requireActivity())
                             .inflate(R.layout.layout_native_media, null) as NativeAdView?
 

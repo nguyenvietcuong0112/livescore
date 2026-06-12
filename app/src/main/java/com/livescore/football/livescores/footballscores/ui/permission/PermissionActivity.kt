@@ -29,7 +29,20 @@ class PermissionActivity : BaseActivity() {
     @Inject
     lateinit var limitManager: RequestLimitManager
 
+    @Inject
+    lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
     private lateinit var binding: ActivityPermissionBinding
+
+    override fun onResume() {
+        super.onResume()
+        val deviceId = android.provider.Settings.Secure.getString(contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
+            apiService = liveScoreApiService,
+            deviceId = deviceId,
+            newScreen = "Permission"
+        )
+    }
 
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -83,9 +96,16 @@ class PermissionActivity : BaseActivity() {
             getString(R.string.native_permission)
         }
         if (adId.isNotEmpty()) {
+            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+                liveScoreApiService, this, "native", adId, "Permission"
+            )
+
             Admob.getInstance().loadNativeAds(this, adId, 1, object : NativeCallback() {
                 override fun onAdFailedToLoad() {
                     super.onAdFailedToLoad()
+                    com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                        liveScoreApiService, this@PermissionActivity, "native", adId, "Permission", null
+                    )
                     binding.frAds.removeAllViews()
                     binding.frAds.visibility = View.GONE
                     enableSkip()
@@ -93,6 +113,17 @@ class PermissionActivity : BaseActivity() {
 
                 override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                     super.onNativeAdLoaded(nativeAd)
+                    com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
+                        liveScoreApiService, this@PermissionActivity, "native", adId, "Permission"
+                    )
+
+                    nativeAd?.setOnPaidEventListener { adValue ->
+                        val ecpm = adValue.valueMicros / 1000.0
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                            liveScoreApiService, this@PermissionActivity, "native", adId, "Permission", ecpm
+                        )
+                    }
+
                     val adView = LayoutInflater.from(this@PermissionActivity)
                         .inflate(R.layout.layout_native_media, null) as NativeAdView
                     binding.frAds.removeAllViews()

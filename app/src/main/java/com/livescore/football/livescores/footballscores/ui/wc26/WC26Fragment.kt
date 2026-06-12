@@ -47,6 +47,9 @@ class WC26Fragment : Fragment() {
     @Inject
     lateinit var limitManager: RequestLimitManager
 
+    @Inject
+    lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
     private var selectedTab = 0
     private var isWcBracketFullScreen = false
 
@@ -59,10 +62,23 @@ class WC26Fragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        val deviceId = android.provider.Settings.Secure.getString(requireContext().contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
+            apiService = liveScoreApiService,
+            deviceId = deviceId,
+            newScreen = "WC26"
+        )
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupCountdown()
         setupListeners()
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            populateWcTournamentData()
+        }
         updateTabUI()
         setupAdScrollListeners()
         populateWcTournamentData()
@@ -71,12 +87,15 @@ class WC26Fragment : Fragment() {
     private fun populateWcTournamentData() {
         pendingAdLoads.clear()
         lifecycleScope.launch {
+            val isRefreshing = binding.swipeRefreshLayout.isRefreshing
             try {
-                binding.layoutLoadingOverlay.isVisible = true
-                binding.btnWcZoom.isVisible = false
-                binding.scrollWcFixtures.isVisible = false
-                binding.scrollWcGroups.isVisible = false
-                binding.scrollWcBracket.isVisible = false
+                if (!isRefreshing) {
+                    binding.layoutLoadingOverlay.isVisible = true
+                    binding.btnWcZoom.isVisible = false
+                    binding.scrollWcFixtures.isVisible = false
+                    binding.scrollWcGroups.isVisible = false
+                    binding.scrollWcBracket.isVisible = false
+                }
 
                 val inflater = LayoutInflater.from(requireContext())
 
@@ -435,6 +454,7 @@ class WC26Fragment : Fragment() {
                 e.printStackTrace()
             } finally {
                 if (_binding != null) {
+                    binding.swipeRefreshLayout.isRefreshing = false
                     binding.layoutLoadingOverlay.isVisible = false
                     updateTabUI()
                 }
@@ -709,6 +729,11 @@ class WC26Fragment : Fragment() {
 
     private fun triggerAdLoad(pending: PendingAdLoad) {
         val context = context ?: return
+        val adUnitId = pending.adId ?: ""
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+            liveScoreApiService, context, "native", adUnitId, "WC26"
+        )
+
         Admob.getInstance().loadNativeAds(
             context,
             pending.adId,
@@ -717,6 +742,17 @@ class WC26Fragment : Fragment() {
                 override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
                     super.onNativeAdLoaded(nativeAd)
                     if (!isAdded) return
+                    com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
+                        liveScoreApiService, context, "native", adUnitId, "WC26"
+                    )
+
+                    nativeAd?.setOnPaidEventListener { adValue ->
+                        val ecpm = adValue.valueMicros / 1000.0
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                            liveScoreApiService, context, "native", adUnitId, "WC26", ecpm
+                        )
+                    }
+
                     pending.adViewWrapper.visibility = View.VISIBLE
                     Admob.getInstance().pushAdsToViewCustom(
                         nativeAd,
@@ -727,6 +763,9 @@ class WC26Fragment : Fragment() {
                 override fun onAdFailedToLoad() {
                     super.onAdFailedToLoad()
                     if (!isAdded) return
+                    com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                        liveScoreApiService, context, "native", adUnitId, "WC26", null
+                    )
                     pending.adViewWrapper.visibility = View.GONE
                 }
             }

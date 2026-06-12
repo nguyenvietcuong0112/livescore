@@ -84,6 +84,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideLiveScoreApiService(retrofit: Retrofit): com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService {
+        return retrofit.create(com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService::class.java)
+    }
+
+
+    @Provides
+    @Singleton
     fun provideGsmAuthInterceptor(): com.livescore.football.livescores.footballscores.data.remote.gsm.GsmAuthInterceptor {
         return com.livescore.football.livescores.footballscores.data.remote.gsm.GsmAuthInterceptor()
     }

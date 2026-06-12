@@ -41,6 +41,9 @@ class SplashActivity : BaseActivity() {
     @Inject
     lateinit var deviceRegistrationManager: DeviceRegistrationManager
 
+    @Inject
+    lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
     private lateinit var binding: ActivitySplashBinding
     private var interCallback: InterCallback? = null
     private var isTransitioning = false
@@ -86,8 +89,14 @@ class SplashActivity : BaseActivity() {
             binding.frAdsBanner.visibility = View.GONE
         } else {
             binding.frAdsBanner.visibility = View.VISIBLE
-            Admob.getInstance()
-                .loadBanner(this, getRemoteAdId("banner_splash", R.string.banner_splash))
+            val bannerId = getRemoteAdId("banner_splash", R.string.banner_splash)
+            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+                liveScoreApiService, this, "banner", bannerId, "Splash"
+            )
+            Admob.getInstance().loadBanner(this, bannerId)
+            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                liveScoreApiService, this, "banner", bannerId, "Splash"
+            )
             LogEvent.log(this, "banner_splash_view")
         }
 
@@ -95,6 +104,15 @@ class SplashActivity : BaseActivity() {
             override fun onAdClosedByUser() {
                 super.onAdClosedByUser()
                 LogEvent.log(this@SplashActivity, "inter_splash_view")
+
+                val interId = remoteConfigManager.getAdId("inter_splash", getString(R.string.inter_splash))
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
+                    liveScoreApiService, this@SplashActivity, "interstitial", interId, "Splash"
+                )
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                    liveScoreApiService, this@SplashActivity, "interstitial", interId, "Splash"
+                )
+
                 if (!SharePreferenceUtils.isOrganic(applicationContext)) {
                     ActivityLoadNativeFullV1.Companion.open(
                         this@SplashActivity,
@@ -113,6 +131,11 @@ class SplashActivity : BaseActivity() {
 
             override fun onAdFailedToLoad(i: LoadAdError?) {
                 super.onAdFailedToLoad(i)
+                val interId = remoteConfigManager.getAdId("inter_splash", getString(R.string.inter_splash))
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                    liveScoreApiService, this@SplashActivity, "interstitial", interId, "Splash", i?.code
+                )
+
                 if (!SharePreferenceUtils.isOrganic(applicationContext)) {
                     ActivityLoadNativeFullV1.Companion.open(
                         this@SplashActivity,
@@ -157,6 +180,11 @@ class SplashActivity : BaseActivity() {
         consentHelper.obtainConsentAndShow(this) {
             Handler(Looper.getMainLooper()).postDelayed({
                 if (!isFinishing && !isDestroyed) {
+                    val interId = remoteConfigManager.getAdId("inter_splash", getString(R.string.inter_splash))
+                    com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+                        liveScoreApiService, this@SplashActivity, "interstitial", interId, "Splash"
+                    )
+
                     Admob.getInstance().loadSplashInterAdsFloor(
                         this@SplashActivity,
                         arrayListOf(
@@ -164,10 +192,7 @@ class SplashActivity : BaseActivity() {
                                 "inter_splash_high",
                                 getString(R.string.inter_splash_high)
                             ),
-                            remoteConfigManager.getAdId(
-                                "inter_splash",
-                                getString(R.string.inter_splash)
-                            )
+                            interId
                         ),
                         8000,
                         interCallback
@@ -221,6 +246,12 @@ class SplashActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        val deviceId = android.provider.Settings.Secure.getString(contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
+            apiService = liveScoreApiService,
+            deviceId = deviceId,
+            newScreen = "Splash"
+        )
         Admob.getInstance().onCheckShowSplashWhenFail(this, interCallback, 5000)
     }
 

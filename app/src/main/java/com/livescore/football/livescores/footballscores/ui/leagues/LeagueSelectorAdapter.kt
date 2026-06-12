@@ -22,7 +22,7 @@ class LeagueSelectorAdapter(
     private val onLeagueClick: (LeagueSelectorItem) -> Unit
 ) : ListAdapter<LeagueSelectorItem, LeagueSelectorAdapter.ViewHolder>(DiffCallback) {
 
-    private var selectedLeagueId: Int = 39
+    private var selectedLeagueId: Int = -1
 
     fun setSelectedLeagueId(id: Int) {
         if (selectedLeagueId != id) {

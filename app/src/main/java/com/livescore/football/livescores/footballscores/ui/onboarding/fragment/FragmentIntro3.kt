@@ -22,8 +22,21 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
     @Inject
     lateinit var limitManager: com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 
+    @Inject
+    lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
     override fun getLayout(): Int {
         return R.layout.fragment_intro3
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val deviceId = android.provider.Settings.Secure.getString(requireContext().contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
+            apiService = liveScoreApiService,
+            deviceId = deviceId,
+            newScreen = "Onboarding3"
+        )
     }
 
     override fun initView() {
@@ -64,6 +77,9 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
         }
         if (adId.isNotEmpty()) {
             showLoadingNext(true)
+            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+                liveScoreApiService, requireContext(), "native", adId, "Onboarding3"
+            )
             Admob.getInstance().loadNativeAd(
                 requireActivity(),
                 adId,
@@ -72,6 +88,9 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
                         super.onAdFailedToLoad()
                         if (!isAdded) return
                         showLoadingNext(false)
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                            liveScoreApiService, requireContext(), "native", adId, "Onboarding3", null
+                        )
                         binding!!.frAds.removeAllViews()
                         binding!!.frAds.visibility = View.GONE
                     }
@@ -79,7 +98,18 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
                     override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                         super.onNativeAdLoaded(nativeAd)
                         if (!isAdded) return
-                        
+
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
+                            liveScoreApiService, requireContext(), "native", adId, "Onboarding3"
+                        )
+
+                        nativeAd?.setOnPaidEventListener { adValue ->
+                            val ecpm = adValue.valueMicros / 1000.0
+                            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                                liveScoreApiService, requireContext(), "native", adId, "Onboarding3", ecpm
+                            )
+                        }
+
                         val adView = LayoutInflater.from(requireActivity())
                             .inflate(R.layout.layout_native_no_media, null) as NativeAdView
 

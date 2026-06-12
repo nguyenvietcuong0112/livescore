@@ -59,7 +59,8 @@ class RemoteConfigManager @Inject constructor(
 
             val defaults = mapOf(
                 KEY_API_KEY to DEFAULT_API_KEY,
-                "inter_click_enabled" to "true"
+                "inter_click_enabled" to "true",
+                "daily_request_limit" to "20"
             )
             remoteConfig.setDefaultsAsync(defaults)
         } catch (e: Exception) {
@@ -74,6 +75,20 @@ class RemoteConfigManager @Inject constructor(
         } catch (e: Exception) {
             Log.e("RemoteConfigManager", "Error reading key from Remote Config, using fallback: ${e.message}")
             DEFAULT_API_KEY
+        }
+    }
+
+    fun getDailyRequestLimit(): Int {
+        return try {
+            val limitStr = remoteConfig.getString("daily_request_limit").trim()
+            if (limitStr.isNotEmpty()) {
+                limitStr.toIntOrNull() ?: 20
+            } else {
+                20
+            }
+        } catch (e: Exception) {
+            Log.e("RemoteConfigManager", "Error reading daily_request_limit: ${e.message}")
+            20
         }
     }
 

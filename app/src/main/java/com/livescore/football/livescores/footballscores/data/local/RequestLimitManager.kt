@@ -18,7 +18,8 @@ import javax.inject.Singleton
 
 @Singleton
 class RequestLimitManager @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val remoteConfigManager: com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 ) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences("livescore_request_limits_prefs", Context.MODE_PRIVATE)
@@ -59,6 +60,10 @@ class RequestLimitManager @Inject constructor(
         }.format(Date())
     }
 
+    fun getDailyLimit(): Int {
+        return remoteConfigManager.getDailyRequestLimit()
+    }
+
     @Synchronized
     fun isLimitExceeded(): Boolean {
         if (isPremium()) return false
@@ -76,7 +81,7 @@ class RequestLimitManager @Inject constructor(
         }
 
         val count = prefs.getInt(KEY_REQ_COUNT, 0)
-        return count >= DAILY_LIMIT
+        return count >= getDailyLimit()
     }
 
     @Synchronized
@@ -107,7 +112,7 @@ class RequestLimitManager @Inject constructor(
         val today = getTodayDateString()
         val lastDate = prefs.getString(KEY_LAST_DATE, "")
         val count = if (lastDate == today) prefs.getInt(KEY_REQ_COUNT, 0) else 0
-        return (DAILY_LIMIT - count).coerceAtLeast(0)
+        return (getDailyLimit() - count).coerceAtLeast(0)
     }
 
     fun isNearQuotaLimit(): Boolean {

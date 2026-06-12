@@ -22,6 +22,9 @@ class FavoriteViewModel @Inject constructor(
     private val _favoriteMatches = MutableStateFlow<List<MatchListItem>>(emptyList())
     val favoriteMatches: StateFlow<List<MatchListItem>> = _favoriteMatches.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     init {
         loadFavoriteMatches()
     }
@@ -50,6 +53,42 @@ class FavoriteViewModel @Inject constructor(
                 items
             }.collect { items ->
                 _favoriteMatches.value = items
+            }
+        }
+    }
+
+    fun refreshFavoriteMatchesFromServer() {
+        val favIds = favoriteManager.getFavoriteFixtureIds()
+        val favIntIds = favIds.mapNotNull { it.toIntOrNull() }.toSet()
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            try {
+                val currentMatches = matchRepository.allCachedMatches.first()
+                val favoriteMatches = currentMatches.filter { it.id in favIntIds }
+                val uniqueDates = favoriteMatches.mapNotNull { it.queryDate }.filter { it.isNotEmpty() }.toSet()
+                
+                val datesToRefresh = if (uniqueDates.isNotEmpty()) {
+                    uniqueDates
+                } else {
+                    val sdf = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
+                        timeZone = java.util.TimeZone.getDefault()
+                    }
+                    val todayStr = sdf.format(java.util.Calendar.getInstance().time)
+                    setOf(todayStr)
+                }
+                
+                for (date in datesToRefresh) {
+                    try {
+                        matchRepository.refreshMatchesByDate(date)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                loadFavoriteMatches()
+                _isRefreshing.value = false
             }
         }
     }
