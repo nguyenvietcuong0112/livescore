@@ -158,7 +158,9 @@ class LanguageActivity : BaseActivity() {
                     binding.frAds.removeAllViews()
                     binding.frAds.addView(adView)
                     Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
-                    checkNextButtonStatus(true)
+                    binding.frAds.postDelayed({
+                        checkNextButtonStatus(true)
+                    }, 500)
                 }
 
                 override fun onAdFailedToLoad() {
@@ -223,7 +225,9 @@ class LanguageActivity : BaseActivity() {
                     binding.frAds.removeAllViews()
                     binding.frAds.addView(adView)
                     Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
-                    checkNextButtonStatus(true)
+                    binding.frAds.postDelayed({
+                        checkNextButtonStatus(true)
+                    }, 500)
                 }
 
                 override fun onAdFailedToLoad() {

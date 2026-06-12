@@ -37,6 +37,18 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
         }
     }
 
+    private fun showLoadingNext(isLoading: Boolean) {
+        if (isLoading) {
+            binding?.txtNext?.text = ""
+            binding?.txtNext?.isClickable = false
+            binding?.loadingNext?.visibility = View.VISIBLE
+        } else {
+            binding?.txtNext?.text = getString(R.string.intro_next)
+            binding?.txtNext?.isClickable = true
+            binding?.loadingNext?.visibility = View.GONE
+        }
+    }
+
     private fun loadAds() {
         if (::limitManager.isInitialized && limitManager.isPremium()) {
             binding!!.frAds.visibility = View.GONE
@@ -50,6 +62,7 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
             getString(R.string.native_banner_ob)
         }
         if (adId.isNotEmpty()) {
+            showLoadingNext(true)
             Admob.getInstance().loadNativeAd(
                 requireActivity(),
                 adId,
@@ -57,6 +70,7 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
                     override fun onAdFailedToLoad() {
                         super.onAdFailedToLoad()
                         if (!isAdded) return
+                        showLoadingNext(false)
                         binding!!.frAds.removeAllViews()
                         binding!!.frAds.visibility = View.GONE
                     }
@@ -64,12 +78,17 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
                     override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                         super.onNativeAdLoaded(nativeAd)
                         if (!isAdded) return
+                        
                         val adView = LayoutInflater.from(requireActivity())
                             .inflate(R.layout.layout_native_no_media, null) as NativeAdView
 
                         binding!!.frAds.removeAllViews()
                         binding!!.frAds.addView(adView)
                         Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+
+                        binding!!.frAds.postDelayed({
+                            showLoadingNext(false)
+                        }, 500)
                     }
                 }
             )

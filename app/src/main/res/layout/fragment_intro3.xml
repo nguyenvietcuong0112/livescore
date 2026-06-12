@@ -108,5 +108,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <ProgressBar
+            android:id="@+id/loadingNext"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:visibility="gone"
+            android:indeterminateTint="#FFFFFF"
+            app:layout_constraintTop_toTopOf="@id/txtNext"
+            app:layout_constraintBottom_toBottomOf="@id/txtNext"
+            app:layout_constraintStart_toStartOf="@id/txtNext"
+            app:layout_constraintEnd_toEndOf="@id/txtNext" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

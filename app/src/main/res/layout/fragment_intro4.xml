@@ -105,6 +105,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
+            <ProgressBar
+                android:id="@+id/loadingNext"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:visibility="gone"
+                android:indeterminateTint="#1A73E8"
+                app:layout_constraintTop_toTopOf="@id/txtNext"
+                app:layout_constraintBottom_toBottomOf="@id/txtNext"
+                app:layout_constraintStart_toStartOf="@id/txtNext"
+                app:layout_constraintEnd_toEndOf="@id/txtNext" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Native Ad at Bottom -->
