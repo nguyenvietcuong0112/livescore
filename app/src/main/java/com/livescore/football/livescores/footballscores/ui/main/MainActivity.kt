@@ -40,6 +40,10 @@ import androidx.core.view.WindowCompat
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
+    companion object {
+        const val EXTRA_LEAGUE_ID = "LEAGUE_ID"
+    }
+
     @Inject
     lateinit var limitManager: RequestLimitManager
 
@@ -115,6 +119,8 @@ class MainActivity : BaseActivity() {
             updateLogoText(activeTabId)
         }
 
+        handleDeepLinkIntent(intent)
+
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
             val isSameFragment = when (item.itemId) {
@@ -133,7 +139,7 @@ class MainActivity : BaseActivity() {
             updateLogoText(item.itemId)
             val fragment = when (item.itemId) {
                 R.id.nav_live -> HomeFragment.Companion.newInstance(false)
-                R.id.nav_leagues -> LeaguesFragment()
+                R.id.nav_leagues -> LeaguesFragment.newInstance()
                 R.id.nav_wc26 -> WC26Fragment()
                 R.id.nav_favorite -> FavoriteFragment()
                 R.id.nav_profile -> ProfileFragment()
@@ -178,6 +184,25 @@ class MainActivity : BaseActivity() {
         binding.bottomNavigation.selectedItemId = tabId
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleDeepLinkIntent(intent)
+    }
+
+    private fun handleDeepLinkIntent(intent: Intent?) {
+        val leagueId = intent?.getIntExtra(EXTRA_LEAGUE_ID, -1) ?: -1
+        if (leagueId <= 0) return
+
+        activeTabId = R.id.nav_leagues
+        updateLogoText(R.id.nav_leagues)
+        binding.bottomNavigation.selectedItemId = R.id.nav_leagues
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, LeaguesFragment.newInstance(leagueId))
+            .commitAllowingStateLoss()
+        intent?.removeExtra(EXTRA_LEAGUE_ID)
+    }
+
     fun showPremiumPaywall(isOutOfQuota: Boolean = false) {
         if (supportFragmentManager.isStateSaved) return
         val existing = supportFragmentManager.findFragmentByTag(PremiumPaywallDialog.Companion.TAG)
@@ -190,6 +215,7 @@ class MainActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         val deviceId = android.provider.Settings.Secure.getString(contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        android.util.Log.d("MainActivity", "Device ID: $deviceId")
         com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
             apiService = liveScoreApiService,
             deviceId = deviceId,

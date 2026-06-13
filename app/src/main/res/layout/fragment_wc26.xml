@@ -148,23 +148,77 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- CONTENT 1: Fixtures ScrollView -->
-            <ScrollView
-                android:id="@+id/scrollWcFixtures"
+            <!-- CONTENT 1: Fixtures Panel -->
+            <LinearLayout
+                android:id="@+id/layoutWcFixturesPanel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:visibility="visible">
 
                 <LinearLayout
-                    android:id="@+id/layoutWcFixturesContainer"
+                    android:id="@+id/wcFixturesFilterLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:paddingHorizontal="16dp"
-                    android:paddingBottom="24dp">
+                    android:paddingTop="8dp"
+                    android:paddingBottom="4dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnWcFinished"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp"
+                        android:backgroundTint="@color/card_dark"
+                        android:text="@string/finished"
+                        android:textColor="@color/text_muted"
+                        android:textSize="12sp"
+                        app:cornerRadius="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnWcLive"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="4dp"
+                        android:backgroundTint="@color/card_dark"
+                        android:text="@string/live"
+                        android:textColor="@color/accent_green"
+                        android:textSize="12sp"
+                        app:cornerRadius="8dp"
+                        app:strokeColor="@color/accent_green"
+                        app:strokeWidth="1dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnWcUpcoming"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:backgroundTint="@color/card_dark"
+                        android:text="@string/upcoming"
+                        android:textColor="@color/text_muted"
+                        android:textSize="12sp"
+                        app:cornerRadius="8dp" />
+
                 </LinearLayout>
 
-            </ScrollView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvWcFixtures"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="24dp"
+                    android:clipToPadding="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </LinearLayout>
 
             <!-- CONTENT 2: Groups ScrollView -->
             <ScrollView

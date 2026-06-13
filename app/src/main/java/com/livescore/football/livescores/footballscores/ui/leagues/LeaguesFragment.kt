@@ -28,6 +28,18 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class LeaguesFragment : Fragment() {
 
+    companion object {
+        private const val ARG_LEAGUE_ID = "arg_league_id"
+
+        fun newInstance(leagueId: Int = -1): LeaguesFragment {
+            return LeaguesFragment().apply {
+                if (leagueId > 0) {
+                    arguments = Bundle().apply { putInt(ARG_LEAGUE_ID, leagueId) }
+                }
+            }
+        }
+    }
+
     @Inject
     lateinit var limitManager: com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 
@@ -75,6 +87,10 @@ class LeaguesFragment : Fragment() {
         }
         observeViewModel()
         loadNativeAd()
+
+        arguments?.getInt(ARG_LEAGUE_ID, -1)?.takeIf { it > 0 }?.let { leagueId ->
+            viewModel.selectLeague(leagueId)
+        }
     }
 
     private fun setupRecyclerViews() {

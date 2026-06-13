@@ -166,6 +166,9 @@
     <!-- Reminder Notification -->
     <string name="reminder_notification_title">⚽ Match is about to start!</string>
     <string name="reminder_notification_text">%1$s (%2$s) will kickoff in 5 minutes. Don\'t miss it!</string>
+    <string name="push_notification_channel_name">Match Updates</string>
+    <string name="push_notification_channel_desc">Live scores, goals and match results</string>
+    <string name="push_notification_default_title">Match Update</string>
     <string name="reminder_default_match_title">Upcoming Match</string>
     <string name="reminder_default_league_name">League</string>
 

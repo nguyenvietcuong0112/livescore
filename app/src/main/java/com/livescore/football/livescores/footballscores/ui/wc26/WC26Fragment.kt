@@ -22,6 +22,7 @@ import com.livescore.football.livescores.footballscores.data.local.FavoriteManag
 import com.livescore.football.livescores.footballscores.data.local.MatchReminderManager
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.data.local.entity.CachedMatchEntity
+import com.livescore.football.livescores.footballscores.ui.home.MatchFilter
 import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.util.Admob
 import java.util.Calendar
@@ -53,7 +54,10 @@ class WC26Fragment : Fragment() {
 
     private var selectedTab = 0
     private var isWcBracketFullScreen = false
-
+    private var selectedFixtureFilter = MatchFilter.LIVE
+    private var cachedFixturesList = emptyList<com.livescore.football.livescores.footballscores.data.remote.model.MatchItemDto>()
+    private lateinit var wcFixtureAdapter: WcFixtureAdapter
+    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -77,6 +81,8 @@ class WC26Fragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupCountdown()
         setupListeners()
+        setupFixtureFilters()
+        setupRecyclerView()
         binding.swipeRefreshLayout.apply {
             bindScrollableChild { activeWcScrollView() }
             setOnRefreshListener { populateWcTournamentData() }
@@ -86,8 +92,69 @@ class WC26Fragment : Fragment() {
         populateWcTournamentData()
     }
 
+    private fun setupRecyclerView() {
+        wcFixtureAdapter = WcFixtureAdapter(
+            context = requireContext(),
+            onMatchClick = { match ->
+                val intent = android.content.Intent(requireContext(), com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity::class.java).apply {
+                    putExtra("MATCH_ID", match.fixture.id)
+                    putExtra("HOME_TEAM", match.teams.home.name)
+                    putExtra("AWAY_TEAM", match.teams.away.name)
+                }
+                startActivity(intent)
+            },
+            onReminderClick = { match, ivReminder ->
+                val matchEntity = CachedMatchEntity(
+                    id = match.fixture.id,
+                    leagueId = match.league.id,
+                    leagueName = match.league.name,
+                    leagueLogo = match.league.logo,
+                    homeTeamId = match.teams.home.id,
+                    homeTeamName = match.teams.home.name,
+                    homeTeamLogo = match.teams.home.logo,
+                    awayTeamId = match.teams.away.id,
+                    awayTeamName = match.teams.away.name,
+                    awayTeamLogo = match.teams.away.logo,
+                    statusShort = match.fixture.status.short,
+                    elapsed = match.fixture.status.elapsed,
+                    goalsHome = match.goals.home,
+                    goalsAway = match.goals.away,
+                    dateTimestamp = match.fixture.timestamp,
+                    statusLong = match.fixture.status.long,
+                    queryDate = ""
+                )
+                val newRemind = reminderManager.toggleReminder(matchEntity)
+                ivReminder.setImageResource(if (newRemind) R.drawable.ic_bell_active else R.drawable.ic_bell)
+                ivReminder.setColorFilter(ContextCompat.getColor(requireContext(), if (newRemind) R.color.accent_green else R.color.text_muted))
+                val msg = if (newRemind) getString(R.string.reminder_set_toast) else getString(R.string.reminder_cancelled_toast)
+                android.widget.Toast.makeText(requireContext(), msg, android.widget.Toast.LENGTH_SHORT).show()
+            },
+            onFavoriteClick = { match, ivFavorite ->
+                if (favoriteManager.canAddFavoriteFixture(match.fixture.id)) {
+                    val newFav = favoriteManager.toggleFixtureFavorite(match.fixture.id)
+                    ivFavorite.setImageResource(if (newFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
+                    ivFavorite.setColorFilter(ContextCompat.getColor(requireContext(), if (newFav) R.color.accent_green else R.color.text_muted))
+                } else {
+                    val paywall = com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallDialog.newInstance()
+                    paywall.show(parentFragmentManager, com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallDialog.TAG)
+                }
+            },
+            isReminderSet = { reminderManager.isReminderSet(it) },
+            isFavoriteSet = { favoriteManager.isFixtureFavorite(it) },
+            onAdViewReady = { adViewWrapper, adId ->
+                val existing = pendingAdLoads.find { it.adViewWrapper == adViewWrapper }
+                if (existing == null) {
+                    val pending = PendingAdLoad(adViewWrapper, adId)
+                    pendingAdLoads.add(pending)
+                    triggerAdLoad(pending)
+                }
+            }
+        )
+        binding.rvWcFixtures.adapter = wcFixtureAdapter
+    }
+
     private fun activeWcScrollView(): View? = when (selectedTab) {
-        0 -> binding.scrollWcFixtures
+        0 -> binding.rvWcFixtures
         1 -> binding.scrollWcGroups
         2 -> binding.scrollWcBracketVertical
         else -> null
@@ -101,7 +168,7 @@ class WC26Fragment : Fragment() {
                 if (!isRefreshing) {
                     binding.layoutLoadingOverlay.isVisible = true
                     binding.btnWcZoom.isVisible = false
-                    binding.scrollWcFixtures.isVisible = false
+                    binding.layoutWcFixturesPanel.isVisible = false
                     binding.scrollWcGroups.isVisible = false
                     binding.scrollWcBracket.isVisible = false
                 }
@@ -204,190 +271,8 @@ class WC26Fragment : Fragment() {
                 }
 
 
-                if (fixturesList.isNotEmpty()) {
-                    binding.layoutWcFixturesContainer.removeAllViews()
-                    
-                    val parser = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", java.util.Locale.getDefault()).apply {
-                        timeZone = java.util.TimeZone.getTimeZone("UTC")
-                    }
-                    val localDateKeyFormat = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).apply {
-                        timeZone = java.util.TimeZone.getDefault()
-                    }
-                    val localTimeFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault()).apply {
-                        timeZone = java.util.TimeZone.getDefault()
-                    }
-                    
-                    val groupedMatches = fixturesList.groupBy { match ->
-                        try {
-                            val dateObj = parser.parse(match.fixture.date)
-                            if (dateObj != null) localDateKeyFormat.format(dateObj) else "Unknown"
-                        } catch (e: Exception) {
-                            "Unknown"
-                        }
-                    }.entries.sortedBy { it.key }
-                    
-                    val locale = java.util.Locale.getDefault()
-                    val headerDateFormat = if (locale.language == "vi") {
-                        java.text.SimpleDateFormat("'Ngày' dd 'tháng' MM 'năm' yyyy", locale)
-                    } else {
-                        java.text.SimpleDateFormat("EEEE, dd MMMM yyyy", locale)
-                    }.apply {
-                        timeZone = java.util.TimeZone.getDefault()
-                    }
-                    
-                    var matchCount = 0
-                    
-                    groupedMatches.forEach { entry ->
-                        val dateKeyStr = entry.key
-                        val matchesForDate = entry.value
-                        
-                        if (dateKeyStr != "Unknown") {
-                            val headerDateObj = localDateKeyFormat.parse(dateKeyStr)
-                            if (headerDateObj != null) {
-                                val headerView = inflater.inflate(R.layout.item_wc_date_header, binding.layoutWcFixturesContainer, false)
-                                headerView.findViewById<android.widget.TextView>(R.id.tvDateHeader).text = headerDateFormat.format(headerDateObj)
-                                binding.layoutWcFixturesContainer.addView(headerView)
-                            }
-                        }
-                        
-                        matchesForDate.forEach { match ->
-                            val fixtureView = inflater.inflate(R.layout.item_wc_fixture, binding.layoutWcFixturesContainer, false)
-                            
-                            val groupStageString = getString(R.string.wc_group_stage_name)
-                            val rawRound = match.league.round ?: groupStageString
-                            val displayRound = rawRound.replace("Group Stage", groupStageString).uppercase()
-                            fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureRound).text = displayRound
-                            
-                            val venueName = match.fixture.venue?.name ?: getString(R.string.wc_default_stadium)
-                            val venueCity = match.fixture.venue?.city ?: ""
-                            fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureStadium).text = "$venueName, $venueCity"
-                            
-                            fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTeam1).text = match.teams.home.name
-                            fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTeam2).text = match.teams.away.name
-                            
-                            val ivHomeLogo = fixtureView.findViewById<android.widget.ImageView>(R.id.ivFixtureHomeLogo)
-                            val ivAwayLogo = fixtureView.findViewById<android.widget.ImageView>(R.id.ivFixtureAwayLogo)
-                            
-                            Glide.with(fixtureView.context)
-                                .load(match.teams.home.logo)
-                                .placeholder(R.drawable.ic_favorite_border)
-                                .into(ivHomeLogo)
-                            ivHomeLogo.imageTintList = null
-
-                            Glide.with(fixtureView.context)
-                                .load(match.teams.away.logo)
-                                .placeholder(R.drawable.ic_favorite_border)
-                                .into(ivAwayLogo)
-                            ivAwayLogo.imageTintList = null
-
-                            fixtureView.setOnClickListener {
-                                val intent = android.content.Intent(requireContext(), com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity::class.java).apply {
-                                    putExtra("MATCH_ID", match.fixture.id)
-                                    putExtra("HOME_TEAM", match.teams.home.name)
-                                    putExtra("AWAY_TEAM", match.teams.away.name)
-                                }
-                                startActivity(intent)
-                            }
-                            
-                            val kickoffTime = try {
-                                val dateObj = parser.parse(match.fixture.date)
-                                if (dateObj != null) localTimeFormat.format(dateObj) else ""
-                            } catch (e: Exception) {
-                                ""
-                            }
-                            
-                            val homeGoal = match.goals.home
-                            val awayGoal = match.goals.away
-                            val tvVS = fixtureView.findViewById<android.widget.TextView>(R.id.tvVS)
-                            val tvFixtureTime = fixtureView.findViewById<android.widget.TextView>(R.id.tvFixtureTime)
-                            
-                            if (homeGoal != null && awayGoal != null) {
-                                tvVS.text = "$homeGoal - $awayGoal"
-                                tvVS.setTextColor(ContextCompat.getColor(requireContext(), R.color.accent_green))
-                                tvFixtureTime.text = if (kickoffTime.isNotEmpty()) "$kickoffTime • ${match.fixture.status.short}" else match.fixture.status.short
-                            } else {
-                                tvVS.text = "VS"
-                                tvVS.setTextColor(ContextCompat.getColor(requireContext(), R.color.accent_green))
-                                tvFixtureTime.text = kickoffTime
-                            }
-                            
-                            val ivReminder = fixtureView.findViewById<android.widget.ImageView>(R.id.ivReminder)
-                            val ivFavorite = fixtureView.findViewById<android.widget.ImageView>(R.id.ivFavorite)
-                            
-                            val isUpcoming = match.fixture.status.short == "NS" || match.fixture.status.short == "TBD"
-                            val isUpcomingFuture = isUpcoming && (match.fixture.timestamp * 1000 > System.currentTimeMillis())
-                            ivReminder.visibility = if (isUpcomingFuture) View.VISIBLE else View.GONE
-                            
-                            val isRemind = reminderManager.isReminderSet(match.fixture.id)
-                            ivReminder.setImageResource(if (isRemind) R.drawable.ic_bell_active else R.drawable.ic_bell)
-                            ivReminder.setColorFilter(ContextCompat.getColor(requireContext(), if (isRemind) R.color.accent_green else R.color.text_muted))
-                            
-                            val isFav = favoriteManager.isFixtureFavorite(match.fixture.id)
-                            ivFavorite.setImageResource(if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
-                            ivFavorite.setColorFilter(ContextCompat.getColor(requireContext(), if (isFav) R.color.accent_green else R.color.text_muted))
-                            
-                            ivReminder.setOnClickListener {
-                                val matchEntity = CachedMatchEntity(
-                                    id = match.fixture.id,
-                                    leagueId = match.league.id,
-                                    leagueName = match.league.name,
-                                    leagueLogo = match.league.logo,
-                                    homeTeamId = match.teams.home.id,
-                                    homeTeamName = match.teams.home.name,
-                                    homeTeamLogo = match.teams.home.logo,
-                                    awayTeamId = match.teams.away.id,
-                                    awayTeamName = match.teams.away.name,
-                                    awayTeamLogo = match.teams.away.logo,
-                                    statusShort = match.fixture.status.short,
-                                    elapsed = match.fixture.status.elapsed,
-                                    goalsHome = match.goals.home,
-                                    goalsAway = match.goals.away,
-                                    dateTimestamp = match.fixture.timestamp,
-                                    statusLong = match.fixture.status.long,
-                                    queryDate = ""
-                                )
-                                val newRemind = reminderManager.toggleReminder(matchEntity)
-                                ivReminder.setImageResource(if (newRemind) R.drawable.ic_bell_active else R.drawable.ic_bell)
-                                ivReminder.setColorFilter(ContextCompat.getColor(requireContext(), if (newRemind) R.color.accent_green else R.color.text_muted))
-                                val msg = if (newRemind) getString(R.string.reminder_set_toast) else getString(R.string.reminder_cancelled_toast)
-                                android.widget.Toast.makeText(requireContext(), msg, android.widget.Toast.LENGTH_SHORT).show()
-                            }
-                            
-                            ivFavorite.setOnClickListener {
-                                if (favoriteManager.canAddFavoriteFixture(match.fixture.id)) {
-                                    val newFav = favoriteManager.toggleFixtureFavorite(match.fixture.id)
-                                    ivFavorite.setImageResource(if (newFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
-                                    ivFavorite.setColorFilter(ContextCompat.getColor(requireContext(), if (newFav) R.color.accent_green else R.color.text_muted))
-                                } else {
-                                    val paywall = com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallDialog.newInstance()
-                                    paywall.show(parentFragmentManager, com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallDialog.TAG)
-                                }
-                            }
-                            
-                            binding.layoutWcFixturesContainer.addView(fixtureView)
-                            matchCount++
-                            
-                            if (!limitManager.isPremium() && matchCount % 3 == 0) {
-                                val adViewWrapper = inflater.inflate(R.layout.layout_native_no_media, binding.layoutWcFixturesContainer, false)
-                                adViewWrapper.visibility = View.INVISIBLE
-                                binding.layoutWcFixturesContainer.addView(adViewWrapper)
-                                val adId = try { getString(resources.getIdentifier("native_all", "string", requireContext().packageName)) } catch (e: Exception) { "" }
-                                if (adId.isNotEmpty()) {
-                                    pendingAdLoads.add(PendingAdLoad(adViewWrapper, adId))
-                                } else {
-                                    adViewWrapper.visibility = View.GONE
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    binding.layoutWcFixturesContainer.removeAllViews()
-                    val emptyStateView = com.livescore.football.livescores.footballscores.ui.custom.EmptyStateView(requireContext()).apply {
-                        text = getString(R.string.empty_fixtures)
-                        setPadding(0, dpToPx(32f), 0, 0)
-                    }
-                    binding.layoutWcFixturesContainer.addView(emptyStateView)
-                }
+                cachedFixturesList = fixturesList
+                renderWcFixtures(selectedFixtureFilter)
 
                 // 3. Populate Bracket (VLTT) View
                 val bracketMatches = fixturesList.filter { match ->
@@ -630,6 +515,157 @@ class WC26Fragment : Fragment() {
         }
     }
 
+    private fun setupFixtureFilters() {
+        updateFixtureFilterUI(selectedFixtureFilter)
+        binding.btnWcLive.setOnClickListener { applyFixtureFilter(MatchFilter.LIVE) }
+        binding.btnWcUpcoming.setOnClickListener { applyFixtureFilter(MatchFilter.UPCOMING) }
+        binding.btnWcFinished.setOnClickListener { applyFixtureFilter(MatchFilter.FINISHED) }
+    }
+
+    private var filterJob: kotlinx.coroutines.Job? = null
+
+    private fun applyFixtureFilter(filter: MatchFilter) {
+        selectedFixtureFilter = filter
+        updateFixtureFilterUI(filter)
+        
+        filterJob?.cancel()
+        filterJob = viewLifecycleOwner.lifecycleScope.launch {
+            binding.layoutLoadingOverlay.isVisible = true
+            kotlinx.coroutines.delay(150) // Small delay to allow loading animation to show
+            
+            pendingAdLoads.removeAll { it.adViewWrapper.parent == null }
+            renderWcFixtures(filter)
+            binding.rvWcFixtures.scrollToPosition(0)
+            checkPendingAds()
+            
+            binding.layoutLoadingOverlay.isVisible = false
+        }
+    }
+
+    private fun updateFixtureFilterUI(selectedFilter: MatchFilter) {
+        val ctx = requireContext()
+        listOf(binding.btnWcLive, binding.btnWcUpcoming, binding.btnWcFinished).forEach { it.strokeWidth = 0 }
+
+        when (selectedFilter) {
+            MatchFilter.LIVE -> {
+                binding.btnWcLive.apply {
+                    strokeColor = ContextCompat.getColorStateList(ctx, R.color.accent_green)
+                    strokeWidth = dpToPx(1f)
+                    setTextColor(ContextCompat.getColor(ctx, R.color.accent_green))
+                }
+                binding.btnWcUpcoming.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
+                binding.btnWcFinished.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
+            }
+            MatchFilter.UPCOMING -> {
+                binding.btnWcUpcoming.apply {
+                    strokeColor = ContextCompat.getColorStateList(ctx, R.color.accent_green)
+                    strokeWidth = dpToPx(1f)
+                    setTextColor(ContextCompat.getColor(ctx, R.color.accent_green))
+                }
+                binding.btnWcLive.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
+                binding.btnWcFinished.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
+            }
+            MatchFilter.FINISHED -> {
+                binding.btnWcFinished.apply {
+                    strokeColor = ContextCompat.getColorStateList(ctx, R.color.accent_green)
+                    strokeWidth = dpToPx(1f)
+                    setTextColor(ContextCompat.getColor(ctx, R.color.accent_green))
+                }
+                binding.btnWcLive.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
+                binding.btnWcUpcoming.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
+            }
+        }
+    }
+
+    private fun filterFixtures(
+        fixtures: List<com.livescore.football.livescores.footballscores.data.remote.model.MatchItemDto>,
+        filter: MatchFilter
+    ): List<com.livescore.football.livescores.footballscores.data.remote.model.MatchItemDto> {
+        val currentTime = System.currentTimeMillis()
+        val cutoffDuration = 2 * 60 * 60 * 1000L
+        return when (filter) {
+            MatchFilter.LIVE -> fixtures.filter { isLiveStatus(it.fixture.status.short) }
+            MatchFilter.UPCOMING -> fixtures.filter {
+                val status = it.fixture.status.short
+                (status == "NS" || status == "TBD" || status == "PST") &&
+                    (it.fixture.timestamp * 1000 + cutoffDuration > currentTime)
+            }
+            MatchFilter.FINISHED -> fixtures.filter {
+                val status = it.fixture.status.short
+                status == "FT" || status == "AET" || status == "PEN" || status == "CANC" || status == "ABD" ||
+                    ((status == "NS" || status == "TBD" || status == "PST") &&
+                        (it.fixture.timestamp * 1000 + cutoffDuration <= currentTime))
+            }
+        }
+    }
+
+    private fun isLiveStatus(status: String): Boolean {
+        return status in listOf("1H", "2H", "HT", "ET", "BT", "P", "INT", "LIVE")
+    }
+
+    private fun renderWcFixtures(filter: MatchFilter) {
+        val filteredFixtures = filterFixtures(cachedFixturesList, filter)
+        val newItems = mutableListOf<WcFixtureItem>()
+
+        if (filteredFixtures.isEmpty()) {
+            newItems.add(WcFixtureItem.EmptyItem)
+            wcFixtureAdapter.submitList(newItems)
+            return
+        }
+
+        val parser = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", java.util.Locale.getDefault()).apply {
+            timeZone = java.util.TimeZone.getTimeZone("UTC")
+        }
+        val localDateKeyFormat = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).apply {
+            timeZone = java.util.TimeZone.getDefault()
+        }
+
+        val groupedMatches = filteredFixtures.groupBy { match ->
+            try {
+                val dateObj = parser.parse(match.fixture.date)
+                if (dateObj != null) localDateKeyFormat.format(dateObj) else "Unknown"
+            } catch (e: Exception) {
+                "Unknown"
+            }
+        }.entries.sortedBy { it.key }
+
+        val locale = java.util.Locale.getDefault()
+        val headerDateFormat = if (locale.language == "vi") {
+            java.text.SimpleDateFormat("'Ngày' dd 'tháng' MM 'năm' yyyy", locale)
+        } else {
+            java.text.SimpleDateFormat("EEEE, dd MMMM yyyy", locale)
+        }.apply {
+            timeZone = java.util.TimeZone.getDefault()
+        }
+
+        var matchCount = 0
+
+        groupedMatches.forEach { entry ->
+            val dateKeyStr = entry.key
+            val matchesForDate = entry.value
+
+            if (dateKeyStr != "Unknown") {
+                val headerDateObj = localDateKeyFormat.parse(dateKeyStr)
+                if (headerDateObj != null) {
+                    newItems.add(WcFixtureItem.HeaderItem(headerDateFormat.format(headerDateObj)))
+                }
+            }
+
+            matchesForDate.forEach { match ->
+                newItems.add(WcFixtureItem.MatchItem(match))
+                matchCount++
+
+                if (!limitManager.isPremium() && matchCount % 3 == 0) {
+                    val adId = try { getString(resources.getIdentifier("native_all", "string", requireContext().packageName)) } catch (e: Exception) { "" }
+                    if (adId.isNotEmpty()) {
+                        newItems.add(WcFixtureItem.AdItem(adId))
+                    }
+                }
+            }
+        }
+        wcFixtureAdapter.submitList(newItems)
+    }
+
     private fun updateTabUI() {
         val activeColor = ContextCompat.getColor(requireContext(), R.color.text_white)
         val inactiveColor = ContextCompat.getColor(requireContext(), R.color.text_muted)
@@ -650,7 +686,7 @@ class WC26Fragment : Fragment() {
             backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.card_dark)
         }
 
-        binding.scrollWcFixtures.isVisible = false
+        binding.layoutWcFixturesPanel.isVisible = false
         binding.scrollWcGroups.isVisible = false
         binding.scrollWcBracket.isVisible = false
         binding.btnWcZoom.isVisible = (selectedTab == 2)
@@ -663,7 +699,7 @@ class WC26Fragment : Fragment() {
                     setTextColor(activeColor)
                     backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.card_dark)
                 }
-                binding.scrollWcFixtures.isVisible = true
+                binding.layoutWcFixturesPanel.isVisible = true
             }
             1 -> {
                 binding.tabWcGroups.apply {
@@ -708,8 +744,8 @@ class WC26Fragment : Fragment() {
             checkPendingAds()
         }
         
-        binding.scrollWcFixtures.viewTreeObserver.addOnScrollChangedListener(scrollChangedListener)
-        binding.scrollWcFixtures.viewTreeObserver.addOnGlobalLayoutListener(layoutListener)
+        binding.rvWcFixtures.viewTreeObserver.addOnScrollChangedListener(scrollChangedListener)
+        binding.rvWcFixtures.viewTreeObserver.addOnGlobalLayoutListener(layoutListener)
         binding.scrollWcGroups.viewTreeObserver.addOnScrollChangedListener(scrollChangedListener)
         binding.scrollWcGroups.viewTreeObserver.addOnGlobalLayoutListener(layoutListener)
     }
@@ -784,11 +820,11 @@ class WC26Fragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         scrollChangedListener?.let {
-            _binding?.scrollWcFixtures?.viewTreeObserver?.removeOnScrollChangedListener(it)
+            _binding?.rvWcFixtures?.viewTreeObserver?.removeOnScrollChangedListener(it)
             _binding?.scrollWcGroups?.viewTreeObserver?.removeOnScrollChangedListener(it)
         }
         layoutListener?.let {
-            _binding?.scrollWcFixtures?.viewTreeObserver?.removeOnGlobalLayoutListener(it)
+            _binding?.rvWcFixtures?.viewTreeObserver?.removeOnGlobalLayoutListener(it)
             _binding?.scrollWcGroups?.viewTreeObserver?.removeOnGlobalLayoutListener(it)
         }
         scrollChangedListener = null

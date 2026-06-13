@@ -16,10 +16,15 @@ import com.livescore.football.livescores.footballscores.data.remote.adjust.Reten
 import com.livescore.football.livescores.footballscores.data.remote.getRemoteAdId
 import com.livescore.football.livescores.footballscores.databinding.ActivitySplashBinding
 import com.livescore.football.livescores.footballscores.ui.language.LanguageActivity
+import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.utils.ActivityFullCallback
 import com.livescore.football.livescores.footballscores.utils.ActivityLoadNativeFullV1
 import com.livescore.football.livescores.footballscores.utils.SharePreferenceUtils
+import com.livescore.football.livescores.footballscores.data.remote.PushClickTracker
 import com.livescore.football.livescores.footballscores.utils.LogEvent
+import com.livescore.football.livescores.footballscores.utils.PushDataParser
+import com.livescore.football.livescores.footballscores.utils.PushNavigationExecutor
+import com.livescore.football.livescores.footballscores.utils.PushPayload
 import com.mallegan.ads.callback.InterCallback
 import com.mallegan.ads.util.Admob
 import com.mallegan.ads.util.ConsentHelper
@@ -31,6 +36,11 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class SplashActivity : BaseActivity() {
+
+    companion object {
+        private const val PREFS_NAME = "livescore_onboarding_prefs"
+        private const val KEY_APP_LAUNCH_COUNT = "app_launch_count"
+    }
 
     @Inject
     lateinit var remoteConfigManager: RemoteConfigManager
@@ -44,13 +54,20 @@ class SplashActivity : BaseActivity() {
     @Inject
     lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
 
+    @Inject
+    lateinit var pushClickTracker: PushClickTracker
+
     private lateinit var binding: ActivitySplashBinding
     private var interCallback: InterCallback? = null
     private var isTransitioning = false
+    private var pendingPushPayload: PushPayload? = null
 
     override fun bind() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        pendingPushPayload = PushDataParser.parseFromIntent(intent)
+        trackPushClickIfNeeded()
+        trackAppLaunch()
 
         lifecycleScope.launch(Dispatchers.IO) {
             RetentionTracker.checkAndTrackRetention(this@SplashActivity)
@@ -65,6 +82,7 @@ class SplashActivity : BaseActivity() {
                 if (task.isSuccessful) {
                     val token = task.result
                     if (!token.isNullOrEmpty()) {
+                        android.util.Log.d("FCMToken", "Device FCM Token: $token")
                         lifecycleScope.launch {
                             deviceRegistrationManager.registerDevice(token)
                         }
@@ -120,11 +138,11 @@ class SplashActivity : BaseActivity() {
                         getRemoteAdId("native_splash_full", R.string.native_splash_full),
                         object : ActivityFullCallback {
                             override fun onResultFromActivityFull() {
-                                startLanguage()
+                                navigateAfterSplash()
                             }
                         })
                 } else {
-                    startLanguage()
+                    navigateAfterSplash()
                 }
 
             }
@@ -143,11 +161,11 @@ class SplashActivity : BaseActivity() {
                         getRemoteAdId("native_splash_full", R.string.native_splash_full),
                         object : ActivityFullCallback {
                             override fun onResultFromActivityFull() {
-                                startLanguage()
+                                navigateAfterSplash()
                             }
                         })
                 } else {
-                    startLanguage()
+                    navigateAfterSplash()
                 }
             }
         }
@@ -164,7 +182,7 @@ class SplashActivity : BaseActivity() {
                 delay(if (isVIP) 10L else 150L)
             }
             if (isVIP) {
-                startLanguage()
+                navigateAfterSplash()
             }
         }
 
@@ -194,11 +212,11 @@ class SplashActivity : BaseActivity() {
                             ),
                             interId
                         ),
-                        8000,
+                        5000,
                         interCallback
                     )
                 }
-            }, 2000)
+            }, 500)
         }
     }
 
@@ -230,12 +248,46 @@ class SplashActivity : BaseActivity() {
 //    }
 
 
-    private fun startLanguage() {
+    private fun trackAppLaunch() {
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val count = prefs.getInt(KEY_APP_LAUNCH_COUNT, 0) + 1
+        prefs.edit().putInt(KEY_APP_LAUNCH_COUNT, count).apply()
+    }
+
+    private fun isReturningUser(): Boolean {
+        return getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+            .getInt(KEY_APP_LAUNCH_COUNT, 0) >= 2
+    }
+
+    private fun trackPushClickIfNeeded() {
+        val pushId = pendingPushPayload?.pushId ?: return
+        lifecycleScope.launch(Dispatchers.IO) {
+            pushClickTracker.trackClick(pushId)
+        }
+    }
+
+    private fun navigateAfterSplash() {
         if (isTransitioning) return
         isTransitioning = true
-        val intent = Intent(this, LanguageActivity::class.java)
+
+        val pushPayload = pendingPushPayload
+        val intent = if (pushPayload != null) {
+            PushNavigationExecutor.toDestinationIntent(this, pushPayload.navigation)
+        } else if (isReturningUser()) {
+            Intent(this, MainActivity::class.java)
+        } else {
+            Intent(this, LanguageActivity::class.java)
+        }
         startActivity(intent)
         finish()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        pendingPushPayload = PushDataParser.parseFromIntent(intent)
+        trackPushClickIfNeeded()
+        isTransitioning = false
     }
 
 

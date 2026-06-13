@@ -9,6 +9,7 @@ import com.livescore.football.livescores.footballscores.data.local.entity.Favori
 import com.livescore.football.livescores.footballscores.data.remote.ApiService
 import com.livescore.football.livescores.footballscores.data.remote.model.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -124,19 +125,18 @@ class MatchRepository @Inject constructor(
     // --- Detail Api Calls with Zero Mock Fallbacks ---
     fun getMatchDetail(id: Int): Flow<MatchDetailDto?> = flow {
         Log.d(TAG, "getMatchDetail: Starting request for matchId = $id")
-        try {
-            val response = apiService.getMatchDetail(id)
-            Log.d(TAG, "getMatchDetail: Response code = ${response.code}, data size = ${response.data?.size ?: 0}")
-            if (response.code == 200 && response.data.isNotEmpty()) {
-                emit(response.data.firstOrNull())
-            } else {
-                Log.w(TAG, "getMatchDetail: Response empty or code != 200")
-                emit(null)
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "getMatchDetail: Error occurred: ${e.message}", e)
+        val response = apiService.getMatchDetail(id)
+        val data = response.data ?: emptyList()
+        Log.d(TAG, "getMatchDetail: Response code = ${response.code}, data size = ${data.size}")
+        if (response.code == 200 && data.isNotEmpty()) {
+            emit(data.firstOrNull())
+        } else {
+            Log.w(TAG, "getMatchDetail: Response empty or code != 200")
             emit(null)
         }
+    }.catch { e ->
+        Log.e(TAG, "getMatchDetail: Error occurred: ${e.message}", e)
+        emit(null)
     }
 
 

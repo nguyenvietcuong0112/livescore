@@ -98,9 +98,9 @@ class OnboardingViewModel @Inject constructor(
                     val items = list.map { league ->
                         OnboardingItem(
                             id = league.league_id,
-                            name = league.name,
+                            name = league.name.orEmpty(),
                             subtitle = league.country?.name ?: "World",
-                            logo = league.logo,
+                            logo = league.logo.orEmpty(),
                             type = "league",
                             isHot = league.is_popular
                         )
@@ -126,9 +126,9 @@ class OnboardingViewModel @Inject constructor(
                         val teams = standingRows.map { row ->
                             OnboardingItem(
                                 id = row.team.id,
-                                name = row.team.name,
+                                name = row.team.name.orEmpty(),
                                 subtitle = _dynamicLeagues.value.find { it.id == leagueId }?.name ?: "",
-                                logo = row.team.logo,
+                                logo = row.team.logo.orEmpty(),
                                 type = "team",
                                 parentId = leagueId
                             )

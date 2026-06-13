@@ -22,6 +22,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class IAPActivity : BaseActivity() {
 
+    companion object {
+        const val EXTRA_FROM_PUSH = "FROM_PUSH"
+    }
+
     @Inject
     lateinit var limitManager: RequestLimitManager
 

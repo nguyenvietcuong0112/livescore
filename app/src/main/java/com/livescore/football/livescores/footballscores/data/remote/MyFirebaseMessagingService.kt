@@ -2,6 +2,10 @@ package com.livescore.football.livescores.footballscores.data.remote
 
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
+import com.livescore.football.livescores.footballscores.R
+import com.livescore.football.livescores.footballscores.utils.PushDataParser
+import com.livescore.football.livescores.footballscores.utils.PushNotificationHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,11 +20,32 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d("FCMService", "Refreshed token: $token")
-        
-        // Gửi token mới lên server thông qua DeviceRegistrationManager
+        Log.d(TAG, "Refreshed token: $token")
+
         CoroutineScope(Dispatchers.IO).launch {
             deviceRegistrationManager.registerDevice(token)
         }
+    }
+
+    override fun onMessageReceived(message: RemoteMessage) {
+        super.onMessageReceived(message)
+        if (message.data.isEmpty() && message.notification == null) return
+
+        Log.d(TAG, "Message received: data=${message.data}")
+
+        val payload = PushDataParser.parse(message.data)
+        val title = message.notification?.title
+            ?: message.data["title"]
+            ?: getString(R.string.push_notification_default_title)
+        val body = message.notification?.body
+            ?: message.data["body"]
+            ?: message.data["message"]
+            ?: ""
+
+        PushNotificationHelper.show(applicationContext, title, body, payload)
+    }
+
+    companion object {
+        private const val TAG = "FCMService"
     }
 }

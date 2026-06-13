@@ -51,4 +51,9 @@ interface ApiService {
     suspend fun registerDevice(
         @Body request: RegisterDeviceRequest
     ): BaseResponse<RegisterDeviceResponse>
+
+    @POST("api/v1/users/push/click/{push_id}")
+    suspend fun trackPushClick(
+        @Path("push_id") pushId: String
+    ): BaseResponse<Any?>
 }
