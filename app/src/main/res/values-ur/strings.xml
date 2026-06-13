@@ -232,4 +232,9 @@
     <string name="permission_card_goal_desc">جب بھی کوئی گول ہوتا ہے تو فوری اپ ڈیٹس حاصل کریں۔</string>
     <string name="permission_btn_continue">جاری رکھیں</string>
     <string name="permission_btn_skip">چھوڑیں۔</string>
+    <!-- Exit Dialog -->
+    <string name="exit_confirm_title">Exit App?</string>
+    <string name="exit_confirm_desc">Are you sure you want to leave the app? We will miss you!</string>
+    <string name="exit_confirm_cancel">STAY</string>
+    <string name="exit_confirm_exit">EXIT</string>
 </resources>

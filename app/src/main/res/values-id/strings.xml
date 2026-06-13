@@ -232,4 +232,9 @@
     <string name="permission_card_goal_desc">Terima pembaruan instan setiap kali gol dicetak.</string>
     <string name="permission_btn_continue">Melanjutkan</string>
     <string name="permission_btn_skip">Melewati</string>
+    <!-- Exit Dialog -->
+    <string name="exit_confirm_title">Exit App?</string>
+    <string name="exit_confirm_desc">Are you sure you want to leave the app? We will miss you!</string>
+    <string name="exit_confirm_cancel">STAY</string>
+    <string name="exit_confirm_exit">EXIT</string>
 </resources>

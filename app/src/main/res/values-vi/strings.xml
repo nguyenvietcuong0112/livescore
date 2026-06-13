@@ -267,4 +267,10 @@
     <string name="permission_btn_continue">Tiếp tục</string>
     <string name="permission_btn_skip">Bỏ qua</string>
 
+    <!-- Exit Dialog -->
+    <string name="exit_confirm_title">Thoát Ứng Dụng?</string>
+    <string name="exit_confirm_desc">Bạn có chắc chắn muốn thoát ứng dụng không? Chúng tôi sẽ nhớ bạn lắm!</string>
+    <string name="exit_confirm_cancel">Ở LẠI</string>
+    <string name="exit_confirm_exit">THOÁT</string>
+
 </resources>

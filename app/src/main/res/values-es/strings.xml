@@ -236,4 +236,9 @@
     <string name="permission_card_goal_desc">Reciba actualizaciones instantáneas cada vez que se marque un gol.</string>
     <string name="permission_btn_continue">Continuar</string>
     <string name="permission_btn_skip">Saltar</string>
+    <!-- Exit Dialog -->
+    <string name="exit_confirm_title">Exit App?</string>
+    <string name="exit_confirm_desc">Are you sure you want to leave the app? We will miss you!</string>
+    <string name="exit_confirm_cancel">STAY</string>
+    <string name="exit_confirm_exit">EXIT</string>
 </resources>

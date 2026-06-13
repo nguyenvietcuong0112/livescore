@@ -94,7 +94,7 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
         private fun getEventColor(type: String, detail: String?): Int {
             val context = itemView.context
             return when (type.uppercase()) {
-                "GOAL" -> ContextCompat.getColor(context, R.color.white)
+                "GOAL" -> ContextCompat.getColor(context, R.color.black)
                 "CARD" -> {
                     if (detail?.contains("Red", ignoreCase = true) == true) {
                         ContextCompat.getColor(context, R.color.colorError)

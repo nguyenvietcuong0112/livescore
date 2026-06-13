@@ -481,14 +481,12 @@ class WC26Fragment : Fragment() {
         } else {
             getString(R.string.wc26_ongoing)
         }
-        binding.tvCountdown.text = countdownText
     }
 
     private fun setupListeners() {
         binding.tabWcFixtures.setOnClickListener {
             selectedTab = 0
             isWcBracketFullScreen = false
-            binding.bannerHeader.isVisible = true
             binding.wcTabsContainer.isVisible = true
             binding.btnWcZoom.setIconResource(R.drawable.ic_zoom_in)
             updateTabUI()
@@ -496,7 +494,6 @@ class WC26Fragment : Fragment() {
         binding.tabWcGroups.setOnClickListener {
             selectedTab = 1
             isWcBracketFullScreen = false
-            binding.bannerHeader.isVisible = true
             binding.wcTabsContainer.isVisible = true
             binding.btnWcZoom.setIconResource(R.drawable.ic_zoom_in)
             updateTabUI()
@@ -507,7 +504,6 @@ class WC26Fragment : Fragment() {
         }
         binding.btnWcZoom.setOnClickListener {
             isWcBracketFullScreen = !isWcBracketFullScreen
-            binding.bannerHeader.isVisible = !isWcBracketFullScreen
             binding.wcTabsContainer.isVisible = !isWcBracketFullScreen
             binding.btnWcZoom.setIconResource(
                 if (isWcBracketFullScreen) R.drawable.ic_zoom_out else R.drawable.ic_zoom_in
@@ -667,24 +663,19 @@ class WC26Fragment : Fragment() {
     }
 
     private fun updateTabUI() {
-        val activeColor = ContextCompat.getColor(requireContext(), R.color.text_white)
+        val activeColor = ContextCompat.getColor(requireContext(), R.color.accent_green)
         val inactiveColor = ContextCompat.getColor(requireContext(), R.color.text_muted)
+        val transparent = android.graphics.Color.TRANSPARENT
         
-        binding.tabWcFixtures.apply {
-            strokeWidth = 0
-            setTextColor(inactiveColor)
-            backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.card_dark)
-        }
-        binding.tabWcGroups.apply {
-            strokeWidth = 0
-            setTextColor(inactiveColor)
-            backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.card_dark)
-        }
-        binding.tabWcVLTT.apply {
-            strokeWidth = 0
-            setTextColor(inactiveColor)
-            backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.card_dark)
-        }
+        // Reset all to inactive
+        binding.tvWcFixtures.setTextColor(inactiveColor)
+        binding.indicatorWcFixtures.setBackgroundColor(transparent)
+        
+        binding.tvWcGroups.setTextColor(inactiveColor)
+        binding.indicatorWcGroups.setBackgroundColor(transparent)
+        
+        binding.tvWcVLTT.setTextColor(inactiveColor)
+        binding.indicatorWcVLTT.setBackgroundColor(transparent)
 
         binding.layoutWcFixturesPanel.isVisible = false
         binding.scrollWcGroups.isVisible = false
@@ -693,30 +684,18 @@ class WC26Fragment : Fragment() {
 
         when (selectedTab) {
             0 -> {
-                binding.tabWcFixtures.apply {
-                    strokeColor = ContextCompat.getColorStateList(requireContext(), R.color.accent_green)
-                    strokeWidth = dpToPx(1.5f)
-                    setTextColor(activeColor)
-                    backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.card_dark)
-                }
+                binding.tvWcFixtures.setTextColor(activeColor)
+                binding.indicatorWcFixtures.setBackgroundColor(activeColor)
                 binding.layoutWcFixturesPanel.isVisible = true
             }
             1 -> {
-                binding.tabWcGroups.apply {
-                    strokeColor = ContextCompat.getColorStateList(requireContext(), R.color.accent_green)
-                    strokeWidth = dpToPx(1.5f)
-                    setTextColor(activeColor)
-                    backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.card_dark)
-                }
+                binding.tvWcGroups.setTextColor(activeColor)
+                binding.indicatorWcGroups.setBackgroundColor(activeColor)
                 binding.scrollWcGroups.isVisible = true
             }
             2 -> {
-                binding.tabWcVLTT.apply {
-                    strokeColor = ContextCompat.getColorStateList(requireContext(), R.color.accent_green)
-                    strokeWidth = dpToPx(1.5f)
-                    setTextColor(activeColor)
-                    backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.card_dark)
-                }
+                binding.tvWcVLTT.setTextColor(activeColor)
+                binding.indicatorWcVLTT.setBackgroundColor(activeColor)
                 binding.scrollWcBracket.isVisible = true
             }
         }

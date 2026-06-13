@@ -239,4 +239,9 @@
     <string name="permission_card_goal_desc">Recevez des mises à jour instantanées chaque fois qu\'un but est marqué.</string>
     <string name="permission_btn_continue">Continuer</string>
     <string name="permission_btn_skip">Sauter</string>
+    <!-- Exit Dialog -->
+    <string name="exit_confirm_title">Exit App?</string>
+    <string name="exit_confirm_desc">Are you sure you want to leave the app? We will miss you!</string>
+    <string name="exit_confirm_cancel">STAY</string>
+    <string name="exit_confirm_exit">EXIT</string>
 </resources>

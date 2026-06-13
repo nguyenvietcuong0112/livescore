@@ -178,6 +178,38 @@ class MainActivity : BaseActivity() {
                 }
             }
         }
+
+        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (activeTabId != R.id.nav_live) {
+                    switchToTab(R.id.nav_live)
+                } else {
+                    showExitConfirmDialog()
+                }
+            }
+        })
+    }
+
+    private fun showExitConfirmDialog() {
+        if (isFinishing || isDestroyed) return
+        val dialog = android.app.Dialog(this)
+        dialog.setContentView(R.layout.dialog_exit_confirm)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setLayout(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        
+        dialog.findViewById<View>(R.id.btnCancel)?.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        dialog.findViewById<View>(R.id.btnExit)?.setOnClickListener {
+            dialog.dismiss()
+            finishAffinity()
+        }
+        
+        dialog.show()
     }
 
     fun switchToTab(tabId: Int) {

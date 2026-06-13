@@ -64,7 +64,13 @@ class MatchDetailActivity : BaseActivity() {
             override fun handleOnBackPressed() {
                 AdsConfig.showInterClickAd(this@MatchDetailActivity) {
                     isEnabled = false
-                    onBackPressedDispatcher.onBackPressed()
+                    if (isTaskRoot) {
+                        val intent = Intent(this@MatchDetailActivity, com.livescore.football.livescores.footballscores.ui.main.MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        onBackPressedDispatcher.onBackPressed()
+                    }
                 }
             }
         })

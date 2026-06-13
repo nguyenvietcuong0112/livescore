@@ -1,148 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_light">
 
-    <!-- Clean Synchronized Header -->
-    <LinearLayout
-        android:id="@+id/bannerHeader"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="12dp"
         android:background="@color/bg_light"
-        app:layout_constraintTop_toTopOf="parent">
+        app:elevation="0dp">
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
+            android:id="@+id/wcTabsContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/card_dark"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="0dp"
-            app:strokeColor="@color/divider_dark"
-            app:strokeWidth="1dp">
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:background="@color/bg_light"
+            android:gravity="center_vertical">
 
+            <!-- Tab 1 -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp">
-
-                <ImageView
-                    android:id="@+id/ivWcLogo"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
-                    android:src="@drawable/ic_trophy"
-                    android:layout_marginEnd="16dp"
-                    android:contentDescription="World Cup Trophy" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                android:id="@+id/tabWcFixtures"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
+                <TextView
+                    android:id="@+id/tvWcFixtures"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/wc26"
-                        android:textColor="@color/text_white"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/sf_pro" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="USA - MEXICO - CANADA"
-                        android:textColor="@color/text_muted"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/sf_pro" />
-
-                    <TextView
-                        android:id="@+id/tvCountdown"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:textColor="@color/accent_green"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/sf_pro"
-                        tools:text="Còn 12 ngày đến Lễ Khai Mạc" />
-
-                </LinearLayout>
-
+                    android:gravity="center"
+                    android:text="@string/wc_tab_fixtures"
+                    android:textColor="@color/accent_green"
+                    android:textSize="14sp" />
+                <View
+                    android:id="@+id/indicatorWcFixtures"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/accent_green" />
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="20dp"
+                android:background="#E5E5E5" />
 
-    </LinearLayout>
+            <!-- Tab 2 -->
+            <LinearLayout
+                android:id="@+id/tabWcGroups"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
+                <TextView
+                    android:id="@+id/tvWcGroups"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/wc_tab_groups"
+                    android:textColor="@color/text_muted"
+                    android:textSize="14sp" />
+                <View
+                    android:id="@+id/indicatorWcGroups"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@android:color/transparent" />
+            </LinearLayout>
 
-    <!-- Symmetric Tab Bar (Exactly 3 Distributed Swapping Tabs) -->
-    <LinearLayout
-        android:id="@+id/wcTabsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="10dp"
-        app:layout_constraintTop_toBottomOf="@id/bannerHeader">
+            <View
+                android:layout_width="1dp"
+                android:layout_height="20dp"
+                android:background="#E5E5E5" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/tabWcFixtures"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:backgroundTint="@color/accent_green"
-            android:text="@string/wc_tab_fixtures"
-            android:textColor="@color/text_white"
-            android:textStyle="bold"
-            app:cornerRadius="8dp" />
+            <!-- Tab 3 -->
+            <LinearLayout
+                android:id="@+id/tabWcVLTT"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
+                <TextView
+                    android:id="@+id/tvWcVLTT"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/wc_tab_bracket"
+                    android:textColor="@color/text_muted"
+                    android:textSize="14sp" />
+                <View
+                    android:id="@+id/indicatorWcVLTT"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@android:color/transparent" />
+            </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/tabWcGroups"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginHorizontal="2dp"
-            android:backgroundTint="@color/card_dark"
-            android:text="@string/wc_tab_groups"
-            android:textColor="@color/text_muted"
-            android:textStyle="bold"
-            app:cornerRadius="8dp" />
+        </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/tabWcVLTT"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:backgroundTint="@color/card_dark"
-            android:text="@string/wc_tab_bracket"
-            android:textColor="@color/text_muted"
-            android:textStyle="bold"
-            app:cornerRadius="8dp" />
+        <!-- Bottom border line like the image -->
+        <View
+            android:id="@+id/wcTabsDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E5E5E5" />
 
-    </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/wcTabsContainer">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -221,7 +203,7 @@
             </LinearLayout>
 
             <!-- CONTENT 2: Groups ScrollView -->
-            <ScrollView
+            <androidx.core.widget.NestedScrollView
                 android:id="@+id/scrollWcGroups"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -232,11 +214,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:gravity="center"
                     android:paddingHorizontal="16dp"
                     android:paddingBottom="24dp">
                 </LinearLayout>
 
-            </ScrollView>
+            </androidx.core.widget.NestedScrollView>
 
             <!-- CONTENT 3: Bracket (VLTT) Horizontal ScrollView -->
             <HorizontalScrollView
@@ -246,7 +229,7 @@
                 android:visibility="gone"
                 android:fillViewport="true">
 
-                <ScrollView
+                <androidx.core.widget.NestedScrollView
                     android:id="@+id/scrollWcBracketVertical"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -314,7 +297,7 @@
 
                     </LinearLayout>
 
-                </ScrollView>
+                </androidx.core.widget.NestedScrollView>
 
             </HorizontalScrollView>
 
@@ -325,26 +308,27 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnWcZoom"
         style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="16dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
         android:padding="0dp"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
-        android:backgroundTint="#CCFFFFFF"
+        android:backgroundTint="@color/card_dark"
         android:visibility="gone"
+        app:elevation="4dp"
         app:icon="@drawable/ic_zoom_in"
-        app:iconSize="18dp"
+        app:iconSize="24dp"
         app:iconGravity="textStart"
         app:iconPadding="0dp"
         app:iconTint="@color/text_white"
         app:strokeColor="@color/accent_green"
-        app:strokeWidth="1.5dp"
-        app:cornerRadius="20dp"
-        app:layout_constraintTop_toBottomOf="@id/wcTabsContainer"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:strokeWidth="1dp"
+        app:cornerRadius="24dp" />
 
     <!-- Full-Screen Loading Overlay (Blocks clicks and centers Lottie) -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -355,10 +339,7 @@
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        android:elevation="10dp">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottieLoading"
@@ -374,5 +355,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
-
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

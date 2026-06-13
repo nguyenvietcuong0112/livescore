@@ -63,6 +63,7 @@ class WcFixtureAdapter(
             }
             VIEW_TYPE_EMPTY -> {
                 val emptyView = com.livescore.football.livescores.footballscores.ui.custom.EmptyStateView(parent.context).apply {
+                    layoutParams = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                     text = context.getString(R.string.empty_fixtures)
                     setPadding(0, 32 * resources.displayMetrics.density.toInt(), 0, 0)
                 }
