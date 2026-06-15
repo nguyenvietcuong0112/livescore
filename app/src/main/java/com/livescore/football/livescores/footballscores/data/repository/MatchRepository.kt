@@ -44,7 +44,7 @@ class MatchRepository @Inject constructor(
                 val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
                     timeZone = java.util.TimeZone.getDefault()
                 }.format(Calendar.getInstance().time)
-                val entities = response.data.map { dto ->
+                val entities = response.data.mapIndexed { index, dto ->
                     CachedMatchEntity(
                         id = dto.fixture.id,
                         leagueId = dto.league.id,
@@ -62,7 +62,8 @@ class MatchRepository @Inject constructor(
                         goalsAway = dto.goals.away,
                         dateTimestamp = dto.fixture.timestamp,
                         statusLong = dto.fixture.status.long,
-                        queryDate = todayStr
+                        queryDate = todayStr,
+                        apiOrder = index
                     )
                 }
                 matchDao.clearAndInsertMatches(entities)
@@ -86,7 +87,7 @@ class MatchRepository @Inject constructor(
             val response = apiService.getAllMatchesByDate(dateStr)
             Log.d(TAG, "refreshMatchesByDate: Response code = ${response.code}, data size = ${response.data?.size ?: 0}")
             if (response.code == 200 && response.data.isNotEmpty()) {
-                val entities = response.data.map { dto ->
+                val entities = response.data.mapIndexed { index, dto ->
                     CachedMatchEntity(
                         id = dto.fixture.id,
                         leagueId = dto.league.id,
@@ -104,7 +105,8 @@ class MatchRepository @Inject constructor(
                         goalsAway = dto.goals.away,
                         dateTimestamp = dto.fixture.timestamp,
                         statusLong = dto.fixture.status.long,
-                        queryDate = dateStr
+                        queryDate = dateStr,
+                        apiOrder = index
                     )
                 }
                 matchDao.clearAndInsertMatchesForDate(entities, dateStr)

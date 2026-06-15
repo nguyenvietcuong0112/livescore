@@ -21,5 +21,6 @@ data class CachedMatchEntity(
     val goalsAway: Int?,
     val dateTimestamp: Long,
     val statusLong: String,
-    val queryDate: String
+    val queryDate: String,
+    val apiOrder: Int = 0
 )

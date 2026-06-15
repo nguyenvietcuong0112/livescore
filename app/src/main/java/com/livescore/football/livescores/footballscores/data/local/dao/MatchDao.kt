@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MatchDao {
-    @Query("SELECT * FROM cached_matches ORDER BY dateTimestamp ASC")
+    @Query("SELECT * FROM cached_matches ORDER BY apiOrder ASC")
     fun getAllCachedMatches(): Flow<List<CachedMatchEntity>>
 
-    @Query("SELECT * FROM cached_matches WHERE statusShort = '1H' OR statusShort = '2H' OR statusShort = 'HT' OR statusShort = 'ET' OR statusShort = 'BT' OR statusShort = 'P' ORDER BY dateTimestamp ASC")
+    @Query("SELECT * FROM cached_matches WHERE statusShort = '1H' OR statusShort = '2H' OR statusShort = 'HT' OR statusShort = 'ET' OR statusShort = 'BT' OR statusShort = 'P' ORDER BY apiOrder ASC")
     fun getLiveCachedMatches(): Flow<List<CachedMatchEntity>>
 
-    @Query("SELECT * FROM cached_matches WHERE queryDate = :dateStr ORDER BY dateTimestamp ASC")
+    @Query("SELECT * FROM cached_matches WHERE queryDate = :dateStr ORDER BY apiOrder ASC")
     fun getCachedMatchesByQueryDate(dateStr: String): Flow<List<CachedMatchEntity>>
 
     @Query("SELECT * FROM cached_matches WHERE id = :matchId")
