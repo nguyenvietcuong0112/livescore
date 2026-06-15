@@ -141,6 +141,19 @@ class MatchRepository @Inject constructor(
         emit(null)
     }
 
+    fun getAiPrediction(matchId: Int, lang: String): Flow<PredictionResponse?> = flow {
+        Log.d(TAG, "getAiPrediction: Fetching prediction for matchId = $matchId, lang = $lang")
+        val response = apiService.getAiPrediction(matchId, lang)
+        if (response.code == 200) {
+            emit(response)
+        } else {
+            emit(null)
+        }
+    }.catch { e ->
+        Log.e(TAG, "getAiPrediction: Error occurred: ${e.message}", e)
+        emit(null)
+    }
+
 
 
     // --- Favorites ---

@@ -95,11 +95,12 @@ class WC26Fragment : Fragment() {
     private fun setupRecyclerView() {
         wcFixtureAdapter = WcFixtureAdapter(
             context = requireContext(),
-            onMatchClick = { match ->
+            onMatchClick = { match, selectPredictionTab ->
                 val intent = android.content.Intent(requireContext(), com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity::class.java).apply {
                     putExtra("MATCH_ID", match.fixture.id)
                     putExtra("HOME_TEAM", match.teams.home.name)
                     putExtra("AWAY_TEAM", match.teams.away.name)
+                    putExtra("SELECT_PREDICTION_TAB", selectPredictionTab)
                 }
                 startActivity(intent)
             },

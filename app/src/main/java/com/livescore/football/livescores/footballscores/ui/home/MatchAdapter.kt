@@ -34,7 +34,7 @@ sealed class MatchListItem {
 }
 
 class MatchAdapter(
-    private val onMatchClick: (CachedMatchEntity) -> Unit,
+    private val onMatchClick: (CachedMatchEntity, Boolean) -> Unit,
     private val onFavoriteClick: (CachedMatchEntity) -> Unit,
     private val onReminderClick: (CachedMatchEntity) -> Unit
 ) : ListAdapter<MatchListItem, RecyclerView.ViewHolder>(DiffCallback) {
@@ -134,15 +134,19 @@ class MatchAdapter(
             binding.ivFavorite.setImageResource(
                 if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border
             )
+            val isUpcoming = match.statusShort == "NS" || match.statusShort == "TBD"
             binding.ivFavorite.setColorFilter(
                 ContextCompat.getColor(
                     binding.ivFavorite.context,
-                    if (isFav) R.color.accent_green else R.color.text_muted
+                    if (isFav) {
+                        if (isUpcoming) R.color.primaryRed else R.color.accent_green
+                    } else {
+                        R.color.text_muted
+                    }
                 )
             )
 
             // Bind reminder icon state (only visible for upcoming matches in the future)
-            val isUpcoming = match.statusShort == "NS" || match.statusShort == "TBD"
             val isUpcomingFuture = isUpcoming && (match.dateTimestamp * 1000 > System.currentTimeMillis())
             binding.ivReminder.isVisible = isUpcomingFuture
             if (isUpcomingFuture) {
@@ -159,7 +163,11 @@ class MatchAdapter(
                 binding.ivReminder.setOnClickListener { onReminderClick(match) }
             }
 
-            binding.layoutMatchDetailsClick.setOnClickListener { onMatchClick(match) }
+            binding.layoutPredictButton.isVisible = isUpcoming
+            if (isUpcoming) {
+                binding.btnPredict.setOnClickListener { onMatchClick(match, true) }
+            }
+            binding.layoutMatchDetailsClick.setOnClickListener { onMatchClick(match, false) }
             binding.ivFavorite.setOnClickListener { onFavoriteClick(match) }
         }
     }

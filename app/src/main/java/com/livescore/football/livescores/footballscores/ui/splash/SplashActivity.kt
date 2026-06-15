@@ -175,7 +175,7 @@ class SplashActivity : BaseActivity() {
                     ActivityLoadNativeFullV1.Companion.open(
                         this@SplashActivity,
                         getRemoteAdId("native_splash_full_high", R.string.native_splash_full_high),
-                        getRemoteAdId("native_splash_full", R.string.native_splash_full),
+                        getRemoteAdId("native_splash_full",     R.string.native_splash_full),
                         object : ActivityFullCallback {
                             override fun onResultFromActivityFull() {
                                 navigateAfterSplash()

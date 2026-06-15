@@ -159,11 +159,12 @@ class HomeFragment : Fragment() {
     private fun setupRecyclerViews() {
         // Match Adapter setup
         matchAdapter = MatchAdapter(
-            onMatchClick = { match ->
+            onMatchClick = { match, selectPredictionTab ->
                 val intent = Intent(requireContext(), MatchDetailActivity::class.java).apply {
                     putExtra("MATCH_ID", match.id)
                     putExtra("HOME_TEAM", match.homeTeamName)
                     putExtra("AWAY_TEAM", match.awayTeamName)
+                    putExtra("SELECT_PREDICTION_TAB", selectPredictionTab)
                 }
                 startActivity(intent)
             },

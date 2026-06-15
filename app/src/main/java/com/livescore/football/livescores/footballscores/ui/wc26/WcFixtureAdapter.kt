@@ -18,7 +18,7 @@ import java.util.TimeZone
 
 class WcFixtureAdapter(
     private val context: Context,
-    private val onMatchClick: (MatchItemDto) -> Unit,
+    private val onMatchClick: (MatchItemDto, Boolean) -> Unit,
     private val onReminderClick: (MatchItemDto, ImageView) -> Unit,
     private val onFavoriteClick: (MatchItemDto, ImageView) -> Unit,
     private val isReminderSet: (Int) -> Boolean,
@@ -165,9 +165,26 @@ class WcFixtureAdapter(
 
             val isFav = isFavoriteSet(match.fixture.id)
             ivFavorite.setImageResource(if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
-            ivFavorite.setColorFilter(ContextCompat.getColor(context, if (isFav) R.color.accent_green else R.color.text_muted))
+            ivFavorite.setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    if (isFav) {
+                        if (isUpcoming) R.color.primaryRed else R.color.accent_green
+                    } else {
+                        R.color.text_muted
+                    }
+                )
+            )
 
-            itemView.setOnClickListener { onMatchClick(match) }
+            val layoutPredictButton: View = itemView.findViewById(R.id.layoutPredictButton)
+            val btnPredict: View = itemView.findViewById(R.id.btnPredict)
+
+            layoutPredictButton.visibility = if (isUpcoming) View.VISIBLE else View.GONE
+            if (isUpcoming) {
+                btnPredict.setOnClickListener { onMatchClick(match, true) }
+            }
+
+            itemView.setOnClickListener { onMatchClick(match, false) }
             ivReminder.setOnClickListener { onReminderClick(match, ivReminder) }
             ivFavorite.setOnClickListener { onFavoriteClick(match, ivFavorite) }
         }

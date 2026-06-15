@@ -245,7 +245,7 @@ class DecryptionInterceptor(
             }
 
             // 4. API: /api/v1/fixtures, date hoặc live
-            (urlPath.contains("/fixtures") && !urlPath.contains("/details")) -> {
+            (urlPath.contains("/fixtures") && !urlPath.contains("/details") && !urlPath.contains("/ai-prediction")) -> {
                 val originalArray = JSONArray(decryptedText)
                 val newArray = JSONArray()
                 for (i in 0 until originalArray.length()) {

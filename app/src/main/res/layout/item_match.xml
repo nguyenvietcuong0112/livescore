@@ -13,260 +13,312 @@
     app:strokeColor="@color/divider_dark"
     app:strokeWidth="1dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <!-- Clickable area for Match Details (completely separated from Favorite icon) -->
         <LinearLayout
-            android:id="@+id/layoutMatchDetailsClick"
-            android:layout_width="0dp"
+            android:id="@+id/layoutPredictButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:background="?attr/selectableItemBackground"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/ivReminder"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
 
-            <!-- Left Layout: Status or Live Minutes -->
             <LinearLayout
-                android:id="@+id/statusLayout"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
+                android:id="@+id/btnPredict"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_score_prediction_btn"
+                android:orientation="horizontal"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="24dp">
 
-                <TextView
-                    android:id="@+id/tvMatchStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/accent_green"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    tools:text="74'" />
-
-                <com.livescore.football.livescores.footballscores.ui.custom.LivePulseView
-                    android:id="@+id/livePulse"
+                <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:layout_marginTop="4dp" />
-
-            </LinearLayout>
-
-            <!-- Vertical Divider -->
-            <View
-                android:id="@+id/statusDivider"
-                android:layout_width="1dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp"
-                android:background="@color/divider_dark" />
-
-            <!-- Center Layout: Team logos and names -->
-            <LinearLayout
-                android:id="@+id/teamsLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <!-- Home Team Line -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/ivHomeLogo"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="8dp"
-                        android:contentDescription="Home Logo"
-                        tools:src="@mipmap/ic_launcher" />
-
-                    <TextView
-                        android:id="@+id/tvHomeName"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textColor="@color/text_white"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        tools:text="Arsenal" />
-
-                    <TextView
-                        android:id="@+id/tvHomeRedCards"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:background="@color/card_red"
-                        android:textColor="@color/text_white"
-                        android:textSize="10sp"
-                        android:textStyle="bold"
-                        android:paddingHorizontal="4dp"
-                        android:paddingVertical="1dp"
-                        android:text="1"
-                        android:visibility="gone"
-                        tools:visibility="visible" />
-
-                </LinearLayout>
-
-                <!-- Away Team Line -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/ivAwayLogo"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="8dp"
-                        android:contentDescription="Away Logo"
-                        tools:src="@mipmap/ic_launcher" />
-
-                    <TextView
-                        android:id="@+id/tvAwayName"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textColor="@color/text_white"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        tools:text="Chelsea" />
-
-                    <TextView
-                        android:id="@+id/tvAwayRedCards"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:background="@color/card_red"
-                        android:textColor="@color/text_white"
-                        android:textSize="10sp"
-                        android:textStyle="bold"
-                        android:paddingHorizontal="4dp"
-                        android:paddingVertical="1dp"
-                        android:text="1"
-                        android:visibility="gone"
-                        tools:visibility="visible" />
-
-                </LinearLayout>
-
-                <!-- Live scorers & stats details -->
-                <LinearLayout
-                    android:id="@+id/layoutLiveExtra"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="8dp"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-
-                    <!-- Divider -->
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/divider_dark"
-                        android:layout_marginBottom="6dp" />
-
-                    <!-- Scorers text -->
-                    <TextView
-                        android:id="@+id/tvLiveScorers"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/text_muted"
-                        android:textSize="12sp"
-                        android:layout_marginBottom="4dp"
-                        tools:text="⚽ Saka 12' - ⚽ Palmer 28'" />
-
-                    <!-- Stats text -->
-                    <TextView
-                        android:id="@+id/tvLiveStats"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/accent_green"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        tools:text="Possession: 56% - 44% | Shots: 14 - 8" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Right Layout: Scores -->
-            <LinearLayout
-                android:id="@+id/scoreLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:layout_marginStart="12dp"
-                android:paddingEnd="8dp">
+                    android:src="@drawable/ic_ai_robot"
+                    app:tint="@color/primaryBlue"
+                    android:layout_marginEnd="8dp" />
 
                 <TextView
-                    android:id="@+id/tvHomeScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    android:textColor="@color/text_white"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    tools:text="2" />
+                    android:text="@string/btn_score_prediction"
+                    android:textColor="@color/primaryBlue"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tvAwayScore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:textColor="@color/text_white"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    tools:text="1" />
-
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_sparkles"
+                    app:tint="@color/primaryBlue"
+                    android:layout_marginStart="8dp" />
             </LinearLayout>
-
         </LinearLayout>
 
-        <!-- Separate Reminder Icon (Bell) for upcoming matches -->
-        <ImageView
-            android:id="@+id/ivReminder"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:padding="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Reminder Alarm"
-            android:src="@drawable/ic_bell"
-            android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@id/ivFavorite"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <!-- Separate Favorite Icon aligned to the right edge (Completely outside details click bounds) -->
-        <ImageView
-            android:id="@+id/ivFavorite"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:padding="16dp"
-            android:layout_marginEnd="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Favorite Match"
-            android:src="@drawable/ic_favorite_border"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            <!-- Clickable area for Match Details (completely separated from Favorite icon) -->
+            <LinearLayout
+                android:id="@+id/layoutMatchDetailsClick"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:background="?attr/selectableItemBackground"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ivReminder"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- Left Layout: Status or Live Minutes -->
+                <LinearLayout
+                    android:id="@+id/statusLayout"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvMatchStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/accent_green"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:text="74'" />
+
+                    <com.livescore.football.livescores.footballscores.ui.custom.LivePulseView
+                        android:id="@+id/livePulse"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginTop="4dp" />
+
+                </LinearLayout>
+
+                <!-- Vertical Divider -->
+                <View
+                    android:id="@+id/statusDivider"
+                    android:layout_width="1dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@color/divider_dark" />
+
+                <!-- Center Layout: Team logos and names -->
+                <LinearLayout
+                    android:id="@+id/teamsLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Home Team Line -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/ivHomeLogo"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:contentDescription="Home Logo"
+                            tools:src="@mipmap/ic_launcher" />
+
+                        <TextView
+                            android:id="@+id/tvHomeName"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/text_white"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            tools:text="Arsenal" />
+
+                        <TextView
+                            android:id="@+id/tvHomeRedCards"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:background="@color/card_red"
+                            android:textColor="@color/text_white"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="1dp"
+                            android:text="1"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+
+                    </LinearLayout>
+
+                    <!-- Away Team Line -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/ivAwayLogo"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:contentDescription="Away Logo"
+                            tools:src="@mipmap/ic_launcher" />
+
+                        <TextView
+                            android:id="@+id/tvAwayName"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/text_white"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            tools:text="Chelsea" />
+
+                        <TextView
+                            android:id="@+id/tvAwayRedCards"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:background="@color/card_red"
+                            android:textColor="@color/text_white"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="1dp"
+                            android:text="1"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+
+                    </LinearLayout>
+
+                    <!-- Live scorers & stats details -->
+                    <LinearLayout
+                        android:id="@+id/layoutLiveExtra"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+
+                        <!-- Divider -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/divider_dark"
+                            android:layout_marginBottom="6dp" />
+
+                        <!-- Scorers text -->
+                        <TextView
+                            android:id="@+id/tvLiveScorers"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_muted"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="4dp"
+                            tools:text="⚽ Saka 12' - ⚽ Palmer 28'" />
+
+                        <!-- Stats text -->
+                        <TextView
+                            android:id="@+id/tvLiveStats"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/accent_green"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            tools:text="Possession: 56% - 44% | Shots: 14 - 8" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Right Layout: Scores -->
+                <LinearLayout
+                    android:id="@+id/scoreLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:layout_marginStart="12dp"
+                    android:paddingEnd="8dp">
+
+                    <TextView
+                        android:id="@+id/tvHomeScore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        android:textColor="@color/text_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="2" />
+
+                    <TextView
+                        android:id="@+id/tvAwayScore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:textColor="@color/text_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="1" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Separate Reminder Icon (Bell) for upcoming matches -->
+            <ImageView
+                android:id="@+id/ivReminder"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:padding="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Reminder Alarm"
+                android:src="@drawable/ic_bell"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/ivFavorite"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <!-- Separate Favorite Icon aligned to the right edge (Completely outside details click bounds) -->
+            <ImageView
+                android:id="@+id/ivFavorite"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:padding="16dp"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Favorite Match"
+                android:src="@drawable/ic_favorite_border"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

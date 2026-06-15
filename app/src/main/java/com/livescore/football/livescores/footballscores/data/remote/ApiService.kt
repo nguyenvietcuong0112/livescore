@@ -47,6 +47,12 @@ interface ApiService {
         @Query("season") season: Int
     ): BaseResponse<MatchItemDto>
 
+    @GET("api/v1/fixtures/{fixture_id}/ai-prediction")
+    suspend fun getAiPrediction(
+        @Path("fixture_id") matchId: Int,
+        @Query("lang") lang: String
+    ): PredictionResponse
+
     @POST("api/v1/users/register")
     suspend fun registerDevice(
         @Body request: RegisterDeviceRequest

@@ -19,7 +19,10 @@ data class MatchDetailUiState(
     val events: List<EventItemDto> = emptyList(),
     val lineups: List<LineupItemDto> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val prediction: PredictionDataDto? = null,
+    val isPredictionLoading: Boolean = false,
+    val predictionError: String? = null
 )
 
 @HiltViewModel
@@ -263,6 +266,27 @@ class MatchDetailViewModel @Inject constructor(
         simBallY += (simTargetY - simBallY) * 0.12f
         
         _ballPosition.value = Pair(simBallX, simBallY)
+    }
+
+    fun fetchAiPrediction(matchId: Int, lang: String) {
+        if (_uiState.value.prediction != null || _uiState.value.isPredictionLoading) return
+        _uiState.value = _uiState.value.copy(isPredictionLoading = true, predictionError = null)
+
+        viewModelScope.launch {
+            repository.getAiPrediction(matchId, lang).collect { response ->
+                if (response != null && response.code == 200) {
+                    _uiState.value = _uiState.value.copy(
+                        prediction = response.data,
+                        isPredictionLoading = false
+                    )
+                } else {
+                    _uiState.value = _uiState.value.copy(
+                        isPredictionLoading = false,
+                        predictionError = "Failed to load prediction"
+                    )
+                }
+            }
+        }
     }
 
     override fun onCleared() {

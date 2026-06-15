@@ -88,11 +88,11 @@ class MatchDetailActivity : BaseActivity() {
     }
 
     private fun setupUI(matchId: Int) {
-        binding.matchHeader.btnBack.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
 
-        binding.matchHeader.btnShare.setOnClickListener {
+        binding.btnShare.setOnClickListener {
             shareCombinedMatchView(matchId)
         }
 
@@ -110,6 +110,25 @@ class MatchDetailActivity : BaseActivity() {
         lineupAdapter = LineupAdapter()
         binding.layoutLineups.rvLineupPlayers.layoutManager = LinearLayoutManager(this)
         binding.layoutLineups.rvLineupPlayers.adapter = lineupAdapter
+
+        // Main tabs selection setup
+        binding.btnTabMatch.setOnClickListener { switchMainTab(0, matchId) }
+        binding.btnTabPrediction.setOnClickListener { switchMainTab(1, matchId) }
+
+        // Setup prediction lock overlay button click and localization
+        binding.layoutPredictionLockOverlay.tvLockTitle.text = getString(R.string.prediction_locked_title)
+        binding.layoutPredictionLockOverlay.tvLockSubtitle.text = getString(R.string.prediction_locked_desc)
+        binding.layoutPredictionLockOverlay.btnUnlockNow.setOnClickListener {
+            startActivity(Intent(this, com.livescore.football.livescores.footballscores.ui.iap.IAPActivity::class.java))
+        }
+
+        // Select the default main tab
+        val selectPrediction = intent.getBooleanExtra("SELECT_PREDICTION_TAB", false)
+        if (selectPrediction) {
+            switchMainTab(1, matchId)
+        } else {
+            switchMainTab(0, matchId)
+        }
     }
 
     private fun captureViewToBitmap(view: View): Bitmap {
@@ -259,12 +278,28 @@ class MatchDetailActivity : BaseActivity() {
             }
         }
 
-        val activeColor = ContextCompat.getColor(this, R.color.accent_green)
-        val mutedColor = ContextCompat.getColor(this, R.color.text_muted)
+        val activeTextColor = Color.WHITE
+        val mutedTextColor = ContextCompat.getColor(this, R.color.text_muted)
+        val activeBgColor = ContextCompat.getColor(this, R.color.accent_green)
+        val transparentBg = Color.TRANSPARENT
 
-        binding.btnTabStats.setTextColor(if (tabIndex == 0) activeColor else mutedColor)
-        binding.btnTabTimeline.setTextColor(if (tabIndex == 1) activeColor else mutedColor)
-        binding.btnTabLineups.setTextColor(if (tabIndex == 2) activeColor else mutedColor)
+        binding.btnTabStats.setTextColor(if (tabIndex == 0) activeTextColor else mutedTextColor)
+        binding.btnTabStats.setTypeface(null, if (tabIndex == 0) android.graphics.Typeface.BOLD else android.graphics.Typeface.NORMAL)
+        binding.btnTabStats.backgroundTintList = android.content.res.ColorStateList.valueOf(
+            if (tabIndex == 0) activeBgColor else transparentBg
+        )
+
+        binding.btnTabTimeline.setTextColor(if (tabIndex == 1) activeTextColor else mutedTextColor)
+        binding.btnTabTimeline.setTypeface(null, if (tabIndex == 1) android.graphics.Typeface.BOLD else android.graphics.Typeface.NORMAL)
+        binding.btnTabTimeline.backgroundTintList = android.content.res.ColorStateList.valueOf(
+            if (tabIndex == 1) activeBgColor else transparentBg
+        )
+
+        binding.btnTabLineups.setTextColor(if (tabIndex == 2) activeTextColor else mutedTextColor)
+        binding.btnTabLineups.setTypeface(null, if (tabIndex == 2) android.graphics.Typeface.BOLD else android.graphics.Typeface.NORMAL)
+        binding.btnTabLineups.backgroundTintList = android.content.res.ColorStateList.valueOf(
+            if (tabIndex == 2) activeBgColor else transparentBg
+        )
 
         binding.containerStats.isVisible = tabIndex == 0
         binding.layoutTimeline.root.isVisible = tabIndex == 1
@@ -294,7 +329,7 @@ class MatchDetailActivity : BaseActivity() {
                                 val isToday = sdfToday.format(matchDate) == sdfToday.format(java.util.Date())
                                 val locale = java.util.Locale.getDefault()
                                 val pattern = if (isToday) {
-                                    if (locale.language == "vi") "'Hôm nay,' HH:mm" else "'Today,' HH:mm"
+                                    "'" + getString(R.string.today) + ",' HH:mm"
                                 } else {
                                     "dd/MM/yyyy HH:mm"
                                 }
@@ -422,6 +457,17 @@ class MatchDetailActivity : BaseActivity() {
                             }
                             binding.layoutTimeline.timelineVisualView.setEvents(canvasEvents)
                         }
+
+                        // Bind prediction data and loading state
+                        binding.progressPredictionLoading.isVisible = state.isPredictionLoading
+                        if (state.isPredictionLoading) {
+                            binding.layoutMatchPrediction.root.visibility = View.GONE
+                        } else {
+                            binding.layoutMatchPrediction.root.visibility = if (state.prediction != null) View.VISIBLE else View.GONE
+                            state.prediction?.let { prediction ->
+                                bindPredictionData(prediction)
+                            }
+                        }
                     }
                 }
 
@@ -487,6 +533,235 @@ class MatchDetailActivity : BaseActivity() {
             val paywall = PremiumPaywallDialog.newInstance(isOutOfQuota)
             paywall.show(supportFragmentManager, PremiumPaywallDialog.TAG)
         }
+    }
+
+    private fun switchMainTab(tabIndex: Int, matchId: Int) {
+        val activeTextColor = Color.WHITE
+        val mutedTextColor = ContextCompat.getColor(this, R.color.text_muted)
+        val activeBgColor = ContextCompat.getColor(this, R.color.accent_green)
+        val transparentBg = Color.TRANSPARENT
+
+        binding.btnTabMatch.setTextColor(if (tabIndex == 0) activeTextColor else mutedTextColor)
+        binding.btnTabMatch.setTypeface(null, if (tabIndex == 0) android.graphics.Typeface.BOLD else android.graphics.Typeface.NORMAL)
+        binding.btnTabMatch.backgroundTintList = android.content.res.ColorStateList.valueOf(
+            if (tabIndex == 0) activeBgColor else transparentBg
+        )
+
+        binding.btnTabPrediction.setTextColor(if (tabIndex == 1) activeTextColor else mutedTextColor)
+        binding.btnTabPrediction.setTypeface(null, if (tabIndex == 1) android.graphics.Typeface.BOLD else android.graphics.Typeface.NORMAL)
+        binding.btnTabPrediction.backgroundTintList = android.content.res.ColorStateList.valueOf(
+            if (tabIndex == 1) activeBgColor else transparentBg
+        )
+
+        binding.layoutMatchContent.isVisible = tabIndex == 0
+        binding.layoutPredictionContent.isVisible = tabIndex == 1
+        binding.matchHeader.root.isVisible = tabIndex == 0
+
+        if (tabIndex == 1) {
+            binding.layoutMatchPrediction.root.isVisible = true
+            binding.layoutPredictionLockOverlay.root.isVisible = false
+
+            val savedLang = com.livescore.football.livescores.footballscores.utils.SystemUtil.getPreLanguage(this)
+            val lang = if (savedLang == "vi") "vi" else "en"
+            viewModel.fetchAiPrediction(matchId, lang)
+        }
+    }
+
+    private fun bindPredictionData(prediction: com.livescore.football.livescores.footballscores.data.remote.model.PredictionDataDto) {
+        val detail = viewModel.uiState.value.detail
+
+        val isPremium = limitManager.isPremium()
+        
+        // Adjust locked section layout height and overlay visibility depending on premium state
+        val params = binding.layoutMatchPrediction.layoutPremiumLockedSection.layoutParams
+        if (isPremium) {
+            params.height = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+            binding.layoutMatchPrediction.layoutPremiumBlurOverlay.visibility = View.GONE
+        } else {
+            // Clip height to 100dp to show a preview starting from AI Confidence that fades/blurs out heavily
+            params.height = (100 * resources.displayMetrics.density).toInt()
+            binding.layoutMatchPrediction.layoutPremiumBlurOverlay.visibility = View.VISIBLE
+            
+            // Set up click listener on "See More" button to display the custom Dialog popup
+            binding.layoutMatchPrediction.btnPredictionSeeMore.setOnClickListener {
+                val existing = supportFragmentManager.findFragmentByTag(com.livescore.football.livescores.footballscores.ui.custom.AiPredictionPaywallDialog.TAG)
+                if (existing == null) {
+                    val dialog = com.livescore.football.livescores.footballscores.ui.custom.AiPredictionPaywallDialog.newInstance()
+                    dialog.show(supportFragmentManager, com.livescore.football.livescores.footballscores.ui.custom.AiPredictionPaywallDialog.TAG)
+                }
+            }
+        }
+        binding.layoutMatchPrediction.layoutPremiumLockedSection.layoutParams = params
+
+        // 1. Team Logos & Names
+        val homeTeamName = detail?.teams?.home?.name ?: prediction.home_team.name
+        val awayTeamName = detail?.teams?.away?.name ?: prediction.away_team.name
+
+        if (detail != null) {
+            Glide.with(this).load(detail.teams.home.logo).into(binding.layoutMatchPrediction.ivPredictHomeLogo)
+            Glide.with(this).load(detail.teams.away.logo).into(binding.layoutMatchPrediction.ivPredictAwayLogo)
+            binding.layoutMatchPrediction.tvPredictHomeName.text = detail.teams.home.name
+            binding.layoutMatchPrediction.tvPredictAwayName.text = detail.teams.away.name
+        } else {
+            Glide.with(this).load(prediction.home_team.logo).into(binding.layoutMatchPrediction.ivPredictHomeLogo)
+            Glide.with(this).load(prediction.away_team.logo).into(binding.layoutMatchPrediction.ivPredictAwayLogo)
+            binding.layoutMatchPrediction.tvPredictHomeName.text = prediction.home_team.name
+            binding.layoutMatchPrediction.tvPredictAwayName.text = prediction.away_team.name
+        }
+
+        // Highlight Predicted Winner Name
+        val homeWinner = prediction.winner_prediction == "home"
+        val awayWinner = prediction.winner_prediction == "away"
+
+        binding.layoutMatchPrediction.tvPredictHomeName.setTextColor(
+            if (homeWinner) ContextCompat.getColor(this, R.color.accent_green) else ContextCompat.getColor(this, R.color.text_white)
+        )
+        binding.layoutMatchPrediction.tvPredictAwayName.setTextColor(
+            if (awayWinner) ContextCompat.getColor(this, R.color.accent_green) else ContextCompat.getColor(this, R.color.text_white)
+        )
+
+        // 2. Score Prediction & Confidence
+        val homeScore = prediction.score_prediction?.home ?: 0
+        val awayScore = prediction.score_prediction?.away ?: 0
+        binding.layoutMatchPrediction.tvPredictScore.text = "$homeScore - $awayScore"
+        binding.layoutMatchPrediction.tvPredictConfidence.text = "${prediction.confidence_score ?: 0}%"
+        binding.layoutMatchPrediction.progressConfidence.progress = prediction.confidence_score ?: 0
+
+        // 3. Over / Under & BTTS
+        binding.layoutMatchPrediction.tvPredictOverUnder.text = prediction.over_under_prediction ?: ""
+
+        val isBtts = prediction.btts_prediction == true
+        binding.layoutMatchPrediction.tvPredictBtts.text = if (isBtts) getString(R.string.ai_yes) else getString(R.string.ai_no)
+        binding.layoutMatchPrediction.tvPredictBtts.backgroundTintList = android.content.res.ColorStateList.valueOf(
+            ContextCompat.getColor(this, if (isBtts) R.color.accent_green else R.color.primaryRed)
+        )
+        binding.layoutMatchPrediction.tvPredictBtts.setTextColor(
+            ContextCompat.getColor(this, if (isBtts) R.color.bg_light else R.color.text_white)
+        )
+
+        // 4. Prominent Players
+        binding.layoutMatchPrediction.layoutGoalscorersContainer.removeAllViews()
+        val prominentPlayers = prediction.prominent_players ?: emptyList()
+        if (prominentPlayers.isEmpty()) {
+            binding.layoutMatchPrediction.cardGoalscorers.visibility = View.GONE
+        } else {
+            binding.layoutMatchPrediction.cardGoalscorers.visibility = View.VISIBLE
+            for (player in prominentPlayers) {
+                val scorerBinding = com.livescore.football.livescores.footballscores.databinding.ItemPredictedGoalscorerBinding.inflate(
+                    layoutInflater,
+                    binding.layoutMatchPrediction.layoutGoalscorersContainer,
+                    false
+                )
+                scorerBinding.tvPlayerName.text = player.player_name
+                scorerBinding.tvTeamBadge.text = if (player.team == "home") getString(R.string.ai_home_badge) else getString(R.string.ai_away_badge)
+                scorerBinding.tvTeamBadge.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                    if (player.team == "home") ContextCompat.getColor(this, R.color.accent_green) else ContextCompat.getColor(this, R.color.accent_green_secondary)
+                )
+                scorerBinding.tvProbability.text = "${player.probability}%"
+                scorerBinding.progressProbability.progress = player.probability
+
+                if (!player.reason.isNullOrEmpty()) {
+                    scorerBinding.tvPlayerReason.text = player.reason
+                    scorerBinding.tvPlayerReason.visibility = View.VISIBLE
+                } else {
+                    scorerBinding.tvPlayerReason.visibility = View.GONE
+                }
+
+                binding.layoutMatchPrediction.layoutGoalscorersContainer.addView(scorerBinding.root)
+            }
+        }
+
+        // 5. Match Analysis & Squad Impact
+        binding.layoutMatchPrediction.tvAnalysisText.text = prediction.form_overview ?: ""
+
+        val hasSquadImpact = !prediction.squad_impact.isNullOrEmpty()
+        binding.layoutMatchPrediction.layoutSquadImpact.isVisible = hasSquadImpact
+        if (hasSquadImpact) {
+            binding.layoutMatchPrediction.tvSquadImpactText.text = prediction.squad_impact
+        }
+
+        // 6. Tactical Analysis & Strengths/Weaknesses
+        binding.layoutMatchPrediction.tvTacticalAnalysisText.text = prediction.tactical_analysis ?: ""
+        
+        val tacticalText = prediction.tactical_analysis ?: ""
+        if (tacticalText.length > 180) {
+            binding.layoutMatchPrediction.tvTacticalAnalysisText.maxLines = 4
+            binding.layoutMatchPrediction.tvReadMoreTactics.visibility = View.VISIBLE
+            binding.layoutMatchPrediction.tvReadMoreTactics.setOnClickListener {
+                binding.layoutMatchPrediction.tvTacticalAnalysisText.maxLines = Integer.MAX_VALUE
+                binding.layoutMatchPrediction.tvReadMoreTactics.visibility = View.GONE
+            }
+        } else {
+            binding.layoutMatchPrediction.tvTacticalAnalysisText.maxLines = Integer.MAX_VALUE
+            binding.layoutMatchPrediction.tvReadMoreTactics.visibility = View.GONE
+        }
+
+        // Populate Strengths & Weaknesses side-by-side
+        binding.layoutMatchPrediction.tvHomeTeamSWLabel.text = homeTeamName.uppercase()
+        binding.layoutMatchPrediction.tvAwayTeamSWLabel.text = awayTeamName.uppercase()
+
+        binding.layoutMatchPrediction.layoutHomeSWContainer.removeAllViews()
+        binding.layoutMatchPrediction.layoutAwaySWContainer.removeAllViews()
+
+        val sw = prediction.strengths_weaknesses
+        if (sw != null) {
+            fun addBulletPoints(container: android.widget.LinearLayout, items: List<String>?, isStrength: Boolean) {
+                if (items.isNullOrEmpty()) return
+                val prefix = if (isStrength) "<font color='#00C853'>✓</font>  " else "<font color='#FF1744'>✗</font>  "
+                for (item in items) {
+                    val tv = android.widget.TextView(this).apply {
+                        layoutParams = android.widget.LinearLayout.LayoutParams(
+                            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                        ).apply {
+                            setMargins(0, 0, 0, 6.dpToPx())
+                        }
+                        text = android.text.Html.fromHtml(prefix + item, android.text.Html.FROM_HTML_MODE_LEGACY)
+                        setTextColor(ContextCompat.getColor(this@MatchDetailActivity, R.color.text_white))
+                        textSize = 12f
+                        setLineSpacing(0f, 1.15f)
+                    }
+                    container.addView(tv)
+                }
+            }
+
+            addBulletPoints(binding.layoutMatchPrediction.layoutHomeSWContainer, sw.home_strengths, true)
+            addBulletPoints(binding.layoutMatchPrediction.layoutHomeSWContainer, sw.home_weaknesses, false)
+            addBulletPoints(binding.layoutMatchPrediction.layoutAwaySWContainer, sw.away_strengths, true)
+            addBulletPoints(binding.layoutMatchPrediction.layoutAwaySWContainer, sw.away_weaknesses, false)
+        }
+
+        // 7. Key Stats, Corners & Cards
+        val cornersHome = prediction.corners_prediction?.home ?: 0
+        val cornersAway = prediction.corners_prediction?.away ?: 0
+        binding.layoutMatchPrediction.tvPredictCorners.text = "$cornersHome - $cornersAway"
+
+        val cardsHome = prediction.yellow_cards_prediction?.home ?: 0
+        val cardsAway = prediction.yellow_cards_prediction?.away ?: 0
+        binding.layoutMatchPrediction.tvPredictYellowCards.text = "$cardsHome - $cardsAway"
+
+        // Key Stats bullets with ball icon emoji
+        binding.layoutMatchPrediction.layoutKeyStatsContainer.removeAllViews()
+        val keyStats = prediction.key_stats ?: emptyList()
+        for (stat in keyStats) {
+            val tv = android.widget.TextView(this).apply {
+                layoutParams = android.widget.LinearLayout.LayoutParams(
+                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(0, 0, 0, 8.dpToPx())
+                }
+                text = "⚽  $stat"
+                setTextColor(ContextCompat.getColor(this@MatchDetailActivity, R.color.text_white))
+                textSize = 12f
+                setLineSpacing(0f, 1.15f)
+            }
+            binding.layoutMatchPrediction.layoutKeyStatsContainer.addView(tv)
+        }
+    }
+
+    private fun Int.dpToPx(): Int {
+        return (this * resources.displayMetrics.density).toInt()
     }
 
     override fun onDestroy() {

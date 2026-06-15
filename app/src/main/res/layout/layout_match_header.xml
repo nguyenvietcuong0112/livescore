@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/card_dark"
-    android:paddingTop="@dimen/_30sdp"
+    android:paddingTop="12dp"
     android:paddingBottom="@dimen/_10sdp"
     android:paddingHorizontal="@dimen/_10sdp">
 
@@ -16,6 +16,7 @@
         android:layout_height="24dp"
         android:contentDescription="Back"
         android:src="@drawable/ic_back"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/text_white" />
@@ -27,6 +28,7 @@
         android:layout_height="24dp"
         android:contentDescription="Share"
         android:src="@drawable/ic_share"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/text_white" />

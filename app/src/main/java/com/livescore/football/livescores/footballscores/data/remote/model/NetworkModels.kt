@@ -230,3 +230,61 @@ data class FavoritesInfo(
     val leagues: List<Int>?
 )
 
+data class PredictionResponse(
+    val code: Int,
+    val message: String,
+    val data: PredictionDataDto?
+)
+
+data class PredictionDataDto(
+    val fixture_id: Int,
+    val lang: String?,
+    val home_team: PredictionTeamDto,
+    val away_team: PredictionTeamDto,
+    val winner_prediction: String?,
+    val score_prediction: PredictionScoreDto?,
+    val confidence_score: Int?,
+    val over_under_prediction: String?,
+    val btts_prediction: Boolean?,
+    val form_overview: String?,
+    val strengths_weaknesses: StrengthsWeaknessesDto?,
+    val squad_impact: String?,
+    val tactical_analysis: String?,
+    val key_stats: List<String>?,
+    val prominent_players: List<ProminentPlayerDto>?,
+    val corners_prediction: TeamStatPredictionDto?,
+    val yellow_cards_prediction: TeamStatPredictionDto?
+)
+
+data class PredictionTeamDto(
+    val id: Int,
+    val name: String,
+    val logo: String,
+    val winner: Boolean?
+)
+
+data class PredictionScoreDto(
+    val home: Int?,
+    val away: Int?
+)
+
+data class StrengthsWeaknessesDto(
+    val home_strengths: List<String>?,
+    val home_weaknesses: List<String>?,
+    val away_strengths: List<String>?,
+    val away_weaknesses: List<String>?
+)
+
+data class ProminentPlayerDto(
+    val player_name: String,
+    val team: String,
+    val probability: Int,
+    val reason: String?
+)
+
+data class TeamStatPredictionDto(
+    val home: Int?,
+    val away: Int?
+)
+
+
