@@ -87,7 +87,6 @@ class LanguageActivity : BaseActivity() {
         setupRecyclerView()
         setupListeners()
         loadAds()
-        nativeIntro1()
     }
 
     private fun setupRecyclerView() {
@@ -156,6 +155,34 @@ class LanguageActivity : BaseActivity() {
             checkNextButtonStatus(true)
             return
         }
+
+        val preloadedAd = AdsConfig.nativeLanguage
+        if (preloadedAd != null) {
+            AdsConfig.nativeLanguage = null // consume
+            val adId = try {
+                RemoteConfigManager.getInstance()
+                    .getAdId("native_language", getString(R.string.native_language))
+            } catch (e: Exception) {
+                getString(R.string.native_language)
+            }
+
+            preloadedAd.setOnPaidEventListener { adValue ->
+                val ecpm = adValue.valueMicros / 1000.0
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                    liveScoreApiService, this@LanguageActivity, "native", adId, "Language", ecpm
+                )
+            }
+
+            val adView = LayoutInflater.from(this@LanguageActivity)
+                .inflate(R.layout.layout_native_media, null) as NativeAdView
+            binding.frAds.removeAllViews()
+            binding.frAds.addView(adView)
+            Admob.getInstance().pushAdsToViewCustom(preloadedAd, adView)
+            LogEvent.log(this@LanguageActivity, "native_language")
+            checkNextButtonStatus(true)
+            return
+        }
+
         checkNextButtonStatus(false)
         val adId = try {
             RemoteConfigManager.getInstance()
@@ -208,42 +235,6 @@ class LanguageActivity : BaseActivity() {
             binding.frAds.visibility = View.GONE
             checkNextButtonStatus(true)
         }
-    }
-
-    private fun nativeIntro1() {
-        if (::limitManager.isInitialized && limitManager.isPremium()) {
-            AdsConfig.nativeIntro1 = null
-            return
-        }
-        val adId = try {
-            RemoteConfigManager.getInstance()
-                .getAdId("native_onboarding_1", getString(R.string.native_onboarding_1))
-        } catch (e: Exception) {
-            getString(R.string.native_onboarding_1)
-        }
-        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
-            liveScoreApiService, this, "native", adId, "Language"
-        )
-
-        Admob.getInstance().loadNativeAd(
-            this,
-            adId,
-            object : NativeCallback() {
-                override fun onNativeAdLoaded(nativeAd: NativeAd?) {
-                    com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
-                        liveScoreApiService, this@LanguageActivity, "native", adId, "Language"
-                    )
-                    AdsConfig.nativeIntro1 = nativeAd
-                }
-
-                override fun onAdFailedToLoad() {
-                    com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
-                        liveScoreApiService, this@LanguageActivity, "native", adId, "Language", null
-                    )
-                    AdsConfig.nativeIntro1 = null
-                }
-            }
-        )
     }
 
     private fun loadAdsNativeLanguageSelect() {

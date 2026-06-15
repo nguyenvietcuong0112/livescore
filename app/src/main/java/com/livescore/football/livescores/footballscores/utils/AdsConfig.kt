@@ -22,6 +22,7 @@ object AdsConfig {
     }
 
     var nativeIntro1: NativeAd? = null
+    var nativeLanguage: NativeAd? = null
 
     var lastInterAdShowTime: Long = 0L
 

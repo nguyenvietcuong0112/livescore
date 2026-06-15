@@ -90,6 +90,7 @@ class FragmentIntro1 : AbsBaseFragment<FragmentIntro1Binding?>() {
 
             Admob.getInstance().pushAdsToViewCustom(AdsConfig.nativeIntro1, adView)
             context?.let { LogEvent.log(it, "native_onboarding_1") }
+            showLoadingNext(false)
         } else {
             loadAdsIntro1Dynamically()
         }
@@ -115,11 +116,15 @@ class FragmentIntro1 : AbsBaseFragment<FragmentIntro1Binding?>() {
                     override fun onAdFailedToLoad() {
                         super.onAdFailedToLoad()
                         if (!isAdded) return
-                        showLoadingNext(false)
                         com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
                             liveScoreApiService, requireContext(), "native", adId, "Onboarding1", null
                         )
                         goneAds()
+                        binding?.root?.postDelayed({
+                            if (isAdded) {
+                                showLoadingNext(false)
+                            }
+                        }, 500)
                     }
 
                     override fun onNativeAdLoaded(nativeAd: NativeAd?) {
@@ -147,14 +152,18 @@ class FragmentIntro1 : AbsBaseFragment<FragmentIntro1Binding?>() {
                             Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
                         }
                         context?.let { LogEvent.log(it, "native_onboarding_1") }
+                        
                         binding!!.frAds.postDelayed({
-                            showLoadingNext(false)
+                            if (isAdded) {
+                                showLoadingNext(false)
+                            }
                         }, 500)
                     }
                 }
             )
         } else {
             goneAds()
+            showLoadingNext(false)
         }
     }
 

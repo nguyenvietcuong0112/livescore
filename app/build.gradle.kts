@@ -166,13 +166,20 @@ dependencies {
     //fb sdk
     implementation(libs.facebook.android.sdk)
     implementation(libs.facebook)
+    implementation("com.google.ads.mediation:applovin:13.6.2.0")
+    implementation("com.google.ads.mediation:inmobi:11.3.0.0")
+    implementation("com.google.ads.mediation:pangle:8.0.0.5.0")
+    implementation("com.google.ads.mediation:mintegral:17.1.61.0")
+    implementation("com.unity3d.ads:unity-ads:4.18.0")
+    implementation("com.google.ads.mediation:unity:4.18.0.0")
+    implementation("com.google.ads.mediation:vungle:7.7.4.0")
 
     // Fix R8 Missing Class Nullsafe/Nullsafe$Mode
     compileOnly(libs.infer.annotation)
 
 
     testImplementation(libs.junit)
-    testImplementation("org.json:json:20230227")
+    testImplementation(libs.json)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 }

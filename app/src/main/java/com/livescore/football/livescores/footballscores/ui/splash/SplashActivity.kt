@@ -25,6 +25,9 @@ import com.livescore.football.livescores.footballscores.utils.LogEvent
 import com.livescore.football.livescores.footballscores.utils.PushDataParser
 import com.livescore.football.livescores.footballscores.utils.PushNavigationExecutor
 import com.livescore.football.livescores.footballscores.utils.PushPayload
+import com.google.android.gms.ads.nativead.NativeAd
+import com.livescore.football.livescores.footballscores.utils.AdsConfig
+import com.mallegan.ads.callback.NativeCallback
 import com.mallegan.ads.callback.InterCallback
 import com.mallegan.ads.util.Admob
 import com.mallegan.ads.util.ConsentHelper
@@ -116,6 +119,20 @@ class SplashActivity : BaseActivity() {
                 liveScoreApiService, this, "banner", bannerId, "Splash"
             )
             LogEvent.log(this, "banner_splash_view")
+        }
+
+        if (pendingPushPayload == null && !isReturningUser()) {
+            val nativeLanguageId = remoteConfigManager.getAdId("native_language", getString(R.string.native_language))
+            if (nativeLanguageId.isNotEmpty() && !limitManager.isPremium()) {
+                Admob.getInstance().loadNativeAd(this, nativeLanguageId, object : NativeCallback() {
+                    override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                        AdsConfig.nativeLanguage = nativeAd
+                    }
+                    override fun onAdFailedToLoad() {
+                        AdsConfig.nativeLanguage = null
+                    }
+                })
+            }
         }
 
         interCallback = object : InterCallback() {
