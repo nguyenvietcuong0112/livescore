@@ -19,22 +19,17 @@
             android:id="@+id/btnClose"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            app:cardBackgroundColor="#F3F4F6"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:layout_width="14dp"
-                android:layout_height="14dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_close"
-                app:tint="#111111" />
+               />
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Center Robot Illustration -->
