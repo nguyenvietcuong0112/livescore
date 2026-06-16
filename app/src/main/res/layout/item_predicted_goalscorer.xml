@@ -2,10 +2,9 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="220dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="12dp"
-    android:layout_marginBottom="4dp"
+    android:layout_marginBottom="10dp"
     app:cardBackgroundColor="@color/card_dark"
     app:cardCornerRadius="10dp"
     app:cardElevation="0dp"
@@ -78,8 +77,6 @@
             android:textColor="@color/text_muted"
             android:textSize="11sp"
             android:lineSpacingMultiplier="1.15"
-            android:maxLines="3"
-            android:ellipsize="end"
             tools:text="Messi's vision and ball-carrying will unlock defense..." />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

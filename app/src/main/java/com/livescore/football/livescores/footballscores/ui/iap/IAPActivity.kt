@@ -80,18 +80,35 @@ class IAPActivity : BaseActivity() {
         val activeStrokeColor = ContextCompat.getColor(this, R.color.accent_green)
         val inactiveStrokeColor = ContextCompat.getColor(this, R.color.divider_dark)
 
+        val activeBgColor = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#1A2563EB"))
+        val inactiveBgColor = android.content.res.ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white))
+
+        val textWhiteColor = ContextCompat.getColor(this, R.color.text_white)
+
         if (isMonthlySelected) {
+            binding.cardPlanMonthly.setCardBackgroundColor(activeBgColor)
             binding.cardPlanMonthly.strokeColor = activeStrokeColor
             binding.cardPlanMonthly.strokeWidth = dpToPx(2)
+            binding.tvMonthlyPrice.setTextColor(activeStrokeColor)
 
+            binding.cardPlanWeekly.setCardBackgroundColor(inactiveBgColor)
             binding.cardPlanWeekly.strokeColor = inactiveStrokeColor
             binding.cardPlanWeekly.strokeWidth = dpToPx(1)
+            binding.tvWeeklyPrice.setTextColor(textWhiteColor)
+
+            binding.tvCancelAnytime.text = getString(R.string.iap_cancel_anytime_monthly)
         } else {
+            binding.cardPlanWeekly.setCardBackgroundColor(activeBgColor)
             binding.cardPlanWeekly.strokeColor = activeStrokeColor
             binding.cardPlanWeekly.strokeWidth = dpToPx(2)
+            binding.tvWeeklyPrice.setTextColor(activeStrokeColor)
 
+            binding.cardPlanMonthly.setCardBackgroundColor(inactiveBgColor)
             binding.cardPlanMonthly.strokeColor = inactiveStrokeColor
             binding.cardPlanMonthly.strokeWidth = dpToPx(1)
+            binding.tvMonthlyPrice.setTextColor(textWhiteColor)
+
+            binding.tvCancelAnytime.text = getString(R.string.iap_cancel_anytime)
         }
     }
 
@@ -163,9 +180,6 @@ class IAPActivity : BaseActivity() {
             }
         }
 
-        binding.tvTerms.setOnClickListener {
-            Toast.makeText(this, getString(R.string.iap_terms_of_service_toast), Toast.LENGTH_SHORT).show()
-        }
 
         binding.tvPrivacy.setOnClickListener {
             Toast.makeText(this, getString(R.string.iap_privacy_policy_toast), Toast.LENGTH_SHORT).show()

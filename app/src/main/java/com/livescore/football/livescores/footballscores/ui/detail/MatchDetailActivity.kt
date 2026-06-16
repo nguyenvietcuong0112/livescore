@@ -4,6 +4,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.RenderEffect
+import android.graphics.Shader
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import com.livescore.football.livescores.footballscores.base.BaseActivity
@@ -577,10 +580,21 @@ class MatchDetailActivity : BaseActivity() {
         if (isPremium) {
             params.height = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
             binding.layoutMatchPrediction.layoutPremiumBlurOverlay.visibility = View.GONE
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                binding.layoutMatchPrediction.layoutPremiumLockedSection.setRenderEffect(null)
+            }
         } else {
-            // Clip height to 100dp to show a preview starting from AI Confidence that fades/blurs out heavily
-            params.height = (100 * resources.displayMetrics.density).toInt()
+            // Clip height to 140dp to show a preview starting from AI Confidence that fades/blurs out heavily
+            params.height = (140 * resources.displayMetrics.density).toInt()
             binding.layoutMatchPrediction.layoutPremiumBlurOverlay.visibility = View.VISIBLE
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val blurEffect = RenderEffect.createBlurEffect(
+                    12f,
+                    12f,
+                    Shader.TileMode.CLAMP
+                )
+                binding.layoutMatchPrediction.layoutPremiumLockedSection.setRenderEffect(blurEffect)
+            }
             
             // Set up click listener on "See More" button to display the custom Dialog popup
             binding.layoutMatchPrediction.btnPredictionSeeMore.setOnClickListener {
@@ -683,18 +697,8 @@ class MatchDetailActivity : BaseActivity() {
         // 6. Tactical Analysis & Strengths/Weaknesses
         binding.layoutMatchPrediction.tvTacticalAnalysisText.text = prediction.tactical_analysis ?: ""
         
-        val tacticalText = prediction.tactical_analysis ?: ""
-        if (tacticalText.length > 180) {
-            binding.layoutMatchPrediction.tvTacticalAnalysisText.maxLines = 4
-            binding.layoutMatchPrediction.tvReadMoreTactics.visibility = View.VISIBLE
-            binding.layoutMatchPrediction.tvReadMoreTactics.setOnClickListener {
-                binding.layoutMatchPrediction.tvTacticalAnalysisText.maxLines = Integer.MAX_VALUE
-                binding.layoutMatchPrediction.tvReadMoreTactics.visibility = View.GONE
-            }
-        } else {
-            binding.layoutMatchPrediction.tvTacticalAnalysisText.maxLines = Integer.MAX_VALUE
-            binding.layoutMatchPrediction.tvReadMoreTactics.visibility = View.GONE
-        }
+        binding.layoutMatchPrediction.tvTacticalAnalysisText.maxLines = Integer.MAX_VALUE
+        binding.layoutMatchPrediction.tvReadMoreTactics.visibility = View.GONE
 
         // Populate Strengths & Weaknesses side-by-side
         binding.layoutMatchPrediction.tvHomeTeamSWLabel.text = homeTeamName.uppercase()

@@ -292,4 +292,22 @@
     <string name="title_key_predictions">Kritik Tahminler</string>
     <string name="btn_score_prediction">SKOR TAHMİNİ</string>
 
+    <!-- AI Prediction & IAP Screen Translations -->
+    <string name="iap_weekly_premium">Haftalık Premium</string>
+    <string name="iap_only_price">sadece 1.99$/ay</string>
+    <string name="iap_save_badge">%30 Tasarruf Et</string>
+    <string name="iap_cancel_anytime">1.99$/hafta. İstediğiniz zaman iptal edin</string>
+    <string name="iap_cancel_anytime_monthly">5.99$/ay. İstediğiniz zaman iptal edin</string>
+    <string name="iap_btn_continue">Devam Et</string>
+    <string name="iap_feature_5">AI destekli maç skoru tahminleri</string>
+    <string name="dialog_ai_title">AI\'ın Ne Tahmin Ettiğini Görün</string>
+    <string name="dialog_ai_subtitle">Maç başlamadan önce detaylı skor tahminlerinin kilidini açın.</string>
+    <string name="dialog_ai_feature_1_title">Tahmini maç skoru</string>
+    <string name="dialog_ai_feature_1_desc">AI\'ın tahmin ettiği tam skoru görün</string>
+    <string name="dialog_ai_feature_2_title">Kazanma olasılığı</string>
+    <string name="dialog_ai_feature_2_desc">Galibiyet / Beraberlik / Mağlubiyet olasılık analizi</string>
+    <string name="dialog_ai_feature_3_title">Güven seviyesi</string>
+    <string name="dialog_ai_feature_3_desc">Her tahmin için AI güven derecesi</string>
+    <string name="dialog_ai_btn_later">Daha sonra</string>
+    <string name="dialog_ai_btn_go_premium">Premium\'a Geç</string>
 </resources>

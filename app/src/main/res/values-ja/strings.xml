@@ -292,4 +292,22 @@
     <string name="title_key_predictions">主な予想</string>
     <string name="btn_score_prediction">スコア予想</string>
 
+    <!-- AI Prediction & IAP Screen Translations -->
+    <string name="iap_weekly_premium">週間プレミアム</string>
+    <string name="iap_only_price">わずか1.99$/月</string>
+    <string name="iap_save_badge">30%節約</string>
+    <string name="iap_cancel_anytime">1.99$/週。いつでもキャンセル可能</string>
+    <string name="iap_cancel_anytime_monthly">5.99$/月。いつでもキャンセル可能</string>
+    <string name="iap_btn_continue">続行</string>
+    <string name="iap_feature_5">AIによる試合スコア予測</string>
+    <string name="dialog_ai_title">AIの予測を見る</string>
+    <string name="dialog_ai_subtitle">試合開始前に詳細なスコア予測をアンロックします。</string>
+    <string name="dialog_ai_feature_1_title">予想最終スコア</string>
+    <string name="dialog_ai_feature_1_desc">AIが予測する正確なスコアを表示</string>
+    <string name="dialog_ai_feature_2_title">勝率</string>
+    <string name="dialog_ai_feature_2_desc">勝/分/負の確率分析</string>
+    <string name="dialog_ai_feature_3_title">信頼度</string>
+    <string name="dialog_ai_feature_3_desc">各予測に対するAIの信頼度評価</string>
+    <string name="dialog_ai_btn_later">後で</string>
+    <string name="dialog_ai_btn_go_premium">プレミアムに移行</string>
 </resources>

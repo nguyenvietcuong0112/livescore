@@ -207,14 +207,21 @@
     <string name="iap_upgrade_subtitle">Trải nghiệm bóng đá đỉnh cao không giới hạn</string>
     <string name="iap_out_of_quota_title">⚠️ HẾT LƯỢT MIỄN PHÍ HÔM NAY</string>
     <string name="iap_out_of_quota_subtitle">Bạn đã sử dụng hết 20 lượt truy cập miễn phí trong ngày hôm nay. Hãy nâng cấp lên Premium để tiếp tục trải nghiệm không giới hạn!</string>
-    <string name="iap_feature_1">Cập nhật trực tiếp siêu tốc (mỗi 15 giây)</string>
-    <string name="iap_feature_2">Theo dõi trận đấu yêu thích không giới hạn</string>
-    <string name="iap_feature_3">Hoàn toàn không quảng cáo (Ad-Free)</string>
-    <string name="iap_feature_4">Thống kê chuyên sâu, radar chiến thuật &amp; xu hướng</string>
+    <string name="iap_feature_1">Cập nhật trực tiếp mỗi 15 giây</string>
+    <string name="iap_feature_2">Yêu thích không giới hạn</string>
+    <string name="iap_feature_3">Không quảng cáo, vĩnh viễn</string>
+    <string name="iap_feature_4">Thống kê &amp; phân tích cao cấp</string>
+    <string name="iap_feature_5">Dự đoán tỷ số trận đấu bằng AI</string>
     <string name="iap_weekly_vip">1 Tuần VIP</string>
     <string name="iap_monthly_vip">1 Tháng VIP</string>
     <string name="iap_pay_weekly">Thanh toán mỗi tuần</string>
     <string name="iap_save_monthly">Tiết kiệm ~30\% 🔥</string>
+    <string name="iap_weekly_premium">Premium Hàng Tuần</string>
+    <string name="iap_only_price">chỉ 1.99$/tháng</string>
+    <string name="iap_save_badge">Tiết kiệm 30%</string>
+    <string name="iap_cancel_anytime">$1.99/tuần. Hủy bất kỳ lúc nào</string>
+    <string name="iap_cancel_anytime_monthly">$5.99/tháng. Hủy bất kỳ lúc nào</string>
+    <string name="iap_btn_continue">Tiếp tục</string>
     <string name="iap_btn_subscribe">Đăng ký ngay</string>
     <string name="iap_toast_mock_success">Chúc mừng! Bạn đã dùng thử Premium thành công (Mock Billing). 🎉</string>
     <string name="iap_btn_connecting_mock">Đang kết nối Mock Billing...</string>
@@ -225,6 +232,18 @@
     <string name="iap_toast_google_play_error">Lỗi khi kết nối Google Play: %1$s</string>
     <string name="iap_vip_button_label">VIP ⚡</string>
     <string name="btn_discover">KHÁM PHÁ</string>
+
+    <!-- AI Prediction Paywall Dialog -->
+    <string name="dialog_ai_title">Xem dự đoán từ AI</string>
+    <string name="dialog_ai_subtitle">Mở khóa dự đoán tỷ số chi tiết trước khi trận đấu bắt đầu.</string>
+    <string name="dialog_ai_feature_1_title">Dự đoán tỷ số chung cuộc</string>
+    <string name="dialog_ai_feature_1_desc">Xem tỷ số chính xác mà AI dự đoán</string>
+    <string name="dialog_ai_feature_2_title">Xác suất chiến thắng</string>
+    <string name="dialog_ai_feature_2_desc">Phân tích xác suất Thắng / Hòa / Thua</string>
+    <string name="dialog_ai_feature_3_title">Mức độ tin cậy</string>
+    <string name="dialog_ai_feature_3_desc">Đánh giá độ tin cậy của AI cho mỗi dự đoán</string>
+    <string name="dialog_ai_btn_later">Để sau</string>
+    <string name="dialog_ai_btn_go_premium">Nâng cấp Premium</string>
 
     <!-- New Permission Screen Strings -->
     <string name="permission_main_title">Cấp quyền truy cập</string>

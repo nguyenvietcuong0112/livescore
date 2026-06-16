@@ -297,4 +297,22 @@
     <string name="read_more">اقرأ المزيد</string>
     <string name="title_key_predictions">التوقعات الرئيسية</string>
     <string name="btn_score_prediction">توقع النتيجة</string>
+    <!-- AI Prediction & IAP Screen Translations -->
+    <string name="iap_weekly_premium">بريميوم أسبوعي</string>
+    <string name="iap_only_price">فقط 1.99$/الشهر</string>
+    <string name="iap_save_badge">وفر 30%</string>
+    <string name="iap_cancel_anytime">1.99$/الأسبوع. إلغاء في أي وقت</string>
+    <string name="iap_cancel_anytime_monthly">5.99$/الشهر. إلغاء في أي وقت</string>
+    <string name="iap_btn_continue">متابعة</string>
+    <string name="iap_feature_5">توقعات نتائج المباريات بالذكاء الاصطناعي</string>
+    <string name="dialog_ai_title">شاهد ما يتوقعه الذكاء الاصطناعي</string>
+    <string name="dialog_ai_subtitle">افتح توقعات النتائج التفصيلية قبل بدء المباراة.</string>
+    <string name="dialog_ai_feature_1_title">النتيجة النهائية المتوقعة</string>
+    <string name="dialog_ai_feature_1_desc">شاهد النتيجة الدقيقة التي يتوقعها الذكاء الاصطناعي</string>
+    <string name="dialog_ai_feature_2_title">احتمالية الفوز</string>
+    <string name="dialog_ai_feature_2_desc">تحليل احتمالية الفوز / التعادل / الخسارة</string>
+    <string name="dialog_ai_feature_3_title">مستوى الثقة</string>
+    <string name="dialog_ai_feature_3_desc">تقييم ثقة الذكاء الاصطناعي لكل توقع</string>
+    <string name="dialog_ai_btn_later">لاحقاً</string>
+    <string name="dialog_ai_btn_go_premium">احصل على بريميوم</string>
 </resources>

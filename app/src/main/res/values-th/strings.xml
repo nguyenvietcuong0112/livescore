@@ -292,4 +292,22 @@
     <string name="title_key_predictions">การคาดการณ์หลัก</string>
     <string name="btn_score_prediction">ทำนายสกอร์</string>
 
+    <!-- AI Prediction & IAP Screen Translations -->
+    <string name="iap_weekly_premium">พรีเมียมรายสัปดาห์</string>
+    <string name="iap_only_price">เพียง 1.99$/เดือน</string>
+    <string name="iap_save_badge">ประหยัด 30%</string>
+    <string name="iap_cancel_anytime">1.99$/สัปดาห์ ยกเลิกได้ทุกเมื่อ</string>
+    <string name="iap_cancel_anytime_monthly">5.99$/เดือน ยกเลิกได้ทุกเมื่อ</string>
+    <string name="iap_btn_continue">ดำเนินการต่อ</string>
+    <string name="iap_feature_5">การคาดการณ์คะแนนการแข่งขันด้วย AI</string>
+    <string name="dialog_ai_title">ดูว่า AI คาดการณ์อะไร</string>
+    <string name="dialog_ai_subtitle">ปลดล็อกการคาดการณ์คะแนนโดยละเอียดก่อนเริ่มการแข่งขัน</string>
+    <string name="dialog_ai_feature_1_title">คาดการณ์คะแนนสุดท้าย</string>
+    <string name="dialog_ai_feature_1_desc">ดูคะแนนที่แน่นอนที่ AI คาดการณ์</string>
+    <string name="dialog_ai_feature_2_title">ความน่าจะเป็นในการชนะ</string>
+    <string name="dialog_ai_feature_2_desc">การวิเคราะห์ความน่าจะเป็น ชนะ / เสมอ / แพ้</string>
+    <string name="dialog_ai_feature_3_title">ระดับความมั่นใจ</string>
+    <string name="dialog_ai_feature_3_desc">การให้คะแนนความมั่นใจของ AI สำหรับทุกการคาดการณ์</string>
+    <string name="dialog_ai_btn_later">ไว้ทีหลัง</string>
+    <string name="dialog_ai_btn_go_premium">เป็นพรีเมียม</string>
 </resources>

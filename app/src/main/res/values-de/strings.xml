@@ -290,6 +290,22 @@
     <string name="title_key_stats">Wichtige unterstützende Statistiken</string>
     <string name="read_more">Weiterlesen</string>
     <string name="title_key_predictions">Schlüsselprognosen</string>
-    <string name="btn_score_prediction">ERGEBNIS PROGNOSE</string>
-
+    <string name="iap_feature_5">KI-gestützte Spielergebnisse-Vorhersagen</string>
+    <string name="iap_weekly_premium">Wöchentliches Premium</string>
+    <string name="iap_only_price">nur 1.99$/Monat</string>
+    <string name="iap_save_badge">30% sparen</string>
+    <string name="iap_cancel_anytime">$1.99/Woche. Jederzeit kündbar</string>
+    <string name="iap_cancel_anytime_monthly">$5.99/Monat. Jederzeit kündbar</string>
+    <string name="iap_btn_continue">Weiter</string>
+    <!-- AI Prediction Dialog -->
+    <string name="dialog_ai_title">Sehen Sie, was die KI vorhersagt</string>
+    <string name="dialog_ai_subtitle">Schalten Sie detaillierte Ergebnisprognosen frei, bevor das Spiel beginnt.</string>
+    <string name="dialog_ai_feature_1_title">Prognostiziertes Endergebnis</string>
+    <string name="dialog_ai_feature_1_desc">Sehen Sie das genaue Ergebnis, das die KI vorhersagt</string>
+    <string name="dialog_ai_feature_2_title">Gewinnwahrscheinlichkeit</string>
+    <string name="dialog_ai_feature_2_desc">Wahrscheinlichkeitsanalyse für Sieg / Unentschieden / Niederlage</string>
+    <string name="dialog_ai_feature_3_title">Konfidenzniveau</string>
+    <string name="dialog_ai_feature_3_desc">KI-Konfidenzbewertung für jede Vorhersage</string>
+    <string name="dialog_ai_btn_later">Später</string>
+    <string name="dialog_ai_btn_go_premium">Premium holen</string>
 </resources>

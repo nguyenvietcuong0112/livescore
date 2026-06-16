@@ -324,17 +324,11 @@
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
-                    <HorizontalScrollView
+                    <LinearLayout
+                        android:id="@+id/layoutGoalscorersContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:scrollbars="none">
-
-                        <LinearLayout
-                            android:id="@+id/layoutGoalscorersContainer"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal" />
-                    </HorizontalScrollView>
+                        android:orientation="vertical" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -438,9 +432,7 @@
                         android:id="@+id/tvTacticalAnalysisText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
                         android:lineSpacingMultiplier="1.2"
-                        android:maxLines="4"
                         android:textColor="@color/text_white"
                         android:textSize="12.5sp"
                         tools:text="Tactical analysis details..." />
@@ -456,8 +448,7 @@
                         android:textColor="@color/accent_green"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        android:visibility="gone"
-                        tools:visibility="visible" />
+                        android:visibility="gone" />
 
                     <View
                         android:layout_width="match_parent"
@@ -684,23 +675,25 @@
             android:focusable="true"
             android:visibility="gone">
 
-            <!-- "See More" Button styled beautifully -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnPredictionSeeMore"
                 style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="44dp"
                 android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginHorizontal="@dimen/_16sdp"
                 android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/accent_green"
+                android:paddingHorizontal="28dp"
+                android:backgroundTint="@color/white"
+                app:strokeColor="@color/border"
+                app:strokeWidth="1dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:text="@string/read_more"
-                android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textColor="@color/textPrimary"
+                android:textSize="13sp"
                 android:textStyle="bold"
-                app:cornerRadius="19dp" />
+                app:cornerRadius="22dp"
+                android:elevation="4dp" />
 
         </FrameLayout>
     </FrameLayout>

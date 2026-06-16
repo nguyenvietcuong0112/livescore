@@ -295,6 +295,22 @@
     <string name="title_key_stats">Statistiques de soutien clés</string>
     <string name="read_more">Lire la suite</string>
     <string name="title_key_predictions">Prédictions clés</string>
-    <string name="btn_score_prediction">PRONOSTIC DE SCORE</string>
-
+    <string name="iap_feature_5">Prédictions de scores par IA</string>
+    <string name="iap_weekly_premium">Premium Hebdomadaire</string>
+    <string name="iap_only_price">seulement 1.99$/mois</string>
+    <string name="iap_save_badge">Économisez 30%</string>
+    <string name="iap_cancel_anytime">$1.99/semaine. Annulez à tout moment</string>
+    <string name="iap_cancel_anytime_monthly">$5.99/mois. Annulez à tout moment</string>
+    <string name="iap_btn_continue">Continuer</string>
+    <!-- AI Prediction Dialog -->
+    <string name="dialog_ai_title">Voir ce que l\'IA prédit</string>
+    <string name="dialog_ai_subtitle">Débloquez des prédictions de score détaillées avant le début du match.</string>
+    <string name="dialog_ai_feature_1_title">Score final prédit</string>
+    <string name="dialog_ai_feature_1_desc">Voir le score exact prédit par l\'IA</string>
+    <string name="dialog_ai_feature_2_title">Probabilité de victoire</string>
+    <string name="dialog_ai_feature_2_desc">Analyse de probabilité de victoire / nul / défaite</string>
+    <string name="dialog_ai_feature_3_title">Niveau de confiance</string>
+    <string name="dialog_ai_feature_3_desc">Indice de confiance de l\'IA pour chaque prédiction</string>
+    <string name="dialog_ai_btn_later">Plus tard</string>
+    <string name="dialog_ai_btn_go_premium">Passer Premium</string>
 </resources>

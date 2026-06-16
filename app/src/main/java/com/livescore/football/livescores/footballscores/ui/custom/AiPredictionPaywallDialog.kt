@@ -1,5 +1,6 @@
 package com.livescore.football.livescores.footballscores.ui.custom
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,6 +14,7 @@ import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.local.BillingManager
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.databinding.DialogAiPredictionPaywallBinding
+import com.livescore.football.livescores.footballscores.ui.iap.IAPActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -66,45 +68,9 @@ class AiPredictionPaywallDialog : DialogFragment() {
         }
 
         binding.btnGoPremium.setOnClickListener {
-            val products = billingManager.productDetailsList.value
-            // Prefer monthly plan for Go Premium redirection
-            val targetProduct = products.find { it.productId == BillingManager.PRODUCT_MONTHLY }
-
-            if (targetProduct != null) {
-                // Real Google Play Purchase Flow
-                try {
-                    billingManager.launchBillingFlow(requireActivity(), targetProduct)
-                    dismiss()
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.iap_toast_google_play_error, e.message),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } else {
-                // High-Fidelity Mock Billing Fallback
-                binding.btnGoPremium.isEnabled = false
-                binding.btnGoPremium.text = getString(R.string.iap_btn_connecting_mock)
-
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (isAdded) {
-                        limitManager.setPremium(true)
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.iap_toast_mock_success),
-                            Toast.LENGTH_LONG
-                        ).show()
-                        
-                        binding.btnGoPremium.isEnabled = true
-                        binding.btnGoPremium.text = "Go Premium"
-                        
-                        // Force activity reload to reflect updates instantly
-                        activity?.recreate()
-                        dismiss()
-                    }
-                }, 1500)
-            }
+            val intent = Intent(requireContext(), IAPActivity::class.java)
+            startActivity(intent)
+            dismiss()
         }
     }
 

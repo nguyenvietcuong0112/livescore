@@ -292,6 +292,22 @@
     <string name="title_key_stats">Estadísticas clave de apoyo</string>
     <string name="read_more">Leer más</string>
     <string name="title_key_predictions">Predicciones clave</string>
-    <string name="btn_score_prediction">PREDICCIÓN DE MARCADOR</string>
-
+    <string name="iap_feature_5">Predicciones de resultados con IA</string>
+    <string name="iap_weekly_premium">Premium Semanal</string>
+    <string name="iap_only_price">solo 1.99$/mes</string>
+    <string name="iap_save_badge">Ahorra 30%</string>
+    <string name="iap_cancel_anytime">$1.99/semana. Cancela en cualquier momento</string>
+    <string name="iap_cancel_anytime_monthly">$5.99/mes. Cancela en cualquier momento</string>
+    <string name="iap_btn_continue">Continuar</string>
+    <!-- AI Prediction Dialog -->
+    <string name="dialog_ai_title">Ver lo que predice la IA</string>
+    <string name="dialog_ai_subtitle">Desbloquea predicciones detalladas de resultados antes de que comience el partido.</string>
+    <string name="dialog_ai_feature_1_title">Resultado final predicho</string>
+    <string name="dialog_ai_feature_1_desc">Mira el resultado exacto que predice la IA</string>
+    <string name="dialog_ai_feature_2_title">Probabilidad de victoria</string>
+    <string name="dialog_ai_feature_2_desc">Análisis de probabilidad de ganar / empatar / perder</string>
+    <string name="dialog_ai_feature_3_title">Nivel de confianza</string>
+    <string name="dialog_ai_feature_3_desc">Calificación de confianza de la IA para cada predicción</string>
+    <string name="dialog_ai_btn_later">Más tarde</string>
+    <string name="dialog_ai_btn_go_premium">Hacerse Premium</string>
 </resources>

@@ -291,4 +291,22 @@
     <string name="read_more">अधिक पढ़ें</string>
     <string name="title_key_predictions">मुख्य भविष्यवाणियां</string>
     <string name="btn_score_prediction">स्कोर भविष्यवाणी</string>
+    <!-- AI Prediction & IAP Screen Translations -->
+    <string name="iap_weekly_premium">साप्ताहिक प्रीमियम</string>
+    <string name="iap_only_price">केवल 1.99$/माह</string>
+    <string name="iap_save_badge">30% बचाएं</string>
+    <string name="iap_cancel_anytime">1.99$/सप्ताह। किसी भी समय रद्द करें</string>
+    <string name="iap_cancel_anytime_monthly">5.99$/माह। किसी भी समय रद्द करें</string>
+    <string name="iap_btn_continue">जारी रखें</string>
+    <string name="iap_feature_5">एआई-संचालित मैच स्कोर भविष्यवाणियां</string>
+    <string name="dialog_ai_title">देखें कि एआई क्या भविष्यवाणी करता है</string>
+    <string name="dialog_ai_subtitle">मैच शुरू होने से पहले विस्तृत स्कोर भविष्यवाणियों को अनलॉक करें।</string>
+    <string name="dialog_ai_feature_1_title">भविष्यवाणी की गई अंतिम स्कोर</string>
+    <string name="dialog_ai_feature_1_desc">सटीक स्कोर देखें जो एआई भविष्यवाणी करता है</string>
+    <string name="dialog_ai_feature_2_title">जीतने की संभावना</string>
+    <string name="dialog_ai_feature_2_desc">जीत / ड्रॉ / हार की संभावना का विश्लेषण</string>
+    <string name="dialog_ai_feature_3_title">आत्मविश्वास का स्तर</string>
+    <string name="dialog_ai_feature_3_desc">प्रत्येक भविष्यवाणी के लिए एआई विश्वास रेटिंग</string>
+    <string name="dialog_ai_btn_later">बाद में</string>
+    <string name="dialog_ai_btn_go_premium">प्रीमियम प्राप्त करें</string>
 </resources>

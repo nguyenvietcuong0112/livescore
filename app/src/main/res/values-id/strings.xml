@@ -292,4 +292,22 @@
     <string name="title_key_predictions">Prediksi Kunci</string>
     <string name="btn_score_prediction">PREDIKSI SKOR</string>
 
+    <!-- AI Prediction & IAP Screen Translations -->
+    <string name="iap_weekly_premium">Premium Mingguan</string>
+    <string name="iap_only_price">hanya 1.99$/bulan</string>
+    <string name="iap_save_badge">Hemat 30%</string>
+    <string name="iap_cancel_anytime">1.99$/minggu. Batalkan kapan saja</string>
+    <string name="iap_cancel_anytime_monthly">5.99$/bulan. Batalkan kapan saja</string>
+    <string name="iap_btn_continue">Lanjutkan</string>
+    <string name="iap_feature_5">Prediksi skor pertandingan bertenaga AI</string>
+    <string name="dialog_ai_title">Lihat Apa yang Diprediksi AI</string>
+    <string name="dialog_ai_subtitle">Buka kunci prediksi skor terperinci sebelum pertandingan dimulai.</string>
+    <string name="dialog_ai_feature_1_title">Prediksi skor akhir</string>
+    <string name="dialog_ai_feature_1_desc">Lihat skor pasti yang diprediksi AI</string>
+    <string name="dialog_ai_feature_2_title">Probabilitas kemenangan</string>
+    <string name="dialog_ai_feature_2_desc">Analisis probabilitas menang / seri / kalah</string>
+    <string name="dialog_ai_feature_3_title">Tingkat kepercayaan</string>
+    <string name="dialog_ai_feature_3_desc">Peringkat kepercayaan AI untuk setiap prediksi</string>
+    <string name="dialog_ai_btn_later">Nanti</string>
+    <string name="dialog_ai_btn_go_premium">Dapatkan Premium</string>
 </resources>

@@ -110,29 +110,6 @@ class SplashActivity : BaseActivity() {
             binding.frAdsBanner.visibility = View.GONE
         } else {
             binding.frAdsBanner.visibility = View.VISIBLE
-            val bannerId = getRemoteAdId("banner_splash", R.string.banner_splash)
-            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
-                liveScoreApiService, this, "banner", bannerId, "Splash"
-            )
-            Admob.getInstance().loadBanner(this, bannerId)
-            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
-                liveScoreApiService, this, "banner", bannerId, "Splash"
-            )
-            LogEvent.log(this, "banner_splash_view")
-        }
-
-        if (pendingPushPayload == null && !isReturningUser()) {
-            val nativeLanguageId = remoteConfigManager.getAdId("native_language", getString(R.string.native_language))
-            if (nativeLanguageId.isNotEmpty() && !limitManager.isPremium()) {
-                Admob.getInstance().loadNativeAd(this, nativeLanguageId, object : NativeCallback() {
-                    override fun onNativeAdLoaded(nativeAd: NativeAd?) {
-                        AdsConfig.nativeLanguage = nativeAd
-                    }
-                    override fun onAdFailedToLoad() {
-                        AdsConfig.nativeLanguage = null
-                    }
-                })
-            }
         }
 
         interCallback = object : InterCallback() {
@@ -213,6 +190,35 @@ class SplashActivity : BaseActivity() {
         }
 
         consentHelper.obtainConsentAndShow(this) {
+            // Load banner ad after consent is obtained
+            if (!limitManager.isPremium()) {
+                val bannerId = getRemoteAdId("banner_splash", R.string.banner_splash)
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+                    liveScoreApiService, this@SplashActivity, "banner", bannerId, "Splash"
+                )
+                Admob.getInstance().loadBanner(this@SplashActivity, bannerId)
+                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                    liveScoreApiService, this@SplashActivity, "banner", bannerId, "Splash"
+                )
+                LogEvent.log(this@SplashActivity, "banner_splash_view")
+            }
+
+            // Load native language ad after consent is obtained
+            if (pendingPushPayload == null && !isReturningUser()) {
+                val nativeLanguageId = remoteConfigManager.getAdId("native_language", getString(R.string.native_language))
+                if (nativeLanguageId.isNotEmpty() && !limitManager.isPremium()) {
+                    Admob.getInstance().loadNativeAd(this@SplashActivity, nativeLanguageId, object : NativeCallback() {
+                        override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                            AdsConfig.nativeLanguage = nativeAd
+                        }
+                        override fun onAdFailedToLoad() {
+                            AdsConfig.nativeLanguage = null
+                        }
+                    })
+                }
+            }
+
+            // Load splash interstitial ad after consent is obtained
             Handler(Looper.getMainLooper()).postDelayed({
                 if (!isFinishing && !isDestroyed) {
                     val interId = remoteConfigManager.getAdId("inter_splash", getString(R.string.inter_splash))

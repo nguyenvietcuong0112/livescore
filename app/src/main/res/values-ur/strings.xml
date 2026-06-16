@@ -291,4 +291,22 @@
     <string name="read_more">مزید پڑھیں</string>
     <string name="title_key_predictions">اہم پیشین گوئیاں</string>
     <string name="btn_score_prediction">اسکور کی پیشن گوئی</string>
+    <!-- AI Prediction & IAP Screen Translations -->
+    <string name="iap_weekly_premium">ہفتہ وار پریمیم</string>
+    <string name="iap_only_price">صرف 1.99$/ماہ</string>
+    <string name="iap_save_badge">30٪ بچائیں</string>
+    <string name="iap_cancel_anytime">1.99$/ہفتہ۔ کسی بھی وقت منسوخ کریں</string>
+    <string name="iap_cancel_anytime_monthly">5.99$/ماہ۔ کسی بھی وقت منسوخ کریں</string>
+    <string name="iap_btn_continue">جاری رکھیں</string>
+    <string name="iap_feature_5">اے آئی سے چلنے والے میچ اسکور کی پیشن گوئیاں</string>
+    <string name="dialog_ai_title">دیکھیں کہ اے آئی کیا پیشن گوئی کرتا ہے</string>
+    <string name="dialog_ai_subtitle">میچ شروع ہونے سے پہلے تفصیلی اسکور کی پیشن گوئیاں انلاک کریں۔</string>
+    <string name="dialog_ai_feature_1_title">متوقع حتمی اسکور</string>
+    <string name="dialog_ai_feature_1_desc">اے آئی کی پیش گوئی کردہ درست اسکور دیکھیں</string>
+    <string name="dialog_ai_feature_2_title">جیتنے کا امکان</string>
+    <string name="dialog_ai_feature_2_desc">جیت / ڈرا / ہار کے امکان کا تجزیہ</string>
+    <string name="dialog_ai_feature_3_title">اعتماد کا سطح</string>
+    <string name="dialog_ai_feature_3_desc">ہر پیشن گوئی کے لئے اے آئی کا اعتماد کی درجہ بندی</string>
+    <string name="dialog_ai_btn_later">بعد میں</string>
+    <string name="dialog_ai_btn_go_premium">پریمیم حاصل کریں</string>
 </resources>

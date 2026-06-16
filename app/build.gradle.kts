@@ -21,8 +21,8 @@ android {
         applicationId = "com.livescore.football.livescores.footballscores"
         minSdk = 24
         targetSdk = 35
-        versionCode = 9
-        versionName = "0.0.9"
+        versionCode = 10
+        versionName = "0.1.0"
 
     }
 

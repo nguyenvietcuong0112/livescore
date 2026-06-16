@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light"
-    android:layout_marginTop="@dimen/_10sdp"
+    android:background="@drawable/bg_iap"
     android:padding="24dp">
 
     <!-- Skip Button in Top Right Corner -->
@@ -12,15 +11,13 @@
         android:id="@+id/btnSkip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:text="@string/iap_skip"
         android:textColor="@color/text_muted"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_22sdp"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:padding="8dp"
-        android:background="?android:attr/selectableItemBackground"
+        android:background="@drawable/ic_close"
         android:clickable="true"
         android:focusable="true" />
 
@@ -28,25 +25,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/btnSkip"
-        android:layout_above="@+id/btnSubscribe"
-        android:layout_marginTop="8dp"
+        android:layout_above="@+id/tvCancelAnytime"
         android:layout_marginBottom="16dp"
         android:fillViewport="true"
+        android:clipToPadding="false"
+        android:clipChildren="false"
         android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:clipToPadding="false"
+            android:clipChildren="false"
             android:gravity="center_horizontal">
 
             <ImageView
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:layout_marginTop="16dp"
+                android:layout_width="232dp"
+                android:layout_height="162dp"
                 android:layout_marginBottom="16dp"
                 android:contentDescription="VIP Emblem"
-                app:srcCompat="@drawable/ic_trophy"
+                android:background="@drawable/ic_soccer"
               />
 
             <TextView
@@ -62,6 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:layout_marginBottom="24dp"
+                android:visibility="gone"
                 android:text="@string/iap_upgrade_subtitle"
                 android:textColor="@color/text_muted"
                 android:textSize="14sp"
@@ -79,17 +79,18 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="14dp">
+                    android:layout_marginBottom="5dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="★ "
+                        android:text="⚽"
                         android:textColor="#FFD700"
                         android:textSize="18sp"
                         android:textStyle="bold" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
                         android:text="@string/iap_feature_1"
                         android:textColor="@color/text_white"
                         android:textSize="15sp"
@@ -101,17 +102,18 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="14dp">
+                    android:layout_marginBottom="5dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="★ "
+                        android:text="📌"
                         android:textColor="#FFD700"
                         android:textSize="18sp"
                         android:textStyle="bold" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
                         android:text="@string/iap_feature_2"
                         android:textColor="@color/text_white"
                         android:textSize="15sp"
@@ -123,17 +125,41 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="14dp">
+                    android:layout_marginBottom="5dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="★ "
+                        android:text="🤖"
                         android:textColor="#FFD700"
                         android:textSize="18sp"
                         android:textStyle="bold" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/iap_feature_5"
+                        android:textColor="@color/text_white"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="5dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🚫"
+                        android:textColor="#FFD700"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
                         android:text="@string/iap_feature_3"
                         android:textColor="@color/text_white"
                         android:textSize="15sp"
@@ -148,13 +174,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="★ "
+                        android:text="📊"
                         android:textColor="#FFD700"
                         android:textSize="18sp"
                         android:textStyle="bold" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
                         android:text="@string/iap_feature_4"
                         android:textColor="@color/text_white"
                         android:textSize="15sp"
@@ -165,124 +192,169 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
+                android:clipToPadding="false"
+                android:clipChildren="false"
                 android:layout_gravity="bottom"
                 android:gravity="center_vertical">
 
+                <!-- Weekly Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardPlanWeekly"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardBackgroundColor="@color/card_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="76dp"
+                    app:cardBackgroundColor="#1A2563EB"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="0dp"
+                    app:cardElevation="6dp"
+                    app:cardUseCompatPadding="false"
+                    android:outlineAmbientShadowColor="#1A000000"
+                    android:outlineSpotShadowColor="#1A000000"
                     app:strokeColor="@color/accent_green"
                     app:strokeWidth="2dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="16dp">
-
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp">
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="@string/iap_weekly_vip"
+                            android:layout_weight="1"
+                            android:text="@string/iap_weekly_premium"
                             android:textColor="@color/text_white"
                             android:textSize="15sp"
                             android:textStyle="bold" />
-
                         <TextView
                             android:id="@+id/tvWeeklyPrice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="$1.99"
+                            android:text="1.99$"
                             android:textColor="@color/accent_green"
-                            android:textSize="20sp"
+                            android:textSize="17sp"
                             android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="@string/iap_pay_weekly"
-                            android:textColor="@color/text_muted"
-                            android:textSize="11sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardPlanMonthly"
-                    android:layout_width="0dp"
+                <!-- Monthly Card Wrapper with Badge -->
+                <FrameLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardBackgroundColor="@color/card_dark"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="@color/divider_dark"
-                    app:strokeWidth="1dp">
+                    android:clipToPadding="false"
+                    android:clipChildren="false"
+                    android:layout_marginTop="12dp">
 
-                    <LinearLayout
+                    <!-- Monthly Card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardPlanMonthly"
                         android:layout_width="match_parent"
+                        android:layout_height="76dp"
+                        android:layout_marginTop="10dp"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="6dp"
+                        app:cardUseCompatPadding="false"
+                        android:outlineAmbientShadowColor="#1A000000"
+                        android:outlineSpotShadowColor="#1A000000"
+                        app:strokeColor="@color/divider_dark"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:paddingTop="12dp"
+                            android:paddingBottom="12dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/iap_monthly_vip"
+                                    android:textColor="@color/text_white"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="@string/iap_only_price"
+                                    android:textColor="@color/text_muted"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvMonthlyPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="5.99$"
+                                android:textColor="@color/text_white"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Save 30% Badge -->
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/iap_monthly_vip"
-                            android:textColor="@color/text_white"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvMonthlyPrice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="$5.99"
-                            android:textColor="@color/text_white"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="@string/iap_save_monthly"
-                            android:textColor="#FFD700"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                        android:layout_gravity="top|center_horizontal"
+                        android:background="@drawable/bg_tab_capsule"
+                        android:backgroundTint="#FF003F"
+                        android:elevation="8dp"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="2dp"
+                        android:text="@string/iap_save_badge"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </FrameLayout>
 
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
+    <!-- Cancel Anytime Info Text -->
+    <TextView
+        android:id="@+id/tvCancelAnytime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnSubscribe"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:text="@string/iap_cancel_anytime"
+        android:textColor="@color/text_white"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
     <!-- Buy Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSubscribe"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/progressLoading"
         android:backgroundTint="@color/accent_green"
-        android:text="@string/iap_btn_subscribe"
+        android:text="@string/iap_btn_continue"
         android:textColor="@color/bg_light"
         android:textSize="16sp"
         android:textStyle="bold"
         app:cornerRadius="27dp"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="5dp" />
 
     <ProgressBar
         android:id="@+id/progressLoading"
@@ -303,25 +375,8 @@
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:orientation="horizontal"
-        android:layout_marginBottom="8dp">
+        >
 
-        <TextView
-            android:id="@+id/tvTerms"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/iap_terms_of_service"
-            android:textColor="@color/text_muted"
-            android:textSize="11sp"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="  •  "
-            android:textColor="@color/text_muted"
-            android:textSize="11sp" />
 
         <TextView
             android:id="@+id/tvPrivacy"

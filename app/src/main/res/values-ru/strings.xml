@@ -292,4 +292,22 @@
     <string name="title_key_predictions">Ключевые прогнозы</string>
     <string name="btn_score_prediction">ПРОГНОЗ СЧЕТА</string>
 
+    <!-- AI Prediction & IAP Screen Translations -->
+    <string name="iap_weekly_premium">Еженедельный Премиум</string>
+    <string name="iap_only_price">всего 1.99$/месяц</string>
+    <string name="iap_save_badge">Сэкономьте 30%</string>
+    <string name="iap_cancel_anytime">1.99$/неделя. Отмена в любое время</string>
+    <string name="iap_cancel_anytime_monthly">5.99$/месяц. Отмена в любое время</string>
+    <string name="iap_btn_continue">Продолжить</string>
+    <string name="iap_feature_5">Прогнозы результатов матчей на базе ИИ</string>
+    <string name="dialog_ai_title">Посмотрите, что предсказывает ИИ</string>
+    <string name="dialog_ai_subtitle">Разблокируйте подробные прогнозы результатов до начала матча.</string>
+    <string name="dialog_ai_feature_1_title">Прогнозируемый итоговый счет</string>
+    <string name="dialog_ai_feature_1_desc">Посмотрите точный счет, который предсказывает ИИ</string>
+    <string name="dialog_ai_feature_2_title">Вероятность победы</string>
+    <string name="dialog_ai_feature_2_desc">Анализ вероятности победы / ничьей / поражения</string>
+    <string name="dialog_ai_feature_3_title">Уровень уверенности</string>
+    <string name="dialog_ai_feature_3_desc">Оценка уверенности ИИ для каждого прогноза</string>
+    <string name="dialog_ai_btn_later">Позже</string>
+    <string name="dialog_ai_btn_go_premium">Перейти на Premium</string>
 </resources>
