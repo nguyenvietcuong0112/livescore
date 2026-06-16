@@ -202,7 +202,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardPlanWeekly"
                     android:layout_width="match_parent"
-                    android:layout_height="76dp"
+                    android:layout_height="@dimen/_60sdp"
                     app:cardBackgroundColor="#1A2563EB"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="6dp"
@@ -252,7 +252,7 @@
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardPlanMonthly"
                         android:layout_width="match_parent"
-                        android:layout_height="76dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         app:cardBackgroundColor="@color/white"
                         app:cardCornerRadius="12dp"

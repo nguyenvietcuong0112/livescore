@@ -252,7 +252,8 @@
             <FrameLayout
                 android:id="@+id/layoutPredictionContent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:visibility="gone">
 
                 <!-- 1. AI Prediction Detail Layout (visible to VIPs) -->
@@ -260,7 +261,7 @@
                     android:id="@+id/layoutMatchPrediction"
                     layout="@layout/layout_match_prediction"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:visibility="visible" />
 
                 <!-- 2. Premium Lock Overlay (visible to non-VIPs) -->

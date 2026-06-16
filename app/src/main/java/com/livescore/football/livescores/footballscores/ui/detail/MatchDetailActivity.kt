@@ -677,13 +677,13 @@ class MatchDetailActivity : BaseActivity() {
                 binding.layoutMatchPrediction.layoutPremiumLockedSection.setRenderEffect(null)
             }
         } else {
-            // Clip height to 140dp to show a preview starting from AI Confidence that fades/blurs out heavily
-            params.height = (140 * resources.displayMetrics.density).toInt()
+            // Show a portion of the content (250dp) with strong blur so text is unreadable
+            params.height = (350 * resources.displayMetrics.density).toInt()
             binding.layoutMatchPrediction.layoutPremiumBlurOverlay.visibility = View.VISIBLE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val blurEffect = RenderEffect.createBlurEffect(
-                    12f,
-                    12f,
+                    16f,
+                    16f,
                     Shader.TileMode.CLAMP
                 )
                 binding.layoutMatchPrediction.layoutPremiumLockedSection.setRenderEffect(blurEffect)

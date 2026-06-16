@@ -18,48 +18,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/layoutPredictButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            tools:visibility="visible">
 
-            <LinearLayout
-                android:id="@+id/btnPredict"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:background="@drawable/bg_score_prediction_btn"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingHorizontal="24dp">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_ai_robot"
-                    app:tint="@color/primaryBlue"
-                    android:layout_marginEnd="8dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/btn_score_prediction"
-                    android:textColor="@color/primaryBlue"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:src="@drawable/ic_sparkles"
-                    app:tint="@color/primaryBlue"
-                    android:layout_marginStart="8dp" />
-            </LinearLayout>
-        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -77,9 +36,10 @@
                 android:gravity="center_vertical"
                 android:background="?attr/selectableItemBackground"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ivReminder"
+                app:layout_constraintEnd_toStartOf="@id/layoutRightActions"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0">
 
                 <!-- Left Layout: Status or Live Minutes -->
                 <LinearLayout
@@ -287,33 +247,65 @@
 
             </LinearLayout>
 
-            <!-- Separate Reminder Icon (Bell) for upcoming matches -->
-            <ImageView
-                android:id="@+id/ivReminder"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:padding="16dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Reminder Alarm"
-                android:src="@drawable/ic_bell"
-                android:visibility="gone"
-                app:layout_constraintEnd_toStartOf="@id/ivFavorite"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
-
-            <!-- Separate Favorite Icon aligned to the right edge (Completely outside details click bounds) -->
-            <ImageView
-                android:id="@+id/ivFavorite"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:padding="16dp"
-                android:layout_marginEnd="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Favorite Match"
-                android:src="@drawable/ic_favorite_border"
+            <!-- Right Action Group -->
+            <LinearLayout
+                android:id="@+id/layoutRightActions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:paddingEnd="4dp">
+
+                <!-- AI Predict Button (Icon only) -->
+                <FrameLayout
+                    android:id="@+id/layoutPredictButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/btnPredict"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_ai_robot"
+                        app:tint="@color/primaryBlue"
+                        android:padding="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Separate Reminder Icon (Bell) for upcoming matches -->
+                    <ImageView
+                        android:id="@+id/ivReminder"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:padding="12dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Reminder Alarm"
+                        android:src="@drawable/ic_bell"
+                        android:visibility="gone" />
+
+                    <!-- Separate Favorite Icon aligned to the right edge -->
+                    <ImageView
+                        android:id="@+id/ivFavorite"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:padding="12dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Favorite Match"
+                        android:src="@drawable/ic_favorite_border" />
+                </LinearLayout>
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

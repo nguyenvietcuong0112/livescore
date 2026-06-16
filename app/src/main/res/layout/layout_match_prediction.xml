@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/bg_light"
-    android:padding="12dp">
+    android:layout_height="match_parent"
+    android:background="@color/bg_light">
+
+    <!-- All prediction content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
 
     <!-- Card 1: Winner & Score Prediction -->
     <com.google.android.material.card.MaterialCardView
@@ -127,12 +132,7 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Container for premium-locked cards inside a FrameLayout to support blurring overlay -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <!-- Container for premium-locked cards -->
+        <!-- Premium-locked cards -->
         <LinearLayout
             android:id="@+id/layoutPremiumLockedSection"
             android:layout_width="match_parent"
@@ -598,84 +598,84 @@
 
         </LinearLayout>
 
-        <!-- Blur / Fade Overlay (visible to non-VIPs) -->
-        <FrameLayout
-            android:id="@+id/layoutPremiumBlurOverlay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_prediction_blur_gradient"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingBottom="@dimen/_80sdp"
-            android:visibility="gone">
+    </LinearLayout>
 
-            <LinearLayout
+    <!-- Blur / Fade Overlay (visible to non-VIPs) - covers ALL content -->
+    <FrameLayout
+        android:id="@+id/layoutPremiumBlurOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_prediction_blur_gradient"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:paddingBottom="@dimen/_80sdp"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="12dp"
+                android:src="@drawable/ic_premium_lock"
+                />
+
+            <TextView
+                android:id="@+id/tvSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_ai_subtitle"
+                android:textColor="@color/textSecondary"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_marginBottom="12dp" />
+
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center_horizontal">
-
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="12dp"
-                    android:src="@drawable/ic_premium_lock"
-                    />
-
-                <TextView
-                    android:id="@+id/tvSubtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dialog_ai_subtitle"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="16sp"
-                    android:gravity="center"
-                    android:layout_marginBottom="12dp" />
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:paddingTop="6dp"
+                android:paddingBottom="10dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp">
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="10dp"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp">
+                    android:layout_height="54dp"
+                    android:background="@drawable/bg_btn_premium"
+                    android:outlineProvider="background">
 
-                    <FrameLayout
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGoPremium"
+                        style="@style/Widget.MaterialComponents.Button"
                         android:layout_width="match_parent"
-                        android:layout_height="54dp"
-                        android:background="@drawable/bg_btn_premium"
-                        android:elevation="8dp"
-                        android:outlineProvider="background">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnGoPremium"
-                            style="@style/Widget.MaterialComponents.Button"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="@string/dialog_ai_btn_go_premium"
-                            android:textColor="@color/white"
-                            android:backgroundTint="@android:color/transparent"
-                            app:backgroundTint="@android:color/transparent"
-                            android:textSize="15sp"
-                            android:textStyle="bold"
-                            app:cornerRadius="27dp"
-                            app:icon="@drawable/ic_premium_ad_predicts"
-                            app:iconGravity="textStart"
-                            app:iconPadding="10dp"
-                            app:iconTint="@color/white"
-                            app:elevation="0dp"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"
-                            android:stateListAnimator="@null" />
-                    </FrameLayout>
+                        android:layout_height="match_parent"
+                        android:text="@string/dialog_ai_btn_go_premium"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@android:color/transparent"
+                        app:backgroundTint="@android:color/transparent"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="27dp"
+                        app:icon="@drawable/ic_premium_ad_predicts"
+                        app:iconGravity="textStart"
+                        app:iconPadding="10dp"
+                        app:iconTint="@color/white"
+                        app:elevation="0dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:stateListAnimator="@null" />
                 </FrameLayout>
-            </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
 
-        </FrameLayout>
     </FrameLayout>
 
-</LinearLayout>
+</FrameLayout>
