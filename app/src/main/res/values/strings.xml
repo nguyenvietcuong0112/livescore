@@ -67,6 +67,9 @@
     <string name="tab_matches">MATCHES</string>
     <string name="tab_leagues">LEAGUES</string>
     <string name="empty_fixtures">No data record</string>
+    <string name="empty_live_fixtures">No live matches currently</string>
+    <string name="empty_upcoming_fixtures">No scheduled matches for today</string>
+    <string name="empty_finished_fixtures">No finished matches for today</string>
     <string name="limit_exceeded_empty_state">You have used up all free limits today</string>
     
     <!-- League Details -->
@@ -278,6 +281,17 @@
     <string name="total_shots">Total Shots</string>
     <string name="shots_on_target">Shots on Target</string>
     <string name="corner_kicks">Corner Kicks</string>
+    <string name="stat_fouls">Fouls</string>
+    <string name="stat_yellow_cards">Yellow Cards</string>
+    <string name="stat_red_cards">Red Cards</string>
+    <string name="stat_goalkeeper_saves">Goalkeeper Saves</string>
+    <string name="stat_total_passes">Total Passes</string>
+    <string name="stat_shots_off_target">Shots off Target</string>
+    <string name="stat_blocked_shots">Blocked Shots</string>
+    <string name="stat_shots_inside_box">Shots inside Box</string>
+    <string name="stat_shots_outside_box">Shots outside Box</string>
+    <string name="stat_offsides">Offsides</string>
+    <string name="stat_passes_accurate">Accurate Passes</string>
     <!-- Premium Permission Mockup Screen -->
     <string name="permission_mockup_title">🔔 Never Miss a Goal!</string>
     <string name="permission_mockup_desc">Get notified when your favorite matches kick off and whenever a goal is scored live. Stay connected to every exciting moment.</string>

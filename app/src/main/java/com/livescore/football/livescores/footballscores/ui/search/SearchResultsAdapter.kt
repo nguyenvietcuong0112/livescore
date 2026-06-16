@@ -151,7 +151,7 @@ class SearchResultsAdapter(
             binding.ivFavorite.setColorFilter(
                 ContextCompat.getColor(
                     binding.ivFavorite.context,
-                    if (item.isFavorite) R.color.accent_green else R.color.text_muted
+                    if (item.isFavorite) R.color.primaryRed else R.color.text_muted
                 )
             )
 

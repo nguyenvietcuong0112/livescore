@@ -253,50 +253,58 @@ class HomeFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                // Collect Matches
-                launch {
-                    viewModel.matches.collect { items ->
-                        binding.emptyState.isVisible = items.isEmpty()
-                        
-                        val currentDate = viewModel.selectedDate.value
-                        val currentFilter = viewModel.currentFilter.value
-                        
-                        val sdf = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
-                            timeZone = java.util.TimeZone.getDefault()
-                        }
-                        val currentDateStr = sdf.format(currentDate)
-                        
-                        val hasChanged = currentDateStr != lastSelectedDateStr || currentFilter != lastFilter
-                        
-                        lastSelectedDateStr = currentDateStr
-                        lastFilter = currentFilter
-                        
-                        matchAdapter.submitList(items) {
-                            if (hasChanged) {
-                                binding.rvMatches.scrollToPosition(0)
-                            }
-                        }
-                    }
-                }
-
-                // Collect Loading
-                launch {
-                    viewModel.isLoading.collect { loading ->
-                        if (binding.swipeRefreshLayout.isRefreshing) {
-                            if (!loading) {
-                                binding.swipeRefreshLayout.isRefreshing = false
-                            }
-                        } else {
-                            binding.loadingSpinner.isVisible = loading
-                            if (loading) {
-                                binding.rvMatches.visibility = View.INVISIBLE
-                                binding.emptyState.visibility = View.GONE
-                            } else {
-                                binding.rvMatches.visibility = View.VISIBLE
-                            }
-                        }
-                    }
-                }
+                 // Collect Matches
+                 launch {
+                     viewModel.matches.collect { items ->
+                         val currentFilter = viewModel.currentFilter.value
+                         binding.emptyState.setText(
+                             when (currentFilter) {
+                                 MatchFilter.LIVE -> R.string.empty_live_fixtures
+                                 MatchFilter.UPCOMING -> R.string.empty_upcoming_fixtures
+                                 MatchFilter.FINISHED -> R.string.empty_finished_fixtures
+                             }
+                         )
+                         binding.emptyState.isVisible = items.isEmpty()
+                         
+                         val currentDate = viewModel.selectedDate.value
+                         
+                         val sdf = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
+                             timeZone = java.util.TimeZone.getDefault()
+                         }
+                         val currentDateStr = sdf.format(currentDate)
+                         
+                         val hasChanged = currentDateStr != lastSelectedDateStr || currentFilter != lastFilter
+                         
+                         lastSelectedDateStr = currentDateStr
+                         lastFilter = currentFilter
+                         
+                         matchAdapter.submitList(items) {
+                             if (hasChanged) {
+                                 binding.rvMatches.scrollToPosition(0)
+                             }
+                         }
+                     }
+                 }
+ 
+                 // Collect Loading
+                 launch {
+                     viewModel.isLoading.collect { loading ->
+                         if (binding.swipeRefreshLayout.isRefreshing) {
+                             if (!loading) {
+                                 binding.swipeRefreshLayout.isRefreshing = false
+                             }
+                         } else {
+                             binding.loadingSpinner.isVisible = loading
+                             if (loading) {
+                                 binding.rvMatches.visibility = View.INVISIBLE
+                                 binding.emptyState.visibility = View.GONE
+                             } else {
+                                 binding.rvMatches.visibility = View.VISIBLE
+                                 binding.emptyState.isVisible = viewModel.matches.value.isEmpty()
+                             }
+                         }
+                     }
+                 }
 
                 // Collect Filter Tab Highlight updates
                 launch {

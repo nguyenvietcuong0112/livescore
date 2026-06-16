@@ -309,4 +309,18 @@
     <string name="dialog_ai_feature_3_desc">प्रत्येक भविष्यवाणी के लिए एआई विश्वास रेटिंग</string>
     <string name="dialog_ai_btn_later">बाद में</string>
     <string name="dialog_ai_btn_go_premium">प्रीमियम प्राप्त करें</string>
+    <string name="stat_fouls">फाउल</string>
+    <string name="stat_yellow_cards">पीले कार्ड</string>
+    <string name="stat_red_cards">लाल कार्ड</string>
+    <string name="stat_goalkeeper_saves">गोलकीपर के बचाव</string>
+    <string name="stat_total_passes">कुल पास</string>
+    <string name="stat_shots_off_target">शॉट्स लक्ष्य से बाहर</string>
+    <string name="stat_blocked_shots">अवरुद्ध शॉट्स</string>
+    <string name="stat_shots_inside_box">बॉक्स के अंदर से शॉट</string>
+    <string name="stat_shots_outside_box">बॉक्स के बाहर से शॉट</string>
+    <string name="stat_offsides">ऑफसाइड</string>
+    <string name="stat_passes_accurate">सटीक पास</string>
+    <string name="empty_live_fixtures">वर्तमान में कोई लाइव मैच नहीं है</string>
+    <string name="empty_upcoming_fixtures">आज के लिए कोई निर्धारित मैच नहीं है</string>
+    <string name="empty_finished_fixtures">आज कोई समाप्त मैच नहीं है</string>
 </resources>

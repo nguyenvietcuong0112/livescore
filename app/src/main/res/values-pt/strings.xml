@@ -306,4 +306,19 @@
     <string name="dialog_ai_feature_3_desc">Avaliação de confiança da IA para cada previsão</string>
     <string name="dialog_ai_btn_later">Mais tarde</string>
     <string name="dialog_ai_btn_go_premium">Obter Premium</string>
+    <string name="stat_fouls">Faltas</string>
+    <string name="stat_yellow_cards">Cartões amarelos</string>
+    <string name="stat_red_cards">Cartões vermelhos</string>
+    <string name="stat_goalkeeper_saves">Defesas do goleiro</string>
+    <string name="stat_total_passes">Passes totais</string>
+    <string name="stat_shots_off_target">Remates para fora</string>
+    <string name="stat_blocked_shots">Remates bloqueados</string>
+    <string name="stat_shots_inside_box">Remates na grande área</string>
+    <string name="stat_shots_outside_box">Remates fora da grande área</string>
+    <string name="stat_offsides">Foras de jogo</string>
+    <string name="stat_passes_accurate">Passes precisos</string>
+    <string name="empty_live_fixtures">Nenhum jogo ao vivo no momento</string>
+    <string name="empty_upcoming_fixtures">Nenhum jogo agendado para hoje</string>
+    <string name="empty_finished_fixtures">Nenhum jogo encerrado hoje</string>
+    <string name="btn_score_prediction">PREVISÃO DO PLACAR</string>
 </resources>

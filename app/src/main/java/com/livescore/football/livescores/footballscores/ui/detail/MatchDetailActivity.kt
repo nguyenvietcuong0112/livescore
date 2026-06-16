@@ -26,6 +26,7 @@ import com.livescore.football.livescores.footballscores.data.local.RequestLimitM
 import com.livescore.football.livescores.footballscores.databinding.ActivityMatchDetailBinding
 import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallDialog
 import com.livescore.football.livescores.footballscores.ui.custom.TimelineEvent
+import com.livescore.football.livescores.footballscores.ui.iap.IAPActivity
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -103,6 +104,9 @@ class MatchDetailActivity : BaseActivity() {
         binding.btnTabStats.setOnClickListener { switchTab(0) }
         binding.btnTabTimeline.setOnClickListener { switchTab(1) }
         binding.btnTabLineups.setOnClickListener { switchTab(2) }
+        
+        // Initialize default sub-tab selection state
+        switchTab(0)
 
         // Setup Event list
         eventAdapter = EventAdapter()
@@ -181,39 +185,28 @@ class MatchDetailActivity : BaseActivity() {
 
     private fun shareCombinedMatchView(matchId: Int) {
         try {
-            val currentStatsVisible = binding.containerStats.isVisible
-            val currentTimelineVisible = binding.layoutTimeline.root.isVisible
-            val currentLineupsVisible = binding.layoutLineups.root.isVisible
+            val activeContentView = when {
+                binding.containerStats.isVisible -> binding.containerStats
+                binding.layoutTimeline.root.isVisible -> binding.layoutTimeline.root
+                binding.layoutLineups.root.isVisible -> binding.layoutLineups.root
+                else -> null
+            }
 
-            // Ensure stats layout is visible to perform measurements and drawing
-            binding.containerStats.isVisible = true
+            val headerWidth = binding.matchHeader.root.width
+            val headerHeight = binding.matchHeader.root.height
 
-            // Force layout pass to ensure views have dimensions
-            val displayWidth = resources.displayMetrics.widthPixels
-            val widthSpec = View.MeasureSpec.makeMeasureSpec(displayWidth, View.MeasureSpec.EXACTLY)
-            val heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            if (activeContentView == null) {
+                shareMatchView(binding.matchHeader.root, matchId)
+                return
+            }
 
-            binding.matchHeader.root.measure(widthSpec, heightSpec)
-            binding.matchHeader.root.layout(
-                0, 0, binding.matchHeader.root.measuredWidth, binding.matchHeader.root.measuredHeight
-            )
+            val contentWidth = activeContentView.width
+            val contentHeight = activeContentView.height
 
-            binding.containerStats.measure(widthSpec, heightSpec)
-            binding.containerStats.layout(
-                0, 0, binding.containerStats.measuredWidth, binding.containerStats.measuredHeight
-            )
-
-            val headerWidth = binding.matchHeader.root.measuredWidth
-            val headerHeight = binding.matchHeader.root.measuredHeight
-            val statsWidth = binding.containerStats.measuredWidth
-            val statsHeight = binding.containerStats.measuredHeight
-
-            val totalWidth = maxOf(headerWidth, statsWidth)
-            val totalHeight = headerHeight + statsHeight
+            val totalWidth = maxOf(headerWidth, contentWidth)
+            val totalHeight = headerHeight + contentHeight
 
             if (totalWidth <= 0 || totalHeight <= 0) {
-                // Fallback to simple header capture if measurements failed
-                binding.containerStats.isVisible = currentStatsVisible
                 shareMatchView(binding.matchHeader.root, matchId)
                 return
             }
@@ -225,16 +218,11 @@ class MatchDetailActivity : BaseActivity() {
             // 1. Draw Match Header
             binding.matchHeader.root.draw(canvas)
 
-            // 2. Draw Stats View below Match Header
+            // 2. Draw Active Content View below Match Header
             canvas.save()
             canvas.translate(0f, headerHeight.toFloat())
-            binding.containerStats.draw(canvas)
+            activeContentView.draw(canvas)
             canvas.restore()
-
-            // Restore original tab visibility states to avoid layout flickering
-            binding.containerStats.isVisible = currentStatsVisible
-            binding.layoutTimeline.root.isVisible = currentTimelineVisible
-            binding.layoutLineups.root.isVisible = currentLineupsVisible
 
             // Save combined bitmap to cache directory
             val cachePath = File(cacheDir, "images")
@@ -268,7 +256,6 @@ class MatchDetailActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            // General fallback
             shareMatchView(binding.root, matchId)
         }
     }
@@ -409,26 +396,128 @@ class MatchDetailActivity : BaseActivity() {
                                 binding.layoutStats.progressHomePossession.progress = hp
                                 binding.layoutStats.progressAwayPossession.progress = ap
 
-                                val hs = getStatValue(homeStats, "Total Shots")
-                                val asShots = getStatValue(awayStats, "Total Shots")
-                                binding.layoutStats.tvStatHomeShots.text = hs.toString()
-                                binding.layoutStats.tvStatAwayShots.text = asShots.toString()
-                                binding.layoutStats.progressHomeShots.progress = hs
-                                binding.layoutStats.progressAwayShots.progress = asShots
+                                 val hs = getStatValue(homeStats, "Total Shots")
+                                 val asShots = getStatValue(awayStats, "Total Shots")
+                                 binding.layoutStats.tvStatHomeShots.text = hs.toString()
+                                 binding.layoutStats.tvStatAwayShots.text = asShots.toString()
+                                 val totalShots = hs + asShots
+                                 binding.layoutStats.progressHomeShots.progress = if (totalShots > 0) (hs * 100) / totalShots else 50
+                                 binding.layoutStats.progressAwayShots.progress = if (totalShots > 0) (asShots * 100) / totalShots else 50
 
-                                val hst = getStatValue(homeStats, "Shots on Target")
-                                val ast = getStatValue(awayStats, "Shots on Target")
-                                binding.layoutStats.tvStatHomeShotsTarget.text = hst.toString()
-                                binding.layoutStats.tvStatAwayShotsTarget.text = ast.toString()
-                                binding.layoutStats.progressHomeShotsTarget.progress = hst
-                                binding.layoutStats.progressAwayShotsTarget.progress = ast
+                                 val hst = getStatValue(homeStats, "Shots on Target")
+                                 val ast = getStatValue(awayStats, "Shots on Target")
+                                 binding.layoutStats.tvStatHomeShotsTarget.text = hst.toString()
+                                 binding.layoutStats.tvStatAwayShotsTarget.text = ast.toString()
+                                 val totalShotsTarget = hst + ast
+                                 binding.layoutStats.progressHomeShotsTarget.progress = if (totalShotsTarget > 0) (hst * 100) / totalShotsTarget else 50
+                                 binding.layoutStats.progressAwayShotsTarget.progress = if (totalShotsTarget > 0) (ast * 100) / totalShotsTarget else 50
 
-                                val hc = getStatValue(homeStats, "Corner Kicks")
-                                val ac = getStatValue(awayStats, "Corner Kicks")
-                                binding.layoutStats.tvStatHomeCorners.text = hc.toString()
-                                binding.layoutStats.tvStatAwayCorners.text = ac.toString()
-                                binding.layoutStats.progressHomeCorners.progress = hc
-                                binding.layoutStats.progressAwayCorners.progress = ac
+                                 // Shots off Goal
+                                 val hso = getStatValue(homeStats, "Shots off Goal")
+                                 val aso = getStatValue(awayStats, "Shots off Goal")
+                                 binding.layoutStats.tvStatHomeShotsOffTarget.text = hso.toString()
+                                 binding.layoutStats.tvStatAwayShotsOffTarget.text = aso.toString()
+                                 val totalSo = hso + aso
+                                 binding.layoutStats.progressHomeShotsOffTarget.progress = if (totalSo > 0) (hso * 100) / totalSo else 50
+                                 binding.layoutStats.progressAwayShotsOffTarget.progress = if (totalSo > 0) (aso * 100) / totalSo else 50
+
+                                 // Blocked Shots
+                                 val hbs = getStatValue(homeStats, "Blocked Shots")
+                                 val abs = getStatValue(awayStats, "Blocked Shots")
+                                 binding.layoutStats.tvStatHomeBlockedShots.text = hbs.toString()
+                                 binding.layoutStats.tvStatAwayBlockedShots.text = abs.toString()
+                                 val totalBs = hbs + abs
+                                 binding.layoutStats.progressHomeBlockedShots.progress = if (totalBs > 0) (hbs * 100) / totalBs else 50
+                                 binding.layoutStats.progressAwayBlockedShots.progress = if (totalBs > 0) (abs * 100) / totalBs else 50
+
+                                 // Shots insidebox
+                                 val hsib = getStatValue(homeStats, "Shots insidebox")
+                                 val asib = getStatValue(awayStats, "Shots insidebox")
+                                 binding.layoutStats.tvStatHomeShotsInsideBox.text = hsib.toString()
+                                 binding.layoutStats.tvStatAwayShotsInsideBox.text = asib.toString()
+                                 val totalSib = hsib + asib
+                                 binding.layoutStats.progressHomeShotsInsideBox.progress = if (totalSib > 0) (hsib * 100) / totalSib else 50
+                                 binding.layoutStats.progressAwayShotsInsideBox.progress = if (totalSib > 0) (asib * 100) / totalSib else 50
+
+                                 // Shots outsidebox
+                                 val hsob = getStatValue(homeStats, "Shots outsidebox")
+                                 val asob = getStatValue(awayStats, "Shots outsidebox")
+                                 binding.layoutStats.tvStatHomeShotsOutsideBox.text = hsob.toString()
+                                 binding.layoutStats.tvStatAwayShotsOutsideBox.text = asob.toString()
+                                 val totalSob = hsob + asob
+                                 binding.layoutStats.progressHomeShotsOutsideBox.progress = if (totalSob > 0) (hsob * 100) / totalSob else 50
+                                 binding.layoutStats.progressAwayShotsOutsideBox.progress = if (totalSob > 0) (asob * 100) / totalSob else 50
+
+                                 val hc = getStatValue(homeStats, "Corner Kicks")
+                                 val ac = getStatValue(awayStats, "Corner Kicks")
+                                 binding.layoutStats.tvStatHomeCorners.text = hc.toString()
+                                 binding.layoutStats.tvStatAwayCorners.text = ac.toString()
+                                 val totalCorners = hc + ac
+                                 binding.layoutStats.progressHomeCorners.progress = if (totalCorners > 0) (hc * 100) / totalCorners else 50
+                                 binding.layoutStats.progressAwayCorners.progress = if (totalCorners > 0) (ac * 100) / totalCorners else 50
+
+                                 // Offsides
+                                 val ho = getStatValue(homeStats, "Offsides")
+                                 val ao = getStatValue(awayStats, "Offsides")
+                                 binding.layoutStats.tvStatHomeOffsides.text = ho.toString()
+                                 binding.layoutStats.tvStatAwayOffsides.text = ao.toString()
+                                 val totalO = ho + ao
+                                 binding.layoutStats.progressHomeOffsides.progress = if (totalO > 0) (ho * 100) / totalO else 50
+                                 binding.layoutStats.progressAwayOffsides.progress = if (totalO > 0) (ao * 100) / totalO else 50
+
+                                 // Fouls
+                                 val hf = getStatValue(homeStats, "Fouls")
+                                 val af = getStatValue(awayStats, "Fouls")
+                                 binding.layoutStats.tvStatHomeFouls.text = hf.toString()
+                                 binding.layoutStats.tvStatAwayFouls.text = af.toString()
+                                 val totalF = hf + af
+                                 binding.layoutStats.progressHomeFouls.progress = if (totalF > 0) (hf * 100) / totalF else 50
+                                 binding.layoutStats.progressAwayFouls.progress = if (totalF > 0) (af * 100) / totalF else 50
+
+                                 // Yellow Cards
+                                 val hy = getStatValue(homeStats, "Yellow Cards")
+                                 val ay = getStatValue(awayStats, "Yellow Cards")
+                                 binding.layoutStats.tvStatHomeYellowCards.text = hy.toString()
+                                 binding.layoutStats.tvStatAwayYellowCards.text = ay.toString()
+                                 val totalY = hy + ay
+                                 binding.layoutStats.progressHomeYellowCards.progress = if (totalY > 0) (hy * 100) / totalY else 50
+                                 binding.layoutStats.progressAwayYellowCards.progress = if (totalY > 0) (ay * 100) / totalY else 50
+
+                                 // Red Cards
+                                 val hr = getStatValue(homeStats, "Red Cards")
+                                 val ar = getStatValue(awayStats, "Red Cards")
+                                 binding.layoutStats.tvStatHomeRedCards.text = hr.toString()
+                                 binding.layoutStats.tvStatAwayRedCards.text = ar.toString()
+                                 val totalR = hr + ar
+                                 binding.layoutStats.progressHomeRedCards.progress = if (totalR > 0) (hr * 100) / totalR else 0
+                                 binding.layoutStats.progressAwayRedCards.progress = if (totalR > 0) (ar * 100) / totalR else 0
+
+                                 // Goalkeeper Saves
+                                 val hgs = getStatValue(homeStats, "Goalkeeper Saves")
+                                 val ags = getStatValue(awayStats, "Goalkeeper Saves")
+                                 binding.layoutStats.tvStatHomeSaves.text = hgs.toString()
+                                 binding.layoutStats.tvStatAwaySaves.text = ags.toString()
+                                 val totalS = hgs + ags
+                                 binding.layoutStats.progressHomeSaves.progress = if (totalS > 0) (hgs * 100) / totalS else 50
+                                 binding.layoutStats.progressAwaySaves.progress = if (totalS > 0) (ags * 100) / totalS else 50
+
+                                 // Total Passes
+                                 val hpPasses = getStatValue(homeStats, "Total Passes")
+                                 val apPasses = getStatValue(awayStats, "Total Passes")
+                                 binding.layoutStats.tvStatHomePasses.text = hpPasses.toString()
+                                 binding.layoutStats.tvStatAwayPasses.text = apPasses.toString()
+                                 val totalP = hpPasses + apPasses
+                                 binding.layoutStats.progressHomePasses.progress = if (totalP > 0) (hpPasses * 100) / totalP else 50
+                                 binding.layoutStats.progressAwayPasses.progress = if (totalP > 0) (apPasses * 100) / totalP else 50
+
+                                 // Passes accurate
+                                 val hpa = getStatValue(homeStats, "Passes accurate")
+                                 val apa = getStatValue(awayStats, "Passes accurate")
+                                 binding.layoutStats.tvStatHomePassesAccurate.text = hpa.toString()
+                                 binding.layoutStats.tvStatAwayPassesAccurate.text = apa.toString()
+                                 val totalPa = hpa + apa
+                                 binding.layoutStats.progressHomePassesAccurate.progress = if (totalPa > 0) (hpa * 100) / totalPa else 50
+                                 binding.layoutStats.progressAwayPassesAccurate.progress = if (totalPa > 0) (apa * 100) / totalPa else 50
                             }
                         }
 
@@ -540,21 +629,25 @@ class MatchDetailActivity : BaseActivity() {
 
     private fun switchMainTab(tabIndex: Int, matchId: Int) {
         val activeTextColor = Color.WHITE
-        val mutedTextColor = ContextCompat.getColor(this, R.color.text_muted)
-        val activeBgColor = ContextCompat.getColor(this, R.color.accent_green)
-        val transparentBg = Color.TRANSPARENT
+        val mutedTextColor = ContextCompat.getColor(this, R.color.textSecondary)
 
         binding.btnTabMatch.setTextColor(if (tabIndex == 0) activeTextColor else mutedTextColor)
         binding.btnTabMatch.setTypeface(null, if (tabIndex == 0) android.graphics.Typeface.BOLD else android.graphics.Typeface.NORMAL)
-        binding.btnTabMatch.backgroundTintList = android.content.res.ColorStateList.valueOf(
-            if (tabIndex == 0) activeBgColor else transparentBg
+        binding.btnTabMatch.backgroundTintList = null
+        binding.btnTabMatch.setBackgroundResource(
+            if (tabIndex == 0) R.drawable.bg_tab_nav_selected else R.drawable.bg_tab_nav_unselected
         )
+        binding.btnTabMatch.elevation = 0f
+        binding.btnTabMatch.stateListAnimator = null
 
         binding.btnTabPrediction.setTextColor(if (tabIndex == 1) activeTextColor else mutedTextColor)
         binding.btnTabPrediction.setTypeface(null, if (tabIndex == 1) android.graphics.Typeface.BOLD else android.graphics.Typeface.NORMAL)
-        binding.btnTabPrediction.backgroundTintList = android.content.res.ColorStateList.valueOf(
-            if (tabIndex == 1) activeBgColor else transparentBg
+        binding.btnTabPrediction.backgroundTintList = null
+        binding.btnTabPrediction.setBackgroundResource(
+            if (tabIndex == 1) R.drawable.bg_tab_nav_selected else R.drawable.bg_tab_nav_unselected
         )
+        binding.btnTabPrediction.elevation = 0f
+        binding.btnTabPrediction.stateListAnimator = null
 
         binding.layoutMatchContent.isVisible = tabIndex == 0
         binding.layoutPredictionContent.isVisible = tabIndex == 1
@@ -597,12 +690,9 @@ class MatchDetailActivity : BaseActivity() {
             }
             
             // Set up click listener on "See More" button to display the custom Dialog popup
-            binding.layoutMatchPrediction.btnPredictionSeeMore.setOnClickListener {
-                val existing = supportFragmentManager.findFragmentByTag(com.livescore.football.livescores.footballscores.ui.custom.AiPredictionPaywallDialog.TAG)
-                if (existing == null) {
-                    val dialog = com.livescore.football.livescores.footballscores.ui.custom.AiPredictionPaywallDialog.newInstance()
-                    dialog.show(supportFragmentManager, com.livescore.football.livescores.footballscores.ui.custom.AiPredictionPaywallDialog.TAG)
-                }
+            binding.layoutMatchPrediction.btnGoPremium.setOnClickListener {
+                val intent = Intent(applicationContext, IAPActivity::class.java)
+                startActivity(intent)
             }
         }
         binding.layoutMatchPrediction.layoutPremiumLockedSection.layoutParams = params
@@ -614,11 +704,15 @@ class MatchDetailActivity : BaseActivity() {
         if (detail != null) {
             Glide.with(this).load(detail.teams.home.logo).into(binding.layoutMatchPrediction.ivPredictHomeLogo)
             Glide.with(this).load(detail.teams.away.logo).into(binding.layoutMatchPrediction.ivPredictAwayLogo)
+            Glide.with(this).load(detail.teams.home.logo).into(binding.layoutMatchPrediction.ivHomeTeamSWLogo)
+            Glide.with(this).load(detail.teams.away.logo).into(binding.layoutMatchPrediction.ivAwayTeamSWLogo)
             binding.layoutMatchPrediction.tvPredictHomeName.text = detail.teams.home.name
             binding.layoutMatchPrediction.tvPredictAwayName.text = detail.teams.away.name
         } else {
             Glide.with(this).load(prediction.home_team.logo).into(binding.layoutMatchPrediction.ivPredictHomeLogo)
             Glide.with(this).load(prediction.away_team.logo).into(binding.layoutMatchPrediction.ivPredictAwayLogo)
+            Glide.with(this).load(prediction.home_team.logo).into(binding.layoutMatchPrediction.ivHomeTeamSWLogo)
+            Glide.with(this).load(prediction.away_team.logo).into(binding.layoutMatchPrediction.ivAwayTeamSWLogo)
             binding.layoutMatchPrediction.tvPredictHomeName.text = prediction.home_team.name
             binding.layoutMatchPrediction.tvPredictAwayName.text = prediction.away_team.name
         }
@@ -667,10 +761,14 @@ class MatchDetailActivity : BaseActivity() {
                     false
                 )
                 scorerBinding.tvPlayerName.text = player.player_name
-                scorerBinding.tvTeamBadge.text = if (player.team == "home") getString(R.string.ai_home_badge) else getString(R.string.ai_away_badge)
-                scorerBinding.tvTeamBadge.backgroundTintList = android.content.res.ColorStateList.valueOf(
-                    if (player.team == "home") ContextCompat.getColor(this, R.color.accent_green) else ContextCompat.getColor(this, R.color.accent_green_secondary)
-                )
+                val teamName = if (player.team == "home") homeTeamName else awayTeamName
+                val teamLogoUrl = if (player.team == "home") {
+                    detail?.teams?.home?.logo ?: prediction.home_team.logo
+                } else {
+                    detail?.teams?.away?.logo ?: prediction.away_team.logo
+                }
+                scorerBinding.tvTeamBadge.text = teamName
+                Glide.with(this@MatchDetailActivity).load(teamLogoUrl).into(scorerBinding.ivTeamLogo)
                 scorerBinding.tvProbability.text = "${player.probability}%"
                 scorerBinding.progressProbability.progress = player.probability
 
@@ -711,19 +809,26 @@ class MatchDetailActivity : BaseActivity() {
         if (sw != null) {
             fun addBulletPoints(container: android.widget.LinearLayout, items: List<String>?, isStrength: Boolean) {
                 if (items.isNullOrEmpty()) return
-                val prefix = if (isStrength) "<font color='#00C853'>✓</font>  " else "<font color='#FF1744'>✗</font>  "
                 for (item in items) {
                     val tv = android.widget.TextView(this).apply {
                         layoutParams = android.widget.LinearLayout.LayoutParams(
                             android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
                             android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
                         ).apply {
-                            setMargins(0, 0, 0, 6.dpToPx())
+                            setMargins(0, 0, 0, 8.dpToPx())
                         }
-                        text = android.text.Html.fromHtml(prefix + item, android.text.Html.FROM_HTML_MODE_LEGACY)
+                        text = item
                         setTextColor(ContextCompat.getColor(this@MatchDetailActivity, R.color.text_white))
-                        textSize = 12f
-                        setLineSpacing(0f, 1.15f)
+                        textSize = 12.5f
+                        setLineSpacing(0f, 1.2f)
+                        
+                        val iconRes = if (isStrength) R.drawable.ic_check_circle_filled else R.drawable.ic_close_circle
+                        val drawable = ContextCompat.getDrawable(this@MatchDetailActivity, iconRes)?.apply {
+                            setBounds(0, 0, 16.dpToPx(), 0)
+                        }
+                        setCompoundDrawables(drawable, null, null, null)
+                        compoundDrawablePadding = 8.dpToPx()
+                        gravity = android.view.Gravity.CENTER_VERTICAL
                     }
                     container.addView(tv)
                 }

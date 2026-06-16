@@ -310,4 +310,18 @@
     <string name="dialog_ai_feature_3_desc">Оценка уверенности ИИ для каждого прогноза</string>
     <string name="dialog_ai_btn_later">Позже</string>
     <string name="dialog_ai_btn_go_premium">Перейти на Premium</string>
+    <string name="stat_fouls">Фолы</string>
+    <string name="stat_yellow_cards">Желтые карточки</string>
+    <string name="stat_red_cards">Красные карточки</string>
+    <string name="stat_goalkeeper_saves">Сейвы вратаря</string>
+    <string name="stat_total_passes">Всего передач</string>
+    <string name="stat_shots_off_target">Удары мимо ворот</string>
+    <string name="stat_blocked_shots">Заблокированные удары</string>
+    <string name="stat_shots_inside_box">Удары из штрафной</string>
+    <string name="stat_shots_outside_box">Удары из-за штрафной</string>
+    <string name="stat_offsides">Офсайды</string>
+    <string name="stat_passes_accurate">Точные передачи</string>
+    <string name="empty_live_fixtures">В данный момент нет матчей в эфире</string>
+    <string name="empty_upcoming_fixtures">На сегодня нет запланированных матчей</string>
+    <string name="empty_finished_fixtures">На сегодня нет завершенных матчей</string>
 </resources>

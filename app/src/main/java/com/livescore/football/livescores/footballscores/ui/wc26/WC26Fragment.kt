@@ -134,7 +134,7 @@ class WC26Fragment : Fragment() {
                 if (favoriteManager.canAddFavoriteFixture(match.fixture.id)) {
                     val newFav = favoriteManager.toggleFixtureFavorite(match.fixture.id)
                     ivFavorite.setImageResource(if (newFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
-                    ivFavorite.setColorFilter(ContextCompat.getColor(requireContext(), if (newFav) R.color.accent_green else R.color.text_muted))
+                    ivFavorite.setColorFilter(ContextCompat.getColor(requireContext(), if (newFav) R.color.primaryRed else R.color.text_muted))
                 } else {
                     val paywall = com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallDialog.newInstance()
                     paywall.show(parentFragmentManager, com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallDialog.TAG)

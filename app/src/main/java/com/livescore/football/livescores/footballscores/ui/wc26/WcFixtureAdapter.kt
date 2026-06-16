@@ -169,7 +169,7 @@ class WcFixtureAdapter(
                 ContextCompat.getColor(
                     context,
                     if (isFav) {
-                        if (isUpcoming) R.color.primaryRed else R.color.accent_green
+                        R.color.primaryRed
                     } else {
                         R.color.text_muted
                     }

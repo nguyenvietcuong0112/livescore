@@ -310,4 +310,18 @@
     <string name="dialog_ai_feature_3_desc">การให้คะแนนความมั่นใจของ AI สำหรับทุกการคาดการณ์</string>
     <string name="dialog_ai_btn_later">ไว้ทีหลัง</string>
     <string name="dialog_ai_btn_go_premium">เป็นพรีเมียม</string>
+    <string name="stat_fouls">ฟาวล์</string>
+    <string name="stat_yellow_cards">ใบเหลือง</string>
+    <string name="stat_red_cards">ใบแดง</string>
+    <string name="stat_goalkeeper_saves">การเซฟของประตู</string>
+    <string name="stat_total_passes">การผ่านบอลทั้งหมด</string>
+    <string name="stat_shots_off_target">ยิงหลุดกรอบ</string>
+    <string name="stat_blocked_shots">ลูกยิงที่ถูกบล็อก</string>
+    <string name="stat_shots_inside_box">ยิงในกรอบเขตโทษ</string>
+    <string name="stat_shots_outside_box">ยิงนอกกรอบเขตโทษ</string>
+    <string name="stat_offsides">ล้ำหน้า</string>
+    <string name="stat_passes_accurate">ผ่านบอลแม่นยำ</string>
+    <string name="empty_live_fixtures">ขณะนี้ไม่มีการแข่งขันสด</string>
+    <string name="empty_upcoming_fixtures">ไม่มีการแข่งขันที่กำหนดไว้สำหรับวันนี้</string>
+    <string name="empty_finished_fixtures">ไม่มีการแข่งขันที่สิ้นสุดลงในวันนี้</string>
 </resources>

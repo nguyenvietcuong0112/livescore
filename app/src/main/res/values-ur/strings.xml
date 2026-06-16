@@ -309,4 +309,18 @@
     <string name="dialog_ai_feature_3_desc">ہر پیشن گوئی کے لئے اے آئی کا اعتماد کی درجہ بندی</string>
     <string name="dialog_ai_btn_later">بعد میں</string>
     <string name="dialog_ai_btn_go_premium">پریمیم حاصل کریں</string>
+    <string name="stat_fouls">فاؤل</string>
+    <string name="stat_yellow_cards">پیلا کارڈ</string>
+    <string name="stat_red_cards">سرخ کارڈ</string>
+    <string name="stat_goalkeeper_saves">گول کیپر کا بچاؤ</string>
+    <string name="stat_total_passes">کل پاسز</string>
+    <string name="stat_shots_off_target">نشانے سے باہر شاٹس</string>
+    <string name="stat_blocked_shots">بلاک شدہ شاٹس</string>
+    <string name="stat_shots_inside_box">باکس کے اندر شاٹس</string>
+    <string name="stat_shots_outside_box">باکس کے باہر شاٹس</string>
+    <string name="stat_offsides">آف سائیڈز</string>
+    <string name="stat_passes_accurate">درست پاسز</string>
+    <string name="empty_live_fixtures">فی الحال کوئی لائیو میچ نہیں ہے</string>
+    <string name="empty_upcoming_fixtures">آج کوئی میچ شیڈول نہیں ہے</string>
+    <string name="empty_finished_fixtures">آج کوئی ختم ہونے والا میچ نہیں ہے</string>
 </resources>

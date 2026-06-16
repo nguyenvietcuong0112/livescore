@@ -11,7 +11,7 @@
         android:id="@+id/layoutTopActions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/card_dark"
+        android:background="@color/bg_light"
         android:paddingTop="36dp"
         android:paddingBottom="15dp"
         android:paddingHorizontal="12dp"
@@ -46,48 +46,51 @@
         android:id="@+id/tabMainSelector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/card_dark"
+        android:background="@color/bg_light"
         android:orientation="horizontal"
         android:paddingHorizontal="12dp"
-        android:paddingBottom="12dp"
+        android:paddingBottom="@dimen/_5sdp"
         app:layout_constraintTop_toBottomOf="@id/layoutTopActions">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:background="@drawable/bg_tab_main_container"
-            android:orientation="horizontal"
-            android:padding="2dp">
+            android:layout_height="38dp"
+            android:background="@color/bg_light"
+            android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTabMatch"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/tab_match"
-                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_marginEnd="6dp"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
+                android:background="@drawable/bg_tab_nav_selected"
+                app:backgroundTint="@null"
+                app:elevation="0dp"
+                app:pressedTranslationZ="0dp"
+                android:stateListAnimator="@null"
                 android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:backgroundTint="@color/transparent"
-                app:cornerRadius="8dp" />
+                android:insetBottom="0dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTabPrediction"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginStart="6dp"
                 android:text="@string/tab_prediction"
                 android:textColor="@color/text_muted"
                 android:textStyle="normal"
+                android:background="@drawable/bg_tab_nav_unselected"
+                app:backgroundTint="@null"
+                app:elevation="0dp"
+                app:pressedTranslationZ="0dp"
+                android:stateListAnimator="@null"
                 android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:backgroundTint="@color/transparent"
-                app:cornerRadius="8dp" />
+                android:insetBottom="0dp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -120,6 +123,8 @@
                 android:visibility="visible">
 
                 <!-- Pitch Tracker & Momentum visualizer cards -->
+
+                <!-- Sub Tab Selector -->
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -142,7 +147,6 @@
 
                 </FrameLayout>
 
-                <!-- Sub Tab Selector -->
                 <LinearLayout
                     android:id="@+id/tabDetailSelector"
                     android:layout_width="match_parent"
@@ -159,7 +163,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:backgroundTint="@color/accentBlue"
+                        android:backgroundTint="@color/transparent"
                         android:text="@string/tab_stats"
                         android:textColor="@android:color/white"
                         android:textStyle="bold"

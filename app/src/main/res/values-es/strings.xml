@@ -310,4 +310,19 @@
     <string name="dialog_ai_feature_3_desc">Calificación de confianza de la IA para cada predicción</string>
     <string name="dialog_ai_btn_later">Más tarde</string>
     <string name="dialog_ai_btn_go_premium">Hacerse Premium</string>
+    <string name="stat_fouls">Faltas</string>
+    <string name="stat_yellow_cards">Tarjetas amarillas</string>
+    <string name="stat_red_cards">Tarjetas rojas</string>
+    <string name="stat_goalkeeper_saves">Paradas del portero</string>
+    <string name="stat_total_passes">Pases totales</string>
+    <string name="stat_shots_off_target">Disparos fuera</string>
+    <string name="stat_blocked_shots">Disparos bloqueados</string>
+    <string name="stat_shots_inside_box">Disparos dentro del área</string>
+    <string name="stat_shots_outside_box">Disparos fuera del área</string>
+    <string name="stat_offsides">Fueras de juego</string>
+    <string name="stat_passes_accurate">Pases precisos</string>
+    <string name="empty_live_fixtures">No hay partidos en directo actualmente</string>
+    <string name="empty_upcoming_fixtures">No hay partidos programados para hoy</string>
+    <string name="empty_finished_fixtures">No hay partidos finalizados hoy</string>
+    <string name="btn_score_prediction">PREDICCIÓN DE MARCADOR</string>
 </resources>

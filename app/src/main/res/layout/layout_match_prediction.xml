@@ -5,131 +5,124 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@color/bg_light"
     android:padding="12dp">
 
-    <!-- Card 1: Winner & Confidence Score -->
+    <!-- Card 1: Winner & Score Prediction -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        app:cardBackgroundColor="@color/card_dark"
-        app:cardCornerRadius="12dp"
+        android:layout_marginBottom="8dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
-        app:strokeColor="@color/divider_dark"
+        app:strokeColor="@color/border"
         app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:gravity="center_horizontal">
 
-            <TextView
+            <!-- Pill Badge: Predicted Winner -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@string/title_winner_prediction"
-                android:textColor="@color/accent_green"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:background="@drawable/bg_predicted_winner_badge"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="6dp"
+                android:layout_marginBottom="20dp">
 
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginEnd="6dp"
+                    android:src="@drawable/ic_trophy_vector"
+                   />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_winner_prediction"
+                    android:textColor="@color/primaryBlue"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Teams and Score Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <!-- Home Team -->
+                <!-- Home Team Column -->
                 <LinearLayout
                     android:id="@+id/layoutPredictHome"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp">
+                    android:orientation="vertical">
 
                     <ImageView
                         android:id="@+id/ivPredictHomeLogo"
                         android:layout_width="48dp"
-                        android:layout_height="48dp" />
+                        android:layout_height="48dp"
+                        android:layout_marginBottom="8dp" />
 
                     <TextView
                         android:id="@+id/tvPredictHomeName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
                         android:gravity="center"
-                        android:textColor="@color/text_white"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:textColor="@color/textPrimary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        tools:text="Home Team" />
                 </LinearLayout>
 
-                <!-- Score Prediction & VS -->
-                <com.google.android.material.card.MaterialCardView
+                <!-- Centered Score -->
+                <TextView
+                    android:id="@+id/tvPredictScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="12dp"
-                    app:cardBackgroundColor="@color/divider_dark"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="@color/divider_dark"
-                    app:strokeWidth="1dp">
+                    android:layout_marginHorizontal="16dp"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    tools:text="2 - 2" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:paddingHorizontal="14dp"
-                        android:paddingVertical="8dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:text="@string/title_score_prediction"
-                            android:textColor="@color/text_muted"
-                            android:textSize="8sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvPredictScore"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/accent_green"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            tools:text="3 - 1" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Away Team -->
+                <!-- Away Team Column -->
                 <LinearLayout
                     android:id="@+id/layoutPredictAway"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="8dp">
+                    android:orientation="vertical">
 
                     <ImageView
                         android:id="@+id/ivPredictAwayLogo"
                         android:layout_width="48dp"
-                        android:layout_height="48dp" />
+                        android:layout_height="48dp"
+                        android:layout_marginBottom="8dp" />
 
                     <TextView
                         android:id="@+id/tvPredictAwayName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
                         android:gravity="center"
-                        android:textColor="@color/text_white"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:textColor="@color/textPrimary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        tools:text="Away Team" />
                 </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -146,183 +139,153 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Card 2: AI Confidence Score -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- Card 2: AI Confidence Score & Goals Over (Side by Side) -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="@color/card_dark"
-                app:cardCornerRadius="12dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+
+                <!-- Left Card: AI Confidence -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/border"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:background="@color/card_dark"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/title_confidence_score"
+                            android:textColor="@color/textSecondary"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textAllCaps="true" />
+
+                        <TextView
+                            android:id="@+id/tvPredictConfidence"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/textPrimary"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            tools:text="100%" />
+
+                        <!-- Hidden CircularProgressIndicator to satisfy Kotlin references without crash -->
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/progressConfidence"
+                            android:layout_width="1dp"
+                            android:layout_height="1dp"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Right Card: Goals Over / Under -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/border"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:background="@color/card_dark"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/title_over_under_prediction"
+                            android:textColor="@color/textSecondary"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textAllCaps="true" />
+
+                        <TextView
+                            android:id="@+id/tvPredictOverUnder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/textPrimary"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            tools:text="Over 2.5" />
+
+                        <!-- Hidden BTTS view to satisfy Kotlin binding -->
+                        <TextView
+                            android:id="@+id/tvPredictBtts"
+                            android:layout_width="1dp"
+                            android:layout_height="1dp"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Card 3: Key Impact Players -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardGoalscorers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/divider_dark"
+                app:strokeColor="@color/border"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:background="@color/card_dark"
                     android:padding="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/ic_star_outline"
+                             />
 
                         <TextView
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/title_confidence_score"
-                            android:textColor="@color/text_white"
-                            android:textSize="12sp"
+                            android:text="@string/title_prominent_players"
+                            android:textColor="@color/textPrimary"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
-
-                        <FrameLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-
-                            <com.google.android.material.progressindicator.CircularProgressIndicator
-                                android:id="@+id/progressConfidence"
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                android:max="100"
-                                app:indicatorColor="@color/accent_green"
-                                app:indicatorSize="36dp"
-                                app:trackColor="@color/divider_dark"
-                                app:trackThickness="4dp"
-                                tools:progress="85" />
-
-                            <TextView
-                                android:id="@+id/tvPredictConfidence"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:textColor="@color/accent_green"
-                                android:textSize="9sp"
-                                android:textStyle="bold"
-                                tools:text="85%" />
-                        </FrameLayout>
                     </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Card 3: Over/Under & BTTS -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/card_dark"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="@color/divider_dark"
-                    app:strokeWidth="1dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="6dp"
-                            android:text="@string/title_over_under_prediction"
-                            android:textColor="@color/text_muted"
-                            android:textSize="11sp" />
-
-                        <TextView
-                            android:id="@+id/tvPredictOverUnder"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_tab_capsule"
-                            android:backgroundTint="@color/divider_dark"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"
-                            android:textColor="@color/text_white"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            tools:text="Over 2.5" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/card_dark"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="@color/divider_dark"
-                    app:strokeWidth="1dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="6dp"
-                            android:text="@string/title_btts_prediction"
-                            android:textColor="@color/text_muted"
-                            android:textSize="11sp" />
-
-                        <TextView
-                            android:id="@+id/tvPredictBtts"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_tab_capsule"
-                            android:backgroundTint="@color/accent_green"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"
-                            android:textColor="@color/bg_light"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            tools:text="Yes" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-
-            <!-- Card 4: Key Impact Players -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardGoalscorers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="@color/card_dark"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/divider_dark"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:text="@string/title_prominent_players"
-                        android:textColor="@color/accent_green"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:id="@+id/layoutGoalscorersContainer"
@@ -332,49 +295,64 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card 4: Match Analysis -->
+            <!-- Card 4: Form & Momentum Overview -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="@color/card_dark"
-                app:cardCornerRadius="12dp"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/divider_dark"
+                app:strokeColor="@color/border"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:background="@color/card_dark"
                     android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:text="@string/title_form_overview"
-                        android:textColor="@color/accent_green"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/ic_line_chart"
+                         />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_form_overview"
+                            android:textColor="@color/textPrimary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvAnalysisText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:lineSpacingMultiplier="1.25"
-                        android:textColor="@color/text_white"
-                        android:textSize="12.5sp"
+                        android:lineSpacingMultiplier="1.3"
+                        android:textColor="@color/textPrimary"
+                        android:textSize="13sp"
                         tools:text="Detailed AI match analysis paragraph..." />
 
-                    <!-- Squad & Injury Impact Container (nền cam nhạt) -->
+                    <!-- Squad & Injury Impact Container -->
                     <LinearLayout
                         android:id="@+id/layoutSquadImpact"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:background="@drawable/bg_tab_main_container"
-                        android:backgroundTint="#26FF9800"
+                        android:backgroundTint="#1A2563EB"
                         android:orientation="vertical"
                         android:padding="12dp"
                         android:visibility="gone"
@@ -386,8 +364,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="6dp"
                             android:text="@string/title_squad_impact"
-                            android:textColor="#FFB74D"
-                            android:textSize="11sp"
+                            android:textColor="@color/primaryBlue"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -395,8 +373,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:lineSpacingMultiplier="1.25"
-                            android:textColor="@color/text_white"
-                            android:textSize="12.5sp"
+                            android:textColor="@color/textPrimary"
+                            android:textSize="13sp"
                             tools:text="Squad availability and impact details..." />
                     </LinearLayout>
                 </LinearLayout>
@@ -406,65 +384,89 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="@color/card_dark"
-                app:cardCornerRadius="12dp"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/divider_dark"
+                app:strokeColor="@color/border"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:background="@color/card_dark"
                     android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="14dp"
-                        android:text="@string/title_tactical_analysis"
-                        android:textColor="@color/accent_green"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/ic_light_bulb"
+                           />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_tactical_analysis"
+                            android:textColor="@color/textPrimary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvTacticalAnalysisText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:lineSpacingMultiplier="1.2"
-                        android:textColor="@color/text_white"
-                        android:textSize="12.5sp"
+                        android:lineSpacingMultiplier="1.3"
+                        android:textColor="@color/textPrimary"
+                        android:textSize="13sp"
                         tools:text="Tactical analysis details..." />
 
+                    <!-- Read More button: kept for Kotlin binding safety (though set to gone) -->
                     <TextView
                         android:id="@+id/tvReadMoreTactics"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginBottom="12dp"
-                        android:paddingVertical="4dp"
-                        android:text="@string/read_more"
-                        android:textColor="@color/accent_green"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
                         android:visibility="gone" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="12dp"
-                        android:background="@color/divider_dark" />
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:background="@color/divider" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <!-- Strength & Weaknesses Subheading -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:text="@string/title_strengths_weaknesses"
-                        android:textColor="@color/accent_green"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/ic_checklist"
+                           />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_strengths_weaknesses"
+                            android:textColor="@color/textPrimary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
                     <!-- Parallel Columns for S&W -->
                     <LinearLayout
@@ -479,17 +481,36 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:orientation="vertical"
-                            android:paddingEnd="8dp">
+                           >
 
-                            <TextView
-                                android:id="@+id/tvHomeTeamSWLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="8dp"
-                                android:textColor="@color/text_white"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                tools:text="HOME TEAM" />
+                            <!-- Capsule Header with Dynamic Logo & Text -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="36dp"
+                                android:layout_marginBottom="12dp"
+                                android:background="@drawable/bg_team_sw_header"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:paddingStart="12dp"
+                                android:paddingEnd="12dp">
+
+                                <ImageView
+                                    android:id="@+id/ivHomeTeamSWLogo"
+                                    android:layout_width="24dp"
+                                    android:layout_height="18dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:scaleType="fitCenter"
+                                     />
+
+                                <TextView
+                                    android:id="@+id/tvHomeTeamSWLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/white"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    tools:text="HOME TEAM" />
+                            </LinearLayout>
 
                             <LinearLayout
                                 android:id="@+id/layoutHomeSWContainer"
@@ -498,12 +519,10 @@
                                 android:orientation="vertical" />
                         </LinearLayout>
 
-                        <!-- Vertical Divider -->
+                        <!-- Vertical Divider Space (Mockup has space/gap, no line divider) -->
                         <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginHorizontal="4dp"
-                            android:background="@color/divider_dark" />
+                            android:layout_width="8dp"
+                            android:layout_height="match_parent" />
 
                         <!-- Away Team SW Column -->
                         <LinearLayout
@@ -511,17 +530,36 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:orientation="vertical"
-                            android:paddingStart="8dp">
+                          >
 
-                            <TextView
-                                android:id="@+id/tvAwayTeamSWLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="8dp"
-                                android:textColor="@color/text_white"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                tools:text="AWAY TEAM" />
+                            <!-- Capsule Header with Dynamic Logo & Text -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="36dp"
+                                android:layout_marginBottom="12dp"
+                                android:background="@drawable/bg_team_sw_header_right"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:paddingStart="12dp"
+                                android:paddingEnd="12dp">
+
+                                <ImageView
+                                    android:id="@+id/ivAwayTeamSWLogo"
+                                    android:layout_width="24dp"
+                                    android:layout_height="18dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:scaleType="fitCenter"
+                                     />
+
+                                <TextView
+                                    android:id="@+id/tvAwayTeamSWLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/white"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    tools:text="AWAY TEAM" />
+                            </LinearLayout>
 
                             <LinearLayout
                                 android:id="@+id/layoutAwaySWContainer"
@@ -534,134 +572,29 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card 6: Stats & Predictions -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- Hidden Key Stats Section (Card 6) to keep Kotlin bindings safe -->
+            <LinearLayout
                 android:id="@+id/cardKeyStats"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/card_dark"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/divider_dark"
-                app:strokeWidth="1dp">
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvPredictCorners"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tvPredictYellowCards"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
                 <LinearLayout
+                    android:id="@+id/layoutKeyStatsContainer"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:text="@string/title_key_predictions"
-                        android:textColor="@color/accent_green"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:orientation="horizontal">
-
-                        <!-- Corners -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_tab_main_container"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="8dp">
-
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_marginBottom="4dp"
-                                android:src="@drawable/ic_corners"
-                                app:tint="@color/text_muted" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="4dp"
-                                android:text="@string/title_corners_prediction"
-                                android:textColor="@color/text_muted"
-                                android:textSize="10sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvPredictCorners"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/text_white"
-                                android:textSize="15sp"
-                                android:textStyle="bold"
-                                tools:text="7 - 6" />
-                        </LinearLayout>
-
-                        <!-- Yellow Cards -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_tab_main_container"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="8dp">
-
-                            <ImageView
-                                android:layout_width="12dp"
-                                android:layout_height="16dp"
-                                android:layout_marginBottom="4dp"
-                                android:src="@drawable/ic_event_card"
-                                app:tint="#FFD54F" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="4dp"
-                                android:text="@string/title_yellow_cards_prediction"
-                                android:textColor="@color/text_muted"
-                                android:textSize="10sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvPredictYellowCards"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/text_white"
-                                android:textSize="15sp"
-                                android:textStyle="bold"
-                                tools:text="2 - 3" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginBottom="12dp"
-                        android:background="@color/divider_dark" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/title_key_stats"
-                        android:textColor="@color/accent_green"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:id="@+id/layoutKeyStatsContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -673,27 +606,74 @@
             android:background="@drawable/bg_prediction_blur_gradient"
             android:clickable="true"
             android:focusable="true"
+            android:paddingBottom="@dimen/_80sdp"
             android:visibility="gone">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnPredictionSeeMore"
-                style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="44dp"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="16dp"
-                android:paddingHorizontal="28dp"
-                android:backgroundTint="@color/white"
-                app:strokeColor="@color/border"
-                app:strokeWidth="1dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/read_more"
-                android:textColor="@color/textPrimary"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                app:cornerRadius="22dp"
-                android:elevation="4dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:gravity="center_horizontal">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="12dp"
+                    android:src="@drawable/ic_premium_lock"
+                    />
+
+                <TextView
+                    android:id="@+id/tvSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dialog_ai_subtitle"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="12dp" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="10dp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:background="@drawable/bg_btn_premium"
+                        android:elevation="8dp"
+                        android:outlineProvider="background">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnGoPremium"
+                            style="@style/Widget.MaterialComponents.Button"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/dialog_ai_btn_go_premium"
+                            android:textColor="@color/white"
+                            android:backgroundTint="@android:color/transparent"
+                            app:backgroundTint="@android:color/transparent"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="27dp"
+                            app:icon="@drawable/ic_premium_ad_predicts"
+                            app:iconGravity="textStart"
+                            app:iconPadding="10dp"
+                            app:iconTint="@color/white"
+                            app:elevation="0dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:stateListAnimator="@null" />
+                    </FrameLayout>
+                </FrameLayout>
+            </LinearLayout>
 
         </FrameLayout>
     </FrameLayout>
