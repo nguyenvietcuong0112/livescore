@@ -32,8 +32,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         if (message.data.isEmpty() && message.notification == null) return
 
         Log.d(TAG, "Message received: data=${message.data}")
+        val rawPushType = message.data["push_type"]
+        Log.d(TAG, "Push type: $rawPushType")
 
         val payload = PushDataParser.parse(message.data)
+        Log.d(TAG, "Parsed push type/navigation: ${payload.navigation}")
         val title = message.notification?.title
             ?: message.data["title"]
             ?: getString(R.string.push_notification_default_title)

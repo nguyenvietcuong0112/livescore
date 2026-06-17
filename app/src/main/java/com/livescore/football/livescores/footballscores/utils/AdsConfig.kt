@@ -26,7 +26,7 @@ object AdsConfig {
 
     var lastInterAdShowTime: Long = 0L
 
-    fun showInterClickAd(activity: AppCompatActivity, onAdClosed: () -> Unit) {
+    fun showInterClickAd(activity: AppCompatActivity, onAdClosedAction: () -> Unit) {
         val limitManager = try {
             EntryPoints.get(
                 activity.applicationContext,
@@ -37,7 +37,7 @@ object AdsConfig {
         }
 
         if (limitManager != null && limitManager.isPremium()) {
-            onAdClosed()
+            onAdClosedAction()
             return
         }
 
@@ -78,12 +78,12 @@ object AdsConfig {
                                 nativeAllId,
                                 object : ActivityFullCallback {
                                     override fun onResultFromActivityFull() {
-                                        onAdClosed()
+                                        onAdClosedAction()
                                     }
                                 }
                             )
                         } else {
-                            onAdClosed()
+                            onAdClosedAction()
                         }
                     }
 
@@ -95,18 +95,18 @@ object AdsConfig {
                                 nativeAllId,
                                 object : ActivityFullCallback {
                                     override fun onResultFromActivityFull() {
-                                        onAdClosed()
+                                        onAdClosedAction()
                                     }
                                 }
                             )
                         } else {
-                            onAdClosed()
+                            onAdClosedAction()
                         }
                     }
                 }
             )
         } else {
-            onAdClosed()
+            onAdClosedAction()
         }
 
     }

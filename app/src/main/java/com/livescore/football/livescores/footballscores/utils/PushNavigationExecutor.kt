@@ -19,6 +19,7 @@ object PushNavigationExecutor {
     }
 
     fun toDestinationIntent(context: Context, navigation: PushNavigation): Intent {
+        android.util.Log.d("FCMService", "Building destination intent for navigation: $navigation")
         return when (navigation) {
             is PushNavigation.Match -> Intent(context, MatchDetailActivity::class.java).apply {
                 putExtra("MATCH_ID", navigation.fixtureId)

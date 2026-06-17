@@ -69,6 +69,9 @@ class SplashActivity : BaseActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
         pendingPushPayload = PushDataParser.parseFromIntent(intent)
+        pendingPushPayload?.let { payload ->
+            android.util.Log.d("FCMService", "SplashActivity launched via push: push_id=${payload.pushId}, push_type=${payload.rawData["push_type"]}, navigation=${payload.navigation}")
+        }
         trackPushClickIfNeeded()
         trackAppLaunch()
 
@@ -309,6 +312,9 @@ class SplashActivity : BaseActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         pendingPushPayload = PushDataParser.parseFromIntent(intent)
+        pendingPushPayload?.let { payload ->
+            android.util.Log.d("FCMService", "SplashActivity onNewIntent: push_id=${payload.pushId}, push_type=${payload.rawData["push_type"]}, navigation=${payload.navigation}")
+        }
         trackPushClickIfNeeded()
         isTransitioning = false
     }
