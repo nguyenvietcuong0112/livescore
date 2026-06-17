@@ -323,4 +323,5 @@
     <string name="empty_live_fixtures">فی الحال کوئی لائیو میچ نہیں ہے</string>
     <string name="empty_upcoming_fixtures">آج کوئی میچ شیڈول نہیں ہے</string>
     <string name="empty_finished_fixtures">آج کوئی ختم ہونے والا میچ نہیں ہے</string>
+    <string name="supercomputer_prediction">سپر کمپیوٹر کی پیش گوئی</string>
 </resources>

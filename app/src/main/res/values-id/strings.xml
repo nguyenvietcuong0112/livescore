@@ -324,4 +324,5 @@
     <string name="empty_live_fixtures">Tidak ada pertandingan langsung saat ini</string>
     <string name="empty_upcoming_fixtures">Tidak ada pertandingan terjadwal hari ini</string>
     <string name="empty_finished_fixtures">Tidak ada pertandingan yang selesai hari ini</string>
+    <string name="supercomputer_prediction">Prediksi Superkomputer</string>
 </resources>

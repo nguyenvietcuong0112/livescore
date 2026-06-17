@@ -324,4 +324,5 @@
     <string name="empty_live_fixtures">現在、ライブマッチはありません</string>
     <string name="empty_upcoming_fixtures">本日の予定試合はありません</string>
     <string name="empty_finished_fixtures">本日終了した試合はありません</string>
+    <string name="supercomputer_prediction">スーパーコンピューターの予測</string>
 </resources>

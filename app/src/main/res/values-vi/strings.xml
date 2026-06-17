@@ -359,5 +359,6 @@
     <string name="read_more">Xem thêm</string>
     <string name="title_key_predictions">Thông Số Dự Đoán</string>
     <string name="btn_score_prediction">DỰ ĐOÁN TỶ SỐ</string>
+    <string name="supercomputer_prediction">Dự đoán của Siêu máy tính</string>
 
 </resources>

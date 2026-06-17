@@ -601,6 +601,7 @@ class WC26Fragment : Fragment() {
     }
 
     private fun renderWcFixtures(filter: MatchFilter) {
+        wcFixtureAdapter.isUpcomingTab = (filter == MatchFilter.UPCOMING)
         val filteredFixtures = filterFixtures(cachedFixturesList, filter)
         val newItems = mutableListOf<WcFixtureItem>()
 

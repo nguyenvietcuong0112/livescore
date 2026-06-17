@@ -54,8 +54,8 @@ class FavoriteManager @Inject constructor(
         val favorites = getFavoriteFixtureIds()
         // If already in favorites, toggling it will remove it, so it's always allowed
         if (favorites.contains(fixtureId.toString())) return true
-        // Free user can only follow up to 3 fixtures
-        return favorites.size < 3
+        // Free user can only follow up to 7 fixtures
+        return favorites.size < 7
     }
 
     fun toggleFixtureFavorite(fixtureId: Int): Boolean {

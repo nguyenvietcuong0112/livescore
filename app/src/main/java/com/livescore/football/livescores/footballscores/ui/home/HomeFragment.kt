@@ -189,6 +189,7 @@ class HomeFragment : Fragment() {
                 }
             }
         )
+        matchAdapter.showFavoriteInStandardLayout = false
         binding.rvMatches.layoutManager = LinearLayoutManager(requireContext())
         binding.rvMatches.adapter = matchAdapter
 
@@ -278,6 +279,7 @@ class HomeFragment : Fragment() {
                          lastSelectedDateStr = currentDateStr
                          lastFilter = currentFilter
                          
+                         matchAdapter.isUpcomingTab = (currentFilter == MatchFilter.UPCOMING)
                          matchAdapter.submitList(items) {
                              if (hasChanged) {
                                  binding.rvMatches.scrollToPosition(0)

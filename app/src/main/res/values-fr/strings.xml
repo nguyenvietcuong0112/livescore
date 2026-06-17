@@ -328,4 +328,5 @@
     <string name="empty_upcoming_fixtures">Aucun match prévu aujourd\'hui</string>
     <string name="empty_finished_fixtures">Aucun match terminé aujourd\'hui</string>
     <string name="btn_score_prediction">PRONOSTIC DU SCORE</string>
+    <string name="supercomputer_prediction">Prédiction du superordinateur</string>
 </resources>

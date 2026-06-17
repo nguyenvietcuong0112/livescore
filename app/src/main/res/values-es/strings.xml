@@ -325,4 +325,5 @@
     <string name="empty_upcoming_fixtures">No hay partidos programados para hoy</string>
     <string name="empty_finished_fixtures">No hay partidos finalizados hoy</string>
     <string name="btn_score_prediction">PREDICCIÓN DE MARCADOR</string>
+    <string name="supercomputer_prediction">Predicción de la Supercomputadora</string>
 </resources>

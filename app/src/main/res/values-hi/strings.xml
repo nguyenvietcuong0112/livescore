@@ -323,4 +323,5 @@
     <string name="empty_live_fixtures">वर्तमान में कोई लाइव मैच नहीं है</string>
     <string name="empty_upcoming_fixtures">आज के लिए कोई निर्धारित मैच नहीं है</string>
     <string name="empty_finished_fixtures">आज कोई समाप्त मैच नहीं है</string>
+    <string name="supercomputer_prediction">सुपरकंप्यूटर की भविष्यवाणी</string>
 </resources>

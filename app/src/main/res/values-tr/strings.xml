@@ -324,4 +324,5 @@
     <string name="empty_live_fixtures">Şu anda canlı maç bulunmuyor</string>
     <string name="empty_upcoming_fixtures">Bugün için planlanmış maç yok</string>
     <string name="empty_finished_fixtures">Bugün tamamlanan maç yok</string>
+    <string name="supercomputer_prediction">Süper Bilgisayar Tahmini</string>
 </resources>

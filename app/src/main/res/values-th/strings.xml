@@ -324,4 +324,5 @@
     <string name="empty_live_fixtures">ขณะนี้ไม่มีการแข่งขันสด</string>
     <string name="empty_upcoming_fixtures">ไม่มีการแข่งขันที่กำหนดไว้สำหรับวันนี้</string>
     <string name="empty_finished_fixtures">ไม่มีการแข่งขันที่สิ้นสุดลงในวันนี้</string>
+    <string name="supercomputer_prediction">การทำนายของซูเปอร์คอมพิวเตอร์</string>
 </resources>

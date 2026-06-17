@@ -321,4 +321,5 @@
     <string name="empty_upcoming_fixtures">Nenhum jogo agendado para hoje</string>
     <string name="empty_finished_fixtures">Nenhum jogo encerrado hoje</string>
     <string name="btn_score_prediction">PREVISÃO DO PLACAR</string>
+    <string name="supercomputer_prediction">Previsão do Supercomputador</string>
 </resources>

@@ -323,4 +323,5 @@
     <string name="empty_upcoming_fixtures">Heute keine geplanten Spiele</string>
     <string name="empty_finished_fixtures">Heute keine beendeten Spiele</string>
     <string name="btn_score_prediction">ERGEBNIS-PROGNOSE</string>
+    <string name="supercomputer_prediction">Vorhersage des Supercomputers</string>
 </resources>

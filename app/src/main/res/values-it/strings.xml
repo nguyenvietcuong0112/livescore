@@ -323,4 +323,5 @@
     <string name="empty_upcoming_fixtures">Nessuna partita in programma oggi</string>
     <string name="empty_finished_fixtures">Nessuna partita terminata oggi</string>
     <string name="btn_score_prediction">PRONOSTICO DEL RISULTATO</string>
+    <string name="supercomputer_prediction">Predizione del Supercomputer</string>
 </resources>

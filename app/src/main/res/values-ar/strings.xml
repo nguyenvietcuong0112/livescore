@@ -329,4 +329,5 @@
     <string name="empty_live_fixtures">لا توجد مباريات مباشرة حالياً</string>
     <string name="empty_upcoming_fixtures">لا توجد مباريات مجدولة اليوم</string>
     <string name="empty_finished_fixtures">لا توجد مباريات منتهية اليوم</string>
+    <string name="supercomputer_prediction">توقعات الكمبيوتر العملاق</string>
 </resources>

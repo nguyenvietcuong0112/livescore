@@ -33,6 +33,14 @@ class WcFixtureAdapter(
         const val VIEW_TYPE_EMPTY = 3
     }
 
+    var isUpcomingTab: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+                notifyDataSetChanged()
+            }
+        }
+
     private var items = listOf<WcFixtureItem>()
 
     fun submitList(newItems: List<WcFixtureItem>) {
@@ -103,6 +111,22 @@ class WcFixtureAdapter(
         private val ivReminder: ImageView = itemView.findViewById(R.id.ivReminder)
         private val ivFavorite: ImageView = itemView.findViewById(R.id.ivFavorite)
 
+        private val layoutWcLiveFinished: View = itemView.findViewById(R.id.layoutWcLiveFinished)
+        private val layoutWcUpcoming: View = itemView.findViewById(R.id.layoutWcUpcoming)
+        private val layoutWcScoreBox: View = itemView.findViewById(R.id.layoutWcScoreBox)
+
+        // Upcoming views
+        private val tvMatchTimeUpcoming: TextView = itemView.findViewById(R.id.tvMatchTimeUpcoming)
+        private val tvHomeNameUpcoming: TextView = itemView.findViewById(R.id.tvHomeNameUpcoming)
+        private val tvAwayNameUpcoming: TextView = itemView.findViewById(R.id.tvAwayNameUpcoming)
+        private val ivHomeLogoUpcoming: ImageView = itemView.findViewById(R.id.ivHomeLogoUpcoming)
+        private val ivAwayLogoUpcoming: ImageView = itemView.findViewById(R.id.ivAwayLogoUpcoming)
+        private val layoutMatchDetailsClickUpcoming: View = itemView.findViewById(R.id.layoutMatchDetailsClickUpcoming)
+        private val layoutPredictButton: View = itemView.findViewById(R.id.layoutPredictButton)
+        private val btnPredict: View = itemView.findViewById(R.id.btnPredict)
+        private val ivReminderUpcoming: ImageView = itemView.findViewById(R.id.ivReminderUpcoming)
+        private val ivFavoriteUpcoming: ImageView = itemView.findViewById(R.id.ivFavoriteUpcoming)
+
         fun bind(item: WcFixtureItem.MatchItem) {
             val match = item.match
             val groupStageString = context.getString(R.string.wc_group_stage_name)
@@ -113,21 +137,6 @@ class WcFixtureAdapter(
             val venueName = match.fixture.venue?.name ?: context.getString(R.string.wc_default_stadium)
             val venueCity = match.fixture.venue?.city ?: ""
             tvFixtureStadium.text = "$venueName, $venueCity"
-
-            tvFixtureTeam1.text = match.teams.home.name
-            tvFixtureTeam2.text = match.teams.away.name
-
-            Glide.with(itemView.context)
-                .load(match.teams.home.logo)
-                .placeholder(R.drawable.ic_favorite_border)
-                .into(ivFixtureHomeLogo)
-            ivFixtureHomeLogo.imageTintList = null
-
-            Glide.with(itemView.context)
-                .load(match.teams.away.logo)
-                .placeholder(R.drawable.ic_favorite_border)
-                .into(ivFixtureAwayLogo)
-            ivFixtureAwayLogo.imageTintList = null
 
             val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault()).apply {
                 timeZone = TimeZone.getTimeZone("UTC")
@@ -142,51 +151,123 @@ class WcFixtureAdapter(
                 ""
             }
 
-            val homeGoal = match.goals.home
-            val awayGoal = match.goals.away
+            val isUpcoming = isUpcomingTab && (match.fixture.status.short == "NS" || match.fixture.status.short == "TBD")
 
-            if (homeGoal != null && awayGoal != null) {
-                tvVS.text = "$homeGoal - $awayGoal"
-                tvVS.setTextColor(ContextCompat.getColor(context, R.color.accent_green))
-                tvFixtureTime.text = if (kickoffTime.isNotEmpty()) "$kickoffTime • ${match.fixture.status.short}" else match.fixture.status.short
-            } else {
-                tvVS.text = "VS"
-                tvVS.setTextColor(ContextCompat.getColor(context, R.color.accent_green))
-                tvFixtureTime.text = kickoffTime
-            }
-
-            val isUpcoming = match.fixture.status.short == "NS" || match.fixture.status.short == "TBD"
-            val isUpcomingFuture = isUpcoming && (match.fixture.timestamp * 1000 > System.currentTimeMillis())
-            ivReminder.visibility = if (isUpcomingFuture) View.VISIBLE else View.GONE
-
-            val isRemind = isReminderSet(match.fixture.id)
-            ivReminder.setImageResource(if (isRemind) R.drawable.ic_bell_active else R.drawable.ic_bell)
-            ivReminder.setColorFilter(ContextCompat.getColor(context, if (isRemind) R.color.accent_green else R.color.text_muted))
-
-            val isFav = isFavoriteSet(match.fixture.id)
-            ivFavorite.setImageResource(if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
-            ivFavorite.setColorFilter(
-                ContextCompat.getColor(
-                    context,
-                    if (isFav) {
-                        R.color.primaryRed
-                    } else {
-                        R.color.text_muted
-                    }
-                )
-            )
-
-            val layoutPredictButton: View = itemView.findViewById(R.id.layoutPredictButton)
-            val btnPredict: View = itemView.findViewById(R.id.btnPredict)
-
-            layoutPredictButton.visibility = if (isUpcoming) View.VISIBLE else View.GONE
             if (isUpcoming) {
-                btnPredict.setOnClickListener { onMatchClick(match, true) }
-            }
+                itemView.setOnClickListener(null)
+                itemView.isClickable = false
 
-            itemView.setOnClickListener { onMatchClick(match, false) }
-            ivReminder.setOnClickListener { onReminderClick(match, ivReminder) }
-            ivFavorite.setOnClickListener { onFavoriteClick(match, ivFavorite) }
+                layoutWcLiveFinished.visibility = View.GONE
+                layoutWcUpcoming.visibility = View.VISIBLE
+
+                tvMatchTimeUpcoming.text = kickoffTime
+
+                tvHomeNameUpcoming.text = match.teams.home.name
+                tvAwayNameUpcoming.text = match.teams.away.name
+
+                Glide.with(itemView.context)
+                    .load(match.teams.home.logo)
+                    .placeholder(R.drawable.ic_favorite_border)
+                    .into(ivHomeLogoUpcoming)
+                ivHomeLogoUpcoming.imageTintList = null
+
+                Glide.with(itemView.context)
+                    .load(match.teams.away.logo)
+                    .placeholder(R.drawable.ic_favorite_border)
+                    .into(ivAwayLogoUpcoming)
+                ivAwayLogoUpcoming.imageTintList = null
+
+                val isUpcomingFuture = isUpcoming && (match.fixture.timestamp * 1000 > System.currentTimeMillis())
+                ivReminderUpcoming.visibility = if (isUpcomingFuture) View.VISIBLE else View.GONE
+
+                val isRemind = isReminderSet(match.fixture.id)
+                ivReminderUpcoming.setImageResource(if (isRemind) R.drawable.ic_bell_active else R.drawable.ic_bell)
+                ivReminderUpcoming.setColorFilter(ContextCompat.getColor(context, if (isRemind) R.color.accent_green else R.color.text_muted))
+
+                val isFav = isFavoriteSet(match.fixture.id)
+                ivFavoriteUpcoming.setImageResource(if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
+                ivFavoriteUpcoming.setColorFilter(
+                    ContextCompat.getColor(
+                        context,
+                        if (isFav) {
+                            R.color.primaryRed
+                        } else {
+                            R.color.text_muted
+                        }
+                    )
+                )
+
+                layoutPredictButton.visibility = if (isUpcoming) View.VISIBLE else View.GONE
+                if (isUpcoming) {
+                    btnPredict.setOnClickListener { onMatchClick(match, true) }
+                }
+
+                layoutMatchDetailsClickUpcoming.setOnClickListener { onMatchClick(match, false) }
+                ivReminderUpcoming.setOnClickListener { onReminderClick(match, ivReminderUpcoming) }
+                ivFavoriteUpcoming.setOnClickListener { onFavoriteClick(match, ivFavoriteUpcoming) }
+
+            } else {
+                itemView.setOnClickListener { onMatchClick(match, false) }
+                itemView.isClickable = true
+
+                layoutWcLiveFinished.visibility = View.VISIBLE
+                layoutWcUpcoming.visibility = View.GONE
+
+                tvFixtureTeam1.text = match.teams.home.name
+                tvFixtureTeam2.text = match.teams.away.name
+
+                Glide.with(itemView.context)
+                    .load(match.teams.home.logo)
+                    .placeholder(R.drawable.ic_favorite_border)
+                    .into(ivFixtureHomeLogo)
+                ivFixtureHomeLogo.imageTintList = null
+
+                Glide.with(itemView.context)
+                    .load(match.teams.away.logo)
+                    .placeholder(R.drawable.ic_favorite_border)
+                    .into(ivFixtureAwayLogo)
+                ivFixtureAwayLogo.imageTintList = null
+
+                val homeGoal = match.goals.home
+                val awayGoal = match.goals.away
+
+                if (homeGoal != null && awayGoal != null) {
+                    tvVS.text = "$homeGoal - $awayGoal"
+                    tvVS.setTextColor(ContextCompat.getColor(context, R.color.primaryBlue))
+                    layoutWcScoreBox.setBackgroundResource(R.drawable.bg_score_box_blue)
+                    tvFixtureTime.text = kickoffTime
+                } else {
+                    tvVS.text = "VS"
+                    tvVS.setTextColor(ContextCompat.getColor(context, R.color.text_muted))
+                    layoutWcScoreBox.setBackgroundResource(R.drawable.bg_score_box_gray)
+                    tvFixtureTime.text = kickoffTime
+                }
+
+                val isUpcomingStatus = match.fixture.status.short == "NS" || match.fixture.status.short == "TBD"
+                val isUpcomingFuture = isUpcomingStatus && (match.fixture.timestamp * 1000 > System.currentTimeMillis())
+                ivReminder.visibility = if (isUpcomingFuture) View.VISIBLE else View.GONE
+
+                val isRemind = isReminderSet(match.fixture.id)
+                ivReminder.setImageResource(if (isRemind) R.drawable.ic_bell_active else R.drawable.ic_bell)
+                ivReminder.setColorFilter(ContextCompat.getColor(context, if (isRemind) R.color.accent_green else R.color.text_muted))
+
+                val isFav = isFavoriteSet(match.fixture.id)
+                ivFavorite.setImageResource(if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
+                ivFavorite.setColorFilter(
+                    ContextCompat.getColor(
+                        context,
+                        if (isFav) {
+                            R.color.primaryRed
+                        } else {
+                            R.color.text_muted
+                        }
+                    )
+                )
+                ivFavorite.visibility = View.GONE
+
+                ivReminder.setOnClickListener { onReminderClick(match, ivReminder) }
+                ivFavorite.setOnClickListener { onFavoriteClick(match, ivFavorite) }
+            }
         }
     }
 

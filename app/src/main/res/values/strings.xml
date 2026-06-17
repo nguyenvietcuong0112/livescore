@@ -361,5 +361,6 @@
     <string name="read_more">Read More</string>
     <string name="title_key_predictions">Key Predictions</string>
     <string name="btn_score_prediction">SCORE PREDICTION</string>
+    <string name="supercomputer_prediction">Supercomputer\'s Prediction</string>
 
 </resources>

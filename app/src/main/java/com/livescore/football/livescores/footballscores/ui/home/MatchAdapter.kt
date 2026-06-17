@@ -39,6 +39,22 @@ class MatchAdapter(
     private val onReminderClick: (CachedMatchEntity) -> Unit
 ) : ListAdapter<MatchListItem, RecyclerView.ViewHolder>(DiffCallback) {
 
+    var isUpcomingTab: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+                notifyDataSetChanged()
+            }
+        }
+
+    var showFavoriteInStandardLayout: Boolean = true
+        set(value) {
+            if (field != value) {
+                field = value
+                notifyDataSetChanged()
+            }
+        }
+
     companion object {
         private const val TYPE_LEAGUE_HEADER = 0
         private const val TYPE_MATCH_ITEM = 1
@@ -94,81 +110,172 @@ class MatchAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: MatchListItem.MatchItem) {
             val match = item.match
-            binding.tvHomeName.text = match.homeTeamName
-            binding.tvAwayName.text = match.awayTeamName
+            val isUpcoming = isUpcomingTab && (match.statusShort == "NS" || match.statusShort == "TBD")
 
-            // Home & Away team Logos
-            Glide.with(binding.root.context).load(match.homeTeamLogo).into(binding.ivHomeLogo)
-            Glide.with(binding.root.context).load(match.awayTeamLogo).into(binding.ivAwayLogo)
+            if (isUpcoming) {
+                binding.layoutLiveFinished.visibility = View.GONE
+                binding.layoutUpcoming.visibility = View.VISIBLE
 
-            // Scores and match minutes
-            val isLive = match.statusShort in listOf("1H", "2H", "HT", "ET", "BT", "P", "LIVE")
-            binding.tvHomeScore.text = match.goalsHome?.toString() ?: "-"
-            binding.tvAwayScore.text = match.goalsAway?.toString() ?: "-"
-
-            if (isLive) {
-                binding.tvMatchStatus.text = match.elapsed?.let { "$it'" } ?: "LIVE"
-                binding.livePulse.isVisible = true
-                binding.layoutLiveExtra.isVisible = false
-                binding.tvHomeRedCards.visibility = View.GONE
-                binding.tvAwayRedCards.visibility = View.GONE
-            } else {
-                binding.livePulse.isVisible = false
-                binding.layoutLiveExtra.isVisible = false
-                binding.tvHomeRedCards.visibility = View.GONE
-                binding.tvAwayRedCards.visibility = View.GONE
-
-                if (match.statusShort == "NS" || match.statusShort == "TBD") {
-                    val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault()).apply {
-                        timeZone = java.util.TimeZone.getDefault()
-                    }
-                    val timeStr = sdf.format(java.util.Date(match.dateTimestamp * 1000))
-                    binding.tvMatchStatus.text = timeStr
-                } else {
-                    binding.tvMatchStatus.text = match.statusShort
+                // Format match time
+                val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault()).apply {
+                    timeZone = java.util.TimeZone.getDefault()
                 }
-            }
+                val timeStr = sdf.format(java.util.Date(match.dateTimestamp * 1000))
+                binding.tvMatchTimeUpcoming.text = timeStr
 
-            // Bind favorite icon state
-            val isFav = item.isFavorite
-            binding.ivFavorite.setImageResource(
-                if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border
-            )
-            val isUpcoming = match.statusShort == "NS" || match.statusShort == "TBD"
-            binding.ivFavorite.setColorFilter(
-                ContextCompat.getColor(
-                    binding.ivFavorite.context,
-                    if (isFav) {
-                        R.color.primaryRed
-                    } else {
-                        R.color.text_muted
-                    }
-                )
-            )
+                binding.tvHomeNameUpcoming.text = match.homeTeamName
+                binding.tvAwayNameUpcoming.text = match.awayTeamName
 
-            // Bind reminder icon state (only visible for upcoming matches in the future)
-            val isUpcomingFuture = isUpcoming && (match.dateTimestamp * 1000 > System.currentTimeMillis())
-            binding.ivReminder.isVisible = isUpcomingFuture
-            if (isUpcomingFuture) {
-                val isRemind = item.isReminderSet
-                binding.ivReminder.setImageResource(
-                    if (isRemind) R.drawable.ic_bell_active else R.drawable.ic_bell
+                Glide.with(binding.root.context).load(match.homeTeamLogo).into(binding.ivHomeLogoUpcoming)
+                Glide.with(binding.root.context).load(match.awayTeamLogo).into(binding.ivAwayLogoUpcoming)
+
+                // Bind favorite icon state
+                val isFav = item.isFavorite
+                binding.ivFavoriteUpcoming.setImageResource(
+                    if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border
                 )
-                binding.ivReminder.setColorFilter(
+                binding.ivFavoriteUpcoming.setColorFilter(
                     ContextCompat.getColor(
-                        binding.ivReminder.context,
-                        if (isRemind) R.color.accent_green else R.color.text_muted
+                        binding.ivFavoriteUpcoming.context,
+                        if (isFav) R.color.primaryRed else R.color.text_muted
                     )
                 )
-                binding.ivReminder.setOnClickListener { onReminderClick(match) }
-            }
 
-            binding.layoutPredictButton.isVisible = isUpcoming
-            if (isUpcoming) {
+                // Bind reminder icon state (only visible for upcoming matches in the future)
+                val isUpcomingFuture = isUpcoming && (match.dateTimestamp * 1000 > System.currentTimeMillis())
+                binding.ivReminderUpcoming.isVisible = isUpcomingFuture
+                if (isUpcomingFuture) {
+                    val isRemind = item.isReminderSet
+                    binding.ivReminderUpcoming.setImageResource(
+                        if (isRemind) R.drawable.ic_bell_active else R.drawable.ic_bell
+                    )
+                    binding.ivReminderUpcoming.setColorFilter(
+                        ContextCompat.getColor(
+                            binding.ivReminderUpcoming.context,
+                            if (isRemind) R.color.accent_green else R.color.text_muted
+                        )
+                    )
+                    binding.ivReminderUpcoming.setOnClickListener { onReminderClick(match) }
+                }
+
+                binding.layoutPredictButton.isVisible = isUpcoming
                 binding.btnPredict.setOnClickListener { onMatchClick(match, true) }
+                binding.layoutMatchDetailsClickUpcoming.setOnClickListener { onMatchClick(match, false) }
+                binding.ivFavoriteUpcoming.setOnClickListener { onFavoriteClick(match) }
+
+            } else {
+                binding.layoutLiveFinished.visibility = View.VISIBLE
+                binding.layoutUpcoming.visibility = View.GONE
+
+                binding.tvHomeName.text = match.homeTeamName
+                binding.tvAwayName.text = match.awayTeamName
+
+                // Home & Away team Logos
+                Glide.with(binding.root.context).load(match.homeTeamLogo).into(binding.ivHomeLogo)
+                Glide.with(binding.root.context).load(match.awayTeamLogo).into(binding.ivAwayLogo)
+
+                val isLive = match.statusShort in listOf("1H", "2H", "HT", "ET", "BT", "P", "LIVE")
+                val isUpcomingStatus = match.statusShort == "NS" || match.statusShort == "TBD"
+
+                if (isLive) {
+                    binding.tvHomeScore.visibility = View.VISIBLE
+                    binding.tvAwayScore.visibility = View.VISIBLE
+                    binding.tvHomeScore.text = match.goalsHome?.toString() ?: "-"
+                    binding.tvAwayScore.text = match.goalsAway?.toString() ?: "-"
+                    binding.tvScoreSeparator.text = "-"
+                    binding.tvScoreSeparator.setTextColor(ContextCompat.getColor(binding.root.context, R.color.primaryBlue))
+                    binding.tvHomeScore.setTextColor(ContextCompat.getColor(binding.root.context, R.color.primaryBlue))
+                    binding.tvAwayScore.setTextColor(ContextCompat.getColor(binding.root.context, R.color.primaryBlue))
+                    binding.layoutScoreBox.setBackgroundResource(R.drawable.bg_score_box_blue)
+
+                    binding.tvMatchStatus.text = match.elapsed?.let { "$it'" } ?: "LIVE"
+                    binding.livePulse.isVisible = true
+                    binding.layoutLiveExtra.isVisible = false
+                } else if (isUpcomingStatus) {
+                    binding.tvHomeScore.visibility = View.GONE
+                    binding.tvAwayScore.visibility = View.GONE
+                    binding.tvScoreSeparator.text = "VS"
+                    binding.tvScoreSeparator.setTextColor(ContextCompat.getColor(binding.root.context, R.color.text_muted))
+                    binding.layoutScoreBox.setBackgroundResource(R.drawable.bg_score_box_gray)
+
+                    binding.livePulse.isVisible = false
+                    binding.layoutLiveExtra.isVisible = false
+                    
+                    // Format relative kickoff date/time
+                    val matchDate = java.util.Date(match.dateTimestamp * 1000)
+                    val sdfToday = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
+                        timeZone = java.util.TimeZone.getDefault()
+                    }
+                    val isToday = sdfToday.format(matchDate) == sdfToday.format(java.util.Date())
+                    val pattern = if (isToday) "HH:mm" else "dd/MM HH:mm"
+                    val sdf = java.text.SimpleDateFormat(pattern, java.util.Locale.getDefault()).apply {
+                        timeZone = java.util.TimeZone.getDefault()
+                    }
+                    binding.tvMatchStatus.text = sdf.format(matchDate)
+                } else {
+                    binding.tvHomeScore.visibility = View.VISIBLE
+                    binding.tvAwayScore.visibility = View.VISIBLE
+                    binding.tvHomeScore.text = match.goalsHome?.toString() ?: "-"
+                    binding.tvAwayScore.text = match.goalsAway?.toString() ?: "-"
+                    binding.tvScoreSeparator.text = "-"
+                    binding.tvScoreSeparator.setTextColor(ContextCompat.getColor(binding.root.context, R.color.primaryBlue))
+                    binding.tvHomeScore.setTextColor(ContextCompat.getColor(binding.root.context, R.color.primaryBlue))
+                    binding.tvAwayScore.setTextColor(ContextCompat.getColor(binding.root.context, R.color.primaryBlue))
+                    binding.layoutScoreBox.setBackgroundResource(R.drawable.bg_score_box_blue)
+
+                    binding.livePulse.isVisible = false
+                    binding.layoutLiveExtra.isVisible = false
+
+                    // Format relative kickoff date/time for finished matches
+                    val matchDate = java.util.Date(match.dateTimestamp * 1000)
+                    val sdfToday = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
+                        timeZone = java.util.TimeZone.getDefault()
+                    }
+                    val isToday = sdfToday.format(matchDate) == sdfToday.format(java.util.Date())
+                    val pattern = if (isToday) "HH:mm" else "dd/MM HH:mm"
+                    val sdf = java.text.SimpleDateFormat(pattern, java.util.Locale.getDefault()).apply {
+                        timeZone = java.util.TimeZone.getDefault()
+                    }
+                    binding.tvMatchStatus.text = sdf.format(matchDate)
+                }
+
+                // Bind favorite icon state
+                val isFav = item.isFavorite
+                binding.ivFavorite.setImageResource(
+                    if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border
+                )
+                binding.ivFavorite.setColorFilter(
+                    ContextCompat.getColor(
+                        binding.ivFavorite.context,
+                        if (isFav) {
+                            R.color.primaryRed
+                        } else {
+                            R.color.text_muted
+                        }
+                    )
+                )
+                binding.ivFavorite.visibility = if (showFavoriteInStandardLayout) View.VISIBLE else View.GONE
+
+                // Bind reminder icon state (only visible for upcoming matches in the future)
+                val isUpcomingFuture = isUpcomingStatus && (match.dateTimestamp * 1000 > System.currentTimeMillis())
+                binding.ivReminder.isVisible = isUpcomingFuture
+                if (isUpcomingFuture) {
+                    val isRemind = item.isReminderSet
+                    binding.ivReminder.setImageResource(
+                        if (isRemind) R.drawable.ic_bell_active else R.drawable.ic_bell
+                    )
+                    binding.ivReminder.setColorFilter(
+                        ContextCompat.getColor(
+                            binding.ivReminder.context,
+                            if (isRemind) R.color.accent_green else R.color.text_muted
+                        )
+                    )
+                    binding.ivReminder.setOnClickListener { onReminderClick(match) }
+                }
+
+                binding.layoutMatchDetailsClick.setOnClickListener { onMatchClick(match, false) }
+                binding.ivFavorite.setOnClickListener { onFavoriteClick(match) }
             }
-            binding.layoutMatchDetailsClick.setOnClickListener { onMatchClick(match, false) }
-            binding.ivFavorite.setOnClickListener { onFavoriteClick(match) }
         }
     }
 

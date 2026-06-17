@@ -324,4 +324,5 @@
     <string name="empty_live_fixtures">В данный момент нет матчей в эфире</string>
     <string name="empty_upcoming_fixtures">На сегодня нет запланированных матчей</string>
     <string name="empty_finished_fixtures">На сегодня нет завершенных матчей</string>
+    <string name="supercomputer_prediction">Прогноз суперкомпьютера</string>
 </resources>
