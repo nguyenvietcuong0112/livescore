@@ -29,10 +29,16 @@ object PushDataParser {
         val navigation = when (pushType) {
             "match" -> {
                 val fixtureId = actionValue?.toIntOrNull()
+                    ?: data["fixture_id"]?.toIntOrNull()
+                    ?: data["fixtureId"]?.toIntOrNull()
+                    ?: data["match_id"]?.toIntOrNull()
+                    ?: data["MATCH_ID"]?.toIntOrNull()
                 if (fixtureId != null) PushNavigation.Match(fixtureId) else PushNavigation.Default
             }
             "league" -> {
                 val leagueId = actionValue?.toIntOrNull()
+                    ?: data["league_id"]?.toIntOrNull()
+                    ?: data["leagueId"]?.toIntOrNull()
                 if (leagueId != null) PushNavigation.League(leagueId) else PushNavigation.Default
             }
             "news" -> {

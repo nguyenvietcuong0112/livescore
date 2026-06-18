@@ -111,12 +111,21 @@
 
         </LinearLayout>
 
-        <!-- Bottom border line like the image -->
         <View
             android:id="@+id/wcTabsDivider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#E5E5E5" />
+
+        <FrameLayout
+            android:id="@+id/frAdsWc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:visibility="gone" >
+            <include layout="@layout/layout_shimmer_no_media" />
+
+        </FrameLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 

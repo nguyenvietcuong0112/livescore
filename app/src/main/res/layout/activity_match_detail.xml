@@ -102,10 +102,11 @@
         app:layout_constraintTop_toBottomOf="@id/tabMainSelector" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/frAdsDetail"
         app:layout_constraintTop_toBottomOf="@id/matchHeader">
 
         <LinearLayout
@@ -290,5 +291,15 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <FrameLayout
+        android:id="@+id/frAdsDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" >
+        <include layout="@layout/layout_shimmer_league" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

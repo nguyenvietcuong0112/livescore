@@ -85,7 +85,6 @@ class HomeViewModel @Inject constructor(
     ) { filteredMatches, favIds, remindIds, isPremium ->
         val items = mutableListOf<MatchListItem>()
         val grouped = filteredMatches.groupBy { it.leagueId }
-        var matchCount = 0
 
         for ((leagueId, matchGroup) in grouped) {
             val firstMatch = matchGroup.first()
@@ -94,10 +93,6 @@ class HomeViewModel @Inject constructor(
                 val isFav = favIds.contains(match.id.toString())
                 val isRemind = remindIds.contains(match.id)
                 items.add(MatchListItem.MatchItem(match, isFav, isRemind))
-                matchCount++
-                if (!isPremium && matchCount % 3 == 0) {
-                    items.add(MatchListItem.NativeAd(id = "ad_$matchCount"))
-                }
             }
         }
         items

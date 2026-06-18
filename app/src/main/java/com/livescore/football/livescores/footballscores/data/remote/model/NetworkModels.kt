@@ -195,7 +195,9 @@ data class RegisterDeviceRequest(
     val os_version: String,
     val app_version: String,
     val model_name: String,
-    val language_code: String
+    val language_code: String,
+    val timezone: String,
+    val timezone_offset: Int
 )
 
 data class RegisterDeviceResponse(

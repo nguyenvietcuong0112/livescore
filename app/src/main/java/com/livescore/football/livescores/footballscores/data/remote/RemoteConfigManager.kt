@@ -60,7 +60,8 @@ class RemoteConfigManager @Inject constructor(
             val defaults = mapOf(
                 KEY_API_KEY to DEFAULT_API_KEY,
                 "inter_click_enabled" to "true",
-                "daily_request_limit" to "20"
+                "daily_request_limit" to "20",
+                "inter_click_prediction" to "true"
             )
             remoteConfig.setDefaultsAsync(defaults)
         } catch (e: Exception) {

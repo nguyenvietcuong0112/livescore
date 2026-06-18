@@ -59,7 +59,7 @@
                             android:ellipsize="end"
                             android:maxLines="1"
                             android:paddingTop="5dp"
-                            android:text="hellop .this ius dsa dsadsa "
+                            android:text="loading..."
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:textStyle="bold" />

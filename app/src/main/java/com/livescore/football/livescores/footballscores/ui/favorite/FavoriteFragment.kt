@@ -166,18 +166,7 @@ class FavoriteFragment : Fragment() {
                         binding.emptyStateLayout.isVisible = items.isEmpty()
                         binding.tvEmptyMessage.text = getString(R.string.no_favorite_matches)
                         
-                        val withAds = mutableListOf<MatchListItem>()
-                        var matchCount = 0
-                        items.forEach { item ->
-                            withAds.add(item)
-                            if (item is MatchListItem.MatchItem) {
-                                matchCount++
-                                if (!limitManager.isPremium() && matchCount % 3 == 0) {
-                                    withAds.add(MatchListItem.NativeAd(id = "fav_ad_$matchCount"))
-                                }
-                            }
-                        }
-                        matchAdapter.submitList(withAds)
+                        matchAdapter.submitList(items)
                     }
                 }
 

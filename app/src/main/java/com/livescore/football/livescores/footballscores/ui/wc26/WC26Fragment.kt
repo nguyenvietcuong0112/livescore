@@ -16,6 +16,7 @@ import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.repository.LeaguesRepository
 import com.livescore.football.livescores.footballscores.databinding.FragmentWc26Binding
 import com.livescore.football.livescores.footballscores.utils.bindScrollableChild
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import com.livescore.football.livescores.footballscores.data.local.FavoriteManager
@@ -30,6 +31,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import android.graphics.Rect
 import android.view.ViewTreeObserver
+import com.livescore.football.livescores.footballscores.utils.SharePreferenceUtils
 
 @AndroidEntryPoint
 class WC26Fragment : Fragment() {
@@ -52,7 +54,7 @@ class WC26Fragment : Fragment() {
     @Inject
     lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
 
-    private var selectedTab = 0
+    private var selectedTab = 1
     private var isWcBracketFullScreen = false
     private var selectedFixtureFilter = MatchFilter.LIVE
     private var cachedFixturesList = emptyList<com.livescore.football.livescores.footballscores.data.remote.model.MatchItemDto>()
@@ -90,6 +92,12 @@ class WC26Fragment : Fragment() {
         updateTabUI()
         setupAdScrollListeners()
         populateWcTournamentData()
+        if(!SharePreferenceUtils.isOrganic(context)) {
+            loadNativeAd()
+        } else {
+            binding.frAdsWc.removeAllViews()
+            binding.frAdsWc.visibility = View.GONE
+        }
     }
 
     private fun setupRecyclerView() {
@@ -238,18 +246,6 @@ class WC26Fragment : Fragment() {
                         }
                         
                         binding.layoutWcGroupsContainer.addView(groupView)
-
-                        if (!limitManager.isPremium() && (index + 1) % 2 == 0) {
-                            val adViewWrapper = inflater.inflate(R.layout.layout_native_no_media, binding.layoutWcGroupsContainer, false)
-                            adViewWrapper.visibility = View.INVISIBLE
-                            binding.layoutWcGroupsContainer.addView(adViewWrapper)
-                            val adId = try { getString(resources.getIdentifier("native_all", "string", requireContext().packageName)) } catch (e: Exception) { "" }
-                            if (adId.isNotEmpty()) {
-                                pendingAdLoads.add(PendingAdLoad(adViewWrapper, adId))
-                            } else {
-                                adViewWrapper.visibility = View.GONE
-                            }
-                        }
                     }
                 } else {
                     binding.layoutWcGroupsContainer.removeAllViews()
@@ -636,8 +632,6 @@ class WC26Fragment : Fragment() {
             timeZone = java.util.TimeZone.getDefault()
         }
 
-        var matchCount = 0
-
         groupedMatches.forEach { entry ->
             val dateKeyStr = entry.key
             val matchesForDate = entry.value
@@ -651,14 +645,6 @@ class WC26Fragment : Fragment() {
 
             matchesForDate.forEach { match ->
                 newItems.add(WcFixtureItem.MatchItem(match))
-                matchCount++
-
-                if (!limitManager.isPremium() && matchCount % 3 == 0) {
-                    val adId = try { getString(resources.getIdentifier("native_all", "string", requireContext().packageName)) } catch (e: Exception) { "" }
-                    if (adId.isNotEmpty()) {
-                        newItems.add(WcFixtureItem.AdItem(adId))
-                    }
-                }
             }
         }
         wcFixtureAdapter.submitList(newItems)
@@ -796,6 +782,73 @@ class WC26Fragment : Fragment() {
                 }
             }
         )
+    }
+
+    private fun loadNativeAd() {
+        if (limitManager.isPremium()) {
+            binding.frAdsWc.visibility = View.GONE
+            return
+        }
+
+        val adId = try {
+            RemoteConfigManager.getInstance().getAdId("native_all", getString(R.string.native_all))
+        } catch (e: Exception) {
+            getString(R.string.native_all)
+        }
+
+        if (adId.isNotEmpty()) {
+            binding.frAdsWc.visibility = View.VISIBLE
+            // Inflate and show shimmer layout while loading
+            val shimmerView = LayoutInflater.from(requireContext()).inflate(R.layout.layout_shimmer_no_media, binding.frAdsWc, false)
+            binding.frAdsWc.removeAllViews()
+            binding.frAdsWc.addView(shimmerView)
+
+            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+                liveScoreApiService, requireContext(), "native", adId, "WC26"
+            )
+
+            Admob.getInstance().loadNativeAds(
+                requireContext(),
+                adId,
+                1,
+                object : NativeCallback() {
+                    override fun onNativeAdLoaded(nativeAd: com.google.android.gms.ads.nativead.NativeAd?) {
+                        super.onNativeAdLoaded(nativeAd)
+                        if (!isAdded) return
+
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
+                            liveScoreApiService, requireContext(), "native", adId, "WC26"
+                        )
+
+                        nativeAd?.setOnPaidEventListener { adValue ->
+                            val ecpm = adValue.valueMicros / 1000.0
+                            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                                liveScoreApiService, requireContext(), "native", adId, "WC26", ecpm
+                            )
+                        }
+
+                        val adView = LayoutInflater.from(requireContext())
+                            .inflate(R.layout.layout_native_no_media, null) as NativeAdView
+                        
+                        binding.frAdsWc.removeAllViews()
+                        binding.frAdsWc.addView(adView)
+                        
+                        Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                    }
+
+                    override fun onAdFailedToLoad() {
+                        super.onAdFailedToLoad()
+                        if (!isAdded) return
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                            liveScoreApiService, requireContext(), "native", adId, "WC26", null
+                        )
+                        binding.frAdsWc.visibility = View.GONE
+                    }
+                }
+            )
+        } else {
+            binding.frAdsWc.visibility = View.GONE
+        }
     }
 
     override fun onDestroyView() {

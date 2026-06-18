@@ -22,6 +22,13 @@ import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywall
 import com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity
 import com.livescore.football.livescores.footballscores.utils.bindScrollableChild
 import dagger.hilt.android.AndroidEntryPoint
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView
+import com.livescore.football.livescores.footballscores.utils.SharePreferenceUtils
+import com.mallegan.ads.callback.NativeCallback
+import com.mallegan.ads.util.Admob
 import kotlinx.coroutines.launch
 
 import java.text.SimpleDateFormat
@@ -51,6 +58,9 @@ class HomeFragment : Fragment() {
 
     @Inject
     lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
+    @Inject
+    lateinit var limitManager: RequestLimitManager
 
 
 
@@ -120,7 +130,13 @@ class HomeFragment : Fragment() {
         setupRecyclerViews()
         setupFilters()
         setupCalendarPicker()
-        
+        if(!SharePreferenceUtils.isOrganic(context)) {
+            loadNativeAd()
+        } else {
+            binding.frAdsHome.removeAllViews()
+            binding.frAdsHome.visibility = View.GONE
+        }
+
         binding.swipeRefreshLayout.apply {
             bindScrollableChild { binding.rvMatches }
             setOnRefreshListener { viewModel.manualRefresh() }
@@ -365,6 +381,73 @@ class HomeFragment : Fragment() {
                 binding.btnLive.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
                 binding.btnScheduled.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
             }
+        }
+    }
+
+    private fun loadNativeAd() {
+        if (limitManager.isPremium()) {
+            binding.frAdsHome.visibility = View.GONE
+            return
+        }
+
+        val adId = try {
+            RemoteConfigManager.getInstance().getAdId("native_all", getString(R.string.native_all))
+        } catch (e: Exception) {
+            getString(R.string.native_all)
+        }
+
+        if (adId.isNotEmpty()) {
+            binding.frAdsHome.visibility = View.VISIBLE
+            // Inflate and show shimmer layout while loading
+            val shimmerView = LayoutInflater.from(requireContext()).inflate(R.layout.layout_shimmer_league, binding.frAdsHome, false)
+            binding.frAdsHome.removeAllViews()
+            binding.frAdsHome.addView(shimmerView)
+
+            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+                liveScoreApiService, requireContext(), "native", adId, "Home"
+            )
+
+            Admob.getInstance().loadNativeAds(
+                requireContext(),
+                adId,
+                1,
+                object : NativeCallback() {
+                    override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                        super.onNativeAdLoaded(nativeAd)
+                        if (!isAdded) return
+
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
+                            liveScoreApiService, requireContext(), "native", adId, "Home"
+                        )
+
+                        nativeAd?.setOnPaidEventListener { adValue ->
+                            val ecpm = adValue.valueMicros / 1000.0
+                            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                                liveScoreApiService, requireContext(), "native", adId, "Home", ecpm
+                            )
+                        }
+
+                        val adView = LayoutInflater.from(requireContext())
+                            .inflate(R.layout.layout_native_league, null) as NativeAdView
+                        
+                        binding.frAdsHome.removeAllViews()
+                        binding.frAdsHome.addView(adView)
+                        
+                        Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                    }
+
+                    override fun onAdFailedToLoad() {
+                        super.onAdFailedToLoad()
+                        if (!isAdded) return
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                            liveScoreApiService, requireContext(), "native", adId, "Home", null
+                        )
+                        binding.frAdsHome.visibility = View.GONE
+                    }
+                }
+            )
+        } else {
+            binding.frAdsHome.visibility = View.GONE
         }
     }
 

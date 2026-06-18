@@ -9,6 +9,12 @@ import android.graphics.Shader
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.LayoutInflater
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView
+import com.mallegan.ads.callback.NativeCallback
+import com.mallegan.ads.util.Admob
 import com.livescore.football.livescores.footballscores.base.BaseActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
@@ -28,6 +34,10 @@ import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywall
 import com.livescore.football.livescores.footballscores.ui.custom.TimelineEvent
 import com.livescore.football.livescores.footballscores.ui.iap.IAPActivity
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
+import com.livescore.football.livescores.footballscores.utils.SharePreferenceUtils
+import com.livescore.football.livescores.footballscores.utils.LogEvent
+import com.google.android.gms.ads.LoadAdError
+import com.mallegan.ads.callback.InterCallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
@@ -89,6 +99,12 @@ class MatchDetailActivity : BaseActivity() {
         setupLockOverlays()
         observeViewModel()
         viewModel.startDetailPolling(matchId)
+        if(!SharePreferenceUtils.isOrganic(baseContext)) {
+            loadNativeAd()
+        } else {
+            binding.frAdsDetail.removeAllViews()
+            binding.frAdsDetail.visibility = View.GONE
+        }
     }
 
     private fun setupUI(matchId: Int) {
@@ -120,7 +136,12 @@ class MatchDetailActivity : BaseActivity() {
 
         // Main tabs selection setup
         binding.btnTabMatch.setOnClickListener { switchMainTab(0, matchId) }
-        binding.btnTabPrediction.setOnClickListener { switchMainTab(1, matchId) }
+        binding.btnTabPrediction.setOnClickListener {
+            if (binding.layoutPredictionContent.isVisible) {
+                return@setOnClickListener
+            }
+            loadInterPrediction(matchId)
+        }
 
         // Setup prediction lock overlay button click and localization
         binding.layoutPredictionLockOverlay.tvLockTitle.text = getString(R.string.prediction_locked_title)
@@ -663,6 +684,52 @@ class MatchDetailActivity : BaseActivity() {
         }
     }
 
+    private fun loadInterPrediction(matchId: Int) {
+        if (limitManager.isPremium()) {
+            switchMainTab(1, matchId)
+            return
+        }
+
+        if (!SharePreferenceUtils.isOrganic(this)) {
+            val adId = try {
+                RemoteConfigManager.getInstance().getAdId("inter_click_prediction", getString(R.string.inter_click_prediction))
+            } catch (e: Exception) {
+                getString(R.string.inter_click_prediction)
+            }
+
+            if (adId.isNotEmpty()) {
+                LogEvent.log(this, "inter_click_prediction")
+
+                Admob.getInstance().loadAndShowInter(
+                    this,
+                    adId,
+                    0,
+                    30000,
+                    object : InterCallback() {
+                        override fun onAdClosed() {
+                            super.onAdClosed()
+                            switchMainTab(1, matchId)
+                        }
+
+                        override fun onAdClosedByUser() {
+                            super.onAdClosedByUser()
+                            switchMainTab(1, matchId)
+                        }
+
+                        override fun onAdFailedToLoad(error: LoadAdError?) {
+                            super.onAdFailedToLoad(error)
+                            switchMainTab(1, matchId)
+                        }
+                    }
+                )
+            } else {
+                switchMainTab(1, matchId)
+            }
+        } else {
+            switchMainTab(1, matchId)
+        }
+    }
+
     private fun bindPredictionData(prediction: com.livescore.football.livescores.footballscores.data.remote.model.PredictionDataDto) {
         val detail = viewModel.uiState.value.detail
 
@@ -871,6 +938,71 @@ class MatchDetailActivity : BaseActivity() {
 
     private fun Int.dpToPx(): Int {
         return (this * resources.displayMetrics.density).toInt()
+    }
+
+    private fun loadNativeAd() {
+        if (limitManager.isPremium()) {
+            binding.frAdsDetail.visibility = View.GONE
+            return
+        }
+
+        val adId = try {
+            RemoteConfigManager.getInstance().getAdId("native_all", getString(R.string.native_all))
+        } catch (e: Exception) {
+            getString(R.string.native_all)
+        }
+
+        if (adId.isNotEmpty()) {
+            binding.frAdsDetail.visibility = View.VISIBLE
+            // Inflate and show shimmer layout while loading
+            val shimmerView = LayoutInflater.from(this).inflate(R.layout.layout_shimmer_league, binding.frAdsDetail, false)
+            binding.frAdsDetail.removeAllViews()
+            binding.frAdsDetail.addView(shimmerView)
+
+            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
+                liveScoreApiService, this, "native", adId, "MatchDetail"
+            )
+
+            Admob.getInstance().loadNativeAds(
+                this,
+                adId,
+                1,
+                object : NativeCallback() {
+                    override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                        super.onNativeAdLoaded(nativeAd)
+
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
+                            liveScoreApiService, this@MatchDetailActivity, "native", adId, "MatchDetail"
+                        )
+
+                        nativeAd?.setOnPaidEventListener { adValue ->
+                            val ecpm = adValue.valueMicros / 1000.0
+                            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                                liveScoreApiService, this@MatchDetailActivity, "native", adId, "MatchDetail", ecpm
+                            )
+                        }
+
+                        val adView = LayoutInflater.from(this@MatchDetailActivity)
+                            .inflate(R.layout.layout_native_league, null) as NativeAdView
+                        
+                        binding.frAdsDetail.removeAllViews()
+                        binding.frAdsDetail.addView(adView)
+                        
+                        Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+                    }
+
+                    override fun onAdFailedToLoad() {
+                        super.onAdFailedToLoad()
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                            liveScoreApiService, this@MatchDetailActivity, "native", adId, "MatchDetail", null
+                        )
+                        binding.frAdsDetail.visibility = View.GONE
+                    }
+                }
+            )
+        } else {
+            binding.frAdsDetail.visibility = View.GONE
+        }
     }
 
     override fun onDestroy() {

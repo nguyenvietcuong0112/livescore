@@ -331,6 +331,12 @@ class LeaguesFragment : Fragment() {
             getString(R.string.native_all)
         }
         if (adId.isNotEmpty()) {
+            binding.frAdsLeague.visibility = View.VISIBLE
+            // Inflate and show shimmer layout while loading
+            val shimmerView = LayoutInflater.from(requireContext()).inflate(R.layout.layout_shimmer_league, binding.frAdsLeague, false)
+            binding.frAdsLeague.removeAllViews()
+            binding.frAdsLeague.addView(shimmerView)
+
             com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
                 liveScoreApiService, requireContext(), "native", adId, "Leagues"
             )

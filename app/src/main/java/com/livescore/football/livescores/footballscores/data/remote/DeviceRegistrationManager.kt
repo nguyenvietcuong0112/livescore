@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Locale
+import java.util.TimeZone
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -60,6 +61,24 @@ class DeviceRegistrationManager @Inject constructor(
         }
     }
 
+    private fun getTimeZone(): String {
+        return try {
+            TimeZone.getDefault().id
+        } catch (e: Exception) {
+            "UTC"
+        }
+    }
+
+    private fun getTimeZoneOffset(): Int {
+        return try {
+            val tz = TimeZone.getDefault()
+            val offsetMs = tz.getOffset(System.currentTimeMillis())
+            offsetMs / 1000 / 60
+        } catch (e: Exception) {
+            0
+        }
+    }
+
     suspend fun registerDevice(pushToken: String? = null) = withContext(Dispatchers.IO) {
         val deviceId = getDeviceId()
         val osVersion = Build.VERSION.RELEASE ?: "unknown"
@@ -87,7 +106,9 @@ class DeviceRegistrationManager @Inject constructor(
             os_version = osVersion,
             app_version = appVersion,
             model_name = modelName,
-            language_code = langCode
+            language_code = langCode,
+            timezone = getTimeZone(),
+            timezone_offset = getTimeZoneOffset()
         )
 
         try {

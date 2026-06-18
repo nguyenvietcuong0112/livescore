@@ -53,6 +53,7 @@ class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private var isLimitDialogShowing = false
     private var activeTabId: Int = R.id.nav_live
+    private var isHandlingDeepLink = false
 
     private val handlerADS = Handler(Looper.getMainLooper())
     private var isFirstLoad = true
@@ -85,7 +86,6 @@ class MainActivity : BaseActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             
-            // Adjust toolbar top margin to prevent overlapping with status bar icons
             val toolbarParams = binding.toolbar.layoutParams as android.view.ViewGroup.MarginLayoutParams
             toolbarParams.topMargin = systemBars.top
             binding.toolbar.layoutParams = toolbarParams
@@ -109,19 +109,24 @@ class MainActivity : BaseActivity() {
             binding.bottomNavigation.selectedItemId = R.id.nav_wc26
         }
 
-        if (savedState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, HomeFragment.Companion.newInstance(false))
-                .commit()
-            updateLogoText(R.id.nav_live)
-        } else {
-            activeTabId = savedState?.getInt("active_tab_id", R.id.nav_live) ?: R.id.nav_live
-            updateLogoText(activeTabId)
+        val isDeepLinkHandled = handleDeepLinkIntent(intent)
+
+        if (!isDeepLinkHandled) {
+            if (savedState == null) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, HomeFragment.Companion.newInstance(false))
+                    .commit()
+                updateLogoText(R.id.nav_live)
+            } else {
+                activeTabId = savedState?.getInt("active_tab_id", R.id.nav_live) ?: R.id.nav_live
+                updateLogoText(activeTabId)
+            }
         }
 
-        handleDeepLinkIntent(intent)
-
         binding.bottomNavigation.setOnItemSelectedListener { item ->
+            if (isHandlingDeepLink) {
+                return@setOnItemSelectedListener true
+            }
             val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
             val isSameFragment = when (item.itemId) {
                 R.id.nav_live -> currentFragment is HomeFragment
@@ -222,17 +227,21 @@ class MainActivity : BaseActivity() {
         handleDeepLinkIntent(intent)
     }
 
-    private fun handleDeepLinkIntent(intent: Intent?) {
+    private fun handleDeepLinkIntent(intent: Intent?): Boolean {
         val leagueId = intent?.getIntExtra(EXTRA_LEAGUE_ID, -1) ?: -1
-        if (leagueId <= 0) return
+        if (leagueId <= 0) return false
 
+        isHandlingDeepLink = true
         activeTabId = R.id.nav_leagues
         updateLogoText(R.id.nav_leagues)
         binding.bottomNavigation.selectedItemId = R.id.nav_leagues
+        isHandlingDeepLink = false
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, LeaguesFragment.newInstance(leagueId))
             .commitAllowingStateLoss()
         intent?.removeExtra(EXTRA_LEAGUE_ID)
+        return true
     }
 
     fun showPremiumPaywall(isOutOfQuota: Boolean = false) {
@@ -323,7 +332,6 @@ class MainActivity : BaseActivity() {
                 val adView = LayoutInflater.from(this@MainActivity)
                     .inflate(R.layout.layout_native_home_collapse, null) as NativeAdView
 
-                // Hide bottom navigation and floating trophy button so they never overlap the expanded ad view
                 binding.bottomNavigation.visibility = View.GONE
                 binding.btnFloatingWc.visibility = View.GONE
 
@@ -391,14 +399,13 @@ class MainActivity : BaseActivity() {
                 val adView = LayoutInflater.from(this@MainActivity)
                     .inflate(R.layout.layout_native_banner, null) as NativeAdView
 
-                // Show bottom navigation and floating button when collapsed ad is displayed
                 binding.bottomNavigation.visibility = View.VISIBLE
                 binding.btnFloatingWc.visibility = View.VISIBLE
                 binding.btnFloatingWc.bringToFront()
 
                 binding.frAdsBanner.removeAllViews()
                 binding.frAdsBanner.addView(adView)
-                binding.frAdsBanner.bringToFront() // Force draw on top of navbar
+                binding.frAdsBanner.bringToFront()
 
                 Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
 
@@ -443,7 +450,7 @@ class MainActivity : BaseActivity() {
             
             val title = when (tabId) {
                 R.id.nav_leagues -> getString(R.string.leagues_header_title)
-                R.id.nav_wc26 -> getString(R.string.splash_app_title)
+                R.id.nav_wc26 -> getString(R.string.news_tag_world_cup)
                 R.id.nav_favorite -> getString(R.string.favorite_title)
                 R.id.nav_profile -> getString(R.string.profile_settings)
                 else -> getString(R.string.splash_app_title)
