@@ -153,7 +153,7 @@ class MatchDetailActivity : BaseActivity() {
         // Select the default main tab
         val selectPrediction = intent.getBooleanExtra("SELECT_PREDICTION_TAB", false)
         if (selectPrediction) {
-            switchMainTab(1, matchId)
+            loadInterPrediction(matchId)
         } else {
             switchMainTab(0, matchId)
         }
