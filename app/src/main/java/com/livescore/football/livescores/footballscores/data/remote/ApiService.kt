@@ -44,6 +44,19 @@ interface ApiService {
     @GET("api/v1/fixtures")
     suspend fun getFixturesByLeague(
         @Query("league") leagueId: Int,
+        @Query("season") season: Int,
+        @Query("round") round: String? = null
+    ): BaseResponse<MatchItemDto>
+
+    @GET("api/v1/fixtures/rounds")
+    suspend fun getFixturesRounds(
+        @Query("league") leagueId: Int,
+        @Query("season") season: Int
+    ): BaseResponse<String>
+
+    @GET("api/v1/fixtures/bracket")
+    suspend fun getWcBracket(
+        @Query("league") leagueId: Int,
         @Query("season") season: Int
     ): BaseResponse<MatchItemDto>
 

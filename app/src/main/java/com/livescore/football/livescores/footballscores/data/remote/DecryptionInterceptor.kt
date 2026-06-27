@@ -244,9 +244,92 @@ class DecryptionInterceptor(
                 newArray
             }
 
+            // API: /api/v1/fixtures/bracket
+            urlPath.contains("/bracket") -> {
+                val responseObj = if (decryptedText.trim().startsWith("{")) {
+                    JSONObject(decryptedText)
+                } else {
+                    JSONObject()
+                }
+                
+                val dataObj = responseObj.optJSONObject("data") ?: responseObj
+                val roundsArray = dataObj.optJSONArray("rounds") ?: JSONArray()
+                val newArray = JSONArray()
+                
+                for (r in 0 until roundsArray.length()) {
+                    val roundObj = roundsArray.getJSONObject(r)
+                    val roundName = roundObj.optString("round_name", "")
+                    val fixturesArray = roundObj.optJSONArray("fixtures") ?: JSONArray()
+                    
+                    for (f in 0 until fixturesArray.length()) {
+                        val fObj = fixturesArray.getJSONObject(f)
+                        val mappedMatch = JSONObject().apply {
+                            put("fixture", JSONObject().apply {
+                                put("id", fObj.optInt("fixture_id", 0))
+                                put("referee", null)
+                                put("timezone", "UTC")
+                                val dateStr = fObj.optString("date", "")
+                                put("date", dateStr)
+                                put("timestamp", parseDateToTimestamp(dateStr))
+                                put("status", JSONObject().apply {
+                                    put("short", fObj.optString("status", "NS"))
+                                    put("long", fObj.optString("status_long", "Not Started"))
+                                    put("elapsed", if (fObj.isNull("elapsed")) null else fObj.optInt("elapsed"))
+                                })
+                            })
+                            put("league", JSONObject().apply {
+                                put("id", 1)
+                                put("name", "World Cup")
+                                put("country", "World")
+                                put("logo", "https://media.api-sports.io/football/leagues/1.png")
+                                put("flag", null)
+                                put("season", 2026)
+                                put("round", roundName)
+                            })
+                            
+                            val teamsObj = fObj.optJSONObject("teams")
+                            put("teams", JSONObject().apply {
+                                val homeObj = teamsObj?.optJSONObject("home")
+                                val awayObj = teamsObj?.optJSONObject("away")
+                                put("home", JSONObject().apply {
+                                    put("id", homeObj?.optInt("id", 0) ?: 0)
+                                    put("name", homeObj?.optString("name", "TBD") ?: "TBD")
+                                    put("logo", homeObj?.optString("logo", "") ?: "")
+                                    put("winner", homeObj?.opt("winner"))
+                                })
+                                put("away", JSONObject().apply {
+                                    put("id", awayObj?.optInt("id", 0) ?: 0)
+                                    put("name", awayObj?.optString("name", "TBD") ?: "TBD")
+                                    put("logo", awayObj?.optString("logo", "") ?: "")
+                                    put("winner", awayObj?.opt("winner"))
+                                })
+                            })
+                            
+                            put("goals", fObj.optJSONObject("goals"))
+                            put("score", fObj.optJSONObject("score"))
+                        }
+                        newArray.put(mappedMatch)
+                    }
+                }
+                newArray
+            }
+
+            // API: /api/v1/fixtures/rounds
+            urlPath.contains("/rounds") -> {
+                if (decryptedText.trim().startsWith("{")) {
+                    JSONObject(decryptedText).optJSONArray("response") ?: JSONArray()
+                } else {
+                    JSONArray(decryptedText)
+                }
+            }
+
             // 4. API: /api/v1/fixtures, date hoặc live
-            (urlPath.contains("/fixtures") && !urlPath.contains("/details") && !urlPath.contains("/ai-prediction")) -> {
-                val originalArray = JSONArray(decryptedText)
+            (urlPath.contains("/fixtures") && !urlPath.contains("/details") && !urlPath.contains("/ai-prediction") && !urlPath.contains("/rounds") && !urlPath.contains("/bracket")) -> {
+                val originalArray = if (decryptedText.trim().startsWith("{")) {
+                    JSONObject(decryptedText).optJSONArray("response") ?: JSONArray()
+                } else {
+                    JSONArray(decryptedText)
+                }
                 val newArray = JSONArray()
                 for (i in 0 until originalArray.length()) {
                     val match = originalArray.getJSONObject(i)

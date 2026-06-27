@@ -252,9 +252,9 @@ class LeaguesFragment : Fragment() {
         val isWc = viewModel.selectedLeagueId.value == 1
         when (state) {
             is StandingsUiState.Loading -> {
+                binding.emptyState.isVisible = false
                 if (!binding.swipeRefreshLayout.isRefreshing) {
                     binding.loadingSpinner.isVisible = true
-                    binding.emptyState.isVisible = false
                     if (isWc) {
                         wcGroupsAdapter.submitList(emptyList())
                     } else {
@@ -295,9 +295,9 @@ class LeaguesFragment : Fragment() {
         val adapter = if (isAssists) topAssistsAdapter else topScorersAdapter
         when (state) {
             is TopPlayersUiState.Loading -> {
+                binding.emptyState.isVisible = false
                 if (!binding.swipeRefreshLayout.isRefreshing) {
                     binding.loadingSpinner.isVisible = true
-                    binding.emptyState.isVisible = false
                     adapter.submitList(emptyList())
                 }
             }

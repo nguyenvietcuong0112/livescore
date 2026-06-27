@@ -59,6 +59,7 @@ class WC26Fragment : Fragment() {
     private var selectedFixtureFilter = MatchFilter.LIVE
     private var cachedFixturesList = emptyList<com.livescore.football.livescores.footballscores.data.remote.model.MatchItemDto>()
     private lateinit var wcFixtureAdapter: WcFixtureAdapter
+    private val BRACKET_CARD_HEIGHT = 150f
     
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -250,96 +251,58 @@ class WC26Fragment : Fragment() {
                 } else {
                     binding.layoutWcGroupsContainer.removeAllViews()
                     val emptyStateView = com.livescore.football.livescores.footballscores.ui.custom.EmptyStateView(requireContext()).apply {
+                        id = R.id.emptyState
                         text = getString(R.string.empty_fixtures)
                         setPadding(0, dpToPx(32f), 0, 0)
+                        visibility = if (binding.swipeRefreshLayout.isRefreshing || binding.layoutLoadingOverlay.isVisible) View.GONE else View.VISIBLE
                     }
                     binding.layoutWcGroupsContainer.addView(emptyStateView)
                 }
 
                 // 2. Fetch and Populate Fixtures & Bracket (Trận đấu & VLTT)
                 var fixturesList = emptyList<com.livescore.football.livescores.footballscores.data.remote.model.MatchItemDto>()
+                var bracketList = emptyList<com.livescore.football.livescores.footballscores.data.remote.model.MatchItemDto>()
                 try {
                     leaguesRepository.getFixturesByLeague(1, 2026)
                         .collect { list ->
                             fixturesList = list
                         }
+                    
+                    leaguesRepository.getWcBracket(1, 2026)
+                        .collect { list ->
+                            bracketList = list
+                        }
+                    
+                    // Call API /fixtures/rounds and log the output
+                    leaguesRepository.getFixturesRounds(1, 2026)
+                        .collect { list ->
+                            android.util.Log.d("WC26Fragment", "API /fixtures/rounds returned rounds: $list")
+                        }
+
+                    // Call API /fixtures with round=Round of 32 and log the output
+                    leaguesRepository.getFixturesByLeague(1, 2026, "Round of 32")
+                        .collect { list ->
+                            android.util.Log.d("WC26Fragment", "API /fixtures?round=Round of 32 returned matches count: ${list.size}")
+                            list.forEach { match ->
+                                android.util.Log.d("WC26Fragment", "  Match: ${match.teams.home.name} vs ${match.teams.away.name}, round: ${match.league.round}")
+                            }
+                        }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
 
                 cachedFixturesList = fixturesList
                 renderWcFixtures(selectedFixtureFilter)
 
                 // 3. Populate Bracket (VLTT) View
-                val bracketMatches = fixturesList.filter { match ->
-                    val round = match.league.round?.lowercase() ?: ""
-                    round.contains("round of 16") || round.contains("quarter-finals") || round.contains("semi-finals") || (round.contains("final") && !round.contains("third"))
-                }
+                // The World Cup 2026 knockout bracket starts with the Round of 32
+                val bracketRounds = listOf("Round of 32", "Round of 16", "Quarter-finals", "Semi-finals", "Final")
 
-                val r16List = bracketMatches.filter { it.league.round?.lowercase()?.contains("round of 16") == true }.sortedBy { it.fixture.timestamp }
-                val qfList = bracketMatches.filter { it.league.round?.lowercase()?.contains("quarter-finals") == true }.sortedBy { it.fixture.timestamp }
-                val sfList = bracketMatches.filter { it.league.round?.lowercase()?.contains("semi-finals") == true }.sortedBy { it.fixture.timestamp }
-                val finalMatch = bracketMatches.firstOrNull { it.league.round?.lowercase()?.contains("final") == true && !it.league.round.lowercase().contains("third") }
+                // Group our fetched bracketList by round name (lowercase keys)
+                val matchesByRound = bracketList.groupBy { (it.league.round ?: "").lowercase() }
 
-                binding.colR16.removeAllViews()
-                binding.colQF.removeAllViews()
-                binding.colSF.removeAllViews()
-                binding.colFinal.removeAllViews()
-                binding.connCol1.removeAllViews()
-                binding.connCol2.removeAllViews()
-                binding.connCol3.removeAllViews()
-
-                // Render Column 1: Round of 16 (8 matches)
-                val r16Dates = listOf(
-                    "29/6, 02:00", "30/6, 08:00", "30/6, 03:30", "1/7, 04:00",
-                    "2/7, 03:00", "2/7, 07:00", "3/7, 02:00", "3/7, 06:00"
-                )
-                for (i in 0 until 8) {
-                    if (i > 0) addSpacer(binding.colR16, 16f)
-                    val match = r16List.getOrNull(i)
-                    addBracketMatch(binding.colR16, match, r16Dates[i])
-                }
-
-                // Render Connector 1: R16 -> QF
-                addSpacer(binding.connCol1, 50f)
-                for (i in 0 until 4) {
-                    if (i > 0) addSpacer(binding.connCol1, 116f)
-                    addConnector(binding.connCol1, 116f)
-                }
-
-                // Render Column 2: Quarterfinals (4 matches)
-                val qfDates = listOf("5/7, 00:00", "5/7, 04:00", "7/7, 07:00", "7/7, 11:00")
-                addSpacer(binding.colQF, 58f)
-                for (i in 0 until 4) {
-                    if (i > 0) addSpacer(binding.colQF, 132f)
-                    val match = qfList.getOrNull(i)
-                    addBracketMatch(binding.colQF, match, qfDates[i])
-                }
-
-                // Render Connector 2: QF -> SF
-                addSpacer(binding.connCol2, 108f)
-                for (i in 0 until 2) {
-                    if (i > 0) addSpacer(binding.connCol2, 232f)
-                    addConnector(binding.connCol2, 232f)
-                }
-
-                // Render Column 3: Semifinals (2 matches)
-                val sfDates = listOf("10/7, 03:00", "10/7, 07:00")
-                addSpacer(binding.colSF, 174f)
-                for (i in 0 until 2) {
-                    if (i > 0) addSpacer(binding.colSF, 364f)
-                    val match = sfList.getOrNull(i)
-                    addBracketMatch(binding.colSF, match, sfDates[i])
-                }
-
-                // Render Connector 3: SF -> Final
-                addSpacer(binding.connCol3, 224f)
-                addConnector(binding.connCol3, 464f)
-
-                // Render Column 4: Final (1 match)
-                addSpacer(binding.colFinal, 406f)
-                addBracketMatch(binding.colFinal, finalMatch, "11/7, 02:00")
+                // Render the dynamic columns and connectors starting from the Round of 32
+                renderDynamicBracket(bracketRounds, matchesByRound)
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -347,8 +310,104 @@ class WC26Fragment : Fragment() {
                 if (_binding != null) {
                     binding.swipeRefreshLayout.isRefreshing = false
                     binding.layoutLoadingOverlay.isVisible = false
+                    
+                    val emptyView = binding.layoutWcGroupsContainer.findViewById<View>(R.id.emptyState)
+                    emptyView?.visibility = View.VISIBLE
+                    
+                    renderWcFixtures(selectedFixtureFilter)
+                    
                     updateTabUI()
                 }
+            }
+        }
+    }
+
+    private fun renderDynamicBracket(
+        sortedRounds: List<String>, 
+        matchesByRound: Map<String, List<com.livescore.football.livescores.footballscores.data.remote.model.MatchItemDto>>
+    ) {
+        binding.layoutWcBracketContainer.removeAllViews()
+        
+        val H = BRACKET_CARD_HEIGHT // Card height in dp
+        val colWidth = 210f // Column width in dp
+        val connWidth = 24f // Connector width in dp
+
+        val numColumns = sortedRounds.size
+        if (numColumns == 0) {
+            return
+        }
+        
+        for (c in 0 until numColumns) {
+            val roundName = sortedRounds[c]
+            val matches = matchesByRound[roundName.lowercase()] ?: emptyList()
+            
+            // Create and add match column
+            val colLayout = LinearLayout(requireContext()).apply {
+                layoutParams = LinearLayout.LayoutParams(dpToPx(colWidth), ViewGroup.LayoutParams.MATCH_PARENT)
+                orientation = LinearLayout.VERTICAL
+                gravity = android.view.Gravity.TOP
+            }
+            
+            // Number of matches expected in this column: 2^(numColumns - 1 - c)
+            val expectedMatchCount = 1 shl (numColumns - 1 - c)
+            
+            // Spacers calculations
+            val factor = (1 shl c).toFloat()
+            val initialSpacerDp = (H / 2f + 8f) * (factor - 1f)
+            val matchSpacerDp = factor * (H + 16f) - H
+
+            // Add initial spacer
+            if (initialSpacerDp > 0) {
+                addSpacer(colLayout, initialSpacerDp)
+            }
+            
+            // Add matches (determined matches first, sorted by timestamp; placeholders at the bottom)
+            val sortedMatches = matches.sortedWith(compareBy<com.livescore.football.livescores.footballscores.data.remote.model.MatchItemDto> { 
+                val isPlaceholder = it.fixture.date.isNullOrEmpty() || 
+                    (it.teams.home.name.equals("TBD", ignoreCase = true) && it.teams.away.name.equals("TBD", ignoreCase = true))
+                if (isPlaceholder) 1 else 0
+            }.thenBy { 
+                it.fixture.timestamp 
+            })
+            
+            val defaultDate = "---,---"
+ 
+            for (i in 0 until expectedMatchCount) {
+                if (i > 0) {
+                    addSpacer(colLayout, matchSpacerDp)
+                }
+                val match = sortedMatches.getOrNull(i)
+                addBracketMatch(colLayout, match, defaultDate)
+            }
+            
+            binding.layoutWcBracketContainer.addView(colLayout)
+            
+            // Create and add connector column (except for the last column)
+            if (c < numColumns - 1) {
+                val connLayout = LinearLayout(requireContext()).apply {
+                    layoutParams = LinearLayout.LayoutParams(dpToPx(connWidth), ViewGroup.LayoutParams.MATCH_PARENT)
+                    orientation = LinearLayout.VERTICAL
+                }
+                
+                val connInitialSpacerDp = (H / 2f) + (H / 2f + 8f) * (factor - 1f)
+                val connHeightDp = factor * (H + 16f)
+                val connSpacerDp = factor * (H + 16f)
+                val expectedConnCount = expectedMatchCount / 2
+                
+                // Add initial spacer
+                if (connInitialSpacerDp > 0) {
+                    addSpacer(connLayout, connInitialSpacerDp)
+                }
+                
+                // Add connectors
+                for (i in 0 until expectedConnCount) {
+                    if (i > 0) {
+                        addSpacer(connLayout, connSpacerDp)
+                    }
+                    addConnector(connLayout, connHeightDp)
+                }
+                
+                binding.layoutWcBracketContainer.addView(connLayout)
             }
         }
     }
@@ -356,6 +415,10 @@ class WC26Fragment : Fragment() {
     private fun addBracketMatch(column: ViewGroup, match: com.livescore.football.livescores.footballscores.data.remote.model.MatchItemDto?, defaultDate: String) {
         val inflater = LayoutInflater.from(requireContext())
         val view = inflater.inflate(R.layout.item_wc_bracket_match, column, false)
+        view.layoutParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            dpToPx(BRACKET_CARD_HEIGHT)
+        )
         bindBracketMatch(view, match, defaultDate)
         column.addView(view)
     }
@@ -395,17 +458,24 @@ class WC26Fragment : Fragment() {
 
         if (match != null) {
             val rawDate = match.fixture.date
-            val displayDate = try {
-                val parser = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", java.util.Locale.getDefault()).apply {
-                    timeZone = java.util.TimeZone.getTimeZone("UTC")
+            val isUndetermined = rawDate.isNullOrEmpty() || rawDate.equals("null", ignoreCase = true) ||
+                (match.teams.home.name.equals("TBD", ignoreCase = true) && match.teams.away.name.equals("TBD", ignoreCase = true))
+            
+            val displayDate = if (isUndetermined) {
+                "---,---"
+            } else {
+                try {
+                    val parser = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", java.util.Locale.getDefault()).apply {
+                        timeZone = java.util.TimeZone.getTimeZone("UTC")
+                    }
+                    val date = parser.parse(rawDate)
+                    val formatter = java.text.SimpleDateFormat("dd/MM, HH:mm", java.util.Locale.getDefault()).apply {
+                        timeZone = java.util.TimeZone.getDefault()
+                    }
+                    if (date != null) formatter.format(date) else "---,---"
+                } catch (e: Exception) {
+                    "---,---"
                 }
-                val date = parser.parse(rawDate)
-                val formatter = java.text.SimpleDateFormat("dd/MM, HH:mm", java.util.Locale.getDefault()).apply {
-                    timeZone = java.util.TimeZone.getDefault()
-                }
-                if (date != null) formatter.format(date) else defaultDate
-            } catch (e: Exception) {
-                defaultDate
             }
             tvDate.text = displayDate
 
@@ -602,7 +672,9 @@ class WC26Fragment : Fragment() {
         val newItems = mutableListOf<WcFixtureItem>()
 
         if (filteredFixtures.isEmpty()) {
-            newItems.add(WcFixtureItem.EmptyItem)
+            if (_binding != null && !binding.swipeRefreshLayout.isRefreshing && !binding.layoutLoadingOverlay.isVisible) {
+                newItems.add(WcFixtureItem.EmptyItem)
+            }
             wcFixtureAdapter.submitList(newItems)
             return
         }

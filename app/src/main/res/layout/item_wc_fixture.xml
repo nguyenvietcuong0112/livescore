@@ -171,7 +171,7 @@
                     android:visibility="gone" />
 
                 <ImageView
-                    android:id="@+id/ivFavorite"
+                    android:id="@+id/ivFavoriteLegacy"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:visibility="gone" />
@@ -182,6 +182,22 @@
                     android:layout_height="0dp"
                     android:visibility="gone" />
             </LinearLayout>
+
+            <!-- Favorite Icon for Live/Finished matches placed at bottom right -->
+            <ImageView
+                android:id="@+id/ivFavorite"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Favorite Match"
+                android:src="@drawable/ic_favorite_border"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="6dp"
+                android:layout_marginBottom="6dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

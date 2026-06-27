@@ -333,21 +333,25 @@ class MatchDetailActivity : BaseActivity() {
                             
                             val statusShort = detail.fixture.status.short
                             if (statusShort == "NS" || statusShort == "TBD") {
-                                val matchDate = java.util.Date(detail.fixture.timestamp * 1000)
-                                val sdfToday = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
-                                    timeZone = java.util.TimeZone.getDefault()
-                                }
-                                val isToday = sdfToday.format(matchDate) == sdfToday.format(java.util.Date())
-                                val locale = java.util.Locale.getDefault()
-                                val pattern = if (isToday) {
-                                    "'" + getString(R.string.today) + ",' HH:mm"
-                                } else {
-                                    "dd/MM/yyyy HH:mm"
-                                }
-                                val sdf = java.text.SimpleDateFormat(pattern, locale).apply {
-                                    timeZone = java.util.TimeZone.getDefault()
-                                }
-                                binding.matchHeader.tvDetailStatus.text = sdf.format(matchDate)
+                                 val matchDate = java.util.Date(detail.fixture.timestamp * 1000)
+                                 val sdfToday = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
+                                     timeZone = java.util.TimeZone.getDefault()
+                                 }
+                                 val isToday = sdfToday.format(matchDate) == sdfToday.format(java.util.Date())
+                                 val locale = java.util.Locale.getDefault()
+                                 
+                                 val statusText = if (isToday) {
+                                     val timeSdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.US).apply {
+                                         timeZone = java.util.TimeZone.getDefault()
+                                     }
+                                     getString(R.string.today) + ", " + timeSdf.format(matchDate)
+                                 } else {
+                                     val sdf = java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", locale).apply {
+                                         timeZone = java.util.TimeZone.getDefault()
+                                     }
+                                     sdf.format(matchDate)
+                                 }
+                                 binding.matchHeader.tvDetailStatus.text = statusText
                             } else {
                                 binding.matchHeader.tvDetailStatus.text =
                                     detail.fixture.status.elapsed?.let { "${it}' LIVE" } ?: detail.fixture.status.long

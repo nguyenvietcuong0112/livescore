@@ -235,12 +235,25 @@ class WcFixtureAdapter(
                     tvVS.text = "$homeGoal - $awayGoal"
                     tvVS.setTextColor(ContextCompat.getColor(context, R.color.primaryBlue))
                     layoutWcScoreBox.setBackgroundResource(R.drawable.bg_score_box_blue)
-                    tvFixtureTime.text = kickoffTime
                 } else {
                     tvVS.text = "VS"
                     tvVS.setTextColor(ContextCompat.getColor(context, R.color.text_muted))
                     layoutWcScoreBox.setBackgroundResource(R.drawable.bg_score_box_gray)
+                }
+
+                val statusShort = match.fixture.status.short
+                val isLive = statusShort in listOf("1H", "2H", "HT", "ET", "BT", "P", "LIVE")
+                val isFinished = statusShort in listOf("FT", "AET", "PEN")
+
+                if (isLive) {
+                    tvFixtureTime.text = match.fixture.status.elapsed?.let { "$it'" } ?: "LIVE"
+                    tvFixtureTime.setTextColor(ContextCompat.getColor(context, R.color.accent_green))
+                } else if (isFinished) {
+                    tvFixtureTime.text = "FT"
+                    tvFixtureTime.setTextColor(ContextCompat.getColor(context, R.color.text_muted))
+                } else {
                     tvFixtureTime.text = kickoffTime
+                    tvFixtureTime.setTextColor(ContextCompat.getColor(context, R.color.text_muted))
                 }
 
                 val isUpcomingStatus = match.fixture.status.short == "NS" || match.fixture.status.short == "TBD"
@@ -263,7 +276,7 @@ class WcFixtureAdapter(
                         }
                     )
                 )
-                ivFavorite.visibility = View.GONE
+                ivFavorite.visibility = View.VISIBLE
 
                 ivReminder.setOnClickListener { onReminderClick(match, ivReminder) }
                 ivFavorite.setOnClickListener { onFavoriteClick(match, ivFavorite) }

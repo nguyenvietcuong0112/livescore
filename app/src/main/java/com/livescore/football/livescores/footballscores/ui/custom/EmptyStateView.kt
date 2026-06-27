@@ -7,12 +7,27 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.livescore.football.livescores.footballscores.R
+import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
+import dagger.hilt.EntryPoint
+import dagger.hilt.EntryPoints
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
 class EmptyStateView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
+
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface EmptyStateViewEntryPoint {
+        fun requestLimitManager(): RequestLimitManager
+    }
+
+    private val limitManager: RequestLimitManager by lazy {
+        EntryPoints.get(context.applicationContext, EmptyStateViewEntryPoint::class.java).requestLimitManager()
+    }
 
     private val ivEmpty: ImageView
     private val tvEmpty: TextView
@@ -53,23 +68,11 @@ class EmptyStateView @JvmOverloads constructor(
     }
 
     private fun isLimitExceeded(): Boolean {
-        try {
-            val prefs = context.getSharedPreferences("livescore_request_limits_prefs", Context.MODE_PRIVATE)
-            val isPremium = prefs.getBoolean("is_premium_user", false)
-            if (isPremium) return false
-            
-            val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
-                timeZone = java.util.TimeZone.getDefault()
-            }.format(java.util.Date())
-            val lastDate = prefs.getString("last_request_date", "")
-            
-            if (lastDate != today) return false
-            
-            val count = prefs.getInt("request_count", 0)
-            return count >= 20
+        return try {
+            limitManager.isLimitExceeded()
         } catch (e: Exception) {
             e.printStackTrace()
-            return false
+            false
         }
     }
 

@@ -84,9 +84,9 @@ class LeaguesRepository @Inject constructor(
         emit(emptyList())
     }
 
-    fun getFixturesByLeague(leagueId: Int, season: Int): Flow<List<MatchItemDto>> = flow {
-        Log.d(TAG, "getFixturesByLeague: Starting request for leagueId = $leagueId, season = $season")
-        val response = apiService.getFixturesByLeague(leagueId, season)
+    fun getFixturesByLeague(leagueId: Int, season: Int, round: String? = null): Flow<List<MatchItemDto>> = flow {
+        Log.d(TAG, "getFixturesByLeague: Starting request for leagueId = $leagueId, season = $season, round = $round")
+        val response = apiService.getFixturesByLeague(leagueId, season, round)
         val data = response.dataOrEmpty()
         Log.d(TAG, "getFixturesByLeague: Response code = ${response.code}, data size = ${data.size}")
         if (response.code == 200 && data.isNotEmpty()) {
@@ -97,6 +97,38 @@ class LeaguesRepository @Inject constructor(
         }
     }.catch { e ->
         Log.e(TAG, "getFixturesByLeague: Error occurred: ${e.message}", e)
+        emit(emptyList())
+    }
+
+    fun getFixturesRounds(leagueId: Int, season: Int): Flow<List<String>> = flow {
+        Log.d(TAG, "getFixturesRounds: Starting request for leagueId = $leagueId, season = $season")
+        val response = apiService.getFixturesRounds(leagueId, season)
+        val data = response.dataOrEmpty()
+        Log.d(TAG, "getFixturesRounds: Response code = ${response.code}, data size = ${data.size}")
+        if (response.code == 200 && data.isNotEmpty()) {
+            emit(data)
+        } else {
+            Log.w(TAG, "getFixturesRounds: Response is empty or code != 200")
+            emit(emptyList())
+        }
+    }.catch { e ->
+        Log.e(TAG, "getFixturesRounds: Error occurred: ${e.message}", e)
+        emit(emptyList())
+    }
+
+    fun getWcBracket(leagueId: Int, season: Int): Flow<List<MatchItemDto>> = flow {
+        Log.d(TAG, "getWcBracket: Starting request for leagueId = $leagueId, season = $season")
+        val response = apiService.getWcBracket(leagueId, season)
+        val data = response.dataOrEmpty()
+        Log.d(TAG, "getWcBracket: Response code = ${response.code}, data size = ${data.size}")
+        if (response.code == 200 && data.isNotEmpty()) {
+            emit(data)
+        } else {
+            Log.w(TAG, "getWcBracket: Response is empty or code != 200")
+            emit(emptyList())
+        }
+    }.catch { e ->
+        Log.e(TAG, "getWcBracket: Error occurred: ${e.message}", e)
         emit(emptyList())
     }
 

@@ -205,7 +205,7 @@ class HomeFragment : Fragment() {
                 }
             }
         )
-        matchAdapter.showFavoriteInStandardLayout = false
+        matchAdapter.showFavoriteInStandardLayout = true
         binding.rvMatches.layoutManager = LinearLayoutManager(requireContext())
         binding.rvMatches.adapter = matchAdapter
 
@@ -281,7 +281,7 @@ class HomeFragment : Fragment() {
                                  MatchFilter.FINISHED -> R.string.empty_finished_fixtures
                              }
                          )
-                         binding.emptyState.isVisible = items.isEmpty()
+                         binding.emptyState.isVisible = items.isEmpty() && !viewModel.isLoading.value
                          
                          val currentDate = viewModel.selectedDate.value
                          
@@ -307,6 +307,12 @@ class HomeFragment : Fragment() {
                  // Collect Loading
                  launch {
                      viewModel.isLoading.collect { loading ->
+                         if (loading) {
+                             binding.emptyState.visibility = View.GONE
+                         } else {
+                             binding.emptyState.isVisible = viewModel.matches.value.isEmpty()
+                         }
+
                          if (binding.swipeRefreshLayout.isRefreshing) {
                              if (!loading) {
                                  binding.swipeRefreshLayout.isRefreshing = false
@@ -315,10 +321,8 @@ class HomeFragment : Fragment() {
                              binding.loadingSpinner.isVisible = loading
                              if (loading) {
                                  binding.rvMatches.visibility = View.INVISIBLE
-                                 binding.emptyState.visibility = View.GONE
                              } else {
                                  binding.rvMatches.visibility = View.VISIBLE
-                                 binding.emptyState.isVisible = viewModel.matches.value.isEmpty()
                              }
                          }
                      }
