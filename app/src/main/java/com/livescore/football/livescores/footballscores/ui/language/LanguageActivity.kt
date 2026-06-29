@@ -149,47 +149,24 @@ class LanguageActivity : BaseActivity() {
         }
     }
 
-    private fun loadAds() {
-        if (::limitManager.isInitialized && limitManager.isPremium()) {
-            binding.frAds.visibility = View.GONE
-            checkNextButtonStatus(true)
-            return
+    private fun showPreloadedAd(preloadedAd: NativeAd, adId: String) {
+        preloadedAd.setOnPaidEventListener { adValue ->
+            val ecpm = adValue.valueMicros / 1000.0
+            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                liveScoreApiService, this@LanguageActivity, "native", adId, "Language", ecpm
+            )
         }
 
-        val preloadedAd = AdsConfig.nativeLanguage
-        if (preloadedAd != null) {
-            AdsConfig.nativeLanguage = null // consume
-            val adId = try {
-                RemoteConfigManager.getInstance()
-                    .getAdId("native_language", getString(R.string.native_language))
-            } catch (e: Exception) {
-                getString(R.string.native_language)
-            }
+        val adView = LayoutInflater.from(this@LanguageActivity)
+            .inflate(R.layout.layout_native_media, null) as NativeAdView
+        binding.frAds.removeAllViews()
+        binding.frAds.addView(adView)
+        Admob.getInstance().pushAdsToViewCustom(preloadedAd, adView)
+        LogEvent.log(this@LanguageActivity, "native_language")
+        checkNextButtonStatus(true)
+    }
 
-            preloadedAd.setOnPaidEventListener { adValue ->
-                val ecpm = adValue.valueMicros / 1000.0
-                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
-                    liveScoreApiService, this@LanguageActivity, "native", adId, "Language", ecpm
-                )
-            }
-
-            val adView = LayoutInflater.from(this@LanguageActivity)
-                .inflate(R.layout.layout_native_media, null) as NativeAdView
-            binding.frAds.removeAllViews()
-            binding.frAds.addView(adView)
-            Admob.getInstance().pushAdsToViewCustom(preloadedAd, adView)
-            LogEvent.log(this@LanguageActivity, "native_language")
-            checkNextButtonStatus(true)
-            return
-        }
-
-        checkNextButtonStatus(false)
-        val adId = try {
-            RemoteConfigManager.getInstance()
-                .getAdId("native_language", getString(R.string.native_language))
-        } catch (e: Exception) {
-            getString(R.string.native_language)
-        }
+    private fun loadAdsOnDemand(adId: String) {
         if (adId.isNotEmpty()) {
             com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
                 liveScoreApiService, this, "native", adId, "Language"
@@ -234,6 +211,46 @@ class LanguageActivity : BaseActivity() {
             binding.frAds.removeAllViews()
             binding.frAds.visibility = View.GONE
             checkNextButtonStatus(true)
+        }
+    }
+
+    private fun loadAds() {
+        if (::limitManager.isInitialized && limitManager.isPremium()) {
+            binding.frAds.visibility = View.GONE
+            checkNextButtonStatus(true)
+            return
+        }
+
+        val adId = try {
+            RemoteConfigManager.getInstance()
+                .getAdId("native_language", getString(R.string.native_language))
+        } catch (e: Exception) {
+            getString(R.string.native_language)
+        }
+
+        val preloadedAd = AdsConfig.nativeLanguage
+        if (preloadedAd != null) {
+            AdsConfig.nativeLanguage = null // consume
+            showPreloadedAd(preloadedAd, adId)
+            return
+        }
+
+        if (AdsConfig.isPreloadingLanguageAd) {
+            checkNextButtonStatus(false)
+            AdsConfig.onLanguageAdLoaded = { ad ->
+                runOnUiThread {
+                    AdsConfig.onLanguageAdLoaded = null
+                    if (ad != null) {
+                        AdsConfig.nativeLanguage = null // consume
+                        showPreloadedAd(ad, adId)
+                    } else {
+                        loadAdsOnDemand(adId)
+                    }
+                }
+            }
+        } else {
+            checkNextButtonStatus(false)
+            loadAdsOnDemand(adId)
         }
     }
 

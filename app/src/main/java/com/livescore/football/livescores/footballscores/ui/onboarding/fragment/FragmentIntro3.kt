@@ -9,6 +9,7 @@ import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.base.AbsBaseFragment
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.databinding.FragmentIntro3Binding
+import com.livescore.football.livescores.footballscores.ui.onboarding.IntroSlideshowActivity
 import com.livescore.football.livescores.footballscores.utils.LogEvent
 import com.livescore.football.livescores.footballscores.utils.SharePreferenceUtils
 import com.mallegan.ads.callback.NativeCallback
@@ -24,6 +25,8 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
 
     @Inject
     lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
+
+    var isAdLoading: Boolean = false
 
     override fun getLayout(): Int {
         return R.layout.fragment_intro3
@@ -76,6 +79,8 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
             getString(R.string.native_banner_ob)
         }
         if (adId.isNotEmpty()) {
+            isAdLoading = true
+            (activity as? IntroSlideshowActivity)?.updateSwipeState()
             showLoadingNext(true)
             com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
                 liveScoreApiService, requireContext(), "native", adId, "Onboarding3"
@@ -86,6 +91,8 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
                 object : NativeCallback() {
                     override fun onAdFailedToLoad() {
                         super.onAdFailedToLoad()
+                        isAdLoading = false
+                        (activity as? IntroSlideshowActivity)?.updateSwipeState()
                         if (!isAdded) return
                         showLoadingNext(false)
                         com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
@@ -97,7 +104,10 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
 
                     override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                         super.onNativeAdLoaded(nativeAd)
-                        if (!isAdded) return
+                        if (!isAdded) {
+                            isAdLoading = false
+                            return
+                        }
 
                         com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
                             liveScoreApiService, requireContext(), "native", adId, "Onboarding3"
@@ -119,6 +129,8 @@ class FragmentIntro3 : AbsBaseFragment<FragmentIntro3Binding?>() {
                         context?.let { LogEvent.log(it, "native_banner_ob") }
 
                         binding!!.frAds.postDelayed({
+                            isAdLoading = false
+                            (activity as? IntroSlideshowActivity)?.updateSwipeState()
                             showLoadingNext(false)
                         }, 500)
                     }

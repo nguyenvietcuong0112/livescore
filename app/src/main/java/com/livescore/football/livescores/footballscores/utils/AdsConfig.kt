@@ -25,6 +25,10 @@ object AdsConfig {
     var nativeLanguage: NativeAd? = null
 
     var lastInterAdShowTime: Long = 0L
+    var isInterAdLoading: Boolean = false
+
+    var isPreloadingLanguageAd: Boolean = false
+    var onLanguageAdLoaded: ((com.google.android.gms.ads.nativead.NativeAd?) -> Unit)? = null
 
     fun showInterClickAd(activity: AppCompatActivity, onAdClosedAction: () -> Unit) {
         val limitManager = try {
@@ -37,6 +41,11 @@ object AdsConfig {
         }
 
         if (limitManager != null && limitManager.isPremium()) {
+            onAdClosedAction()
+            return
+        }
+
+        if (isInterAdLoading) {
             onAdClosedAction()
             return
         }
@@ -63,6 +72,7 @@ object AdsConfig {
         }
 
         if (isEnabled && currentTime - lastInterAdShowTime >= 35000L) {
+            isInterAdLoading = true
             Admob.getInstance().loadAndShowInter(
                 activity,
                 interClickId,
@@ -71,6 +81,7 @@ object AdsConfig {
                 object : InterCallback() {
                     override fun onAdClosed() {
                         super.onAdClosed()
+                        isInterAdLoading = false
                         lastInterAdShowTime = System.currentTimeMillis()
                         if (!SharePreferenceUtils.isOrganic(activity)) {
                             ActivityLoadNativeFullV2.open(
@@ -89,6 +100,8 @@ object AdsConfig {
 
                     override fun onAdFailedToLoad(error: LoadAdError?) {
                         super.onAdFailedToLoad(error)
+                        isInterAdLoading = false
+                        lastInterAdShowTime = System.currentTimeMillis()
                         if (!SharePreferenceUtils.isOrganic(activity)) {
                             ActivityLoadNativeFullV2.open(
                                 activity,

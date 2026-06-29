@@ -21,6 +21,7 @@ class IntroSlideshowActivity : AbsBaseActivity() {
     lateinit var limitManager: com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 
     private lateinit var binding: ActivityIntroSlideshowBinding
+    private val fragmentList = ArrayList<Fragment>()
 
     override fun bind() {
         SystemUtil.setLocale(this)
@@ -41,8 +42,7 @@ class IntroSlideshowActivity : AbsBaseActivity() {
             }
         )
 
-        val fragmentList = ArrayList<Fragment>()
-
+        fragmentList.clear()
         fragmentList.add(FragmentIntro1())
         fragmentList.add(FragmentIntro2())
         fragmentList.add(FragmentIntro2ads())
@@ -99,9 +99,21 @@ class IntroSlideshowActivity : AbsBaseActivity() {
                     if (position == 2 && ::limitManager.isInitialized && limitManager.isPremium()) {
                         binding.viewPager.setCurrentItem(3, false)
                     }
+                    updateSwipeState()
                 }
             }
         )
+    }
+
+    fun updateSwipeState() {
+        val position = binding.viewPager.currentItem
+        val currentFragment = fragmentList.getOrNull(position)
+        val isLoading = when (currentFragment) {
+            is FragmentIntro2 -> currentFragment.isAdLoading
+            is FragmentIntro3 -> currentFragment.isAdLoading
+            else -> false
+        }
+        binding.viewPager.isUserInputEnabled = !isLoading
     }
 
     override fun onResume() {

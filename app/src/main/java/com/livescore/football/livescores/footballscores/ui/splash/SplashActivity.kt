@@ -210,12 +210,17 @@ class SplashActivity : BaseActivity() {
             if (pendingPushPayload == null && !isReturningUser()) {
                 val nativeLanguageId = remoteConfigManager.getAdId("native_language", getString(R.string.native_language))
                 if (nativeLanguageId.isNotEmpty() && !limitManager.isPremium()) {
+                    com.livescore.football.livescores.footballscores.utils.AdsConfig.isPreloadingLanguageAd = true
                     Admob.getInstance().loadNativeAd(this@SplashActivity, nativeLanguageId, object : NativeCallback() {
                         override fun onNativeAdLoaded(nativeAd: NativeAd?) {
-                            AdsConfig.nativeLanguage = nativeAd
+                            com.livescore.football.livescores.footballscores.utils.AdsConfig.nativeLanguage = nativeAd
+                            com.livescore.football.livescores.footballscores.utils.AdsConfig.isPreloadingLanguageAd = false
+                            com.livescore.football.livescores.footballscores.utils.AdsConfig.onLanguageAdLoaded?.invoke(nativeAd)
                         }
                         override fun onAdFailedToLoad() {
-                            AdsConfig.nativeLanguage = null
+                            com.livescore.football.livescores.footballscores.utils.AdsConfig.nativeLanguage = null
+                            com.livescore.football.livescores.footballscores.utils.AdsConfig.isPreloadingLanguageAd = false
+                            com.livescore.football.livescores.footballscores.utils.AdsConfig.onLanguageAdLoaded?.invoke(null)
                         }
                     })
                 }
