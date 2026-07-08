@@ -49,6 +49,7 @@ class LanguageActivity : BaseActivity() {
     private lateinit var adapter: LanguageSelectionListAdapter
     private var selectedLanguage = ""
     private var isLanguageSelected = false
+    private var selectAdRequestCount = 0
 
     override fun onResume() {
         super.onResume()
@@ -92,6 +93,9 @@ class LanguageActivity : BaseActivity() {
     private fun setupRecyclerView() {
         adapter = LanguageSelectionListAdapter(
             onItemClick = { lang ->
+                if (selectedLanguage == lang && isLanguageSelected) {
+                    return@LanguageSelectionListAdapter
+                }
                 selectedLanguage = lang
                 
                 // 1. Save selected language immediately
@@ -167,6 +171,7 @@ class LanguageActivity : BaseActivity() {
     }
 
     private fun loadAdsOnDemand(adId: String) {
+        if (isLanguageSelected) return
         if (adId.isNotEmpty()) {
             com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
                 liveScoreApiService, this, "native", adId, "Language"
@@ -175,6 +180,7 @@ class LanguageActivity : BaseActivity() {
             Admob.getInstance().loadNativeAds(this, adId, 1, object : NativeCallback() {
                 override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                     super.onNativeAdLoaded(nativeAd)
+                    if (isLanguageSelected) return
                     com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
                         liveScoreApiService, this@LanguageActivity, "native", adId, "Language"
                     )
@@ -199,6 +205,7 @@ class LanguageActivity : BaseActivity() {
 
                 override fun onAdFailedToLoad() {
                     super.onAdFailedToLoad()
+                    if (isLanguageSelected) return
                     com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
                         liveScoreApiService, this@LanguageActivity, "native", adId, "Language", null
                     )
@@ -215,7 +222,8 @@ class LanguageActivity : BaseActivity() {
     }
 
     private fun loadAds() {
-        if (::limitManager.isInitialized && limitManager.isPremium()) {
+        val isFromProfile = intent.getBooleanExtra(EXTRA_FROM_PROFILE, false)
+        if (isFromProfile || (::limitManager.isInitialized && limitManager.isPremium())) {
             binding.frAds.visibility = View.GONE
             checkNextButtonStatus(true)
             return
@@ -231,7 +239,9 @@ class LanguageActivity : BaseActivity() {
         val preloadedAd = AdsConfig.nativeLanguage
         if (preloadedAd != null) {
             AdsConfig.nativeLanguage = null // consume
-            showPreloadedAd(preloadedAd, adId)
+            if (!isLanguageSelected) {
+                showPreloadedAd(preloadedAd, adId)
+            }
             return
         }
 
@@ -240,11 +250,13 @@ class LanguageActivity : BaseActivity() {
             AdsConfig.onLanguageAdLoaded = { ad ->
                 runOnUiThread {
                     AdsConfig.onLanguageAdLoaded = null
-                    if (ad != null) {
-                        AdsConfig.nativeLanguage = null // consume
-                        showPreloadedAd(ad, adId)
-                    } else {
-                        loadAdsOnDemand(adId)
+                    if (!isLanguageSelected) {
+                        if (ad != null) {
+                            AdsConfig.nativeLanguage = null // consume
+                            showPreloadedAd(ad, adId)
+                        } else {
+                            loadAdsOnDemand(adId)
+                        }
                     }
                 }
             }
@@ -255,7 +267,8 @@ class LanguageActivity : BaseActivity() {
     }
 
     private fun loadAdsNativeLanguageSelect() {
-        if (::limitManager.isInitialized && limitManager.isPremium()) {
+        val isFromProfile = intent.getBooleanExtra(EXTRA_FROM_PROFILE, false)
+        if (isFromProfile || (::limitManager.isInitialized && limitManager.isPremium())) {
             binding.frAds.visibility = View.GONE
             checkNextButtonStatus(true)
             return
@@ -268,6 +281,9 @@ class LanguageActivity : BaseActivity() {
             getString(R.string.native_language_click)
         }
         if (adId.isNotEmpty()) {
+            selectAdRequestCount++
+            val currentRequest = selectAdRequestCount
+
             com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
                 liveScoreApiService, this, "native", adId, "Language"
             )
@@ -275,6 +291,8 @@ class LanguageActivity : BaseActivity() {
             Admob.getInstance().loadNativeAds(this, adId, 1, object : NativeCallback() {
                 override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                     super.onNativeAdLoaded(nativeAd)
+                    if (currentRequest != selectAdRequestCount) return
+                    
                     com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
                         liveScoreApiService, this@LanguageActivity, "native", adId, "Language"
                     )
@@ -293,12 +311,16 @@ class LanguageActivity : BaseActivity() {
                     Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
                     LogEvent.log(this@LanguageActivity, "native_language_click")
                     binding.frAds.postDelayed({
-                        checkNextButtonStatus(true)
+                        if (currentRequest == selectAdRequestCount) {
+                            checkNextButtonStatus(true)
+                        }
                     }, 500)
                 }
 
                 override fun onAdFailedToLoad() {
                     super.onAdFailedToLoad()
+                    if (currentRequest != selectAdRequestCount) return
+                    
                     com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
                         liveScoreApiService, this@LanguageActivity, "native", adId, "Language", null
                     )

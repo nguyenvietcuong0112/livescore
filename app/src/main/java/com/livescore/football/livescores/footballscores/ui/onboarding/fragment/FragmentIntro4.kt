@@ -62,23 +62,18 @@ class FragmentIntro4 : AbsBaseFragment<FragmentIntro4Binding?>() {
             "livescore_onboarding_prefs",
             Context.MODE_PRIVATE
         )
-        val isCompleted = onboardingPrefs.getBoolean("onboarding_completed", false)
+        onboardingPrefs.edit().putBoolean("onboarding_completed", true).apply()
 
-        val intent: Intent?
-        if (isCompleted) {
-            if (hasNotificationPermission()) {
-                if (limitManager.isPremium()) {
-                    intent = Intent(requireActivity(), MainActivity::class.java)
-                } else {
-                    intent = Intent(requireActivity(), IAPActivity::class.java).apply {
-                        putExtra("FROM_ONBOARDING", true)
-                    }
-                }
+        val intent: Intent = if (hasNotificationPermission()) {
+            if (limitManager.isPremium()) {
+                Intent(requireActivity(), MainActivity::class.java)
             } else {
-                intent = Intent(requireActivity(), PermissionActivity::class.java)
+                Intent(requireActivity(), IAPActivity::class.java).apply {
+                    putExtra("FROM_ONBOARDING", true)
+                }
             }
         } else {
-            intent = Intent(requireActivity(), IntroActivity::class.java)
+            Intent(requireActivity(), PermissionActivity::class.java)
         }
         startActivity(intent)
         requireActivity().finish()
