@@ -64,8 +64,14 @@ class FragmentIntro4 : AbsBaseFragment<FragmentIntro4Binding?>() {
         )
         onboardingPrefs.edit().putBoolean("onboarding_completed", true).apply()
 
+        val showIap = try {
+            RemoteConfigManager.getInstance().showOnboardingIap()
+        } catch (e: Exception) {
+            true
+        }
+
         val intent: Intent = if (hasNotificationPermission()) {
-            if (limitManager.isPremium()) {
+            if (limitManager.isPremium() || !showIap) {
                 Intent(requireActivity(), MainActivity::class.java)
             } else {
                 Intent(requireActivity(), IAPActivity::class.java).apply {

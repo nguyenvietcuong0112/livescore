@@ -130,4 +130,29 @@ class RequestLimitManager @Inject constructor(
         // Instantly notify observers of quota changes when premium is acquired
         triggerLimitExceeded() 
     }
+
+    fun getFeatureUsedCount(featureKey: String): Int {
+        val today = getTodayDateString()
+        return prefs.getInt("feature_used_${featureKey}_$today", 0)
+    }
+
+    fun incrementFeatureUsedCount(featureKey: String) {
+        val today = getTodayDateString()
+        val current = getFeatureUsedCount(featureKey)
+        prefs.edit().putInt("feature_used_${featureKey}_$today", current + 1).apply()
+    }
+
+    fun isFeatureLocked(featureKey: String): Boolean {
+        if (isPremium()) return false
+        val limit = remoteConfigManager.getFeatureFreeLimit(featureKey)
+        val used = getFeatureUsedCount(featureKey)
+        return used >= limit
+    }
+
+    fun canUseFeatureFree(featureKey: String): Boolean {
+        if (isPremium()) return false
+        val limit = remoteConfigManager.getFeatureFreeLimit(featureKey)
+        val used = getFeatureUsedCount(featureKey)
+        return used < limit
+    }
 }

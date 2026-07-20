@@ -61,11 +61,38 @@ class RemoteConfigManager @Inject constructor(
                 KEY_API_KEY to DEFAULT_API_KEY,
                 "inter_click_enabled" to "true",
                 "daily_request_limit" to "20",
-                "inter_click_prediction" to "true"
+                "inter_click_prediction" to "true",
+                "show_activity_iap" to "true",
+                "free_stats_limit" to "0",
+                "free_lineups_limit" to "0",
+                "free_prediction_limit" to "0",
+                "free_pitch_tracker_limit" to "0"
             )
             remoteConfig.setDefaultsAsync(defaults)
         } catch (e: Exception) {
             Log.e("RemoteConfigManager", "Failed to initialize Firebase Remote Config defaults: ${e.message}")
+        }
+    }
+
+    fun showOnboardingIap(): Boolean {
+        return try {
+            val value = remoteConfig.getString("show_activity_iap").trim()
+            if (value.equals("false", ignoreCase = true)) {
+                false
+            } else {
+                true
+            }
+        } catch (e: Exception) {
+            true
+        }
+    }
+
+    fun getFeatureFreeLimit(featureKey: String): Int {
+        return try {
+            val limitStr = remoteConfig.getString(featureKey).trim()
+            if (limitStr.isNotEmpty()) limitStr.toIntOrNull() ?: 0 else 0
+        } catch (e: Exception) {
+            0
         }
     }
 

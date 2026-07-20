@@ -28,6 +28,7 @@ import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.databinding.ActivityIntroBinding
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
+import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.ui.iap.IAPActivity
 import com.livescore.football.livescores.footballscores.ui.permission.PermissionActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -141,8 +142,14 @@ class IntroActivity : BaseActivity() {
                 launch {
                     viewModel.onboardingCompleted.collectLatest { completed ->
                         if (completed) {
+                            val showIap = try {
+                                RemoteConfigManager.getInstance().showOnboardingIap()
+                            } catch (e: Exception) {
+                                true
+                            }
+
                             val intent = if (hasNotificationPermission()) {
-                                if (limitManager.isPremium()) {
+                                if (limitManager.isPremium() || !showIap) {
                                     Intent(this@IntroActivity, MainActivity::class.java)
                                 } else {
                                     Intent(this@IntroActivity, IAPActivity::class.java).apply {

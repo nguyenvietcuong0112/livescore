@@ -3,6 +3,8 @@ package com.livescore.football.livescores.footballscores.ui.language
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,6 +52,13 @@ class LanguageActivity : BaseActivity() {
     private var selectedLanguage = ""
     private var isLanguageSelected = false
     private var selectAdRequestCount = 0
+    private val adHandler = Handler(Looper.getMainLooper())
+    private var adTimeoutRunnable: Runnable? = null
+
+    override fun onDestroy() {
+        adTimeoutRunnable?.let { adHandler.removeCallbacks(it) }
+        super.onDestroy()
+    }
 
     override fun onResume() {
         super.onResume()
@@ -247,6 +256,7 @@ class LanguageActivity : BaseActivity() {
 
         if (AdsConfig.isPreloadingLanguageAd) {
             checkNextButtonStatus(false)
+            startAdTimeoutTimer()
             AdsConfig.onLanguageAdLoaded = { ad ->
                 runOnUiThread {
                     AdsConfig.onLanguageAdLoaded = null
@@ -262,6 +272,7 @@ class LanguageActivity : BaseActivity() {
             }
         } else {
             checkNextButtonStatus(false)
+            startAdTimeoutTimer()
             loadAdsOnDemand(adId)
         }
     }
@@ -274,6 +285,7 @@ class LanguageActivity : BaseActivity() {
             return
         }
         checkNextButtonStatus(false)
+        startAdTimeoutTimer()
         val adId = try {
             RemoteConfigManager.getInstance()
                 .getAdId("native_language_click", getString(R.string.native_language_click))
@@ -334,8 +346,26 @@ class LanguageActivity : BaseActivity() {
         }
     }
 
+    private fun startAdTimeoutTimer(timeoutMs: Long = 4000L) {
+        adTimeoutRunnable?.let { adHandler.removeCallbacks(it) }
+        adTimeoutRunnable = Runnable {
+            if (!isDestroyed && !isFinishing) {
+                checkNextButtonStatus(true)
+            }
+        }
+        adTimeoutRunnable?.let { adHandler.postDelayed(it, timeoutMs) }
+    }
+
+    private fun cancelAdTimeoutTimer() {
+        adTimeoutRunnable?.let {
+            adHandler.removeCallbacks(it)
+            adTimeoutRunnable = null
+        }
+    }
+
     private fun checkNextButtonStatus(isReady: Boolean) {
         if (isReady) {
+            cancelAdTimeoutTimer()
             binding.ivSelect.visibility = View.VISIBLE
             binding.icLoading.visibility = View.GONE
         } else {
@@ -391,7 +421,25 @@ class LanguageSelectionListAdapter(
         val ivCheck = view.findViewById<ImageView>(R.id.ivCheckIndicator)
 
         fun bind(item: String) {
-            tvTitle.text = item
+            val flag = when (item) {
+                "Arabic" -> "🇸🇦"
+                "English" -> "🇬🇧"
+                "French" -> "🇫🇷"
+                "German" -> "🇩🇪"
+                "Hindi" -> "🇮🇳"
+                "Indonesian" -> "🇮🇩"
+                "Italian" -> "🇮🇹"
+                "Japanese" -> "🇯🇵"
+                "Portuguese" -> "🇵🇹"
+                "Russian" -> "🇷🇺"
+                "Spanish" -> "🇪🇸"
+                "Thai" -> "🇹🇭"
+                "Turkish" -> "🇹🇷"
+                "Urdu" -> "🇵🇰"
+                "Vietnamese" -> "🇻🇳"
+                else -> "🌐"
+            }
+            tvTitle.text = "$flag   $item"
 
             val isChecked = isSelectedPredicate(item)
             ivCheck.setImageResource(

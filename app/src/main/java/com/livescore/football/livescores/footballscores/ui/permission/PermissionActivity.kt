@@ -151,7 +151,13 @@ class PermissionActivity : BaseActivity() {
     }
 
     private fun navigateToHome() {
-        val intent = if (limitManager.isPremium()) {
+        val showIap = try {
+            RemoteConfigManager.Companion.getInstance().showOnboardingIap()
+        } catch (e: Exception) {
+            true
+        }
+
+        val intent = if (limitManager.isPremium() || !showIap) {
             Intent(this, MainActivity::class.java)
         } else {
             Intent(this, IAPActivity::class.java).apply {
