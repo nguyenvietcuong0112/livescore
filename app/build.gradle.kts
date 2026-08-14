@@ -15,14 +15,14 @@ val formattedDate = SimpleDateFormat("ddMMyyyy", Locale.US).format(Date())
 
 android {
     namespace = "com.livescore.football.livescores.footballscores"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.livescore.football.livescores.footballscores"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 15
-        versionName = "0.1.5"
+        targetSdk = 36
+        versionCode = 16
+        versionName = "0.1.6"
 
     }
 
