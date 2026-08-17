@@ -323,8 +323,13 @@ class DecryptionInterceptor(
                 }
             }
 
+            // API: /api/v1/teams/{team_id}/fixtures
+            urlPath.contains("/teams/") && urlPath.contains("/fixtures") -> {
+                JSONObject(decryptedText)
+            }
+
             // 4. API: /api/v1/fixtures, date hoặc live
-            (urlPath.contains("/fixtures") && !urlPath.contains("/details") && !urlPath.contains("/ai-prediction") && !urlPath.contains("/rounds") && !urlPath.contains("/bracket")) -> {
+            (urlPath.contains("/fixtures") && !urlPath.contains("/teams/") && !urlPath.contains("/details") && !urlPath.contains("/ai-prediction") && !urlPath.contains("/rounds") && !urlPath.contains("/bracket")) -> {
                 val originalArray = if (decryptedText.trim().startsWith("{")) {
                     JSONObject(decryptedText).optJSONArray("response") ?: JSONArray()
                 } else {

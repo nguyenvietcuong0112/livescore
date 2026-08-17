@@ -5,6 +5,7 @@ import android.content.Intent
 import com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity
 import com.livescore.football.livescores.footballscores.ui.iap.IAPActivity
 import com.livescore.football.livescores.footballscores.ui.main.MainActivity
+import com.livescore.football.livescores.footballscores.ui.news.NewsDetailActivity
 import com.livescore.football.livescores.footballscores.ui.splash.SplashActivity
 
 object PushNavigationExecutor {
@@ -27,7 +28,15 @@ object PushNavigationExecutor {
             is PushNavigation.League -> Intent(context, MainActivity::class.java).apply {
                 putExtra(MainActivity.EXTRA_LEAGUE_ID, navigation.leagueId)
             }
-            is PushNavigation.News -> Intent(context, MainActivity::class.java)
+            is PushNavigation.News -> {
+                if (navigation.newsId.isNotEmpty()) {
+                    Intent(context, NewsDetailActivity::class.java).apply {
+                        putExtra("extra_news_id", navigation.newsId)
+                    }
+                } else {
+                    Intent(context, MainActivity::class.java)
+                }
+            }
             is PushNavigation.Promo -> {
                 if (navigation.screenName == PROMO_VIP_SUBSCRIPTION) {
                     Intent(context, IAPActivity::class.java).apply {

@@ -89,7 +89,7 @@ class MatchDetailActivity : BaseActivity() {
             }
         })
 
-        val matchId = intent.getIntExtra("MATCH_ID", -1)
+        val matchId = intent.getIntExtra("MATCH_ID", intent.getIntExtra("fixture_id", -1))
         if (matchId == -1) {
             finish()
             return
@@ -400,158 +400,165 @@ class MatchDetailActivity : BaseActivity() {
 
                         // Set statistics values in UI
                         state.stats.let { list ->
-                            if (list.size >= 2) {
-                                val homeStats = list[0].statistics
-                                val awayStats = list[1].statistics
+                            if (list.isNotEmpty()) {
+                                val homeTeamId = state.detail?.teams?.home?.id
+                                val awayTeamId = state.detail?.teams?.away?.id
 
-                                fun getStatValue(stats: List<com.livescore.football.livescores.footballscores.data.remote.model.StatEntryDto>, key: String): Int {
-                                    val entry = stats.find { it.type == key }?.value
+                                val homeStatsItem = list.find { it.team.id == homeTeamId } ?: list.getOrNull(0)
+                                val awayStatsItem = list.find { it.team.id == awayTeamId } ?: list.getOrNull(1)
+
+                                val homeStats = homeStatsItem?.statistics ?: emptyList()
+                                val awayStats = awayStatsItem?.statistics ?: emptyList()
+
+                                fun getStatValue(stats: List<com.livescore.football.livescores.footballscores.data.remote.model.StatEntryDto>, vararg keys: String): Int {
+                                    val entry = stats.find { s ->
+                                        keys.any { k ->
+                                            s.type.equals(k, ignoreCase = true) ||
+                                            s.type.contains(k, ignoreCase = true) ||
+                                            k.contains(s.type, ignoreCase = true)
+                                        }
+                                    }?.value
                                     return when (entry) {
                                         is Double -> entry.toInt()
                                         is Float -> entry.toInt()
-                                        is String -> entry.replace("%", "").toIntOrNull() ?: 0
+                                        is String -> entry.replace("%", "").trim().toIntOrNull() ?: 0
                                         else -> (entry as? Number)?.toInt() ?: 0
                                     }
                                 }
 
-                                val hp = getStatValue(homeStats, "Ball Possession")
-                                val ap = getStatValue(awayStats, "Ball Possession")
+                                val hp = getStatValue(homeStats, "Ball Possession", "Possession", "possession_pct")
+                                val ap = getStatValue(awayStats, "Ball Possession", "Possession", "possession_pct")
                                 binding.layoutStats.tvStatHomePossession.text = "$hp%"
                                 binding.layoutStats.tvStatAwayPossession.text = "$ap%"
                                 binding.layoutStats.progressHomePossession.progress = hp
                                 binding.layoutStats.progressAwayPossession.progress = ap
 
-                                 val hs = getStatValue(homeStats, "Total Shots")
-                                 val asShots = getStatValue(awayStats, "Total Shots")
-                                 binding.layoutStats.tvStatHomeShots.text = hs.toString()
-                                 binding.layoutStats.tvStatAwayShots.text = asShots.toString()
-                                 val totalShots = hs + asShots
-                                 binding.layoutStats.progressHomeShots.progress = if (totalShots > 0) (hs * 100) / totalShots else 50
-                                 binding.layoutStats.progressAwayShots.progress = if (totalShots > 0) (asShots * 100) / totalShots else 50
+                                val hs = getStatValue(homeStats, "Total Shots", "Shots", "shots_total")
+                                val asShots = getStatValue(awayStats, "Total Shots", "Shots", "shots_total")
+                                binding.layoutStats.tvStatHomeShots.text = hs.toString()
+                                binding.layoutStats.tvStatAwayShots.text = asShots.toString()
+                                val totalShots = hs + asShots
+                                binding.layoutStats.progressHomeShots.progress = if (totalShots > 0) (hs * 100) / totalShots else 50
+                                binding.layoutStats.progressAwayShots.progress = if (totalShots > 0) (asShots * 100) / totalShots else 50
 
-                                 val hst = getStatValue(homeStats, "Shots on Target")
-                                 val ast = getStatValue(awayStats, "Shots on Target")
-                                 binding.layoutStats.tvStatHomeShotsTarget.text = hst.toString()
-                                 binding.layoutStats.tvStatAwayShotsTarget.text = ast.toString()
-                                 val totalShotsTarget = hst + ast
-                                 binding.layoutStats.progressHomeShotsTarget.progress = if (totalShotsTarget > 0) (hst * 100) / totalShotsTarget else 50
-                                 binding.layoutStats.progressAwayShotsTarget.progress = if (totalShotsTarget > 0) (ast * 100) / totalShotsTarget else 50
+                                val hst = getStatValue(homeStats, "Shots on Target", "Shots on Goal", "shots_on_target")
+                                val ast = getStatValue(awayStats, "Shots on Target", "Shots on Goal", "shots_on_target")
+                                binding.layoutStats.tvStatHomeShotsTarget.text = hst.toString()
+                                binding.layoutStats.tvStatAwayShotsTarget.text = ast.toString()
+                                val totalShotsTarget = hst + ast
+                                binding.layoutStats.progressHomeShotsTarget.progress = if (totalShotsTarget > 0) (hst * 100) / totalShotsTarget else 50
+                                binding.layoutStats.progressAwayShotsTarget.progress = if (totalShotsTarget > 0) (ast * 100) / totalShotsTarget else 50
 
-                                 // Shots off Goal
-                                 val hso = getStatValue(homeStats, "Shots off Goal")
-                                 val aso = getStatValue(awayStats, "Shots off Goal")
-                                 binding.layoutStats.tvStatHomeShotsOffTarget.text = hso.toString()
-                                 binding.layoutStats.tvStatAwayShotsOffTarget.text = aso.toString()
-                                 val totalSo = hso + aso
-                                 binding.layoutStats.progressHomeShotsOffTarget.progress = if (totalSo > 0) (hso * 100) / totalSo else 50
-                                 binding.layoutStats.progressAwayShotsOffTarget.progress = if (totalSo > 0) (aso * 100) / totalSo else 50
+                                val hso = getStatValue(homeStats, "Shots off Goal", "Shots off Target", "shots_off_target")
+                                val aso = getStatValue(awayStats, "Shots off Goal", "Shots off Target", "shots_off_target")
+                                binding.layoutStats.tvStatHomeShotsOffTarget.text = hso.toString()
+                                binding.layoutStats.tvStatAwayShotsOffTarget.text = aso.toString()
+                                val totalSo = hso + aso
+                                binding.layoutStats.progressHomeShotsOffTarget.progress = if (totalSo > 0) (hso * 100) / totalSo else 50
+                                binding.layoutStats.progressAwayShotsOffTarget.progress = if (totalSo > 0) (aso * 100) / totalSo else 50
 
-                                 // Blocked Shots
-                                 val hbs = getStatValue(homeStats, "Blocked Shots")
-                                 val abs = getStatValue(awayStats, "Blocked Shots")
-                                 binding.layoutStats.tvStatHomeBlockedShots.text = hbs.toString()
-                                 binding.layoutStats.tvStatAwayBlockedShots.text = abs.toString()
-                                 val totalBs = hbs + abs
-                                 binding.layoutStats.progressHomeBlockedShots.progress = if (totalBs > 0) (hbs * 100) / totalBs else 50
-                                 binding.layoutStats.progressAwayBlockedShots.progress = if (totalBs > 0) (abs * 100) / totalBs else 50
+                                val hbs = getStatValue(homeStats, "Blocked Shots", "blocked_shots")
+                                val abs = getStatValue(awayStats, "Blocked Shots", "blocked_shots")
+                                binding.layoutStats.tvStatHomeBlockedShots.text = hbs.toString()
+                                binding.layoutStats.tvStatAwayBlockedShots.text = abs.toString()
+                                val totalBs = hbs + abs
+                                binding.layoutStats.progressHomeBlockedShots.progress = if (totalBs > 0) (hbs * 100) / totalBs else 50
+                                binding.layoutStats.progressAwayBlockedShots.progress = if (totalBs > 0) (abs * 100) / totalBs else 50
 
-                                 // Shots insidebox
-                                 val hsib = getStatValue(homeStats, "Shots insidebox")
-                                 val asib = getStatValue(awayStats, "Shots insidebox")
-                                 binding.layoutStats.tvStatHomeShotsInsideBox.text = hsib.toString()
-                                 binding.layoutStats.tvStatAwayShotsInsideBox.text = asib.toString()
-                                 val totalSib = hsib + asib
-                                 binding.layoutStats.progressHomeShotsInsideBox.progress = if (totalSib > 0) (hsib * 100) / totalSib else 50
-                                 binding.layoutStats.progressAwayShotsInsideBox.progress = if (totalSib > 0) (asib * 100) / totalSib else 50
+                                val hsib = getStatValue(homeStats, "Shots insidebox", "inside_box")
+                                val asib = getStatValue(awayStats, "Shots insidebox", "inside_box")
+                                binding.layoutStats.tvStatHomeShotsInsideBox.text = hsib.toString()
+                                binding.layoutStats.tvStatAwayShotsInsideBox.text = asib.toString()
+                                val totalSib = hsib + asib
+                                binding.layoutStats.progressHomeShotsInsideBox.progress = if (totalSib > 0) (hsib * 100) / totalSib else 50
+                                binding.layoutStats.progressAwayShotsInsideBox.progress = if (totalSib > 0) (asib * 100) / totalSib else 50
 
-                                 // Shots outsidebox
-                                 val hsob = getStatValue(homeStats, "Shots outsidebox")
-                                 val asob = getStatValue(awayStats, "Shots outsidebox")
-                                 binding.layoutStats.tvStatHomeShotsOutsideBox.text = hsob.toString()
-                                 binding.layoutStats.tvStatAwayShotsOutsideBox.text = asob.toString()
-                                 val totalSob = hsob + asob
-                                 binding.layoutStats.progressHomeShotsOutsideBox.progress = if (totalSob > 0) (hsob * 100) / totalSob else 50
-                                 binding.layoutStats.progressAwayShotsOutsideBox.progress = if (totalSob > 0) (asob * 100) / totalSob else 50
+                                val hsob = getStatValue(homeStats, "Shots outsidebox", "outside_box")
+                                val asob = getStatValue(awayStats, "Shots outsidebox", "outside_box")
+                                binding.layoutStats.tvStatHomeShotsOutsideBox.text = hsob.toString()
+                                binding.layoutStats.tvStatAwayShotsOutsideBox.text = asob.toString()
+                                val totalSob = hsob + asob
+                                binding.layoutStats.progressHomeShotsOutsideBox.progress = if (totalSob > 0) (hsob * 100) / totalSob else 50
+                                binding.layoutStats.progressAwayShotsOutsideBox.progress = if (totalSob > 0) (asob * 100) / totalSob else 50
 
-                                 val hc = getStatValue(homeStats, "Corner Kicks")
-                                 val ac = getStatValue(awayStats, "Corner Kicks")
-                                 binding.layoutStats.tvStatHomeCorners.text = hc.toString()
-                                 binding.layoutStats.tvStatAwayCorners.text = ac.toString()
-                                 val totalCorners = hc + ac
-                                 binding.layoutStats.progressHomeCorners.progress = if (totalCorners > 0) (hc * 100) / totalCorners else 50
-                                 binding.layoutStats.progressAwayCorners.progress = if (totalCorners > 0) (ac * 100) / totalCorners else 50
+                                val hc = getStatValue(homeStats, "Corner Kicks", "Corners", "corner_kicks")
+                                val ac = getStatValue(awayStats, "Corner Kicks", "Corners", "corner_kicks")
+                                binding.layoutStats.tvStatHomeCorners.text = hc.toString()
+                                binding.layoutStats.tvStatAwayCorners.text = ac.toString()
+                                val totalCorners = hc + ac
+                                binding.layoutStats.progressHomeCorners.progress = if (totalCorners > 0) (hc * 100) / totalCorners else 50
+                                binding.layoutStats.progressAwayCorners.progress = if (totalCorners > 0) (ac * 100) / totalCorners else 50
 
-                                 // Offsides
-                                 val ho = getStatValue(homeStats, "Offsides")
-                                 val ao = getStatValue(awayStats, "Offsides")
-                                 binding.layoutStats.tvStatHomeOffsides.text = ho.toString()
-                                 binding.layoutStats.tvStatAwayOffsides.text = ao.toString()
-                                 val totalO = ho + ao
-                                 binding.layoutStats.progressHomeOffsides.progress = if (totalO > 0) (ho * 100) / totalO else 50
-                                 binding.layoutStats.progressAwayOffsides.progress = if (totalO > 0) (ao * 100) / totalO else 50
+                                val ho = getStatValue(homeStats, "Offsides", "offsides")
+                                val ao = getStatValue(awayStats, "Offsides", "offsides")
+                                binding.layoutStats.tvStatHomeOffsides.text = ho.toString()
+                                binding.layoutStats.tvStatAwayOffsides.text = ao.toString()
+                                val totalO = ho + ao
+                                binding.layoutStats.progressHomeOffsides.progress = if (totalO > 0) (ho * 100) / totalO else 50
+                                binding.layoutStats.progressAwayOffsides.progress = if (totalO > 0) (ao * 100) / totalO else 50
 
-                                 // Fouls
-                                 val hf = getStatValue(homeStats, "Fouls")
-                                 val af = getStatValue(awayStats, "Fouls")
-                                 binding.layoutStats.tvStatHomeFouls.text = hf.toString()
-                                 binding.layoutStats.tvStatAwayFouls.text = af.toString()
-                                 val totalF = hf + af
-                                 binding.layoutStats.progressHomeFouls.progress = if (totalF > 0) (hf * 100) / totalF else 50
-                                 binding.layoutStats.progressAwayFouls.progress = if (totalF > 0) (af * 100) / totalF else 50
+                                val hf = getStatValue(homeStats, "Fouls", "fouls")
+                                val af = getStatValue(awayStats, "Fouls", "fouls")
+                                binding.layoutStats.tvStatHomeFouls.text = hf.toString()
+                                binding.layoutStats.tvStatAwayFouls.text = af.toString()
+                                val totalF = hf + af
+                                binding.layoutStats.progressHomeFouls.progress = if (totalF > 0) (hf * 100) / totalF else 50
+                                binding.layoutStats.progressAwayFouls.progress = if (totalF > 0) (af * 100) / totalF else 50
 
-                                 // Yellow Cards
-                                 val hy = getStatValue(homeStats, "Yellow Cards")
-                                 val ay = getStatValue(awayStats, "Yellow Cards")
-                                 binding.layoutStats.tvStatHomeYellowCards.text = hy.toString()
-                                 binding.layoutStats.tvStatAwayYellowCards.text = ay.toString()
-                                 val totalY = hy + ay
-                                 binding.layoutStats.progressHomeYellowCards.progress = if (totalY > 0) (hy * 100) / totalY else 50
-                                 binding.layoutStats.progressAwayYellowCards.progress = if (totalY > 0) (ay * 100) / totalY else 50
+                                val hy = getStatValue(homeStats, "Yellow Cards", "yellow_cards")
+                                val ay = getStatValue(awayStats, "Yellow Cards", "yellow_cards")
+                                binding.layoutStats.tvStatHomeYellowCards.text = hy.toString()
+                                binding.layoutStats.tvStatAwayYellowCards.text = ay.toString()
+                                val totalY = hy + ay
+                                binding.layoutStats.progressHomeYellowCards.progress = if (totalY > 0) (hy * 100) / totalY else 50
+                                binding.layoutStats.progressAwayYellowCards.progress = if (totalY > 0) (ay * 100) / totalY else 50
 
-                                 // Red Cards
-                                 val hr = getStatValue(homeStats, "Red Cards")
-                                 val ar = getStatValue(awayStats, "Red Cards")
-                                 binding.layoutStats.tvStatHomeRedCards.text = hr.toString()
-                                 binding.layoutStats.tvStatAwayRedCards.text = ar.toString()
-                                 val totalR = hr + ar
-                                 binding.layoutStats.progressHomeRedCards.progress = if (totalR > 0) (hr * 100) / totalR else 0
-                                 binding.layoutStats.progressAwayRedCards.progress = if (totalR > 0) (ar * 100) / totalR else 0
+                                val hr = getStatValue(homeStats, "Red Cards", "red_cards")
+                                val ar = getStatValue(awayStats, "Red Cards", "red_cards")
+                                binding.layoutStats.tvStatHomeRedCards.text = hr.toString()
+                                binding.layoutStats.tvStatAwayRedCards.text = ar.toString()
+                                val totalR = hr + ar
+                                binding.layoutStats.progressHomeRedCards.progress = if (totalR > 0) (hr * 100) / totalR else 0
+                                binding.layoutStats.progressAwayRedCards.progress = if (totalR > 0) (ar * 100) / totalR else 0
 
-                                 // Goalkeeper Saves
-                                 val hgs = getStatValue(homeStats, "Goalkeeper Saves")
-                                 val ags = getStatValue(awayStats, "Goalkeeper Saves")
-                                 binding.layoutStats.tvStatHomeSaves.text = hgs.toString()
-                                 binding.layoutStats.tvStatAwaySaves.text = ags.toString()
-                                 val totalS = hgs + ags
-                                 binding.layoutStats.progressHomeSaves.progress = if (totalS > 0) (hgs * 100) / totalS else 50
-                                 binding.layoutStats.progressAwaySaves.progress = if (totalS > 0) (ags * 100) / totalS else 50
+                                val hgs = getStatValue(homeStats, "Goalkeeper Saves", "Saves", "goalkeeper_saves")
+                                val ags = getStatValue(awayStats, "Goalkeeper Saves", "Saves", "goalkeeper_saves")
+                                binding.layoutStats.tvStatHomeSaves.text = hgs.toString()
+                                binding.layoutStats.tvStatAwaySaves.text = ags.toString()
+                                val totalS = hgs + ags
+                                binding.layoutStats.progressHomeSaves.progress = if (totalS > 0) (hgs * 100) / totalS else 50
+                                binding.layoutStats.progressAwaySaves.progress = if (totalS > 0) (ags * 100) / totalS else 50
 
-                                 // Total Passes
-                                 val hpPasses = getStatValue(homeStats, "Total Passes")
-                                 val apPasses = getStatValue(awayStats, "Total Passes")
-                                 binding.layoutStats.tvStatHomePasses.text = hpPasses.toString()
-                                 binding.layoutStats.tvStatAwayPasses.text = apPasses.toString()
-                                 val totalP = hpPasses + apPasses
-                                 binding.layoutStats.progressHomePasses.progress = if (totalP > 0) (hpPasses * 100) / totalP else 50
-                                 binding.layoutStats.progressAwayPasses.progress = if (totalP > 0) (apPasses * 100) / totalP else 50
+                                val hpPasses = getStatValue(homeStats, "Total Passes", "Passes", "total_passes")
+                                val apPasses = getStatValue(awayStats, "Total Passes", "Passes", "total_passes")
+                                binding.layoutStats.tvStatHomePasses.text = hpPasses.toString()
+                                binding.layoutStats.tvStatAwayPasses.text = apPasses.toString()
+                                val totalP = hpPasses + apPasses
+                                binding.layoutStats.progressHomePasses.progress = if (totalP > 0) (hpPasses * 100) / totalP else 50
+                                binding.layoutStats.progressAwayPasses.progress = if (totalP > 0) (apPasses * 100) / totalP else 50
 
-                                 // Passes accurate
-                                 val hpa = getStatValue(homeStats, "Passes accurate")
-                                 val apa = getStatValue(awayStats, "Passes accurate")
-                                 binding.layoutStats.tvStatHomePassesAccurate.text = hpa.toString()
-                                 binding.layoutStats.tvStatAwayPassesAccurate.text = apa.toString()
-                                 val totalPa = hpa + apa
-                                 binding.layoutStats.progressHomePassesAccurate.progress = if (totalPa > 0) (hpa * 100) / totalPa else 50
-                                 binding.layoutStats.progressAwayPassesAccurate.progress = if (totalPa > 0) (apa * 100) / totalPa else 50
+                                val hpa = getStatValue(homeStats, "Passes accurate", "Accurate Passes", "passes_accurate")
+                                val apa = getStatValue(awayStats, "Passes accurate", "Accurate Passes", "passes_accurate")
+                                binding.layoutStats.tvStatHomePassesAccurate.text = hpa.toString()
+                                binding.layoutStats.tvStatAwayPassesAccurate.text = apa.toString()
+                                val totalPa = hpa + apa
+                                binding.layoutStats.progressHomePassesAccurate.progress = if (totalPa > 0) (hpa * 100) / totalPa else 50
+                                binding.layoutStats.progressAwayPassesAccurate.progress = if (totalPa > 0) (apa * 100) / totalPa else 50
                             }
                         }
 
                         // Submit lineups lists
                         state.lineups.let { lineups ->
-                            if (lineups.size >= 2) {
-                                binding.layoutLineups.tvHomeFormation.text = lineups[0].formation ?: ""
-                                binding.layoutLineups.tvAwayFormation.text = lineups[1].formation ?: ""
-                                lineupAdapter.submitLineups(lineups[0].startXI, lineups[1].startXI)
+                            if (lineups.isNotEmpty()) {
+                                val homeTeamId = state.detail?.teams?.home?.id
+                                val awayTeamId = state.detail?.teams?.away?.id
+
+                                val homeLineup = lineups.find { it.team.id == homeTeamId } ?: lineups.getOrNull(0)
+                                val awayLineup = lineups.find { it.team.id == awayTeamId } ?: lineups.getOrNull(1)
+
+                                binding.layoutLineups.tvHomeFormation.text = homeLineup?.formation ?: ""
+                                binding.layoutLineups.tvAwayFormation.text = awayLineup?.formation ?: ""
+                                lineupAdapter.submitLineups(homeLineup?.startXI ?: emptyList(), awayLineup?.startXI ?: emptyList())
                             }
                         }
 

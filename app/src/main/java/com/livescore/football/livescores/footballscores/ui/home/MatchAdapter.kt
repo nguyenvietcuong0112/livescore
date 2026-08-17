@@ -130,16 +130,7 @@ class MatchAdapter(
                 Glide.with(binding.root.context).load(match.awayTeamLogo).into(binding.ivAwayLogoUpcoming)
 
                 // Bind favorite icon state
-                val isFav = item.isFavorite
-                binding.ivFavoriteUpcoming.setImageResource(
-                    if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border
-                )
-                binding.ivFavoriteUpcoming.setColorFilter(
-                    ContextCompat.getColor(
-                        binding.ivFavoriteUpcoming.context,
-                        if (isFav) R.color.primaryRed else R.color.text_muted
-                    )
-                )
+                binding.ivFavoriteUpcoming.visibility = View.GONE
 
                 // Bind reminder icon state (only visible for upcoming matches in the future)
                 val isUpcomingFuture = isUpcoming && (match.dateTimestamp * 1000 > System.currentTimeMillis())
@@ -240,21 +231,7 @@ class MatchAdapter(
                 }
 
                 // Bind favorite icon state
-                val isFav = item.isFavorite
-                binding.ivFavorite.setImageResource(
-                    if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border
-                )
-                binding.ivFavorite.setColorFilter(
-                    ContextCompat.getColor(
-                        binding.ivFavorite.context,
-                        if (isFav) {
-                            R.color.primaryRed
-                        } else {
-                            R.color.text_muted
-                        }
-                    )
-                )
-                binding.ivFavorite.visibility = if (showFavoriteInStandardLayout) View.VISIBLE else View.GONE
+                binding.ivFavorite.visibility = View.GONE
 
                 // Bind reminder icon state (only visible for upcoming matches in the future)
                 val isUpcomingFuture = isUpcomingStatus && (match.dateTimestamp * 1000 > System.currentTimeMillis())

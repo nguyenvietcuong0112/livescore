@@ -54,7 +54,7 @@
     <string name="language_changed_toast">Idioma actualizado a %1$s</string>
     <string name="splash_app_title">LIVESCORE</string>
     <string name="splash_subtitle">CENTRO DE DEPORTES PREMIUM</string>
-    <string name="tab_matches">PARTIDOS</string>
+    <string name="tab_matches">Partidos</string>
     <string name="tab_leagues">LIGAS</string>
     <string name="empty_fixtures">No se encontraron partidos</string>
     <string name="tab_standings">CLASIFICACIÓN</string>
@@ -149,7 +149,7 @@
     <string name="permission_confirm">Confirmar</string>
 
     <!-- Extracted Layout & Code Strings -->
-    <string name="leagues_header_title">CENTRO DE LIGAS</string>
+    <string name="leagues_header_title">Centro de Ligas</string>
     <string name="leagues_header_desc">Clasificaciones y máximos goleadores en tiempo real</string>
     <string name="toast_share_match_failed">Error al compartir información del partido</string>
     <string name="toast_select_language_continue">Por favor selecciona un idioma para continuar</string>
@@ -242,7 +242,7 @@
     <string name="exit_confirm_cancel">STAY</string>
     <string name="exit_confirm_exit">EXIT</string>
     <string name="tab_match">PARTIDO</string>
-    <string name="tab_prediction">Predicción IA</string>
+    <string name="tab_prediction">Supercomputadora</string>
     <string name="prediction_locked_title">PREDICCIÓN IA VIP</string>
     <string name="prediction_locked_desc">Desbloquea Premium para acceder a análisis profesional de partidos con IA, probabilidad de victoria, sugerencias de más/menos y tácticas detalladas.</string>
     <string name="ai_win_probability">PROBABILIDAD DE VICTORIA</string>
@@ -326,4 +326,26 @@
     <string name="empty_finished_fixtures">No hay partidos finalizados hoy</string>
     <string name="btn_score_prediction">PREDICCIÓN DE MARCADOR</string>
     <string name="supercomputer_prediction">Predicción de la Supercomputadora</string>
+
+    <!-- News & Team Fixtures -->
+    <string name="news_category_all">Todos</string>
+    <string name="news_category_transfers">Fichajes</string>
+    <string name="news_category_world_cup">Copa del Mundo</string>
+    <string name="news_category_premier_league">Premier League</string>
+    <string name="news_category_champions_league">Champions League</string>
+    <string name="news_no_data">No hay noticias disponibles</string>
+    <string name="news_no_data_category">No se encontraron noticias para esta categoría.</string>
+    <string name="news_share_title">Compartir noticia</string>
+    <string name="team_fixtures_title">Partidos del equipo</string>
+    <string name="team_fixtures_filter_last_5">Últimos 5</string>
+    <string name="team_fixtures_filter_last_10">Últimos 10</string>
+    <string name="team_fixtures_filter_last_15">Últimos 15</string>
+    <string name="team_fixtures_filter_last_20">Últimos 20</string>
+    <string name="team_fixtures_wins">Victorias</string>
+    <string name="team_fixtures_draws">Empates</string>
+    <string name="team_fixtures_losses">Derrotas</string>
+    <string name="team_fixtures_no_data">No hay partidos para este equipo.</string>
+    <string name="team_fixtures_invalid_id">ID de equipo no válido</string>
+    <string name="btn_retry">Reintentar</string>
+
 </resources>

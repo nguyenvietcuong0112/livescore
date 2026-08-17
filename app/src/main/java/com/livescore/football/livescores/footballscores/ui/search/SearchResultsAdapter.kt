@@ -145,15 +145,7 @@ class SearchResultsAdapter(
                 .into(binding.ivAwayLogo)
 
             // Favorite match status
-            binding.ivFavorite.setImageResource(
-                if (item.isFavorite) R.drawable.ic_favorite else R.drawable.ic_favorite_border
-            )
-            binding.ivFavorite.setColorFilter(
-                ContextCompat.getColor(
-                    binding.ivFavorite.context,
-                    if (item.isFavorite) R.color.primaryRed else R.color.text_muted
-                )
-            )
+            binding.ivFavorite.visibility = View.GONE
 
             binding.layoutMatchDetailsClick.setOnClickListener {
                 onMatchClick(match)

@@ -54,7 +54,7 @@
     <string name="language_changed_toast">Dil %1$s olarak güncellendi</string>
     <string name="splash_app_title">LIVESCORE</string>
     <string name="splash_subtitle">PREMIUM SPOR MERKEZİ</string>
-    <string name="tab_matches">MAÇLAR</string>
+    <string name="tab_matches">Maçlar</string>
     <string name="tab_leagues">LİGLER</string>
     <string name="empty_fixtures">Maç bulunamadı</string>
     <string name="tab_standings">PUAN DURUMU</string>
@@ -148,7 +148,7 @@
     <string name="permission_confirm">Onayla</string>
 
     <!-- Extracted Layout & Code Strings -->
-    <string name="leagues_header_title">LİG MERKEZİ</string>
+    <string name="leagues_header_title">Lig Merkezi</string>
     <string name="leagues_header_desc">Gerçek zamanlı puan durumları ve gol krallığı</string>
     <string name="toast_share_match_failed">Maç bilgileri paylaşılamadı</string>
     <string name="toast_select_language_continue">Devam etmek için lütfen bir dil seçin</string>
@@ -240,7 +240,7 @@
 
     <!-- AI Prediction Feature -->
     <string name="tab_match">MAÇ</string>
-    <string name="tab_prediction">Yapay Zeka Analizi</string>
+    <string name="tab_prediction">Süper Bilgisayar</string>
     <string name="prediction_locked_title">YAPAY ZEKA ANALİZİ VIP</string>
     <string name="prediction_locked_desc">Profesyonel yapay zeka analizine, galibiyet ihtimaline, alt/üst önerilerine ve detaylı taktik dizilişlere erişmek için Premium\'u açın.</string>
     <string name="ai_win_probability">GALİBİYET İHTİMALİ</string>
@@ -325,4 +325,26 @@
     <string name="empty_upcoming_fixtures">Bugün için planlanmış maç yok</string>
     <string name="empty_finished_fixtures">Bugün tamamlanan maç yok</string>
     <string name="supercomputer_prediction">Süper Bilgisayar Tahmini</string>
+
+    <!-- News & Team Fixtures -->
+    <string name="news_category_all">Tümü</string>
+    <string name="news_category_transfers">Transferler</string>
+    <string name="news_category_world_cup">Dünya Kupası</string>
+    <string name="news_category_premier_league">Premier League</string>
+    <string name="news_category_champions_league">Şampiyonlar Ligi</string>
+    <string name="news_no_data">Haber bulunamadı</string>
+    <string name="news_no_data_category">Bu kategori için haber bulunamadı.</string>
+    <string name="news_share_title">Haberi Paylaş</string>
+    <string name="team_fixtures_title">Takım Maçları</string>
+    <string name="team_fixtures_filter_last_5">Son 5</string>
+    <string name="team_fixtures_filter_last_10">Son 10</string>
+    <string name="team_fixtures_filter_last_15">Son 15</string>
+    <string name="team_fixtures_filter_last_20">Son 20</string>
+    <string name="team_fixtures_wins">Galibiyet</string>
+    <string name="team_fixtures_draws">Beraberlik</string>
+    <string name="team_fixtures_losses">Mağlubiyet</string>
+    <string name="team_fixtures_no_data">Bu takım için maç bulunamadı.</string>
+    <string name="team_fixtures_invalid_id">Geçersiz Takım Kimliği</string>
+    <string name="btn_retry">Tekrar Dene</string>
+
 </resources>

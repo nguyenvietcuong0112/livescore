@@ -143,4 +143,8 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
     </style>
+
+    <style name="ShapeAppearanceOverlay.App.Corner8" parent="">
+        <item name="cornerSize">8dp</item>
+    </style>
 </resources>

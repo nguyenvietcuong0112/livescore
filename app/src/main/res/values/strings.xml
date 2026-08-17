@@ -64,7 +64,7 @@
     <string name="splash_ads_warning">This action can contain ads</string>
     
     <!-- Home Screen -->
-    <string name="tab_matches">MATCHES</string>
+    <string name="tab_matches">Matches</string>
     <string name="tab_leagues">LEAGUES</string>
     <string name="empty_fixtures">No data record</string>
     <string name="empty_live_fixtures">No live matches currently</string>
@@ -139,7 +139,7 @@
     <string name="wc26_view_now">VIEW NOW ➔</string>
     <string name="wc26_general_news">📰 GENERAL NEWS</string>
     <string name="wc26_general_news_desc">View all sports events, transfers &amp; league news in the last 24 hours</string>
-    <string name="league_center_title">LEAGUE CENTER</string>
+    <string name="league_center_title">League Center</string>
     <string name="league_center_subtitle">Global standings &amp; stats</string>
     <string name="tab_scorers">SCORERS</string>
     <string name="tab_assists">ASSISTS</string>
@@ -261,7 +261,7 @@
     <string name="permission_confirm">Confirm</string>
 
     <!-- Extracted Layout & Code Strings -->
-    <string name="leagues_header_title">LEAGUE CENTER</string>
+    <string name="leagues_header_title">League Center</string>
     <string name="leagues_header_desc">Real-time Standings and Top Performers</string>
     <string name="leagues_col_rank">#</string>
     <string name="toast_share_match_failed">Failed to share match info</string>
@@ -310,7 +310,7 @@
 
     <!-- AI Prediction Feature -->
     <string name="tab_match">MATCH</string>
-    <string name="tab_prediction">AI Prediction</string>
+    <string name="tab_prediction">Supercomputer</string>
     <string name="prediction_locked_title">AI PREDICTION VIP</string>
     <string name="prediction_locked_desc">Unlock Premium to access professional AI match analysis, win probability, over/under suggestions, and detailed tactical setups.</string>
     <string name="ai_win_probability">WIN PROBABILITY</string>
@@ -362,5 +362,26 @@
     <string name="title_key_predictions">Key Predictions</string>
     <string name="btn_score_prediction">SCORE PREDICTION</string>
     <string name="supercomputer_prediction">Supercomputer\'s Prediction</string>
+
+    <!-- News & Team Fixtures -->
+    <string name="news_category_all">All</string>
+    <string name="news_category_transfers">Transfers</string>
+    <string name="news_category_world_cup">World Cup</string>
+    <string name="news_category_premier_league">Premier League</string>
+    <string name="news_category_champions_league">Champions League</string>
+    <string name="news_no_data">No news available</string>
+    <string name="news_no_data_category">No news found for this category.</string>
+    <string name="news_share_title">Share News</string>
+    <string name="team_fixtures_title">Team Fixtures</string>
+    <string name="team_fixtures_filter_last_5">Last 5</string>
+    <string name="team_fixtures_filter_last_10">Last 10</string>
+    <string name="team_fixtures_filter_last_15">Last 15</string>
+    <string name="team_fixtures_filter_last_20">Last 20</string>
+    <string name="team_fixtures_wins">Wins</string>
+    <string name="team_fixtures_draws">Draws</string>
+    <string name="team_fixtures_losses">Losses</string>
+    <string name="team_fixtures_no_data">No fixtures found for this team.</string>
+    <string name="team_fixtures_invalid_id">Invalid team ID</string>
+    <string name="btn_retry">Retry</string>
 
 </resources>

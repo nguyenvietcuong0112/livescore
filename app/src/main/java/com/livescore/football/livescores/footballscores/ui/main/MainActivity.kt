@@ -19,13 +19,12 @@ import com.livescore.football.livescores.footballscores.data.local.RequestLimitM
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.livescore.football.livescores.footballscores.databinding.ActivityMainBinding
 import com.livescore.football.livescores.footballscores.ui.custom.PremiumPaywallDialog
-import com.livescore.football.livescores.footballscores.ui.favorite.FavoriteFragment
 import com.livescore.football.livescores.footballscores.ui.home.HomeFragment
 import com.livescore.football.livescores.footballscores.ui.leagues.LeaguesFragment
+import com.livescore.football.livescores.footballscores.ui.news.NewsFragment
 import com.livescore.football.livescores.footballscores.ui.iap.IAPActivity
-import com.livescore.football.livescores.footballscores.ui.profile.ProfileFragment
+import com.livescore.football.livescores.footballscores.ui.profile.ProfileActivity
 import com.livescore.football.livescores.footballscores.ui.search.SearchActivity
-import com.livescore.football.livescores.footballscores.ui.wc26.WC26Fragment
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
 import com.livescore.football.livescores.footballscores.utils.LogEvent
 import com.mallegan.ads.callback.NativeCallback
@@ -99,14 +98,9 @@ class MainActivity : BaseActivity() {
 
         binding.frAdsBanner.bringToFront()
         binding.frAdsCollap.bringToFront()
-        binding.btnFloatingWc.bringToFront()
 
-        binding.searchIcon.setOnClickListener {
-            startActivity(Intent(this, SearchActivity::class.java))
-        }
-
-        binding.btnFloatingWc.setOnClickListener {
-            binding.bottomNavigation.selectedItemId = R.id.nav_wc26
+        binding.btnSettings.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
 
         val isDeepLinkHandled = handleDeepLinkIntent(intent)
@@ -131,9 +125,7 @@ class MainActivity : BaseActivity() {
             val isSameFragment = when (item.itemId) {
                 R.id.nav_live -> currentFragment is HomeFragment
                 R.id.nav_leagues -> currentFragment is LeaguesFragment
-                R.id.nav_wc26 -> currentFragment is WC26Fragment
-                R.id.nav_favorite -> currentFragment is FavoriteFragment
-                R.id.nav_profile -> currentFragment is ProfileFragment
+                R.id.nav_news -> currentFragment is NewsFragment
                 else -> false
             }
             if (isSameFragment && activeTabId == item.itemId) {
@@ -145,9 +137,7 @@ class MainActivity : BaseActivity() {
             val fragment = when (item.itemId) {
                 R.id.nav_live -> HomeFragment.Companion.newInstance(false)
                 R.id.nav_leagues -> LeaguesFragment.newInstance()
-                R.id.nav_wc26 -> WC26Fragment()
-                R.id.nav_favorite -> FavoriteFragment()
-                R.id.nav_profile -> ProfileFragment()
+                R.id.nav_news -> NewsFragment.newInstance()
                 else -> null
             }
             if (fragment != null) {
@@ -333,7 +323,6 @@ class MainActivity : BaseActivity() {
                     .inflate(R.layout.layout_native_home_collapse, null) as NativeAdView
 
                 binding.bottomNavigation.visibility = View.GONE
-                binding.btnFloatingWc.visibility = View.GONE
 
                 binding.frAdsCollap.removeAllViews()
 
@@ -343,8 +332,6 @@ class MainActivity : BaseActivity() {
                 closeButton?.setOnClickListener {
                     binding.frAdsCollap.removeAllViews()
                     binding.bottomNavigation.visibility = View.VISIBLE
-                    binding.btnFloatingWc.visibility = View.VISIBLE
-                    binding.btnFloatingWc.bringToFront()
                     loadNativeBanner()
                 }
 
@@ -360,10 +347,8 @@ class MainActivity : BaseActivity() {
                 )
                 binding.frAdsCollap.removeAllViews()
 
-                // Show bottom navigation and floating button again if ad fails to load
+                // Show bottom navigation again if ad fails to load
                 binding.bottomNavigation.visibility = View.VISIBLE
-                binding.btnFloatingWc.visibility = View.VISIBLE
-                binding.btnFloatingWc.bringToFront()
             }
         })
     }
@@ -400,8 +385,6 @@ class MainActivity : BaseActivity() {
                     .inflate(R.layout.layout_native_banner, null) as NativeAdView
 
                 binding.bottomNavigation.visibility = View.VISIBLE
-                binding.btnFloatingWc.visibility = View.VISIBLE
-                binding.btnFloatingWc.bringToFront()
 
                 binding.frAdsBanner.removeAllViews()
                 binding.frAdsBanner.addView(adView)
@@ -421,8 +404,6 @@ class MainActivity : BaseActivity() {
 
                 // Ensure navbar is visible if ad failed
                 binding.bottomNavigation.visibility = View.VISIBLE
-                binding.btnFloatingWc.visibility = View.VISIBLE
-                binding.btnFloatingWc.bringToFront()
 
                 onLoaded?.invoke()
             }
@@ -450,9 +431,8 @@ class MainActivity : BaseActivity() {
             
             val title = when (tabId) {
                 R.id.nav_leagues -> getString(R.string.leagues_header_title)
-                R.id.nav_wc26 -> getString(R.string.news_tag_world_cup)
-                R.id.nav_favorite -> getString(R.string.favorite_title)
-                R.id.nav_profile -> getString(R.string.profile_settings)
+                R.id.nav_news -> getString(R.string.nav_news)
+                R.id.btnSettings -> getString(R.string.profile_settings)
                 else -> getString(R.string.splash_app_title)
             }
             binding.logoText.text = title

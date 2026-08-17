@@ -12,10 +12,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.databinding.FragmentLeaguesBinding
 import com.livescore.football.livescores.footballscores.utils.bindScrollableChild
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import com.mallegan.ads.callback.NativeCallback
@@ -23,6 +25,7 @@ import com.mallegan.ads.util.Admob
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
+import com.livescore.football.livescores.footballscores.ui.team.TeamFixturesActivity
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -54,6 +57,7 @@ class LeaguesFragment : Fragment() {
     private lateinit var leagueSelectorAdapter: LeagueSelectorAdapter
     private lateinit var standingsAdapter: StandingsAdapter
     private lateinit var wcGroupsAdapter: WcGroupsAdapter
+    private lateinit var leagueMatchesAdapter: LeagueMatchesAdapter
     private lateinit var topScorersAdapter: TopStatsAdapter
     private lateinit var topAssistsAdapter: TopStatsAdapter
 
@@ -105,17 +109,54 @@ class LeaguesFragment : Fragment() {
 
         // Standings Adapter
         standingsAdapter = StandingsAdapter { row ->
-            // Handle team click if needed, or simple feedback
+            TeamFixturesActivity.startActivity(
+                context = requireContext(),
+                teamId = row.team.id,
+                teamName = row.team.name,
+                teamLogo = row.team.logo
+            )
+        }
+
+        // League Matches Adapter
+        leagueMatchesAdapter = LeagueMatchesAdapter { matchItem ->
+            val intent = android.content.Intent(requireContext(), com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity::class.java).apply {
+                putExtra("MATCH_ID", matchItem.fixture.id)
+                putExtra("fixture_id", matchItem.fixture.id)
+            }
+            val act = activity as? androidx.appcompat.app.AppCompatActivity
+            if (act != null) {
+                com.livescore.football.livescores.footballscores.utils.AdsConfig.showInterClickAd(act) {
+                    startActivity(intent)
+                }
+            } else {
+                startActivity(intent)
+            }
         }
 
         // Top Scorers Adapter
         topScorersAdapter = TopStatsAdapter(isAssists = false) { playerItem ->
-            // Handle player click if needed
+            val team = playerItem.statistics.firstOrNull()?.team
+            if (team != null && team.id > 0) {
+                TeamFixturesActivity.startActivity(
+                    context = requireContext(),
+                    teamId = team.id,
+                    teamName = team.name,
+                    teamLogo = team.logo
+                )
+            }
         }
 
         // Top Assists Adapter
         topAssistsAdapter = TopStatsAdapter(isAssists = true) { playerItem ->
-            // Handle player click if needed
+            val team = playerItem.statistics.firstOrNull()?.team
+            if (team != null && team.id > 0) {
+                TeamFixturesActivity.startActivity(
+                    context = requireContext(),
+                    teamId = team.id,
+                    teamName = team.name,
+                    teamLogo = team.logo
+                )
+            }
         }
 
         wcGroupsAdapter = WcGroupsAdapter()
@@ -124,10 +165,26 @@ class LeaguesFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        // Tab selection buttons
+        // Tab selection buttons (0: Standings, 1: Matches, 2: Top Scorers, 3: Top Assists)
         binding.btnStandings.setOnClickListener { viewModel.selectTab(0) }
-        binding.btnScorers.setOnClickListener { viewModel.selectTab(1) }
-        binding.btnAssists.setOnClickListener { viewModel.selectTab(2) }
+        binding.btnMatches.setOnClickListener { viewModel.selectTab(1) }
+        binding.btnScorers.setOnClickListener { viewModel.selectTab(2) }
+        binding.btnAssists.setOnClickListener { viewModel.selectTab(3) }
+
+        binding.rvLeaguesContent.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (viewModel.selectedTab.value == 1) {
+                    val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                    if (totalItemCount > 0 && lastVisibleItem >= totalItemCount - 5) {
+                        viewModel.loadMoreMatches()
+                    }
+                }
+            }
+        })
     }
 
     private fun observeViewModel() {
@@ -165,10 +222,19 @@ class LeaguesFragment : Fragment() {
                     }
                 }
 
+                // Observe League Matches State
+                launch {
+                    viewModel.matchesState.collect { state ->
+                        if (viewModel.selectedTab.value == 1) {
+                            renderMatchesState(state)
+                        }
+                    }
+                }
+
                 // Observe Top Scorers State
                 launch {
                     viewModel.topScorersState.collect { state ->
-                        if (viewModel.selectedTab.value == 1) {
+                        if (viewModel.selectedTab.value == 2) {
                             renderTopPlayersState(state, isAssists = false)
                         }
                     }
@@ -177,7 +243,7 @@ class LeaguesFragment : Fragment() {
                 // Observe Top Assists State
                 launch {
                     viewModel.topAssistsState.collect { state ->
-                        if (viewModel.selectedTab.value == 2) {
+                        if (viewModel.selectedTab.value == 3) {
                             renderTopPlayersState(state, isAssists = true)
                         }
                     }
@@ -195,19 +261,28 @@ class LeaguesFragment : Fragment() {
 
     private fun updateTabButtonsUI(selectedTab: Int) {
         val ctx = requireContext()
-        val buttons = listOf(binding.btnStandings, binding.btnScorers, binding.btnAssists)
-        buttons.forEach { it.strokeWidth = 0 }
+        val buttons = listOf(binding.btnStandings, binding.btnMatches, binding.btnScorers, binding.btnAssists)
+        buttons.forEach {
+            it.strokeWidth = 0
+            it.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
+        }
+
+        val activeBtn = when (selectedTab) {
+            0 -> binding.btnStandings
+            1 -> binding.btnMatches
+            2 -> binding.btnScorers
+            3 -> binding.btnAssists
+            else -> binding.btnStandings
+        }
+
+        activeBtn.apply {
+            strokeColor = ContextCompat.getColorStateList(ctx, R.color.accent_green)
+            strokeWidth = dpToPx(1f)
+            setTextColor(ContextCompat.getColor(ctx, R.color.accent_green))
+        }
 
         when (selectedTab) {
             0 -> {
-                binding.btnStandings.apply {
-                    strokeColor = ContextCompat.getColorStateList(ctx, R.color.accent_green)
-                    strokeWidth = dpToPx(1f)
-                    setTextColor(ContextCompat.getColor(ctx, R.color.accent_green))
-                }
-                binding.btnScorers.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
-                binding.btnAssists.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
-                
                 val isWc = viewModel.selectedLeagueId.value == 1
                 binding.layoutTableHeader.isVisible = !isWc
                 binding.rvLeaguesContent.adapter = if (isWc) wcGroupsAdapter else standingsAdapter
@@ -216,29 +291,20 @@ class LeaguesFragment : Fragment() {
                 renderStandingsState(viewModel.standingsState.value)
             }
             1 -> {
-                binding.btnScorers.apply {
-                    strokeColor = ContextCompat.getColorStateList(ctx, R.color.accent_green)
-                    strokeWidth = dpToPx(1f)
-                    setTextColor(ContextCompat.getColor(ctx, R.color.accent_green))
-                }
-                binding.btnStandings.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
-                binding.btnAssists.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
+                binding.layoutTableHeader.isVisible = false
+                binding.rvLeaguesContent.adapter = leagueMatchesAdapter
                 
+                // Re-render matches state
+                renderMatchesState(viewModel.matchesState.value)
+            }
+            2 -> {
                 binding.layoutTableHeader.isVisible = false
                 binding.rvLeaguesContent.adapter = topScorersAdapter
                 
                 // Re-render scorers state
                 renderTopPlayersState(viewModel.topScorersState.value, isAssists = false)
             }
-            2 -> {
-                binding.btnAssists.apply {
-                    strokeColor = ContextCompat.getColorStateList(ctx, R.color.accent_green)
-                    strokeWidth = dpToPx(1f)
-                    setTextColor(ContextCompat.getColor(ctx, R.color.accent_green))
-                }
-                binding.btnStandings.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
-                binding.btnScorers.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
-                
+            3 -> {
                 binding.layoutTableHeader.isVisible = false
                 binding.rvLeaguesContent.adapter = topAssistsAdapter
                 
@@ -286,6 +352,37 @@ class LeaguesFragment : Fragment() {
                     wcGroupsAdapter.submitList(sortedGroups)
                 } else {
                     standingsAdapter.submitList(state.list)
+                }
+            }
+        }
+    }
+
+    private fun renderMatchesState(state: LeagueMatchesUiState) {
+        when (state) {
+            is LeagueMatchesUiState.Loading -> {
+                binding.emptyState.isVisible = false
+                if (!binding.swipeRefreshLayout.isRefreshing) {
+                    binding.loadingSpinner.isVisible = true
+                    leagueMatchesAdapter.submitList(emptyList())
+                }
+            }
+            is LeagueMatchesUiState.Error -> {
+                binding.loadingSpinner.isVisible = false
+                binding.emptyState.isVisible = true
+                binding.emptyState.text = getString(R.string.empty_fixtures)
+                leagueMatchesAdapter.submitList(emptyList())
+            }
+            is LeagueMatchesUiState.Success -> {
+                binding.loadingSpinner.isVisible = false
+                binding.emptyState.isVisible = state.items.isEmpty()
+                if (state.items.isEmpty()) {
+                    binding.emptyState.text = getString(R.string.empty_fixtures)
+                }
+                leagueMatchesAdapter.submitList(state.items) {
+                    if (state.scrollToPosition in state.items.indices) {
+                        (binding.rvLeaguesContent.layoutManager as? LinearLayoutManager)
+                            ?.scrollToPositionWithOffset(state.scrollToPosition, 0)
+                    }
                 }
             }
         }

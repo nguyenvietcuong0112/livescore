@@ -66,6 +66,31 @@ interface ApiService {
         @Query("lang") lang: String
     ): PredictionResponse
 
+    @GET("api/v1/news/latest")
+    suspend fun getLatestNews(
+        @Query("lang") lang: String = "en",
+        @Query("page") page: Int = 1,
+        @Query("limit") limit: Int = 50
+    ): BaseResponse<NewsItemDto>
+
+    @GET("api/v1/news/categories")
+    suspend fun getNewsCategories(
+        @Query("lang") lang: String = "en"
+    ): BaseResponse<NewsCategoryDto>
+
+    @GET("api/v1/news/{news_id}")
+    suspend fun getNewsDetail(
+        @Path("news_id") newsId: String,
+        @Query("lang") lang: String = "en"
+    ): NewsDetailResponse
+
+    @GET("api/v1/teams/{team_id}/fixtures")
+    suspend fun getTeamFixtures(
+        @Path("team_id") teamId: Int,
+        @Query("last") last: Int = 5,
+        @Query("lang") lang: String = "en"
+    ): TeamFixturesResponseDto
+
     @POST("api/v1/users/register")
     suspend fun registerDevice(
         @Body request: RegisterDeviceRequest

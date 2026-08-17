@@ -240,7 +240,7 @@
 
     <!-- AI Prediction Feature -->
     <string name="tab_match">मैच</string>
-    <string name="tab_prediction">एआई भविष्यवाणी</string>
+    <string name="tab_prediction">सुपरकंप्यूटर</string>
     <string name="prediction_locked_title">एआई भविष्यवाणी वीआईपी</string>
     <string name="prediction_locked_desc">व्यावसायिक एआई मैच विश्लेषण, जीतने की संभावना, ओवर/अंडर सुझाव और विस्तृत सामरिक सेटअप तक पहुंचने के लिए प्रीमियम अनलॉक करें।</string>
     <string name="ai_win_probability">जीतने की संभावना</string>
@@ -324,4 +324,26 @@
     <string name="empty_upcoming_fixtures">आज के लिए कोई निर्धारित मैच नहीं है</string>
     <string name="empty_finished_fixtures">आज कोई समाप्त मैच नहीं है</string>
     <string name="supercomputer_prediction">सुपरकंप्यूटर की भविष्यवाणी</string>
+
+    <!-- News & Team Fixtures -->
+    <string name="news_category_all">सभी</string>
+    <string name="news_category_transfers">ट्रांसफर</string>
+    <string name="news_category_world_cup">विश्व कप</string>
+    <string name="news_category_premier_league">प्रीमियर लीग</string>
+    <string name="news_category_champions_league">चैंपियंस लीग</string>
+    <string name="news_no_data">कोई समाचार उपलब्ध नहीं है</string>
+    <string name="news_no_data_category">इस श्रेणी के लिए कोई समाचार नहीं मिला।</string>
+    <string name="news_share_title">समाचार साझा करें</string>
+    <string name="team_fixtures_title">टीम के मैच</string>
+    <string name="team_fixtures_filter_last_5">अंतिम 5</string>
+    <string name="team_fixtures_filter_last_10">अंतिम 10</string>
+    <string name="team_fixtures_filter_last_15">अंतिम 15</string>
+    <string name="team_fixtures_filter_last_20">अंतिम 20</string>
+    <string name="team_fixtures_wins">जीत</string>
+    <string name="team_fixtures_draws">ड्रॉ</string>
+    <string name="team_fixtures_losses">हार</string>
+    <string name="team_fixtures_no_data">इस टीम के लिए कोई मैच नहीं मिला।</string>
+    <string name="team_fixtures_invalid_id">अमान्य टीम आईडी</string>
+    <string name="btn_retry">पुनः प्रयास करें</string>
+
 </resources>

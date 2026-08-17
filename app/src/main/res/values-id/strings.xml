@@ -54,7 +54,7 @@
     <string name="language_changed_toast">Bahasa diperbarui ke %1$s</string>
     <string name="splash_app_title">LIVESCORE</string>
     <string name="splash_subtitle">PUSAT OLAHRAGA PREMIUM</string>
-    <string name="tab_matches">PERTANDINGAN</string>
+    <string name="tab_matches">Pertandingan</string>
     <string name="tab_leagues">LIGA</string>
     <string name="empty_fixtures">Pertandingan tidak ditemukan</string>
     <string name="tab_standings">KLASEMEN</string>
@@ -148,7 +148,7 @@
     <string name="permission_confirm">Konfirmasi</string>
 
     <!-- Extracted Layout & Code Strings -->
-    <string name="leagues_header_title">PUSAT LIGA</string>
+    <string name="leagues_header_title">Pusat Liga</string>
     <string name="leagues_header_desc">Klasemen dan pencetak gol terbanyak waktu nyata</string>
     <string name="toast_share_match_failed">Gagal membagikan info pertandingan</string>
     <string name="toast_select_language_continue">Silakan pilih bahasa untuk melanjutkan</string>
@@ -240,7 +240,7 @@
 
     <!-- AI Prediction Feature -->
     <string name="tab_match">PERTANDINGAN</string>
-    <string name="tab_prediction">Prediksi AI</string>
+    <string name="tab_prediction">Komputer Super</string>
     <string name="prediction_locked_title">PREDIKSI AI VIP</string>
     <string name="prediction_locked_desc">Buka Premium untuk mengakses analisis pertandingan profesional oleh AI, peluang kemenangan, saran Over/Under, dan taktik terperinci.</string>
     <string name="ai_win_probability">PELUANG KEMENANGAN</string>
@@ -325,4 +325,26 @@
     <string name="empty_upcoming_fixtures">Tidak ada pertandingan terjadwal hari ini</string>
     <string name="empty_finished_fixtures">Tidak ada pertandingan yang selesai hari ini</string>
     <string name="supercomputer_prediction">Prediksi Superkomputer</string>
+
+    <!-- News & Team Fixtures -->
+    <string name="news_category_all">Semua</string>
+    <string name="news_category_transfers">Transfer</string>
+    <string name="news_category_world_cup">Piala Dunia</string>
+    <string name="news_category_premier_league">Liga Inggris</string>
+    <string name="news_category_champions_league">Liga Champions</string>
+    <string name="news_no_data">Belum ada berita tersedia</string>
+    <string name="news_no_data_category">Tidak ada berita ditemukan untuk kategori ini.</string>
+    <string name="news_share_title">Bagikan Berita</string>
+    <string name="team_fixtures_title">Pertandingan Tim</string>
+    <string name="team_fixtures_filter_last_5">5 Terakhir</string>
+    <string name="team_fixtures_filter_last_10">10 Terakhir</string>
+    <string name="team_fixtures_filter_last_15">15 Terakhir</string>
+    <string name="team_fixtures_filter_last_20">20 Terakhir</string>
+    <string name="team_fixtures_wins">Menang</string>
+    <string name="team_fixtures_draws">Seri</string>
+    <string name="team_fixtures_losses">Kalah</string>
+    <string name="team_fixtures_no_data">Tidak ada pertandingan untuk tim ini.</string>
+    <string name="team_fixtures_invalid_id">ID tim tidak valid</string>
+    <string name="btn_retry">Coba Lagi</string>
+
 </resources>

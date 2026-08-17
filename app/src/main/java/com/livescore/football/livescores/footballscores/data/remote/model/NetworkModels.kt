@@ -1,5 +1,7 @@
 package com.livescore.football.livescores.footballscores.data.remote.model
 
+import com.google.gson.annotations.SerializedName
+
 // --- COMMON DTOs ---
 
 data class BaseResponse<T>(
@@ -117,72 +119,109 @@ data class MatchItemDto(
 
 // 2. Match Detail (contains events, lineups, statistics too if fetched in details, or just the same structure)
 data class MatchDetailDto(
+    @SerializedName("fixture")
     val fixture: FixtureDto,
+    @SerializedName("league")
     val league: LeagueDto,
+    @SerializedName("teams")
     val teams: TeamsContainerDto,
+    @SerializedName("goals")
     val goals: GoalsDto,
+    @SerializedName("score")
     val score: ScoreDto?,
+    @SerializedName("statistics", alternate = ["stats"])
     val statistics: List<StatisticItemDto> = emptyList(),
+    @SerializedName("events", alternate = ["event"])
     val events: List<EventItemDto> = emptyList(),
+    @SerializedName("lineups", alternate = ["lineup"])
     val lineups: List<LineupItemDto> = emptyList()
 )
 
 // 3. Match Statistics DTO
 data class StatisticItemDto(
+    @SerializedName("team")
     val team: TeamDto,
-    val statistics: List<StatEntryDto>
+    @SerializedName("statistics", alternate = ["stats"])
+    val statistics: List<StatEntryDto> = emptyList()
 )
 
 data class StatEntryDto(
+    @SerializedName("type", alternate = ["name", "key"])
     val type: String,
+    @SerializedName("value", alternate = ["val"])
     val value: Any? // Can be string (like "56%") or Int
 )
 
 // 4. Match Events DTO
 data class EventItemDto(
+    @SerializedName("time")
     val time: EventTimeDto,
+    @SerializedName("team")
     val team: TeamDto,
+    @SerializedName("player")
     val player: EventPlayerDto,
+    @SerializedName("assist")
     val assist: EventPlayerDto?,
+    @SerializedName("type")
     val type: String, // Goal, Card, Subst, Var
+    @SerializedName("detail")
     val detail: String, // Normal Goal, Yellow Card, etc
+    @SerializedName("comments")
     val comments: String?
 )
 
 data class EventTimeDto(
+    @SerializedName("elapsed")
     val elapsed: Int,
+    @SerializedName("extra")
     val extra: Int?
 )
 
 data class EventPlayerDto(
+    @SerializedName("id")
     val id: Int?,
+    @SerializedName("name")
     val name: String?
 )
 
 // 5. Match Lineups DTO
 data class LineupItemDto(
+    @SerializedName("team")
     val team: TeamDto,
+    @SerializedName("coach")
     val coach: CoachDto?,
+    @SerializedName("formation")
     val formation: String?,
-    val startXI: List<LineupPlayerWrapperDto>,
-    val substitutes: List<LineupPlayerWrapperDto>
+    @SerializedName("startXI", alternate = ["start_xi", "startXi", "starters"])
+    val startXI: List<LineupPlayerWrapperDto> = emptyList(),
+    @SerializedName("substitutes", alternate = ["subs", "bench"])
+    val substitutes: List<LineupPlayerWrapperDto> = emptyList()
 )
 
 data class CoachDto(
+    @SerializedName("id")
     val id: Int?,
+    @SerializedName("name")
     val name: String?,
+    @SerializedName("photo")
     val photo: String?
 )
 
 data class LineupPlayerWrapperDto(
+    @SerializedName("player")
     val player: LineupPlayerDto
 )
 
 data class LineupPlayerDto(
+    @SerializedName("id")
     val id: Int,
+    @SerializedName("name")
     val name: String,
+    @SerializedName("number")
     val number: Int,
+    @SerializedName("pos", alternate = ["position"])
     val pos: String?, // G, D, M, F
+    @SerializedName("grid")
     val grid: String? // e.g. "1:1", "3:4:1:2"
 )
 

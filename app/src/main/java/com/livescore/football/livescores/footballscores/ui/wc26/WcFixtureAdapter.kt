@@ -184,18 +184,7 @@ class WcFixtureAdapter(
                 ivReminderUpcoming.setImageResource(if (isRemind) R.drawable.ic_bell_active else R.drawable.ic_bell)
                 ivReminderUpcoming.setColorFilter(ContextCompat.getColor(context, if (isRemind) R.color.accent_green else R.color.text_muted))
 
-                val isFav = isFavoriteSet(match.fixture.id)
-                ivFavoriteUpcoming.setImageResource(if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
-                ivFavoriteUpcoming.setColorFilter(
-                    ContextCompat.getColor(
-                        context,
-                        if (isFav) {
-                            R.color.primaryRed
-                        } else {
-                            R.color.text_muted
-                        }
-                    )
-                )
+                ivFavoriteUpcoming.visibility = View.GONE
 
                 layoutPredictButton.visibility = if (isUpcoming) View.VISIBLE else View.GONE
                 if (isUpcoming) {
@@ -264,19 +253,7 @@ class WcFixtureAdapter(
                 ivReminder.setImageResource(if (isRemind) R.drawable.ic_bell_active else R.drawable.ic_bell)
                 ivReminder.setColorFilter(ContextCompat.getColor(context, if (isRemind) R.color.accent_green else R.color.text_muted))
 
-                val isFav = isFavoriteSet(match.fixture.id)
-                ivFavorite.setImageResource(if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
-                ivFavorite.setColorFilter(
-                    ContextCompat.getColor(
-                        context,
-                        if (isFav) {
-                            R.color.primaryRed
-                        } else {
-                            R.color.text_muted
-                        }
-                    )
-                )
-                ivFavorite.visibility = View.VISIBLE
+                ivFavorite.visibility = View.GONE
 
                 ivReminder.setOnClickListener { onReminderClick(match, ivReminder) }
                 ivFavorite.setOnClickListener { onFavoriteClick(match, ivFavorite) }

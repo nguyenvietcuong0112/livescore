@@ -246,7 +246,7 @@
 
     <!-- AI Prediction Feature -->
     <string name="tab_match">المباراة</string>
-    <string name="tab_prediction">توقعات الذكاء الاصطناعي</string>
+    <string name="tab_prediction">حاسوب فائق</string>
     <string name="prediction_locked_title">توقعات الذكاء الاصطناعي VIP</string>
     <string name="prediction_locked_desc">افتح الاشتراك المميز للوصول إلى تحليل المباريات الاحترافي بالذكاء الاصطناعي، ونسب الفوز، واقتراحات أكثر/أقل، والخطط التكتيكية التفصيلية.</string>
     <string name="ai_win_probability">احتمالية الفوز</string>
@@ -330,4 +330,26 @@
     <string name="empty_upcoming_fixtures">لا توجد مباريات مجدولة اليوم</string>
     <string name="empty_finished_fixtures">لا توجد مباريات منتهية اليوم</string>
     <string name="supercomputer_prediction">توقعات الكمبيوتر العملاق</string>
+
+    <!-- News & Team Fixtures -->
+    <string name="news_category_all">الكل</string>
+    <string name="news_category_transfers">الانتقالات</string>
+    <string name="news_category_world_cup">كأس العالم</string>
+    <string name="news_category_premier_league">الدوري الإنجليزي</string>
+    <string name="news_category_champions_league">دوري أبطال أوروبا</string>
+    <string name="news_no_data">لا توجد أخبار متاحة</string>
+    <string name="news_no_data_category">لم يتم العثور على أخبار لهذه الفئة.</string>
+    <string name="news_share_title">مشاركة الخبر</string>
+    <string name="team_fixtures_title">مباريات الفريق</string>
+    <string name="team_fixtures_filter_last_5">آخر 5</string>
+    <string name="team_fixtures_filter_last_10">آخر 10</string>
+    <string name="team_fixtures_filter_last_15">آخر 15</string>
+    <string name="team_fixtures_filter_last_20">آخر 20</string>
+    <string name="team_fixtures_wins">فوز</string>
+    <string name="team_fixtures_draws">تعادل</string>
+    <string name="team_fixtures_losses">خسارة</string>
+    <string name="team_fixtures_no_data">لم يتم العثور على مباريات لهذا الفريق.</string>
+    <string name="team_fixtures_invalid_id">معرف الفريق غير صالحة</string>
+    <string name="btn_retry">إعادة المحاولة</string>
+
 </resources>

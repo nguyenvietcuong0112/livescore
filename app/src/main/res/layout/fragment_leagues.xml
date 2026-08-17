@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="10dp"
         android:paddingVertical="8dp"
         app:layout_constraintTop_toBottomOf="@id/frAdsLeague">
 
@@ -46,15 +46,30 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.2"
-            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="2dp"
             android:backgroundTint="@color/card_dark"
+            android:paddingHorizontal="2dp"
             android:text="@string/tab_standings"
             android:textColor="@color/accent_green"
-            android:textSize="12dp"
+            android:textSize="11sp"
             app:cornerRadius="8dp"
             app:strokeColor="@color/accent_green"
             app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMatches"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="2dp"
+            android:backgroundTint="@color/card_dark"
+            android:paddingHorizontal="2dp"
+            android:text="@string/tab_matches"
+            android:textColor="@color/text_muted"
+            android:textSize="11sp"
+            app:cornerRadius="8dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnScorers"
@@ -62,11 +77,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginHorizontal="4dp"
+            android:layout_marginHorizontal="2dp"
             android:backgroundTint="@color/card_dark"
+            android:paddingHorizontal="2dp"
             android:text="@string/tab_scorers"
             android:textColor="@color/text_muted"
-            android:textSize="12dp"
+            android:textSize="11sp"
             app:cornerRadius="8dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -75,11 +91,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="2dp"
             android:backgroundTint="@color/card_dark"
+            android:paddingHorizontal="2dp"
             android:text="@string/tab_assists"
             android:textColor="@color/text_muted"
-            android:textSize="12dp"
+            android:textSize="11sp"
             app:cornerRadius="8dp" />
 
     </LinearLayout>

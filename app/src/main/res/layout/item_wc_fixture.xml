@@ -194,6 +194,7 @@
                 android:src="@drawable/ic_favorite_border"
                 android:clickable="true"
                 android:focusable="true"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="6dp"
@@ -385,7 +386,8 @@
                         android:contentDescription="Favorite Match"
                         android:src="@drawable/ic_favorite_border"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:visibility="gone" />
                 </LinearLayout>
 
             </RelativeLayout>

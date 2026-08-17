@@ -240,7 +240,7 @@
 
     <!-- AI Prediction Feature -->
     <string name="tab_match">マッチ</string>
-    <string name="tab_prediction">AI勝敗予想</string>
+    <string name="tab_prediction">スーパーコンピュータ</string>
     <string name="prediction_locked_title">AI予想 VIP</string>
     <string name="prediction_locked_desc">プレミアムをアンロックして、AIによるプロの試合分析、勝率予測、オーバー/アンダーの提案、詳細な戦術配置を閲覧しましょう。</string>
     <string name="ai_win_probability">勝利確率</string>
@@ -325,4 +325,26 @@
     <string name="empty_upcoming_fixtures">本日の予定試合はありません</string>
     <string name="empty_finished_fixtures">本日終了した試合はありません</string>
     <string name="supercomputer_prediction">スーパーコンピューターの予測</string>
+
+    <!-- News & Team Fixtures -->
+    <string name="news_category_all">すべて</string>
+    <string name="news_category_transfers">移籍情報</string>
+    <string name="news_category_world_cup">ワールドカップ</string>
+    <string name="news_category_premier_league">プレミアリーグ</string>
+    <string name="news_category_champions_league">チャンピオンズリーグ</string>
+    <string name="news_no_data">ニュースはありません</string>
+    <string name="news_no_data_category">このカテゴリのニュースは見つかりませんでした。</string>
+    <string name="news_share_title">ニュースを共有</string>
+    <string name="team_fixtures_title">チーム試合日程</string>
+    <string name="team_fixtures_filter_last_5">直近5試合</string>
+    <string name="team_fixtures_filter_last_10">直近10試合</string>
+    <string name="team_fixtures_filter_last_15">直近15試合</string>
+    <string name="team_fixtures_filter_last_20">直近20試合</string>
+    <string name="team_fixtures_wins">勝利</string>
+    <string name="team_fixtures_draws">引き分け</string>
+    <string name="team_fixtures_losses">敗北</string>
+    <string name="team_fixtures_no_data">このチームの試合日程は見つかりませんでした。</string>
+    <string name="team_fixtures_invalid_id">無効なチームID</string>
+    <string name="btn_retry">再試行</string>
+
 </resources>

@@ -54,7 +54,7 @@
     <string name="language_changed_toast">زبان %1$s پر اپ ڈیٹ کر دی گئی ہے</string>
     <string name="splash_app_title">لائیو اسکور</string>
     <string name="splash_subtitle">پریمیم اسپورٹس ہب</string>
-    <string name="tab_matches">میچز</string>
+    <string name="tab_matches">میچ</string>
     <string name="tab_leagues">لیگز</string>
     <string name="empty_fixtures">کوئی میچ نہیں ملا</string>
     <string name="tab_standings">جدول</string>
@@ -240,7 +240,7 @@
 
     <!-- AI Prediction Feature -->
     <string name="tab_match">میچ</string>
-    <string name="tab_prediction">اے آئی پیشن گوئی</string>
+    <string name="tab_prediction">سپر کمپیوٹر</string>
     <string name="prediction_locked_title">اے آئی پیشن گوئی VIP</string>
     <string name="prediction_locked_desc">پیشہ ورانہ اے آئی میچ تجزیہ، جیتنے کے امکانات، اوور/انڈر تجاویز اور تفصیلی تزویراتی سیٹ اپ تک رسائی کے لیے پریمیم غیر مقفل کریں۔</string>
     <string name="ai_win_probability">جیتنے کے امکانات</string>
@@ -324,4 +324,26 @@
     <string name="empty_upcoming_fixtures">آج کوئی میچ شیڈول نہیں ہے</string>
     <string name="empty_finished_fixtures">آج کوئی ختم ہونے والا میچ نہیں ہے</string>
     <string name="supercomputer_prediction">سپر کمپیوٹر کی پیش گوئی</string>
+
+    <!-- News & Team Fixtures -->
+    <string name="news_category_all">تمام</string>
+    <string name="news_category_transfers">ٹرانسفرز</string>
+    <string name="news_category_world_cup">ورلڈ کپ</string>
+    <string name="news_category_premier_league">پریمیئر لیگ</string>
+    <string name="news_category_champions_league">چیمپئنز لیگ</string>
+    <string name="news_no_data">کوئی خبر دستیاب نہیں ہے</string>
+    <string name="news_no_data_category">اس زمرے کے لیے کوئی خبر نہیں ملی۔</string>
+    <string name="news_share_title">خبر شیئر کریں</string>
+    <string name="team_fixtures_title">ٹیم کے میچز</string>
+    <string name="team_fixtures_filter_last_5">آخری 5</string>
+    <string name="team_fixtures_filter_last_10">آخری 10</string>
+    <string name="team_fixtures_filter_last_15">آخری 15</string>
+    <string name="team_fixtures_filter_last_20">آخری 20</string>
+    <string name="team_fixtures_wins">جیت</string>
+    <string name="team_fixtures_draws">ڈرا</string>
+    <string name="team_fixtures_losses">ہار</string>
+    <string name="team_fixtures_no_data">اس ٹیم کے لیے کوئی میچ نہیں ملا۔</string>
+    <string name="team_fixtures_invalid_id">غیر قانونی ٹیم آئی ڈی</string>
+    <string name="btn_retry">دوبارہ کوشش کریں</string>
+
 </resources>

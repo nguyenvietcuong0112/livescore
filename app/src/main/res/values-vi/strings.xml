@@ -12,7 +12,7 @@
     <string name="my_follow">THEO DÕI CỦA BẠN</string>
     <string name="my_matches">TRẬN ĐẤU CỦA BẠN</string>
     
-    <string name="live">LIVE</string>
+    <string name="live">Trực tiếp</string>
     <string name="upcoming">SẮP ĐẤU</string>
     <string name="finished">ĐÃ KẾT THÚC</string>
     
@@ -64,7 +64,7 @@
     <string name="splash_ads_warning">Hoạt động này có thể chứa quảng cáo</string>
     
     <!-- Home Screen -->
-    <string name="tab_matches">TRẬN ĐẤU</string>
+    <string name="tab_matches">Trận đấu</string>
     <string name="tab_leagues">GIẢI ĐẤU</string>
     <string name="empty_fixtures">Không tìm thấy trận đấu nào</string>
     <string name="empty_live_fixtures">Hiện không có trận đấu trực tiếp nào</string>
@@ -258,7 +258,7 @@
     <string name="permission_confirm">Xác nhận</string>
 
     <!-- Extracted Layout & Code Strings -->
-    <string name="leagues_header_title">GIẢI ĐẤU</string>
+    <string name="leagues_header_title">Giải Đấu</string>
     <string name="leagues_header_desc">Bảng xếp hạng &amp; Danh sách vua phá lưới thời gian thực</string>
     <string name="leagues_col_rank">#</string>
     <string name="toast_share_match_failed">Chia sẻ thông tin trận đấu thất bại</string>
@@ -308,7 +308,7 @@
 
     <!-- AI Prediction Feature -->
     <string name="tab_match">TRẬN ĐẤU</string>
-    <string name="tab_prediction">Nhận định AI</string>
+    <string name="tab_prediction">Siêu máy tính</string>
     <string name="prediction_locked_title">NHẬN ĐỊNH AI VIP</string>
     <string name="prediction_locked_desc">Mở khóa Premium để theo dõi nhận định trận đấu chi tiết từ AI, tỷ lệ chiến thắng, gợi ý kèo phụ và sơ đồ chiến thuật tối ưu.</string>
     <string name="ai_win_probability">XÁC SUẤT CHIẾN THẮNG</string>
@@ -360,5 +360,26 @@
     <string name="title_key_predictions">Thông Số Dự Đoán</string>
     <string name="btn_score_prediction">DỰ ĐOÁN TỶ SỐ</string>
     <string name="supercomputer_prediction">Dự đoán của Siêu máy tính</string>
+
+    <!-- News & Team Fixtures -->
+    <string name="news_category_all">Tất cả</string>
+    <string name="news_category_transfers">Chuyển nhượng</string>
+    <string name="news_category_world_cup">World Cup</string>
+    <string name="news_category_premier_league">Ngoại Hạng Anh</string>
+    <string name="news_category_champions_league">Cúp C1</string>
+    <string name="news_no_data">Không có tin tức nào</string>
+    <string name="news_no_data_category">Không có tin tức cho danh mục này.</string>
+    <string name="news_share_title">Chia sẻ bài viết</string>
+    <string name="team_fixtures_title">Lịch Sử Trận Đấu</string>
+    <string name="team_fixtures_filter_last_5">5 trận gần nhất</string>
+    <string name="team_fixtures_filter_last_10">10 trận gần nhất</string>
+    <string name="team_fixtures_filter_last_15">15 trận gần nhất</string>
+    <string name="team_fixtures_filter_last_20">20 trận gần nhất</string>
+    <string name="team_fixtures_wins">Thắng</string>
+    <string name="team_fixtures_draws">Hòa</string>
+    <string name="team_fixtures_losses">Thua</string>
+    <string name="team_fixtures_no_data">Không có lịch sử trận đấu cho đội bóng này.</string>
+    <string name="team_fixtures_invalid_id">ID đội bóng không hợp lệ</string>
+    <string name="btn_retry">Thử lại</string>
 
 </resources>

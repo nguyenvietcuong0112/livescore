@@ -42,7 +42,12 @@ object PushDataParser {
                 if (leagueId != null) PushNavigation.League(leagueId) else PushNavigation.Default
             }
             "news" -> {
-                if (!actionValue.isNullOrEmpty()) PushNavigation.News(actionValue) else PushNavigation.Default
+                val newsId = actionValue?.ifEmpty { null }
+                    ?: data["news_id"]
+                    ?: data["newsId"]
+                    ?: data["id"]
+                    ?: ""
+                if (newsId.isNotEmpty()) PushNavigation.News(newsId) else PushNavigation.Default
             }
             "promo" -> {
                 if (!actionValue.isNullOrEmpty()) PushNavigation.Promo(actionValue) else PushNavigation.Default

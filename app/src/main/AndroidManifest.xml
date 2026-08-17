@@ -47,6 +47,18 @@
             android:exported="false"
             android:theme="@style/Theme.MyApplication" />
         <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyApplication" />
+        <activity
+            android:name=".ui.news.NewsDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyApplication" />
+        <activity
+            android:name=".ui.team.TeamFixturesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyApplication" />
+        <activity
             android:name=".utils.ActivityLoadNativeFullV1"
             android:exported="false"
             android:theme="@style/Theme.MyApplication" />

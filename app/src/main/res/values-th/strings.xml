@@ -240,7 +240,7 @@
 
     <!-- AI Prediction Feature -->
     <string name="tab_match">การแข่งขัน</string>
-    <string name="tab_prediction">การวิเคราะห์ด้วย AI</string>
+    <string name="tab_prediction">ซูเปอร์คอมพิวเตอร์</string>
     <string name="prediction_locked_title">การวิเคราะห์ด้วย AI VIP</string>
     <string name="prediction_locked_desc">ปลดล็อกระดับพรีเมียมเพื่อเข้าถึงการวิเคราะห์การแข่งขันโดยผู้เชี่ยวชาญจาก AI, โอกาสชนะ, คำแนะนำสูง/ต่ำ และแผนการเล่นทางยุทธวิธีแบบละเอียด</string>
     <string name="ai_win_probability">โอกาสในการชนะ</string>
@@ -325,4 +325,26 @@
     <string name="empty_upcoming_fixtures">ไม่มีการแข่งขันที่กำหนดไว้สำหรับวันนี้</string>
     <string name="empty_finished_fixtures">ไม่มีการแข่งขันที่สิ้นสุดลงในวันนี้</string>
     <string name="supercomputer_prediction">การทำนายของซูเปอร์คอมพิวเตอร์</string>
+
+    <!-- News & Team Fixtures -->
+    <string name="news_category_all">ทั้งหมด</string>
+    <string name="news_category_transfers">การย้ายทีม</string>
+    <string name="news_category_world_cup">ฟุตบอลโลก</string>
+    <string name="news_category_premier_league">พรีเมียร์ลีก</string>
+    <string name="news_category_champions_league">ยูฟ่า แชมเปียนส์ลีก</string>
+    <string name="news_no_data">ไม่มีข่าวสารในขณะนี้</string>
+    <string name="news_no_data_category">ไม่พบข่าวสารในหมวดหมู่นี้</string>
+    <string name="news_share_title">แชร์ข่าวสาร</string>
+    <string name="team_fixtures_title">โปรแกรมการแข่งขันของทีม</string>
+    <string name="team_fixtures_filter_last_5">5 นัดล่าสุด</string>
+    <string name="team_fixtures_filter_last_10">10 นัดล่าสุด</string>
+    <string name="team_fixtures_filter_last_15">15 นัดล่าสุด</string>
+    <string name="team_fixtures_filter_last_20">20 นัดล่าสุด</string>
+    <string name="team_fixtures_wins">ชนะ</string>
+    <string name="team_fixtures_draws">เสมอ</string>
+    <string name="team_fixtures_losses">แพ้</string>
+    <string name="team_fixtures_no_data">ไม่พบการแข่งขันสำหรับทีมนี้</string>
+    <string name="team_fixtures_invalid_id">รหัสทีมไม่ถูกต้อง</string>
+    <string name="btn_retry">ลองอีกครั้ง</string>
+
 </resources>

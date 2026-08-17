@@ -54,7 +54,7 @@
     <string name="language_changed_toast">Язык изменен на %1$s</string>
     <string name="splash_app_title">LIVESCORE</string>
     <string name="splash_subtitle">ПРЕМИАЛЬНЫЙ СПОРТИВНЫЙ ПОРТАЛ</string>
-    <string name="tab_matches">МАТЧИ</string>
+    <string name="tab_matches">Матчи</string>
     <string name="tab_leagues">ЛИГИ</string>
     <string name="empty_fixtures">Матчи не найдены</string>
     <string name="tab_standings">ТАБЛИЦА</string>
@@ -148,7 +148,7 @@
     <string name="permission_confirm">Подтвердить</string>
 
     <!-- Extracted Layout & Code Strings -->
-    <string name="leagues_header_title">ЦЕНТР ЛИГ</string>
+    <string name="leagues_header_title">Центр лиг</string>
     <string name="leagues_header_desc">Таблицы лиг и лучшие бомбардиры в реальном времени</string>
     <string name="toast_share_match_failed">Не удалось поделиться информацией о матче</string>
     <string name="toast_select_language_continue">Пожалуйста, выберите язык, чтобы продолжить</string>
@@ -240,7 +240,7 @@
 
     <!-- AI Prediction Feature -->
     <string name="tab_match">МАТЧ</string>
-    <string name="tab_prediction">Прогноз ИИ</string>
+    <string name="tab_prediction">Суперкомпьютер</string>
     <string name="prediction_locked_title">ИИ ПРОГНОЗ VIP</string>
     <string name="prediction_locked_desc">Разблокируйте Premium, чтобы получить профессиональный анализ матча ИИ, шансы на победу, советы тотал больше/меньше и подробную тактику.</string>
     <string name="ai_win_probability">ВЕРОЯТНОСТЬ ПОБЕДЫ</string>
@@ -325,4 +325,26 @@
     <string name="empty_upcoming_fixtures">На сегодня нет запланированных матчей</string>
     <string name="empty_finished_fixtures">На сегодня нет завершенных матчей</string>
     <string name="supercomputer_prediction">Прогноз суперкомпьютера</string>
+
+    <!-- News & Team Fixtures -->
+    <string name="news_category_all">Все</string>
+    <string name="news_category_transfers">Трансферы</string>
+    <string name="news_category_world_cup">Чемпионат мира</string>
+    <string name="news_category_premier_league">Премьер-лига</string>
+    <string name="news_category_champions_league">Лига чемпионов</string>
+    <string name="news_no_data">Нет доступных новостей</string>
+    <string name="news_no_data_category">Новости для этой категории не найдены.</string>
+    <string name="news_share_title">Поделиться новостью</string>
+    <string name="team_fixtures_title">Матчи команды</string>
+    <string name="team_fixtures_filter_last_5">Последние 5</string>
+    <string name="team_fixtures_filter_last_10">Последние 10</string>
+    <string name="team_fixtures_filter_last_15">Последние 15</string>
+    <string name="team_fixtures_filter_last_20">Последние 20</string>
+    <string name="team_fixtures_wins">Победы</string>
+    <string name="team_fixtures_draws">Ничьи</string>
+    <string name="team_fixtures_losses">Поражения</string>
+    <string name="team_fixtures_no_data">Матчи для этой команды не найдены.</string>
+    <string name="team_fixtures_invalid_id">Недействительный ID команды</string>
+    <string name="btn_retry">Повторить</string>
+
 </resources>
