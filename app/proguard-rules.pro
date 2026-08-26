@@ -168,6 +168,9 @@
 # ==============================================================================
 -keep class com.bytedance.sdk.** { *; }
 -dontwarn com.bytedance.sdk.**
+-keep class com.bykv.vk.** { *; }
+-dontwarn com.bykv.vk.**
+-keep class com.google.ads.mediation.pangle.** { *; }
 
 # ==============================================================================
 # MINTEGRAL SDK
@@ -175,6 +178,8 @@
 -keep class com.mbridge.** { *; }
 -dontwarn com.mbridge.**
 -keep interface com.mbridge.** { *; }
+-keep class * extends com.mbridge.msdk.out.BaseExtraInterfaceForHandler { *; }
+-keep class com.google.ads.mediation.mintegral.** { *; }
 
 # ==============================================================================
 # UNITY ADS SDK
