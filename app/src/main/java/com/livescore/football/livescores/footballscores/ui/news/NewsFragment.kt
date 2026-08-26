@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.databinding.FragmentNewsBinding
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
 import dagger.hilt.android.AndroidEntryPoint
@@ -116,11 +117,14 @@ class NewsFragment : Fragment() {
                             categoryAdapter.selectedCategoryId = state.selectedCategoryId
                             categoryAdapter.submitList(state.categories)
 
-                            newsAdapter.submitList(state.filteredNews)
+                            newsAdapter.submitList(state.filteredNews) {
+                                binding.rvNews.scrollToPosition(0)
+                            }
 
                             if (state.filteredNews.isEmpty()) {
                                 binding.layoutError.isVisible = true
-                                binding.tvErrorMessage.text = getString(com.livescore.football.livescores.footballscores.R.string.news_no_data_category)
+                                binding.tvErrorMessage.text =
+                                    getString(R.string.news_no_data_category)
                             }
                         }
                         is NewsUiState.Error -> {
