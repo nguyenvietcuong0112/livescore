@@ -62,7 +62,7 @@ object ScreenTracker {
         screenStartTime = SystemClock.elapsedRealtime()
 
         // Gửi API log di chuyển màn hình ngầm
-        CoroutineScope(Dispatchers.IO).launch {
+        trackingScope.launch {
             try {
                 apiService.logScreenView(
                     ScreenViewRequest(

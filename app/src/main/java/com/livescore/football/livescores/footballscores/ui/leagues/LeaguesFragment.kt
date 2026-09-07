@@ -72,7 +72,8 @@ class LeaguesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val deviceId = android.provider.Settings.Secure.getString(requireContext().contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
+        val safeContext = context ?: return
+        val deviceId = android.provider.Settings.Secure.getString(safeContext.contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
         com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
             apiService = liveScoreApiService,
             deviceId = deviceId,
@@ -109,8 +110,9 @@ class LeaguesFragment : Fragment() {
 
         // Standings Adapter
         standingsAdapter = StandingsAdapter { row ->
+            val ctx = context ?: return@StandingsAdapter
             TeamFixturesActivity.startActivity(
-                context = requireContext(),
+                context = ctx,
                 teamId = row.team.id,
                 teamName = row.team.name,
                 teamLogo = row.team.logo
@@ -119,26 +121,30 @@ class LeaguesFragment : Fragment() {
 
         // League Matches Adapter
         leagueMatchesAdapter = LeagueMatchesAdapter { matchItem ->
-            val intent = android.content.Intent(requireContext(), com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity::class.java).apply {
+            val act = activity as? androidx.appcompat.app.AppCompatActivity
+            val ctx = act ?: context ?: return@LeagueMatchesAdapter
+            val intent = android.content.Intent(ctx, com.livescore.football.livescores.footballscores.ui.detail.MatchDetailActivity::class.java).apply {
                 putExtra("MATCH_ID", matchItem.fixture.id)
                 putExtra("fixture_id", matchItem.fixture.id)
             }
-            val act = activity as? androidx.appcompat.app.AppCompatActivity
-            if (act != null) {
+            if (act != null && !act.isFinishing && !act.isDestroyed) {
                 com.livescore.football.livescores.footballscores.utils.AdsConfig.showInterClickAd(act) {
-                    startActivity(intent)
+                    if (!act.isFinishing && !act.isDestroyed) {
+                        act.startActivity(intent)
+                    }
                 }
-            } else {
+            } else if (isAdded) {
                 startActivity(intent)
             }
         }
 
         // Top Scorers Adapter
         topScorersAdapter = TopStatsAdapter(isAssists = false) { playerItem ->
+            val ctx = context ?: return@TopStatsAdapter
             val team = playerItem.statistics.firstOrNull()?.team
             if (team != null && team.id > 0) {
                 TeamFixturesActivity.startActivity(
-                    context = requireContext(),
+                    context = ctx,
                     teamId = team.id,
                     teamName = team.name,
                     teamLogo = team.logo
@@ -148,10 +154,11 @@ class LeaguesFragment : Fragment() {
 
         // Top Assists Adapter
         topAssistsAdapter = TopStatsAdapter(isAssists = true) { playerItem ->
+            val ctx = context ?: return@TopStatsAdapter
             val team = playerItem.statistics.firstOrNull()?.team
             if (team != null && team.id > 0) {
                 TeamFixturesActivity.startActivity(
-                    context = requireContext(),
+                    context = ctx,
                     teamId = team.id,
                     teamName = team.name,
                     teamLogo = team.logo
@@ -260,7 +267,7 @@ class LeaguesFragment : Fragment() {
     }
 
     private fun updateTabButtonsUI(selectedTab: Int) {
-        val ctx = requireContext()
+        val ctx = context ?: return
         val buttons = listOf(binding.btnStandings, binding.btnMatches, binding.btnScorers, binding.btnAssists)
         buttons.forEach {
             it.strokeWidth = 0
@@ -416,8 +423,9 @@ class LeaguesFragment : Fragment() {
     }
 
     private fun loadNativeAd() {
-        if (::limitManager.isInitialized && limitManager.isPremium()) {
-            binding.frAdsLeague.visibility = View.GONE
+        val currentBinding = _binding ?: return
+        if (limitManager.isPremium()) {
+            currentBinding.frAdsLeague.visibility = View.GONE
             return
         }
 
@@ -428,57 +436,60 @@ class LeaguesFragment : Fragment() {
             getString(R.string.native_all)
         }
         if (adId.isNotEmpty()) {
-            binding.frAdsLeague.visibility = View.VISIBLE
+            val safeContext = context ?: return
+            currentBinding.frAdsLeague.visibility = View.VISIBLE
             // Inflate and show shimmer layout while loading
-            val shimmerView = LayoutInflater.from(requireContext()).inflate(R.layout.layout_shimmer_league, binding.frAdsLeague, false)
-            binding.frAdsLeague.removeAllViews()
-            binding.frAdsLeague.addView(shimmerView)
+            val shimmerView = LayoutInflater.from(safeContext).inflate(R.layout.layout_shimmer_league, currentBinding.frAdsLeague, false)
+            currentBinding.frAdsLeague.removeAllViews()
+            currentBinding.frAdsLeague.addView(shimmerView)
 
             com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
-                liveScoreApiService, requireContext(), "native", adId, "Leagues"
+                liveScoreApiService, safeContext, "native", adId, "Leagues"
             )
 
             Admob.getInstance().loadNativeAds(
-                requireContext(),
+                safeContext,
                 adId,
                 1,
                 object : NativeCallback() {
                     override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                         super.onNativeAdLoaded(nativeAd)
-                        if (!isAdded) return
+                        val b = _binding ?: return
+                        val ctx = context ?: return
 
                         com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
-                            liveScoreApiService, requireContext(), "native", adId, "Leagues"
+                            liveScoreApiService, ctx, "native", adId, "Leagues"
                         )
 
                         nativeAd?.setOnPaidEventListener { adValue ->
                             val ecpm = adValue.valueMicros / 1000.0
                             com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
-                                liveScoreApiService, requireContext(), "native", adId, "Leagues", ecpm
+                                liveScoreApiService, ctx, "native", adId, "Leagues", ecpm
                             )
                         }
 
-                        val adView = LayoutInflater.from(requireContext())
+                        val adView = LayoutInflater.from(ctx)
                             .inflate(R.layout.layout_native_league, null) as NativeAdView
                         
-                        binding.frAdsLeague.removeAllViews()
-                        binding.frAdsLeague.addView(adView)
+                        b.frAdsLeague.removeAllViews()
+                        b.frAdsLeague.addView(adView)
                         
                         Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
                     }
 
                     override fun onAdFailedToLoad() {
                         super.onAdFailedToLoad()
-                        if (!isAdded) return
+                        val b = _binding ?: return
+                        val ctx = context ?: return
                         com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
-                            liveScoreApiService, requireContext(), "native", adId, "Leagues", null
+                            liveScoreApiService, ctx, "native", adId, "Leagues", null
                         )
-                        binding.frAdsLeague.visibility = View.GONE
+                        b.frAdsLeague.visibility = View.GONE
                     }
                 }
             )
         } else {
-            binding.frAdsLeague.visibility = View.GONE
+            currentBinding.frAdsLeague.visibility = View.GONE
         }
     }
 

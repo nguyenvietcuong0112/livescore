@@ -33,8 +33,9 @@ class NewsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        val safeContext = context ?: return
         val deviceId = android.provider.Settings.Secure.getString(
-            requireContext().contentResolver,
+            safeContext.contentResolver,
             android.provider.Settings.Secure.ANDROID_ID
         ) ?: "unknown_device"
         com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
@@ -65,25 +66,31 @@ class NewsFragment : Fragment() {
         categoryAdapter = NewsCategoryAdapter { category ->
             viewModel.selectCategory(category.id)
         }
+        val safeCtx = context ?: return
         binding.rvCategories.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(safeCtx, LinearLayoutManager.HORIZONTAL, false)
             adapter = categoryAdapter
         }
     }
 
     private fun setupNewsRecyclerView() {
         newsAdapter = NewsAdapter { newsItem ->
+            val ctx = context ?: return@NewsAdapter
             val act = activity as? androidx.appcompat.app.AppCompatActivity
-            if (act != null) {
+            if (act != null && !act.isFinishing && !act.isDestroyed) {
                 AdsConfig.showInterClickAd(act) {
-                    NewsDetailActivity.startActivity(requireContext(), newsItem)
+                    if (!act.isFinishing && !act.isDestroyed) {
+                        NewsDetailActivity.startActivity(act, newsItem)
+                    }
                 }
             } else {
-                NewsDetailActivity.startActivity(requireContext(), newsItem)
+                val currentCtx = context ?: return@NewsAdapter
+                NewsDetailActivity.startActivity(currentCtx, newsItem)
             }
         }
+        val safeCtx = context ?: return
         binding.rvNews.apply {
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = LinearLayoutManager(safeCtx)
             adapter = newsAdapter
         }
     }

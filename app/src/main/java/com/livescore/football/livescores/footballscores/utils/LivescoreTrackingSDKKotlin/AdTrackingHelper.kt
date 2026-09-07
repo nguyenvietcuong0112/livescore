@@ -4,7 +4,10 @@ import android.content.Context
 import android.provider.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+
+internal val trackingScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
 object AdTrackingHelper {
     fun logAdRequest(
@@ -16,7 +19,7 @@ object AdTrackingHelper {
     ) {
         val deviceId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: "unknown_device"
         val sessionId = ScreenTracker.getSessionId()
-        CoroutineScope(Dispatchers.IO).launch {
+        trackingScope.launch {
             try {
                 apiService.logAdEvent(
                     AdEventRequest(
@@ -43,7 +46,7 @@ object AdTrackingHelper {
     ) {
         val deviceId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: "unknown_device"
         val sessionId = ScreenTracker.getSessionId()
-        CoroutineScope(Dispatchers.IO).launch {
+        trackingScope.launch {
             try {
                 apiService.logAdEvent(
                     AdEventRequest(
@@ -71,7 +74,7 @@ object AdTrackingHelper {
     ) {
         val deviceId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: "unknown_device"
         val sessionId = ScreenTracker.getSessionId()
-        CoroutineScope(Dispatchers.IO).launch {
+        trackingScope.launch {
             try {
                 apiService.logAdEvent(
                     AdEventRequest(
@@ -101,7 +104,7 @@ object AdTrackingHelper {
         val deviceId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: "unknown_device"
         val sessionId = ScreenTracker.getSessionId()
         val impressionIndex = AdSessionTracker.incrementAndGet(adType)
-        CoroutineScope(Dispatchers.IO).launch {
+        trackingScope.launch {
             try {
                 apiService.logAdEvent(
                     AdEventRequest(

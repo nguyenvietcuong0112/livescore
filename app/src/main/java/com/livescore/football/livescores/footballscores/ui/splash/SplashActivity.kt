@@ -241,6 +241,7 @@ class SplashActivity : BaseActivity() {
                             interId
                         ),
                         1500,
+                        30000,
                         interCallback
                     )
                 }

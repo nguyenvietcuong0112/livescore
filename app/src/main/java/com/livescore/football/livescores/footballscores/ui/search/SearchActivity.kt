@@ -159,7 +159,7 @@ class SearchActivity : BaseActivity() {
     private fun observeData() {
         // Collect Matches from database
         lifecycleScope.launch {
-            matchRepository.allCachedMatches.collect { matches ->
+            matchRepository.getRecentCachedMatches(300).collect { matches ->
                 allMatches.value = matches
             }
         }

@@ -1,10 +1,7 @@
 package com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin
 
 import android.content.Context
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.io.PrintWriter
 import java.io.StringWriter
 
@@ -25,34 +22,31 @@ class GlobalCrashHandler(
     }
 
     override fun uncaughtException(thread: Thread, throwable: Throwable) {
-        val sw = StringWriter()
-        throwable.printStackTrace(PrintWriter(sw))
-        val stackTraceString = sw.toString()
-
-        val errorType = throwable.javaClass.simpleName
-        val errorMessage = throwable.message ?: "Unknown error"
-
-        val metadata = mapOf(
-            "error_type" to errorType,
-            "message" to errorMessage,
-            "stack_trace" to stackTraceString.take(2000) // Giới hạn kích thước tránh payload quá lớn
-        )
-
-        // Sử dụng runBlocking để dừng luồng chính chờ gửi API thành công trước khi đóng app
         try {
-            runBlocking {
-                val job = CoroutineScope(Dispatchers.IO).launch {
-                    try {
-                        apiService.logUserAction(
-                            actionType = "app_error",
-                            deviceId = deviceId,
-                            metadata = metadata
-                        )
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+            val sw = StringWriter()
+            throwable.printStackTrace(PrintWriter(sw))
+            val stackTraceString = sw.toString()
+
+            val errorType = throwable.javaClass.simpleName
+            val errorMessage = throwable.message ?: "Unknown error"
+
+            val metadata = mapOf(
+                "error_type" to errorType,
+                "message" to errorMessage,
+                "stack_trace" to stackTraceString.take(2000) // Giới hạn kích thước tránh payload quá lớn
+            )
+
+            // Gửi bất đồng bộ trên trackingScope không block luồng chính
+            trackingScope.launch {
+                try {
+                    apiService.logUserAction(
+                        actionType = "app_error",
+                        deviceId = deviceId,
+                        metadata = metadata
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-                job.join()
             }
         } catch (e: Exception) {
             e.printStackTrace()

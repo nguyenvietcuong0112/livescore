@@ -35,7 +35,11 @@ class FavoriteViewModel @Inject constructor(
         val remindIds = reminderManager.getAllReminderIds()
         
         viewModelScope.launch {
-            matchRepository.allCachedMatches.map { matches ->
+            if (favIntIds.isEmpty()) {
+                _favoriteMatches.value = emptyList()
+                return@launch
+            }
+            matchRepository.getMatchesByIds(favIntIds.toList()).map { matches ->
                 // Filter matches that are in the user's favorite set
                 val filtered = matches.filter { it.id in favIntIds }
                 
@@ -63,25 +67,27 @@ class FavoriteViewModel @Inject constructor(
         viewModelScope.launch {
             _isRefreshing.value = true
             try {
-                val currentMatches = matchRepository.allCachedMatches.first()
-                val favoriteMatches = currentMatches.filter { it.id in favIntIds }
-                val uniqueDates = favoriteMatches.mapNotNull { it.queryDate }.filter { it.isNotEmpty() }.toSet()
-                
-                val datesToRefresh = if (uniqueDates.isNotEmpty()) {
-                    uniqueDates
-                } else {
-                    val sdf = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
-                        timeZone = java.util.TimeZone.getDefault()
+                if (favIntIds.isNotEmpty()) {
+                    val currentMatches = matchRepository.getMatchesByIds(favIntIds.toList()).first()
+                    val favoriteMatches = currentMatches.filter { it.id in favIntIds }
+                    val uniqueDates = favoriteMatches.mapNotNull { it.queryDate }.filter { it.isNotEmpty() }.toSet()
+                    
+                    val datesToRefresh = if (uniqueDates.isNotEmpty()) {
+                        uniqueDates
+                    } else {
+                        val sdf = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).apply {
+                            timeZone = java.util.TimeZone.getDefault()
+                        }
+                        val todayStr = sdf.format(java.util.Calendar.getInstance().time)
+                        setOf(todayStr)
                     }
-                    val todayStr = sdf.format(java.util.Calendar.getInstance().time)
-                    setOf(todayStr)
-                }
-                
-                for (date in datesToRefresh) {
-                    try {
-                        matchRepository.refreshMatchesByDate(date)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                    
+                    for (date in datesToRefresh) {
+                        try {
+                            matchRepository.refreshMatchesByDate(date)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
             } catch (e: Exception) {

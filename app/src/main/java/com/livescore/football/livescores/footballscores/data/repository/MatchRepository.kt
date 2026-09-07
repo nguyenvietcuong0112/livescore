@@ -35,6 +35,23 @@ class MatchRepository @Inject constructor(
         return matchDao.getCachedMatchesByQueryDate(dateStr)
     }
 
+    fun getCachedMatchesByTimeRange(startSec: Long, endSec: Long): Flow<List<CachedMatchEntity>> {
+        return matchDao.getCachedMatchesByTimeRange(startSec, endSec)
+    }
+
+    fun getCachedMatchesForDateOrLive(startSec: Long, endSec: Long): Flow<List<CachedMatchEntity>> {
+        return matchDao.getCachedMatchesForDateOrLive(startSec, endSec)
+    }
+
+    fun getMatchesByIds(matchIds: List<Int>): Flow<List<CachedMatchEntity>> {
+        if (matchIds.isEmpty()) return kotlinx.coroutines.flow.flowOf(emptyList())
+        return matchDao.getMatchesByIds(matchIds)
+    }
+
+    fun getRecentCachedMatches(limit: Int = 300): Flow<List<CachedMatchEntity>> {
+        return matchDao.getRecentCachedMatches(limit)
+    }
+
     suspend fun refreshLiveMatches() {
         Log.d(TAG, "refreshLiveMatches: Starting request")
         try {
@@ -78,13 +95,20 @@ class MatchRepository @Inject constructor(
             } catch (ex: Exception) {
                 Log.e(TAG, "refreshLiveMatches: Nested error clearing matches: ${ex.message}", ex)
             }
+        } finally {
+            try {
+                val cutoffTimestamp = (System.currentTimeMillis() - 7 * 24 * 3600 * 1000L) / 1000
+                matchDao.pruneOldMatches(cutoffTimestamp)
+            } catch (e: Exception) {
+                Log.e(TAG, "refreshLiveMatches: Error pruning old matches: ${e.message}")
+            }
         }
     }
 
     suspend fun refreshMatchesByDate(dateStr: String) {
         Log.d(TAG, "refreshMatchesByDate: Starting request for date = $dateStr")
         try {
-            val response = apiService.getAllMatchesByDate(dateStr)
+            val response = apiService.getMatchesByDate(dateStr)
             Log.d(TAG, "refreshMatchesByDate: Response code = ${response.code}, data size = ${response.data?.size ?: 0}")
             if (response.code == 200 && response.data.isNotEmpty()) {
                 val entities = response.data.mapIndexed { index, dto ->
@@ -120,6 +144,13 @@ class MatchRepository @Inject constructor(
                 matchDao.clearMatchesByQueryDate(dateStr)
             } catch (ex: Exception) {
                 Log.e(TAG, "refreshMatchesByDate: Nested error clearing matches for $dateStr: ${ex.message}", ex)
+            }
+        } finally {
+            try {
+                val cutoffTimestamp = (System.currentTimeMillis() - 7 * 24 * 3600 * 1000L) / 1000
+                matchDao.pruneOldMatches(cutoffTimestamp)
+            } catch (e: Exception) {
+                Log.e(TAG, "refreshMatchesByDate: Error pruning old matches: ${e.message}")
             }
         }
     }

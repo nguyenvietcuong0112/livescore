@@ -118,8 +118,12 @@ class MainActivity : BaseActivity() {
         }
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
+            if (isFinishing || isDestroyed) return@setOnItemSelectedListener false
             if (isHandlingDeepLink) {
                 return@setOnItemSelectedListener true
+            }
+            if (activeTabId == item.itemId) {
+                return@setOnItemSelectedListener false
             }
             val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
             val isSameFragment = when (item.itemId) {
@@ -128,7 +132,7 @@ class MainActivity : BaseActivity() {
                 R.id.nav_news -> currentFragment is NewsFragment
                 else -> false
             }
-            if (isSameFragment && activeTabId == item.itemId) {
+            if (isSameFragment) {
                 return@setOnItemSelectedListener false
             }
 
@@ -140,14 +144,16 @@ class MainActivity : BaseActivity() {
                 R.id.nav_news -> NewsFragment.newInstance()
                 else -> null
             }
-            if (fragment != null) {
+            if (fragment != null && !isFinishing && !isDestroyed) {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .commitAllowingStateLoss()
             }
 
-            AdsConfig.showInterClickAd(this) {
-                // Done in background without blocking transitions
+            if (!isFinishing && !isDestroyed) {
+                AdsConfig.showInterClickAd(this) {
+                    // Done in background without blocking transitions
+                }
             }
             true
         }

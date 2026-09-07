@@ -19,8 +19,23 @@ interface MatchDao {
     @Query("SELECT * FROM cached_matches WHERE queryDate = :dateStr ORDER BY apiOrder ASC")
     fun getCachedMatchesByQueryDate(dateStr: String): Flow<List<CachedMatchEntity>>
 
+    @Query("SELECT * FROM cached_matches WHERE dateTimestamp >= :startSec AND dateTimestamp <= :endSec ORDER BY apiOrder ASC")
+    fun getCachedMatchesByTimeRange(startSec: Long, endSec: Long): Flow<List<CachedMatchEntity>>
+
+    @Query("SELECT * FROM cached_matches WHERE (dateTimestamp >= :startSec AND dateTimestamp <= :endSec) OR (statusShort IN ('1H', '2H', 'HT', 'ET', 'BT', 'P', 'INT', 'LIVE')) ORDER BY apiOrder ASC")
+    fun getCachedMatchesForDateOrLive(startSec: Long, endSec: Long): Flow<List<CachedMatchEntity>>
+
+    @Query("SELECT * FROM cached_matches WHERE id IN (:matchIds) ORDER BY apiOrder ASC")
+    fun getMatchesByIds(matchIds: List<Int>): Flow<List<CachedMatchEntity>>
+
+    @Query("SELECT * FROM cached_matches ORDER BY dateTimestamp DESC LIMIT :limit")
+    fun getRecentCachedMatches(limit: Int = 300): Flow<List<CachedMatchEntity>>
+
     @Query("SELECT * FROM cached_matches WHERE id = :matchId")
     suspend fun getCachedMatchById(matchId: Int): CachedMatchEntity?
+
+    @Query("DELETE FROM cached_matches WHERE dateTimestamp < :cutoffTimestamp")
+    suspend fun pruneOldMatches(cutoffTimestamp: Long)
 
     @Query("DELETE FROM cached_matches WHERE statusShort IN ('1H', '2H', 'HT', 'ET', 'BT', 'P', 'INT', 'LIVE')")
     suspend fun clearLiveMatches()

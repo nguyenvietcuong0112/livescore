@@ -36,8 +36,8 @@
                     android:layout_height="64dp"
                     android:layout_marginBottom="12dp"
                     android:contentDescription="Premium Emblem"
-                    app:srcCompat="@drawable/ic_trophy"
-                    app:tint="#FFD700" />
+                    app:srcCompat="@drawable/logo"
+                     />
 
                 <TextView
                     android:id="@+id/tvTitle"

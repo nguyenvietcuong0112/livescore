@@ -51,6 +51,17 @@ class Application : AdsApplication() {
     override fun buildDebug(): Boolean? = null
 
     override fun onCreate() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            val processName = android.app.Application.getProcessName()
+            if (packageName != processName) {
+                val suffix = processName.replace(":", "_")
+                try {
+                    android.webkit.WebView.setDataDirectorySuffix(suffix)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate()
 
@@ -64,63 +75,32 @@ class Application : AdsApplication() {
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity::class.java)
         AppOpenManager.getInstance().disableAppResumeWithActivity(LanguageActivity::class.java)
         AppOpenManager.getInstance().disableAppResumeWithActivity(IntroActivity::class.java)
-        AppOpenManager.getInstance()
-            .disableAppResumeWithActivity(IntroSlideshowActivity::class.java)
+        AppOpenManager.getInstance().disableAppResumeWithActivity(IntroSlideshowActivity::class.java)
         AppOpenManager.getInstance().disableAppResumeWithActivity(PermissionActivity::class.java)
 
+        Executors.newSingleThreadExecutor().execute {
+            try {
+                FirebaseApp.initializeApp(this)
+                FacebookSdk.setClientToken(getString(R.string.facebook_client_token))
+                AdjustHelper.init(
+                    application = this,
+                    appToken = AppAdjustTokens.ADJUST_APP_TOKEN,
+                    iapEventToken = AppAdjustTokens.EVENT_IAP_COMMON,
+                    isDebug = BuildConfig.DEBUG
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
             kotlinx.coroutines.delay(5000)
-            gsmManager.loginGSM()
-        }
-
-        val onboardingPrefs =
-            getSharedPreferences("livescore_onboarding_prefs", Context.MODE_PRIVATE)
-        val savedLang = onboardingPrefs.getString("selected_language", null)
-        if (savedLang == null) {
-            onboardingPrefs.edit().putString("selected_language", "English").apply()
-            SystemUtil.saveLocale(this, "en")
-            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("en"))
-        } else {
-            val localeCode = when (savedLang) {
-                "Arabic" -> "ar"
-                "English" -> "en"
-                "French" -> "fr"
-                "German" -> "de"
-                "Hindi" -> "hi"
-                "Indonesian" -> "id"
-                "Italian" -> "it"
-                "Japanese" -> "ja"
-                "Portuguese" -> "pt"
-                "Russian" -> "ru"
-                "Spanish" -> "es"
-                "Thai" -> "th"
-                "Turkish" -> "tr"
-                "Urdu" -> "ur"
-                "Vietnamese" -> "vi"
-                else -> "en"
-            }
-            SystemUtil.saveLocale(
-                this,
-                localeCode
-            )
-            val currentLocales = AppCompatDelegate.getApplicationLocales()
-            if (currentLocales.isEmpty || currentLocales.get(0)?.language != localeCode) {
-                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeCode))
+            try {
+                gsmManager.loginGSM()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
-
-        Executors.newSingleThreadExecutor().execute {
-            FirebaseApp.initializeApp(this)
-            FacebookSdk.setClientToken(getString(R.string.facebook_client_token))
-            AdjustHelper.init(
-                application = this,
-                appToken = AppAdjustTokens.ADJUST_APP_TOKEN,
-                iapEventToken = AppAdjustTokens.EVENT_IAP_COMMON,
-                isDebug = BuildConfig.DEBUG
-            )
-        }
-
     }
 
 //    fun initAdjust() {

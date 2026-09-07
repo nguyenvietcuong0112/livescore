@@ -20,74 +20,84 @@ import java.util.Locale;
 
 public class SystemUtil {
     private static Locale myLocale;
+    private static volatile String cachedLanguage = null;
 
     // Lưu ngôn ngữ đã cài đặt
     public static void saveLocale(Context context, String lang) {
         setPreLanguage(context, lang);
     }
 
-    public static void setLocale(Context context) {
-        String language = getPreLanguage(context);
-        if (language.equals("")) {
-            Locale defaultLocale = Locale.getDefault();
-            Configuration currentConfig = context.getResources().getConfiguration();
-            Locale currentLocale = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                if (currentConfig.getLocales().size() > 0) {
-                    currentLocale = currentConfig.getLocales().get(0);
-                }
-            } else {
-                currentLocale = currentConfig.locale;
+    private static Locale getCurrentLocale(Context context) {
+        if (context == null || context.getResources() == null) return null;
+        Configuration currentConfig = context.getResources().getConfiguration();
+        if (currentConfig == null) return null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            if (currentConfig.getLocales().size() > 0) {
+                return currentConfig.getLocales().get(0);
             }
-            if (currentLocale != null && currentLocale.getLanguage().equals(defaultLocale.getLanguage())) {
-                return;
-            }
-
-            Configuration config = new Configuration();
-            Locale.setDefault(defaultLocale);
-            config.locale = defaultLocale;
-
-            context.getResources()
-                    .updateConfiguration(config, context.getResources().getDisplayMetrics());
-        } else {
-            changeLang(language, context);
         }
+        return currentConfig.locale;
+    }
+
+    public static void setLocale(Context context) {
+        if (context == null) return;
+        String language = getPreLanguage(context);
+        if (language == null || language.isEmpty()) {
+            language = "en";
+        }
+
+        Locale currentLocale = getCurrentLocale(context);
+        if (currentLocale != null && language.equalsIgnoreCase(currentLocale.getLanguage())) {
+            return;
+        }
+
+        changeLang(language, context);
     }
 
     public static void changeLang(String lang, Context context) {
-        if (lang.equalsIgnoreCase(""))
+        if (lang == null || lang.equalsIgnoreCase("") || context == null)
             return;
-        Locale newLocale = new Locale(lang);
-        Configuration currentConfig = context.getResources().getConfiguration();
-        Locale currentLocale = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            if (currentConfig.getLocales().size() > 0) {
-                currentLocale = currentConfig.getLocales().get(0);
-            }
-        } else {
-            currentLocale = currentConfig.locale;
-        }
-        if (currentLocale != null && currentLocale.getLanguage().equals(newLocale.getLanguage())) {
+        
+        Locale currentLocale = getCurrentLocale(context);
+        if (currentLocale != null && lang.equalsIgnoreCase(currentLocale.getLanguage())) {
+            cachedLanguage = lang;
             return;
         }
 
+        Locale newLocale = new Locale(lang);
         myLocale = newLocale;
         saveLocale(context, lang);
         Locale.setDefault(myLocale);
-        Configuration config = new Configuration();
-        config.locale = myLocale;
-        context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
+        
+        try {
+            Configuration config = new Configuration(context.getResources().getConfiguration());
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                config.setLocale(myLocale);
+            } else {
+                config.locale = myLocale;
+            }
+            context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static String getPreLanguage(Context mContext) {
+        if (cachedLanguage != null) {
+            return cachedLanguage;
+        }
+        if (mContext == null) return "en";
         SharedPreferences preferences = mContext.getSharedPreferences("data", Context.MODE_PRIVATE);
-        return preferences.getString("KEY_LANGUAGE", "en");
+        cachedLanguage = preferences.getString("KEY_LANGUAGE", "en");
+        return cachedLanguage;
     }
 
     public static void setPreLanguage(Context context, String language) {
-        if (language == null || language == "") {
+        if (language == null || language.isEmpty()) {
             return;
-        } else {
+        }
+        cachedLanguage = language;
+        if (context != null) {
             SharedPreferences preferences = context.getSharedPreferences("data", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("KEY_LANGUAGE", language);
