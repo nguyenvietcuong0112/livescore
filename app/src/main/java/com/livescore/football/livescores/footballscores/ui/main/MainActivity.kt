@@ -27,8 +27,8 @@ import com.livescore.football.livescores.footballscores.ui.profile.ProfileActivi
 import com.livescore.football.livescores.footballscores.ui.search.SearchActivity
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
 import com.livescore.football.livescores.footballscores.utils.LogEvent
-import com.mallegan.ads.callback.NativeCallback
-import com.mallegan.ads.util.Admob
+import com.livescore.football.livescores.footballscores.utils.NativeCallback
+import com.livescore.football.livescores.footballscores.utils.Admob
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -58,6 +58,7 @@ class MainActivity : BaseActivity() {
     private var isFirstLoad = true
     private var delayedLoadExpandTask: Runnable? = null
     private var savedState: Bundle? = null
+    private var currentLangCode: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         savedState = savedInstanceState
@@ -70,6 +71,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun bind() {
+        currentLangCode = com.livescore.football.livescores.footballscores.utils.SystemUtil.getPreLanguage(this)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         window.navigationBarColor = android.graphics.Color.TRANSPARENT
@@ -161,22 +163,22 @@ class MainActivity : BaseActivity() {
         // Observe request limit exceeds safely in RESUMED state to prevent StateLoss crashes
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                launch {
-                    limitManager.limitExceededFlow.collect {
-                        if (!limitManager.isPremium()) {
-                            showPremiumPaywall(isOutOfQuota = true)
-                        }
+                limitManager.limitExceededFlow.collect {
+                    if (!limitManager.isPremium()) {
+                        showPremiumPaywall(isOutOfQuota = true)
                     }
                 }
-                launch {
-                    var wasPremium = limitManager.isPremium()
-                    limitManager.isPremiumFlow.collect { isPremium ->
-                        if (isPremium && !wasPremium) {
-                            recreate()
-                        }
-                        wasPremium = isPremium
-                    }
+            }
+        }
+
+        // Observe premium status changes across the entire activity lifecycle to recreate when purchased
+        lifecycleScope.launch {
+            var wasPremium = limitManager.isPremium()
+            limitManager.isPremiumFlow.collect { isPremium ->
+                if (isPremium && !wasPremium) {
+                    recreate()
                 }
+                wasPremium = isPremium
             }
         }
 
@@ -251,6 +253,14 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        val newLang = com.livescore.football.livescores.footballscores.utils.SystemUtil.getPreLanguage(this)
+        if (newLang.isNotEmpty() && currentLangCode != null && newLang != currentLangCode) {
+            currentLangCode = newLang
+            recreate()
+            return
+        }
+        currentLangCode = newLang
+
         val deviceId = android.provider.Settings.Secure.getString(contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "unknown_device"
         android.util.Log.d("MainActivity", "Device ID: $deviceId")
         com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.ScreenTracker.trackScreenView(
@@ -264,10 +274,14 @@ class MainActivity : BaseActivity() {
         }
 
         if (!limitManager.isPremium()) {
+            binding.frAdsCollap.visibility = View.VISIBLE
+            binding.frAdsBanner.visibility = View.VISIBLE
             if (isFirstLoad) {
                 loadNativeBanner {
                     delayedLoadExpandTask = Runnable {
-                        loadNativeCollapse()
+                        if (!isFinishing && !isDestroyed && !limitManager.isPremium()) {
+                            loadNativeCollapse()
+                        }
                         isFirstLoad = false
                     }
                     handlerADS.postDelayed(delayedLoadExpandTask!!, 1000)
@@ -275,14 +289,23 @@ class MainActivity : BaseActivity() {
             } else {
                 loadNativeBanner {
                     delayedLoadExpandTask = Runnable {
-                        loadNativeCollapse()
+                        if (!isFinishing && !isDestroyed && !limitManager.isPremium()) {
+                            loadNativeCollapse()
+                        }
                     }
                     handlerADS.postDelayed(delayedLoadExpandTask!!, 15000)
                 }
             }
         } else {
+            delayedLoadExpandTask?.let {
+                handlerADS.removeCallbacks(it)
+                delayedLoadExpandTask = null
+            }
+            binding.bottomNavigation.visibility = View.VISIBLE
             binding.frAdsCollap.removeAllViews()
             binding.frAdsBanner.removeAllViews()
+            binding.frAdsCollap.visibility = View.GONE
+            binding.frAdsBanner.visibility = View.GONE
         }
     }
 
@@ -300,6 +323,13 @@ class MainActivity : BaseActivity() {
     }
 
     private fun loadNativeCollapse() {
+        if (limitManager.isPremium() || isFinishing || isDestroyed) {
+            binding.bottomNavigation.visibility = View.VISIBLE
+            binding.frAdsCollap.visibility = View.GONE
+            binding.frAdsCollap.removeAllViews()
+            return
+        }
+
         val nativeAllId = try {
             RemoteConfigManager.Companion.getInstance()
                 .getAdId("native_all", getString(R.string.native_all))
@@ -314,6 +344,13 @@ class MainActivity : BaseActivity() {
         Admob.getInstance().loadNativeAd(this, nativeAllId, object : NativeCallback() {
             override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                 if (isDestroyed || isFinishing) return
+                if (limitManager.isPremium()) {
+                    binding.bottomNavigation.visibility = View.VISIBLE
+                    binding.frAdsCollap.visibility = View.GONE
+                    binding.frAdsCollap.removeAllViews()
+                    return
+                }
+
                 com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
                     liveScoreApiService, this@MainActivity, "native", nativeAllId, "MainActivity"
                 )
@@ -332,7 +369,8 @@ class MainActivity : BaseActivity() {
 
                 binding.frAdsCollap.removeAllViews()
 
-                val mediaView = adView.findViewById<MediaView>(R.id.ad_media)
+                val mediaView = adView.findViewById<MediaView>(R.id.media_view)
+                    ?: adView.findViewById<MediaView>(R.id.ad_media)
                 val closeButton = adView.findViewById<ImageView>(R.id.close)
 
                 closeButton?.setOnClickListener {
@@ -341,6 +379,7 @@ class MainActivity : BaseActivity() {
                     loadNativeBanner()
                 }
 
+                binding.frAdsCollap.visibility = View.VISIBLE
                 binding.frAdsCollap.addView(adView)
                 binding.frAdsCollap.bringToFront() // Force draw on top of navbar
                 Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
@@ -360,6 +399,13 @@ class MainActivity : BaseActivity() {
     }
 
     private fun loadNativeBanner(onLoaded: (() -> Unit)? = null) {
+        if (limitManager.isPremium() || isFinishing || isDestroyed) {
+            binding.bottomNavigation.visibility = View.VISIBLE
+            binding.frAdsBanner.visibility = View.GONE
+            binding.frAdsBanner.removeAllViews()
+            return
+        }
+
         binding.frAdsCollap.removeAllViews()
 
         val nativeAllId = try {
@@ -376,6 +422,13 @@ class MainActivity : BaseActivity() {
         Admob.getInstance().loadNativeAd(this, nativeAllId, object : NativeCallback() {
             override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                 if (isDestroyed || isFinishing) return
+                if (limitManager.isPremium()) {
+                    binding.bottomNavigation.visibility = View.VISIBLE
+                    binding.frAdsBanner.visibility = View.GONE
+                    binding.frAdsBanner.removeAllViews()
+                    return
+                }
+
                 com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadSuccess(
                     liveScoreApiService, this@MainActivity, "native", nativeAllId, "MainActivity"
                 )
@@ -391,6 +444,7 @@ class MainActivity : BaseActivity() {
                     .inflate(R.layout.layout_native_banner, null) as NativeAdView
 
                 binding.bottomNavigation.visibility = View.VISIBLE
+                binding.frAdsBanner.visibility = View.VISIBLE
 
                 binding.frAdsBanner.removeAllViews()
                 binding.frAdsBanner.addView(adView)

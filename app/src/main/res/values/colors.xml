@@ -3,7 +3,9 @@
     <!-- System Base Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="colorWhite">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="lightTransparent">#1A000000</color>
 
     <!-- Modern White Clean Theme Color System -->
     <color name="background">#FFFFFF</color>

@@ -24,8 +24,8 @@ import com.livescore.football.livescores.footballscores.data.local.MatchReminder
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.data.local.entity.CachedMatchEntity
 import com.livescore.football.livescores.footballscores.ui.home.MatchFilter
-import com.mallegan.ads.callback.NativeCallback
-import com.mallegan.ads.util.Admob
+import com.livescore.football.livescores.footballscores.utils.NativeCallback
+import com.livescore.football.livescores.footballscores.utils.Admob
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

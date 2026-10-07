@@ -15,7 +15,9 @@
     </style>
 
     <!-- Ad Attribution Badge Style -->
-    <style name="AppTheme.AdAttribution">
+    <style name="AppTheme" parent="Theme.MyApplication" />
+
+    <style name="AppTheme.AdAttribution" parent="">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">left</item>

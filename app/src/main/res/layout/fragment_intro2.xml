@@ -9,7 +9,7 @@
         android:background="#FFFFFF">
 
         <FrameLayout
-            android:id="@+id/frAds"
+            android:id="@+id/layoutAds"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +26,7 @@
             app:layout_constraintDimensionRatio="412:668"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frAds"
+            app:layout_constraintTop_toBottomOf="@id/layoutAds"
             app:layout_constraintVertical_chainStyle="spread_inside" />
 
         <TextView
@@ -51,7 +51,7 @@
             android:layout_marginVertical="16dp"
             android:gravity="center"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@id/txtNext"
+            app:layout_constraintBottom_toTopOf="@id/btnNext"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title">
@@ -82,7 +82,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/txtNext"
+            android:id="@+id/btnNext"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginHorizontal="24dp"
@@ -105,10 +105,10 @@
             android:layout_height="24dp"
             android:visibility="gone"
             android:indeterminateTint="#FFFFFF"
-            app:layout_constraintTop_toTopOf="@id/txtNext"
-            app:layout_constraintBottom_toBottomOf="@id/txtNext"
-            app:layout_constraintStart_toStartOf="@id/txtNext"
-            app:layout_constraintEnd_toEndOf="@id/txtNext" />
+            app:layout_constraintTop_toTopOf="@id/btnNext"
+            app:layout_constraintBottom_toBottomOf="@id/btnNext"
+            app:layout_constraintStart_toStartOf="@id/btnNext"
+            app:layout_constraintEnd_toEndOf="@id/btnNext" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

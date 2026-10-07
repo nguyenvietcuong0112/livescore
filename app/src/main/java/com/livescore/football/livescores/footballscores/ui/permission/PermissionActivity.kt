@@ -18,8 +18,8 @@ import com.livescore.football.livescores.footballscores.databinding.ActivityPerm
 import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.ui.iap.IAPActivity
 import com.livescore.football.livescores.footballscores.utils.LogEvent
-import com.mallegan.ads.callback.NativeCallback
-import com.mallegan.ads.util.Admob
+import com.livescore.football.livescores.footballscores.utils.NativeCallback
+import com.livescore.football.livescores.footballscores.utils.Admob
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

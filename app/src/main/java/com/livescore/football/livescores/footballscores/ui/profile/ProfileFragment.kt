@@ -24,7 +24,7 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-    private var isVietnamese = true
+    private var currentLangCode: String? = null
 
     override fun onResume() {
         super.onResume()
@@ -34,6 +34,14 @@ class ProfileFragment : Fragment() {
             deviceId = deviceId,
             newScreen = "Profile"
         )
+        val newLang = com.livescore.football.livescores.footballscores.utils.SystemUtil.getPreLanguage(requireContext())
+        if (newLang.isNotEmpty() && currentLangCode != null && newLang != currentLangCode) {
+            currentLangCode = newLang
+            requireActivity().recreate()
+            return
+        }
+        currentLangCode = newLang
+        updateLanguageDisplay()
     }
 
     override fun onCreateView(
@@ -47,6 +55,7 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        currentLangCode = com.livescore.football.livescores.footballscores.utils.SystemUtil.getPreLanguage(requireContext())
         setupListeners()
         displayAppVersion()
 
@@ -57,15 +66,23 @@ class ProfileFragment : Fragment() {
         binding.tvVersion.text = "v${BuildConfig.VERSION_NAME}"
     }
 
-    private fun setupListeners() {
-        val onboardingPrefs = requireContext().getSharedPreferences("livescore_onboarding_prefs", android.content.Context.MODE_PRIVATE)
-        val selectedLanguage = onboardingPrefs.getString("selected_language", "English") ?: "English"
-        binding.tvLanguageValue.text = selectedLanguage
+    private fun updateLanguageDisplay() {
+        val langCode = com.livescore.football.livescores.footballscores.utils.SystemUtil.getPreLanguage(requireContext())
+        val langEnum = com.livescore.football.livescores.footballscores.utils.EnumSelectLanguage.entries.find { it.code.equals(langCode, ignoreCase = true) }
+        val nameRes = langEnum?.nameLanguage ?: R.string.language_english
+        binding.tvLanguageValue.setText(nameRes)
+    }
 
-        // Language selection: Navigate to LanguageActivity instead of showing dialog popup
+    private fun setupListeners() {
+        updateLanguageDisplay()
+
+        // Language selection: Navigate to CSCLanguageActivity
         binding.rowLanguage.setOnClickListener {
-            val intent = android.content.Intent(requireContext(), com.livescore.football.livescores.footballscores.ui.language.LanguageActivity::class.java).apply {
-                putExtra(com.livescore.football.livescores.footballscores.ui.language.LanguageActivity.EXTRA_FROM_PROFILE, true)
+            val intent = android.content.Intent(requireContext(), com.cscmobi.libraryads.views.language.CSCLanguageActivity::class.java).apply {
+                putExtra(com.cscmobi.libraryads.commons.utils.Constants.FROM_SETTING, true)
+                putExtra("from_setting", true)
+                putExtra(com.cscmobi.libraryads.commons.utils.Constants.NAME_AD_NATIVE_LANGUAGE, "native_language")
+                putExtra("name_ad_native_language", "native_language")
             }
             startActivity(intent)
         }

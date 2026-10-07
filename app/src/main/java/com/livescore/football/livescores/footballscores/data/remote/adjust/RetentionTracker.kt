@@ -2,7 +2,8 @@ package com.livescore.football.livescores.footballscores.data.remote.adjust
 
 import android.content.Context
 import android.util.Log
-import com.mallegan.ads.util.AdjustHelper
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustEvent
 
 object RetentionTracker {
 
@@ -30,7 +31,7 @@ object RetentionTracker {
                 }
 
                 if (token != null) {
-                    AdjustHelper.trackSimpleEvent(token)
+                    Adjust.trackEvent(AdjustEvent(token))
                     sharedPrefs.edit().putBoolean("tracked_day_$diffInDays", true).apply()
                     Log.d(TAG, "Sent Adjust retention event for Day $diffInDays using token: $token")
                 } else {

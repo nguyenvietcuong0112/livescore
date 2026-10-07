@@ -27,8 +27,8 @@ import com.livescore.football.livescores.footballscores.data.remote.RemoteConfig
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.utils.SharePreferenceUtils
-import com.mallegan.ads.callback.NativeCallback
-import com.mallegan.ads.util.Admob
+import com.livescore.football.livescores.footballscores.utils.NativeCallback
+import com.livescore.football.livescores.footballscores.utils.Admob
 import kotlinx.coroutines.launch
 
 import java.text.SimpleDateFormat

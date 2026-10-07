@@ -75,11 +75,6 @@
 -keep class okhttp3.** { *; }
 -keep class okio.** { *; }
 
-# ==============================================================================
-# MALLEGAN ADS SDK (CUSTOM AD WRAPPER LIBRARY)
-# ==============================================================================
--keep class com.mallegan.ads.** { *; }
--keepclassmembers class com.mallegan.ads.** { *; }
 
 # ==============================================================================
 # FACEBOOK SDK
@@ -168,9 +163,18 @@
 # ==============================================================================
 -keep class com.bytedance.sdk.** { *; }
 -dontwarn com.bytedance.sdk.**
+-keep interface com.bytedance.sdk.** { *; }
+-keep class com.bytedance.openadsdk.** { *; }
+-dontwarn com.bytedance.openadsdk.**
+-keep interface com.bytedance.openadsdk.** { *; }
+-keep class com.bytedance.pangle.** { *; }
+-dontwarn com.bytedance.pangle.**
+-keep class com.bytedance.msdk.** { *; }
+-dontwarn com.bytedance.msdk.**
 -keep class com.bykv.vk.** { *; }
 -dontwarn com.bykv.vk.**
 -keep class com.google.ads.mediation.pangle.** { *; }
+-dontwarn com.google.ads.mediation.pangle.**
 
 # ==============================================================================
 # MINTEGRAL SDK
@@ -192,3 +196,10 @@
 # ==============================================================================
 -keep class com.vungle.ads.** { *; }
 -dontwarn com.vungle.ads.**
+
+# ==============================================================================
+# CSC ADS LIBRARY
+# ==============================================================================
+-keep class com.cscmobi.libraryads.** { *; }
+-keepclassmembers class com.cscmobi.libraryads.** { *; }
+-dontwarn com.cscmobi.libraryads.**

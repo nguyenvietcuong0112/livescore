@@ -98,6 +98,7 @@ class NewsFragment : Fragment() {
     private fun setupListeners() {
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.loadData()
+
         }
 
         binding.btnRetry.setOnClickListener {

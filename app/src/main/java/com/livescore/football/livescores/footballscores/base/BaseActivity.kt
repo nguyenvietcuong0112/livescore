@@ -26,6 +26,16 @@ abstract class BaseActivity : AppCompatActivity() {
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
     private var noInternetDialog: Dialog? = null
 
+    override fun attachBaseContext(newBase: Context) {
+        val lang = SystemUtil.getPreLanguage(newBase)
+        val locale = java.util.Locale(if (lang.isNullOrEmpty()) "en" else lang)
+        java.util.Locale.setDefault(locale)
+        val config = android.content.res.Configuration(newBase.resources.configuration)
+        config.setLocale(locale)
+        val context = newBase.createConfigurationContext(config)
+        super.attachBaseContext(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         SystemConfiguration.setStatusBarColor(
             this,
@@ -33,7 +43,6 @@ abstract class BaseActivity : AppCompatActivity() {
             SystemConfiguration.IconColor.ICON_DARK
         )
         super.onCreate(savedInstanceState)
-        SystemUtil.setLocale(this)
         bind()
     }
 

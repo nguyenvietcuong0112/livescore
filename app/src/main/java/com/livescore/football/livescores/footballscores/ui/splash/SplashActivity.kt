@@ -15,7 +15,6 @@ import com.livescore.football.livescores.footballscores.data.remote.RemoteConfig
 import com.livescore.football.livescores.footballscores.data.remote.adjust.RetentionTracker
 import com.livescore.football.livescores.footballscores.data.remote.getRemoteAdId
 import com.livescore.football.livescores.footballscores.databinding.ActivitySplashBinding
-import com.livescore.football.livescores.footballscores.ui.language.LanguageActivity
 import com.livescore.football.livescores.footballscores.ui.main.MainActivity
 import com.livescore.football.livescores.footballscores.utils.ActivityFullCallback
 import com.livescore.football.livescores.footballscores.utils.ActivityLoadNativeFullV1
@@ -27,10 +26,12 @@ import com.livescore.football.livescores.footballscores.utils.PushNavigationExec
 import com.livescore.football.livescores.footballscores.utils.PushPayload
 import com.google.android.gms.ads.nativead.NativeAd
 import com.livescore.football.livescores.footballscores.utils.AdsConfig
-import com.mallegan.ads.callback.NativeCallback
-import com.mallegan.ads.callback.InterCallback
-import com.mallegan.ads.util.Admob
-import com.mallegan.ads.util.ConsentHelper
+import com.cscmobi.libraryads.ads.banner_ads.CSCBanner
+import com.cscmobi.libraryads.ads.inter_ads.CSCInter
+import com.cscmobi.libraryads.commons.consents.GoogleMobileAdsConsentManager
+import com.livescore.football.livescores.footballscores.utils.NativeCallback
+import com.livescore.football.livescores.footballscores.utils.InterCallback
+import com.livescore.football.livescores.footballscores.utils.Admob
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -110,9 +111,9 @@ class SplashActivity : BaseActivity() {
 
     private fun initAdsAfterConfig() {
         if (limitManager.isPremium()) {
-            binding.frAdsBanner.visibility = View.GONE
+            binding.layoutAds.visibility = View.GONE
         } else {
-            binding.frAdsBanner.visibility = View.VISIBLE
+            binding.layoutAds.visibility = View.VISIBLE
         }
 
         var actualLoadedAdId = remoteConfigManager.getAdId("inter_splash", getString(R.string.inter_splash))
@@ -192,27 +193,33 @@ class SplashActivity : BaseActivity() {
             return
         }
 
-        val consentHelper = ConsentHelper.getInstance(this)
-        if (!consentHelper.canLoadAndShowAds()) {
-            consentHelper.reset()
-        }
+        val consentManager = GoogleMobileAdsConsentManager.getInstance(this)
+        consentManager.gatherConsent(this) { consentError ->
+            if (consentError != null) {
+                android.util.Log.d("SplashActivity", "Consent gathering error: ${consentError.message}")
+            }
 
-        consentHelper.obtainConsentAndShow(this) {
+
             // Load banner ad after consent is obtained
             if (!limitManager.isPremium()) {
                 val bannerId = getRemoteAdId("banner_splash", R.string.banner_splash)
                 com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdRequest(
                     liveScoreApiService, this@SplashActivity, "banner", bannerId, "Splash"
                 )
-                Admob.getInstance().loadBanner(this@SplashActivity, bannerId)
-                com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
-                    liveScoreApiService, this@SplashActivity, "banner", bannerId, "Splash"
+                CSCBanner.requestBanner(
+                    activity = this@SplashActivity,
+                    id = bannerId,
+                    typeAds = CSCBanner.TypeAds.BANNER_NORMAL,
+                    adFrame = binding.layoutAds,
+                    canShowAd = true,
+                    onResult = {
+                        com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                            liveScoreApiService, this@SplashActivity, "banner", bannerId, "Splash"
+                        )
+                        LogEvent.log(this@SplashActivity, "banner_splash_view")
+                    }
                 )
-                LogEvent.log(this@SplashActivity, "banner_splash_view")
             }
-
-
-
 
             // Load splash interstitial ad after consent is obtained
             Handler(Looper.getMainLooper()).postDelayed({
@@ -231,18 +238,38 @@ class SplashActivity : BaseActivity() {
                         )
                     }
 
-                    Admob.getInstance().loadSplashInterAdsFloor(
-                        this@SplashActivity,
-                        arrayListOf(
-                            remoteConfigManager.getAdId(
-                                "inter_splash_high",
-                                getString(R.string.inter_splash_high)
-                            ),
-                            interId
-                        ),
-                        1500,
-                        30000,
-                        interCallback
+                    CSCInter.loadAndShowInterSplash(
+                        activity = this@SplashActivity,
+                        idHigh = highId,
+                        idAllPrice = interId,
+                        timeOut = 30000L,
+                        nextAction = { isSuccess ->
+                            LogEvent.log(this@SplashActivity, "inter_splash_view")
+                            if (!SharePreferenceUtils.isOrganic(applicationContext)) {
+                                ActivityLoadNativeFullV1.Companion.open(
+                                    this@SplashActivity,
+                                    getRemoteAdId("native_splash_full_high", R.string.native_splash_full_high),
+                                    getRemoteAdId("native_splash_full", R.string.native_splash_full),
+                                    object : ActivityFullCallback {
+                                        override fun onResultFromActivityFull() {
+                                            navigateAfterSplash()
+                                        }
+                                    }
+                                )
+                            } else {
+                                navigateAfterSplash()
+                            }
+                        },
+                        onShown = {
+                            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdShow(
+                                liveScoreApiService, this@SplashActivity, "interstitial", interId, "Splash"
+                            )
+                        },
+                        onLoadFailed = {
+                            com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.AdTrackingHelper.logAdLoadFailed(
+                                liveScoreApiService, this@SplashActivity, "interstitial", interId, "Splash", null
+                            )
+                        }
                     )
                 }
             }, 500)
@@ -305,7 +332,7 @@ class SplashActivity : BaseActivity() {
         } else if (isReturningUser()) {
             Intent(this, MainActivity::class.java)
         } else {
-            Intent(this, LanguageActivity::class.java)
+            Intent(this, com.cscmobi.libraryads.views.language.CSCLanguageActivity::class.java)
         }
         startActivity(intent)
         finish()

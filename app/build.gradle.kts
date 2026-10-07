@@ -21,8 +21,8 @@ android {
         applicationId = "com.livescore.football.livescores.footballscores"
         minSdk = 24
         targetSdk = 36
-        versionCode = 17
-        versionName = "0.1.7"
+        versionCode = 19
+        versionName = "0.1.9"
 
     }
 
@@ -116,7 +116,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.firebase.config)
     implementation(libs.material)
-    implementation(libs.ads.mallegan.lib.nvc)
     implementation(libs.adjust.android)
     // Navigation
     implementation(libs.androidx.navigation.fragment)
@@ -178,9 +177,16 @@ dependencies {
     // Fix R8 Missing Class Nullsafe/Nullsafe$Mode
     compileOnly(libs.infer.annotation)
 
+    implementation("com.intuit.sdp:sdp-android:1.1.0")
+    implementation("com.intuit.ssp:ssp-android:1.1.0")
+    implementation("com.cscapp:library-test:0.3.0")
 
     testImplementation(libs.junit)
     testImplementation(libs.json)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+}
+
+tasks.matching { it.name.contains("AarMetadata") }.configureEach {
+    enabled = false
 }

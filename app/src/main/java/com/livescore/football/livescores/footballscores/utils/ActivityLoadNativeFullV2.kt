@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.base.AbsBaseActivity
 import com.livescore.football.livescores.footballscores.databinding.ActivityNativeFullBinding
-import com.mallegan.ads.callback.NativeCallback
-import com.mallegan.ads.util.Admob
+import com.livescore.football.livescores.footballscores.utils.NativeCallback
+import com.livescore.football.livescores.footballscores.utils.Admob
 
 
 import dagger.hilt.android.AndroidEntryPoint
@@ -82,8 +82,9 @@ class ActivityLoadNativeFullV2 : AbsBaseActivity() {
 
                 val closeButton = adView.findViewById<android.widget.ImageView>(R.id.close)
                 val mediaView =
-                    adView.findViewById<com.google.android.gms.ads.nativead.MediaView>(R.id.ad_media)
-                closeButton.setOnClickListener(android.view.View.OnClickListener { v: android.view.View? -> mediaView.performClick() })
+                    adView.findViewById<com.google.android.gms.ads.nativead.MediaView>(R.id.media_view)
+                        ?: adView.findViewById<com.google.android.gms.ads.nativead.MediaView>(R.id.ad_media)
+                closeButton.setOnClickListener(android.view.View.OnClickListener { v: android.view.View? -> mediaView?.performClick() })
                 closeButton.postDelayed({
                     closeButton.setOnClickListener(android.view.View.OnClickListener { v: android.view.View? ->
                         if (ActivityLoadNativeFullV2.Companion.callback != null) {

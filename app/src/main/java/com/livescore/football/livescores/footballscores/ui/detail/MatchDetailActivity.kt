@@ -13,8 +13,8 @@ import android.view.LayoutInflater
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
-import com.mallegan.ads.callback.NativeCallback
-import com.mallegan.ads.util.Admob
+import com.livescore.football.livescores.footballscores.utils.NativeCallback
+import com.livescore.football.livescores.footballscores.utils.Admob
 import com.livescore.football.livescores.footballscores.base.BaseActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
@@ -37,7 +37,7 @@ import com.livescore.football.livescores.footballscores.utils.AdsConfig
 import com.livescore.football.livescores.footballscores.utils.SharePreferenceUtils
 import com.livescore.football.livescores.footballscores.utils.LogEvent
 import com.google.android.gms.ads.LoadAdError
-import com.mallegan.ads.callback.InterCallback
+import com.livescore.football.livescores.footballscores.utils.InterCallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
@@ -626,15 +626,17 @@ class MatchDetailActivity : BaseActivity() {
                         }
                     }
                 }
-                launch {
-                    var wasPremium = limitManager.isPremium()
-                    limitManager.isPremiumFlow.collect { isPremium ->
-                        if (isPremium && !wasPremium) {
-                            recreate()
-                        }
-                        wasPremium = isPremium
-                    }
+            }
+        }
+
+        // Observe premium status changes across the entire activity lifecycle to recreate when purchased
+        lifecycleScope.launch {
+            var wasPremium = limitManager.isPremium()
+            limitManager.isPremiumFlow.collect { isPremium ->
+                if (isPremium && !wasPremium) {
+                    recreate()
                 }
+                wasPremium = isPremium
             }
         }
     }

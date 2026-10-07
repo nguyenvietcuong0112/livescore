@@ -38,7 +38,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        app:layout_constraintBottom_toTopOf="@id/frAdsBanner">
+        app:layout_constraintBottom_toTopOf="@id/layoutAds">
 
         <TextView
             android:id="@+id/tvProgressPercent"
@@ -51,7 +51,7 @@
             android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <!-- Minimalist Lottie Tech Loading radar -->
         <com.airbnb.lottie.LottieAnimationView
@@ -82,16 +82,12 @@
     </RelativeLayout>
 
     <FrameLayout
-        android:id="@+id/frAdsBanner"
+        android:id="@+id/layoutAds"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" >
-        <include
-            layout="@layout/layout_banner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
     </FrameLayout>
 
     <androidx.constraintlayout.widget.Guideline

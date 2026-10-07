@@ -7,7 +7,9 @@
 <!--    <string name="inter_click_prediction" translatable="false">ca-app-pub-3940256099942544/1033173712</string>-->
 
 
+<!--    <string name="native_language_high" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 <!--    <string name="native_language" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_language_high_click" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 <!--    <string name="native_language_click" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 <!--    <string name="native_permission" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 <!--    <string name="native_splash_full_high" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
@@ -18,6 +20,7 @@
 
 <!--    <string name="native_onboarding_1" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 <!--    <string name="native_onboarding_full_1" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_onboarding_full_2" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 <!--    <string name="native_onboarding_4" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 
 
@@ -37,7 +40,9 @@
     <string name="inter_click_prediction" translatable="false">ca-app-pub-1190669921094353/8625110377</string>
 
 
+    <string name="native_language_high" translatable="false">ca-app-pub-1190669921094353/8912195657</string>
     <string name="native_language" translatable="false">ca-app-pub-1190669921094353/8912195657</string>
+    <string name="native_language_high_click" translatable="false">ca-app-pub-1190669921094353/7599113983</string>
     <string name="native_language_click" translatable="false">ca-app-pub-1190669921094353/7599113983</string>
     <string name="native_permission" translatable="false">ca-app-pub-1190669921094353/2322736577</string>
     <string name="native_splash_full_high" translatable="false">ca-app-pub-1190669921094353/4181097783</string>
@@ -48,6 +53,7 @@
 
     <string name="native_onboarding_1" translatable="false">ca-app-pub-1190669921094353/9241852771</string>
     <string name="native_onboarding_full_1" translatable="false">ca-app-pub-1190669921094353/4948899910</string>
+    <string name="native_onboarding_full_2" translatable="false">ca-app-pub-1190669921094353/4948899910</string>
     <string name="native_onboarding_4" translatable="false">ca-app-pub-1190669921094353/3635818249</string>
 
 
@@ -58,5 +64,12 @@
     <string name="facebook_client_token" translatable="false">f7cd538581c130ec43e07be6cdf0f398</string>
 
 
+
+    <!-- Standard Native Ad View IDs for CSC Library & Layouts -->
+    <item type="id" name="native_ad_view" />
+    <item type="id" name="media_view" />
+    <item type="id" name="ad_media" />
+    <item type="id" name="ad_content_view" />
+    <item type="id" name="shimmer_view" />
 
 </resources>

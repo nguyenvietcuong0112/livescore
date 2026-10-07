@@ -17,8 +17,8 @@ import com.livescore.football.livescores.footballscores.databinding.ItemMatchBin
 import com.livescore.football.livescores.footballscores.databinding.LayoutNativeNoMediaBinding
 import androidx.appcompat.app.AppCompatActivity
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
-import com.mallegan.ads.util.Admob
-import com.mallegan.ads.callback.NativeCallback
+import com.livescore.football.livescores.footballscores.utils.Admob
+import com.livescore.football.livescores.footballscores.utils.NativeCallback
 
 sealed class MatchListItem {
     data class LeagueHeader(val id: Int, val name: String, val logo: String) : MatchListItem()

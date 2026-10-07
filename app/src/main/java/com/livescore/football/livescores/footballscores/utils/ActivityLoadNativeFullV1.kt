@@ -11,8 +11,8 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.base.AbsBaseActivity
 import com.livescore.football.livescores.footballscores.databinding.ActivityNativeFullBinding
-import com.mallegan.ads.callback.NativeCallback
-import com.mallegan.ads.util.Admob
+import com.livescore.football.livescores.footballscores.utils.NativeCallback
+import com.livescore.football.livescores.footballscores.utils.Admob
 
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

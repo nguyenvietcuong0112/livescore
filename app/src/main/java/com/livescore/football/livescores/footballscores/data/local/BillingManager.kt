@@ -4,8 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.util.Log
 import com.android.billingclient.api.*
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustEvent
 import com.livescore.football.livescores.footballscores.data.remote.adjust.AppAdjustTokens
-import com.mallegan.ads.util.AdjustHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -198,7 +199,13 @@ class BillingManager @Inject constructor(
                     val orderId = purchase.orderId ?: ""
 
                     // 1. General purchase tracking event
-                    AdjustHelper.trackEventInAppPurchase(price, currency, orderId)
+                    val iapEvent = AdjustEvent(AppAdjustTokens.EVENT_IAP_COMMON).apply {
+                        setRevenue(price, currency)
+                        if (orderId.isNotEmpty()) {
+                            setOrderId(orderId)
+                        }
+                    }
+                    Adjust.trackEvent(iapEvent)
 
                     // 2. Specific billing token event
                     val eventToken = if (productId == PRODUCT_WEEKLY) {
@@ -207,16 +214,16 @@ class BillingManager @Inject constructor(
                         AppAdjustTokens.EVENT_BUY_MONTHLY
                     }
 
-                    AdjustHelper.trackRevenueEvent(
-                        eventToken = eventToken,
-                        price = price,
-                        currency = currency,
-                        orderId = orderId,
-                        delayMs = 2000
-                    )
+                    val specificEvent = AdjustEvent(eventToken).apply {
+                        setRevenue(price, currency)
+                        if (orderId.isNotEmpty()) {
+                            setOrderId(orderId)
+                        }
+                    }
+                    Adjust.trackEvent(specificEvent)
                     Log.d(TAG, "Adjust successfully tracked purchase for product: $productId ($price $currency)")
                 } catch (e: Exception) {
-                    Log.e(TAG, "Failed to track purchase via AdjustHelper", e)
+                    Log.e(TAG, "Failed to track purchase via Adjust", e)
                 }
             } else {
                 Log.e(TAG, "Remote verification failed for both  and Legacy GSM API. Activating via local billing verification fallback.")

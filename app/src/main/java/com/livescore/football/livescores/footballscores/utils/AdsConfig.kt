@@ -6,8 +6,7 @@ import com.google.android.gms.ads.nativead.NativeAd
 import com.livescore.football.livescores.footballscores.R
 import com.livescore.football.livescores.footballscores.data.local.RequestLimitManager
 import com.livescore.football.livescores.footballscores.data.remote.RemoteConfigManager
-import com.mallegan.ads.callback.InterCallback
-import com.mallegan.ads.util.Admob
+import com.cscmobi.libraryads.ads.inter_ads.CSCInter
 import dagger.hilt.EntryPoint
 import dagger.hilt.EntryPoints
 import dagger.hilt.InstallIn
@@ -73,48 +72,31 @@ object AdsConfig {
 
         if (isEnabled && currentTime - lastInterAdShowTime >= 35000L) {
             isInterAdLoading = true
-            Admob.getInstance().loadAndShowInter(
-                activity,
-                interClickId,
-                0,
-                30000,
-                object : InterCallback() {
-                    override fun onAdClosed() {
-                        super.onAdClosed()
-                        isInterAdLoading = false
-                        lastInterAdShowTime = System.currentTimeMillis()
-                        if (!SharePreferenceUtils.isOrganic(activity)) {
-                            ActivityLoadNativeFullV2.open(
-                                activity,
-                                nativeAllId,
-                                object : ActivityFullCallback {
-                                    override fun onResultFromActivityFull() {
-                                        onAdClosedAction()
-                                    }
+            CSCInter.loadAndShowInter(
+                activity = activity,
+                adId = interClickId,
+                timeDelay = 0L,
+                timeOut = 30000L,
+                canShowId = true,
+                onShown = {
+                    isInterAdLoading = false
+                    lastInterAdShowTime = System.currentTimeMillis()
+                },
+                nextAction = { isSuccess ->
+                    isInterAdLoading = false
+                    lastInterAdShowTime = System.currentTimeMillis()
+                    if (!SharePreferenceUtils.isOrganic(activity)) {
+                        ActivityLoadNativeFullV2.open(
+                            activity,
+                            nativeAllId,
+                            object : ActivityFullCallback {
+                                override fun onResultFromActivityFull() {
+                                    onAdClosedAction()
                                 }
-                            )
-                        } else {
-                            onAdClosedAction()
-                        }
-                    }
-
-                    override fun onAdFailedToLoad(error: LoadAdError?) {
-                        super.onAdFailedToLoad(error)
-                        isInterAdLoading = false
-                        lastInterAdShowTime = System.currentTimeMillis()
-                        if (!SharePreferenceUtils.isOrganic(activity)) {
-                            ActivityLoadNativeFullV2.open(
-                                activity,
-                                nativeAllId,
-                                object : ActivityFullCallback {
-                                    override fun onResultFromActivityFull() {
-                                        onAdClosedAction()
-                                    }
-                                }
-                            )
-                        } else {
-                            onAdClosedAction()
-                        }
+                            }
+                        )
+                    } else {
+                        onAdClosedAction()
                     }
                 }
             )

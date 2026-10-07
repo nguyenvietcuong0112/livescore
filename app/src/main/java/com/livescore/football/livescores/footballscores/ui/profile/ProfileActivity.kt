@@ -7,7 +7,6 @@ import android.widget.Toast
 import com.livescore.football.livescores.footballscores.BuildConfig
 import com.livescore.football.livescores.footballscores.base.BaseActivity
 import com.livescore.football.livescores.footballscores.databinding.ActivityProfileBinding
-import com.livescore.football.livescores.footballscores.ui.language.LanguageActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -18,10 +17,13 @@ class ProfileActivity : BaseActivity() {
     lateinit var liveScoreApiService: com.livescore.football.livescores.footballscores.utils.LivescoreTrackingSDKKotlin.LiveScoreApiService
 
     private lateinit var binding: ActivityProfileBinding
+    private var currentLangCode: String? = null
 
     override fun bind() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        currentLangCode = com.livescore.football.livescores.footballscores.utils.SystemUtil.getPreLanguage(this)
 
         binding.btnBack.setOnClickListener {
             finish()
@@ -39,6 +41,14 @@ class ProfileActivity : BaseActivity() {
             deviceId = deviceId,
             newScreen = "Profile"
         )
+
+        val newLang = com.livescore.football.livescores.footballscores.utils.SystemUtil.getPreLanguage(this)
+        if (newLang.isNotEmpty() && currentLangCode != null && newLang != currentLangCode) {
+            currentLangCode = newLang
+            recreate()
+            return
+        }
+        currentLangCode = newLang
         updateLanguageDisplay()
     }
 
@@ -47,17 +57,21 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun updateLanguageDisplay() {
-        val onboardingPrefs = getSharedPreferences("livescore_onboarding_prefs", Context.MODE_PRIVATE)
-        val selectedLanguage = onboardingPrefs.getString("selected_language", "English") ?: "English"
-        binding.tvLanguageValue.text = selectedLanguage
+        val langCode = com.livescore.football.livescores.footballscores.utils.SystemUtil.getPreLanguage(this)
+        val langEnum = com.livescore.football.livescores.footballscores.utils.EnumSelectLanguage.entries.find { it.code.equals(langCode, ignoreCase = true) }
+        val nameRes = langEnum?.nameLanguage ?: com.livescore.football.livescores.footballscores.R.string.language_english
+        binding.tvLanguageValue.setText(nameRes)
     }
 
     private fun setupListeners() {
         updateLanguageDisplay()
 
         binding.rowLanguage.setOnClickListener {
-            val intent = Intent(this, LanguageActivity::class.java).apply {
-                putExtra(LanguageActivity.EXTRA_FROM_PROFILE, true)
+            val intent = Intent(this, com.cscmobi.libraryads.views.language.CSCLanguageActivity::class.java).apply {
+                putExtra(com.cscmobi.libraryads.commons.utils.Constants.FROM_SETTING, true)
+                putExtra("from_setting", true)
+                putExtra(com.cscmobi.libraryads.commons.utils.Constants.NAME_AD_NATIVE_LANGUAGE, "native_language")
+                putExtra("name_ad_native_language", "native_language")
             }
             startActivity(intent)
         }

@@ -23,6 +23,13 @@ pluginManagement {
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
+val localProperties = java.util.Properties().apply {
+    val localPropertiesFile = rootDir.resolve("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { load(it) }
+    }
+}
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -37,7 +44,19 @@ dependencyResolutionManagement {
         maven {
             url = uri("https://artifact.bytedance.com/repository/pangle/")
         }
-
+        maven {
+            url = uri("https://maven.pkg.github.com/cscappstudio/csc_ads_lib")
+            credentials {
+                username = providers.gradleProperty("gpr.user").orNull
+                    ?: localProperties.getProperty("gpr.user")
+                    ?: System.getenv("GITHUB_ACTOR")
+                    ?: "csccuongnv"
+                password = providers.gradleProperty("gpr.key").orNull
+                    ?: localProperties.getProperty("gpr.key")
+                    ?: System.getenv("GITHUB_TOKEN")
+                    ?: ""
+            }
+        }
     }
 }
 
